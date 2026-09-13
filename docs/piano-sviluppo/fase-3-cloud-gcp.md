@@ -4,7 +4,7 @@ stato: validato
 > **Nota locale di progetto**: questo file copre solo l'hosting del backend Payload/backoffice
 > ((payload) + (app)), su Cloud Run. I siti esterni pubblici (vietnamonamour.com,
 > villadoree.com, menu.vietnamonamour.com) usano **Firebase Hosting**, non Cloud Run — decisione
-> già presa in `ADR-005-strategia-rendering-comunicazione-siti-esterni.md` (ISR on-demand,
+> già presa in `ADR-105-strategia-rendering-comunicazione-siti-esterni.md` (ISR on-demand,
 > rebuild manuale via Cloud Build). Le due cose convivono nello stesso progetto GCP senza
 > conflitto: hosting diverso per parti diverse dell'architettura a 4 aree.
 

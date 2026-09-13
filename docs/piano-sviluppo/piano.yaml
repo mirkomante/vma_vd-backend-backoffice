@@ -195,7 +195,7 @@ fasi:
     note: >
       Sbloccata: la sessione dedicata alla struttura a tab si è tenuta
       (riepilogo-sessione-impostazioni-sistema.md) e le decisioni sono
-      state chiuse in ADR-009-global-impostazioni-sistema.md (4 tab,
+      state chiuse in ADR-109-global-impostazioni-sistema.md (4 tab,
       campi per tab, riconciliazione con Global 'Generali' menù e
       'Impostazioni prenotazioni', permessi granulari). Resta "da_fare"
       come le altre fasi di dominio: il file fase-7-impostazioni-sistema.md
@@ -205,19 +205,19 @@ fasi:
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
         stato: "da_fare"
-        note: "Decisa in ADR-009 §1/§5 — questa sottofase implementa, non decide più."
+        note: "Decisa in ADR-109 §1/§5 — questa sottofase implementa, non decide più."
       - id: fase-7.2
         nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
         stato: "da_fare"
-        note: "Riconciliazione decisa in ADR-009 §2 (amendment ad ADR-007 §1 incluso)."
+        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso)."
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
         stato: "da_fare"
-        note: "Campi decisi in ADR-009 §1 (tab 'Integrazioni future' e 'Comunicazioni')."
+        note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni')."
       - id: fase-7.4
         nome: "Permessi granulari campo-per-campo (orari a manager, resto ad admin/super-admin)"
         stato: "da_fare"
-        note: "Tabella permessi decisa in ADR-009 §5."
+        note: "Tabella permessi decisa in ADR-109 §5."
 
 # ============================================================================
 # ARCHI
@@ -499,10 +499,10 @@ archi:
       Global 'Impostazioni prenotazioni' era una delle due fonti duplicate
       di orari/chiusure (l'altra è il Global 'Generali' del menù,
       fase-6.1). Riconciliazione decisa: fonte unica su impostazioni-sistema
-      (fase-7), con amendment esplicito ad ADR-007 §1 (rimozione dei tre
+      (fase-7), con amendment esplicito ad ADR-107 §1 (rimozione dei tre
       campi orario/chiusura da 'Impostazioni prenotazioni').
     adr: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
-    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-009-global-impostazioni-sistema.md §2/§3"
+    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-109-global-impostazioni-sistema.md §2/§3"
 
   - id: arco-22
     da: fase-6.1
@@ -510,10 +510,10 @@ archi:
     tipo: decisione
     descrizione: >
       Stessa duplicazione dal lato menù (Global 'Generali') — stessa
-      riconciliazione su impostazioni-sistema, decisa in ADR-009 §2/§4
+      riconciliazione su impostazioni-sistema, decisa in ADR-109 §2/§4
       (campi orario/chiusure spostati, isSpecialPeriod deprecato).
     adr: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
-    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-009-global-impostazioni-sistema.md §2/§4"
+    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-109-global-impostazioni-sistema.md §2/§4"
 
   - id: arco-23
     da: fase-2
@@ -552,41 +552,41 @@ adr_da_scrivere:
   - titolo: "ADR — Modello contenuti dei siti esterni"
     archi: ["arco-03"]
     stato: "accettata"
-    file: "ADR-001-modello-contenuti-siti-esterni.md"
+    file: "ADR-101-modello-contenuti-siti-esterni.md"
   - titolo: "ADR — Divisione dell'area di gestione"
     archi: ["arco-07", "arco-08"]
     stato: "accettata"
-    file: "ADR-002-divisione-area-di-gestione.md"
+    file: "ADR-102-divisione-area-di-gestione.md"
   - titolo: "ADR — Plugin di supporto CMS (SEO, Redirects, i18n)"
     archi: ["arco-01", "arco-02"]
     stato: "accettata"
-    file: "ADR-003-plugin-supporto-cms.md"
+    file: "ADR-103-plugin-supporto-cms.md"
   - titolo: "ADR — Meccanismo di preview dei contenuti"
     archi: ["arco-04"]
     stato: "accettata"
-    file: "ADR-004-meccanismo-preview-contenuti.md"
+    file: "ADR-104-meccanismo-preview-contenuti.md"
   - titolo: "ADR — Strategia di rendering e comunicazione con i siti esterni"
     archi: ["arco-05", "arco-19"]
     stato: "accettata"
-    file: "ADR-005-strategia-rendering-comunicazione-siti-esterni.md"
+    file: "ADR-105-strategia-rendering-comunicazione-siti-esterni.md"
   - titolo: "ADR — Ciclo di vita della prenotazione"
     archi: ["arco-09"]
     stato: "accettata"
-    file: "ADR-006-ciclo-vita-prenotazione.md"
+    file: "ADR-106-ciclo-vita-prenotazione.md"
   - titolo: "ADR — Modello dati del sistema di prenotazioni"
     archi: ["arco-11", "arco-12"]
     stato: "accettata"
-    file: "ADR-007-modello-dati-sistema-prenotazioni.md"
+    file: "ADR-107-modello-dati-sistema-prenotazioni.md"
   - titolo: "ADR — Modello dati del menù digitale"
     archi: ["arco-14", "arco-15"]
     stato: "accettata"
-    file: "ADR-008-modello-dati-menu-digitale.md"
+    file: "ADR-108-modello-dati-menu-digitale.md"
   - titolo: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     archi: ["arco-21", "arco-22"]
     stato: "accettata"
-    file: "ADR-009-global-impostazioni-sistema.md"
+    file: "ADR-109-global-impostazioni-sistema.md"
     nota: >
       Sbloccato dalla sessione dedicata alla struttura a tab
       (riepilogo-sessione-impostazioni-sistema.md); include amendment
-      esplicito ad ADR-007 §1 (rimozione di tre campi orario/chiusura,
+      esplicito ad ADR-107 §1 (rimozione di tre campi orario/chiusura,
       ora unificati su impostazioni-sistema).

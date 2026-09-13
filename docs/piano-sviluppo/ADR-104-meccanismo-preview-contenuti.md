@@ -4,7 +4,7 @@
 
 **Stato**: accettata
 **Data**: 2026-09-13
-**Arco di decisione**: Fase 4.1 (`arco-04` di `piano.yaml` — Collection `pages` e Global sito) → Fase 4.3 (Meccanismo di preview). Dipende da `ADR-001-modello-contenuti-siti-esterni.md`: la Collection `pages` deve già esistere. Condiziona a sua volta la Fase 4.4 (`arco-05`/`arco-19`, `ADR — Strategia di rendering e comunicazione con i siti esterni`), per il vincolo Draft Mode/Cookies chiuso in questo ADR.
+**Arco di decisione**: Fase 4.1 (`arco-04` di `piano.yaml` — Collection `pages` e Global sito) → Fase 4.3 (Meccanismo di preview). Dipende da `ADR-101-modello-contenuti-siti-esterni.md`: la Collection `pages` deve già esistere. Condiziona a sua volta la Fase 4.4 (`arco-05`/`arco-19`, `ADR — Strategia di rendering e comunicazione con i siti esterni`), per il vincolo Draft Mode/Cookies chiuso in questo ADR.
 
 ## Contesto
 

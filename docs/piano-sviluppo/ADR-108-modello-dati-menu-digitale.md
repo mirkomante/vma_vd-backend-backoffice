@@ -132,7 +132,7 @@ Non più prodotti dal ristorante: nessuna Collection creata ora. Percorso esplic
 | Classificazione | Admin (CRUD) | No | relazione a Paese |
 | `porzione` su `menu_fisso_piatto` | **Manager** | — | comporre/modificare un menù fisso è operatività quotidiana, non configurazione rara |
 
-Questa tabella è il riferimento diretto per i permessi granulari da applicare come access control nativo Payload (stesso meccanismo già convenzionato in `ADR-002-divisione-area-di-gestione.md`, qui solo riapplicato al dominio menù — non è una dipendenza reale, è lo stesso pattern di catalogo/progetto già in uso).
+Questa tabella è il riferimento diretto per i permessi granulari da applicare come access control nativo Payload (stesso meccanismo già convenzionato in `ADR-102-divisione-area-di-gestione.md`, qui solo riapplicato al dominio menù — non è una dipendenza reale, è lo stesso pattern di catalogo/progetto già in uso).
 
 ### 10. Nota sulla validazione allergeni/flag di consumo
 

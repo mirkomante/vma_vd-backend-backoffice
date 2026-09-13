@@ -4,11 +4,11 @@
 
 **Stato**: accettata
 **Data**: 2026-09-13
-**Arco di decisione**: Fase 5.3 (`arco-11`, `arco-12` di `piano.yaml` — Global "Impostazioni prenotazioni", Collection "Eccezioni giorno", Collection "Prenotazioni") → Fase 5.4 (Integrazione push Google Calendar) e Fase 5.5 (Backoffice `(app)` prenotazioni). **Dipende da `ADR-006-ciclo-vita-prenotazione.md`** (`arco-09`): i cinque stati della prenotazione e le transizioni ammesse sono una **dipendenza reale**, non un riferimento di stile — vengono riusati qui esattamente come fissati in quell'ADR, senza essere ridecisi né modificati. Questo ADR si limita a impiegarli per chiudere lo schema completo del campo `stato` e il dettaglio dei controlli automatici che lo leggono/scrivono.
+**Arco di decisione**: Fase 5.3 (`arco-11`, `arco-12` di `piano.yaml` — Global "Impostazioni prenotazioni", Collection "Eccezioni giorno", Collection "Prenotazioni") → Fase 5.4 (Integrazione push Google Calendar) e Fase 5.5 (Backoffice `(app)` prenotazioni). **Dipende da `ADR-106-ciclo-vita-prenotazione.md`** (`arco-09`): i cinque stati della prenotazione e le transizioni ammesse sono una **dipendenza reale**, non un riferimento di stile — vengono riusati qui esattamente come fissati in quell'ADR, senza essere ridecisi né modificati. Questo ADR si limita a impiegarli per chiudere lo schema completo del campo `stato` e il dettaglio dei controlli automatici che lo leggono/scrivono.
 
 ## Contesto
 
-`ADR-006-ciclo-vita-prenotazione.md` ha fissato **solo** gli stati e le transizioni della prenotazione, rimandando esplicitamente a questo ADR lo schema dati completo delle tre strutture della Fase 5.3 (Global "Impostazioni prenotazioni", Collection "Eccezioni giorno", Collection "Prenotazioni"), il dettaglio implementativo dei cinque controlli automatici, la policy di conservazione/anonimizzazione GDPR e l'integrazione con Google Calendar. Con gli stati ora chiusi, questo ADR può fissare quello schema senza lasciare aperto nessuno dei punti che condizionano sia la Fase 5.4 (integrazione calendario) sia la Fase 5.5 (backoffice `(app)`).
+`ADR-106-ciclo-vita-prenotazione.md` ha fissato **solo** gli stati e le transizioni della prenotazione, rimandando esplicitamente a questo ADR lo schema dati completo delle tre strutture della Fase 5.3 (Global "Impostazioni prenotazioni", Collection "Eccezioni giorno", Collection "Prenotazioni"), il dettaglio implementativo dei cinque controlli automatici, la policy di conservazione/anonimizzazione GDPR e l'integrazione con Google Calendar. Con gli stati ora chiusi, questo ADR può fissare quello schema senza lasciare aperto nessuno dei punti che condizionano sia la Fase 5.4 (integrazione calendario) sia la Fase 5.5 (backoffice `(app)`).
 
 Lo schema qui documentato integra tre fonti prodotte in momenti distinti, tutte già chiuse:
 
@@ -69,7 +69,7 @@ Evento singolo legato a una data precisa, per costruzione non ricorrente: chiude
 | `consenso-privacy` | `checkbox` | sì | deve risultare `true`; assolve l'obbligo di informativa (art. 13 GDPR) |
 | `note` | `textarea` | no | facoltativo |
 | `servizio` | `select` (pranzo / cena) | sì | **dedotto automaticamente** da `data-ora` via hook nella prenotazione online; resta modificabile dallo staff in inserimento manuale |
-| `stato` | `select` (confermata / in-attesa-conferma / rifiutata / cancellata / no-show) | sì | default `confermata` — **i cinque valori e le transizioni ammesse sono quelli fissati in `ADR-006-ciclo-vita-prenotazione.md`, ereditati qui senza modifiche** |
+| `stato` | `select` (confermata / in-attesa-conferma / rifiutata / cancellata / no-show) | sì | default `confermata` — **i cinque valori e le transizioni ammesse sono quelli fissati in `ADR-106-ciclo-vita-prenotazione.md`, ereditati qui senza modifiche** |
 | `canale` | `select` (sito / telefono / di persona / TheFork) | sì | valori chiusi ma pensati per essere estesi facilmente (una voce = una riga) |
 | `token-cancellazione` | `text` | — | generato da hook alla creazione, non editabile |
 | `annullata-da` | `select` (utente / staff) | condizionale | visibile solo se `stato` è `cancellata` o `rifiutata` |
@@ -79,13 +79,13 @@ Evento singolo legato a una data precisa, per costruzione non ricorrente: chiude
 
 ### 4. Controlli automatici via hook
 
-I cinque controlli automatici sono condizionati dal ciclo di vita fissato in `ADR-006` (che li elenca come eredità, senza specificarli), e sono qui dettagliati:
+I cinque controlli automatici sono condizionati dal ciclo di vita fissato in `ADR-106` (che li elenca come eredità, senza specificarli), e sono qui dettagliati:
 
 1. **Deduzione di `servizio` da `data-ora`**: confronta l'orario di `data-ora` con gli intervalli `orario-inizio`/`orario-fine` dei due `servizi` nel Global "Impostazioni prenotazioni"; applicata alla prenotazione online, non vincolante per l'inserimento manuale dello staff (che può correggerla).
-2. **Verifica soglia gruppo numeroso**: se `soglia-gruppo-numeroso-attiva` è `true` e `numero-persone` supera `soglia-gruppo-numeroso`, lo stato di creazione è `in-attesa-conferma` invece di `confermata` — questa è la sola condizione che determina lo stato di partenza tra i due ammessi dalla transizione "Creazione →" di `ADR-006`.
+2. **Verifica soglia gruppo numeroso**: se `soglia-gruppo-numeroso-attiva` è `true` e `numero-persone` supera `soglia-gruppo-numeroso`, lo stato di creazione è `in-attesa-conferma` invece di `confermata` — questa è la sola condizione che determina lo stato di partenza tra i due ammessi dalla transizione "Creazione →" di `ADR-106`.
 3. **Verifica capienza residua dello slot**: capienza massima del Global meno le prenotazioni già `confermata`/`in-attesa-conferma` sullo stesso slot, tenendo conto degli eventuali `slot-chiusi` provenienti da "Eccezioni giorno" per quella data e servizio.
-4. **Blocco della cancellazione utente oltre il termine**: una richiesta di cancellazione da parte dell'utente (via `token-cancellazione`) è rifiutata se `data-ora` dista meno di un'ora dal momento della richiesta; la cancellazione da parte dello staff non è soggetta a questo vincolo, coerentemente con la transizione "Confermata → Cancellata" di `ADR-006`.
-5. **Sincronizzazione push con Google Calendar**: su create/update/delete della prenotazione, limitata alle sole prenotazioni in stato `confermata` — crea/aggiorna l'evento quando lo stato entra o resta in `confermata`, lo rimuove quando lo stato esce da `confermata` verso `cancellata` o `no-show` (coerente con `ADR-006`, che riserva il push al solo stato `confermata`). L'id dell'evento creato è scritto nel campo `google-calendar-event-id`, usato per le successive operazioni di aggiornamento/rimozione.
+4. **Blocco della cancellazione utente oltre il termine**: una richiesta di cancellazione da parte dell'utente (via `token-cancellazione`) è rifiutata se `data-ora` dista meno di un'ora dal momento della richiesta; la cancellazione da parte dello staff non è soggetta a questo vincolo, coerentemente con la transizione "Confermata → Cancellata" di `ADR-106`.
+5. **Sincronizzazione push con Google Calendar**: su create/update/delete della prenotazione, limitata alle sole prenotazioni in stato `confermata` — crea/aggiorna l'evento quando lo stato entra o resta in `confermata`, lo rimuove quando lo stato esce da `confermata` verso `cancellata` o `no-show` (coerente con `ADR-106`, che riserva il push al solo stato `confermata`). L'id dell'evento creato è scritto nel campo `google-calendar-event-id`, usato per le successive operazioni di aggiornamento/rimozione.
 
 ### 5. Policy GDPR — conservazione e anonimizzazione
 
@@ -105,7 +105,7 @@ I cinque controlli automatici sono condizionati dal ciclo di vita fissato in `AD
 ## Conseguenze
 
 - **Fase 5.4** (Integrazione push Google Calendar) eredita il campo `google-calendar-event-id` e gli hook di sincronizzazione su create/update/delete descritti in §4.5, filtrati alle sole prenotazioni `confermata`.
-- **Fase 5.5** (Backoffice `(app)`) eredita: le azioni disponibili condizionate dallo stato restano quelle di `ADR-006` (non ridiscusse qui); il componente custom per la selezione di `slot-chiusi` (§2); il pulsante "Anonimizza ora" sulla singola prenotazione (§5).
+- **Fase 5.5** (Backoffice `(app)`) eredita: le azioni disponibili condizionate dallo stato restano quelle di `ADR-106` (non ridiscusse qui); il componente custom per la selezione di `slot-chiusi` (§2); il pulsante "Anonimizza ora" sulla singola prenotazione (§5).
 - Il job giornaliero di anonimizzazione richiede l'ambiente Cloud Scheduler già previsto in Fase 3 (`arco-25` di `piano.yaml`).
 - **Punto esplicitamente aperto e non bloccante**: la scelta delle credenziali/service account per la scrittura push su Google Calendar (riuso dell'account già in uso oggi dal sistema attuale, o un nuovo service account dedicato al nuovo backend) è **deferita alla fase di implementazione** — non condiziona né lo schema dati né gli hook fissati in questo ADR.
 - Restano punti aperti per il futuro, non trattati da questo ADR:

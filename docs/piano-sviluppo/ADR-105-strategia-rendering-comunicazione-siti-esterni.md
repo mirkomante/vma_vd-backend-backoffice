@@ -4,18 +4,18 @@
 
 **Stato**: accettata
 **Data**: 2026-09-13
-**Arco di decisione**: Fase 4.3 → Fase 4.4 (`arco-05` di `piano.yaml`): il vincolo Draft Mode/Cookies chiuso in `ADR-004-meccanismo-preview-contenuti.md` esclude lo static export puro (`output: 'export'`) per vietnamonamour.com e villadoree.com e restringe la scelta di compilazione a SSR pieno o ISR selettivo. Fase 4.4 → Fase 6.5 (`arco-19`): lo stesso principio trasversale (CI/CD sempre su Cloud Build, mai GitHub Actions) e lo stesso meccanismo verificato di trigger si applicano identicamente al rebuild del menù SSG. Dipende da `ADR-004-meccanismo-preview-contenuti.md` (vincolo tecnico già chiuso, non riaperto qui).
+**Arco di decisione**: Fase 4.3 → Fase 4.4 (`arco-05` di `piano.yaml`): il vincolo Draft Mode/Cookies chiuso in `ADR-104-meccanismo-preview-contenuti.md` esclude lo static export puro (`output: 'export'`) per vietnamonamour.com e villadoree.com e restringe la scelta di compilazione a SSR pieno o ISR selettivo. Fase 4.4 → Fase 6.5 (`arco-19`): lo stesso principio trasversale (CI/CD sempre su Cloud Build, mai GitHub Actions) e lo stesso meccanismo verificato di trigger si applicano identicamente al rebuild del menù SSG. Dipende da `ADR-104-meccanismo-preview-contenuti.md` (vincolo tecnico già chiuso, non riaperto qui).
 
 ## Contesto
 
 Questo ADR **documenta una decisione già presa** in sessione di analisi (`riepilogo-sessione-bucket-d.md` §2 e §5), non la prende: la scelta finale — ISR on-demand, non SSR pieno, non a intervallo fisso — è chiusa e non va rimessa in discussione qui.
 
-Restava da fissare, dopo che `ADR-004` aveva già chiuso il meccanismo di preview e il vincolo tecnico che esclude lo static export puro: (a) come i due siti CMS e il menù comunicano con `(payload)`/`(app)` per il contenuto pubblicato e per gli aggiornamenti strutturali, e (b) come si tiene aggiornata la cache delle pagine renderizzate una volta esclusa sia la rigenerazione ad ogni richiesta (SSR pieno, sprecato su contenuti che cambiano 1-2 volte l'anno) sia l'export statico puro (incompatibile con le route di preview dinamiche). Fase 4.4 e Fase 6.5 non possono procedere senza questa scelta fissata, perché condiziona sia la modalità di deploy dei due siti su Firebase Hosting sia il meccanismo di rebuild del menù SSG.
+Restava da fissare, dopo che `ADR-104` aveva già chiuso il meccanismo di preview e il vincolo tecnico che esclude lo static export puro: (a) come i due siti CMS e il menù comunicano con `(payload)`/`(app)` per il contenuto pubblicato e per gli aggiornamenti strutturali, e (b) come si tiene aggiornata la cache delle pagine renderizzate una volta esclusa sia la rigenerazione ad ogni richiesta (SSR pieno, sprecato su contenuti che cambiano 1-2 volte l'anno) sia l'export statico puro (incompatibile con le route di preview dinamiche). Fase 4.4 e Fase 6.5 non possono procedere senza questa scelta fissata, perché condiziona sia la modalità di deploy dei due siti su Firebase Hosting sia il meccanismo di rebuild del menù SSG.
 
 ## Decisione
 
 **Comunicazione `(payload)`/`(app)` ↔ siti esterni**:
-- Letture di contenuto pubblicato (vietnamonamour.com, villadoree.com): REST diretto, **nessun token** — è dato già pubblico. Il token resta riservato esclusivamente al meccanismo di preview delle bozze (`ADR-004`, invariato).
+- Letture di contenuto pubblicato (vietnamonamour.com, villadoree.com): REST diretto, **nessun token** — è dato già pubblico. Il token resta riservato esclusivamente al meccanismo di preview delle bozze (`ADR-104`, invariato).
 - Form "Prenota un tavolo": resta una POST pubblica REST verso il sistema prenotazioni, `create` aperto con validazione lato Payload, nessun token — form per visitatori anonimi.
 - Aggiornamento `disponibilita.json`: invariato — Cloud Scheduler → endpoint Payload → riscrittura su GCS.
 - Rebuild del menù SSG per modifiche strutturali: **pulsante manuale "Ricompila il menù pubblico"** nel backoffice `(app)`, non hook automatico `afterChange`. I cambi strutturali del menù sono rari e tipicamente in batch (un manager compone un nuovo menù in un'unica sessione); il trigger manuale evita rebuild ridondanti e dà controllo esplicito su "quando pubblico davvero".
@@ -29,12 +29,12 @@ Restava da fissare, dopo che `ADR-004` aveva già chiuso il meccanismo di previe
 
 **Revalidation dei due siti CMS**: **ISR on-demand**. Un hook `afterChange` su Payload chiama l'endpoint di revalidation (`revalidatePath`/`revalidateTag`) del sito interessato, protetto da secret condiviso.
 
-Motivazione: i contenuti di entrambi i siti cambiano 1-2 volte l'anno, il che rende uno SSR pieno uno spreco di costo e latenza su Firebase Hosting (una funzione invocata ad ogni visita per rileggere un contenuto che non cambia da mesi). ISR serve le pagine dalla CDN di Firebase Hosting per il traffico ordinario e rigenera solo alla pubblicazione effettiva. La modalità on-demand, rispetto a un intervallo fisso, evita finestre di attesa arbitrarie tra pubblicazione e aggiornamento pubblico, e riusa lo stesso pattern "notifica esterna al cambiamento" già adottato per il rebuild del menù. Il vincolo Draft Mode di `ADR-004` resta soddisfatto: le route di preview restano dinamiche (Cloud Functions/Cloud Run dietro Firebase Hosting), le pagine pubbliche restano statiche/cacheate.
+Motivazione: i contenuti di entrambi i siti cambiano 1-2 volte l'anno, il che rende uno SSR pieno uno spreco di costo e latenza su Firebase Hosting (una funzione invocata ad ogni visita per rileggere un contenuto che non cambia da mesi). ISR serve le pagine dalla CDN di Firebase Hosting per il traffico ordinario e rigenera solo alla pubblicazione effettiva. La modalità on-demand, rispetto a un intervallo fisso, evita finestre di attesa arbitrarie tra pubblicazione e aggiornamento pubblico, e riusa lo stesso pattern "notifica esterna al cambiamento" già adottato per il rebuild del menù. Il vincolo Draft Mode di `ADR-104` resta soddisfatto: le route di preview restano dinamiche (Cloud Functions/Cloud Run dietro Firebase Hosting), le pagine pubbliche restano statiche/cacheate.
 
 ## Alternative considerate
 
 - **SSR pieno** — scartato: rigenera ad ogni visita un contenuto che cambia 1-2 volte l'anno, spreco di costo/latenza su Firebase Hosting.
-- **Static export puro (`output: 'export'`)** — già escluso da `ADR-004`: Draft Mode e Cookies richiedono un runtime Node per-request, incompatibile con l'export statico.
+- **Static export puro (`output: 'export'`)** — già escluso da `ADR-104`: Draft Mode e Cookies richiedono un runtime Node per-request, incompatibile con l'export statico.
 - **ISR a intervallo fisso** — scartato rispetto a on-demand: introduce una finestra di attesa arbitraria tra pubblicazione e aggiornamento pubblico, senza motivo dato che esiste già un evento preciso (il salvataggio in Payload) da cui far scattare la rigenerazione.
 - **Hook automatico `afterChange` per il rebuild del menù SSG** — scartato in favore del pulsante manuale: i cambi strutturali sono rari e in batch, un hook automatico produrrebbe rebuild multipli e ridondanti durante una singola sessione di modifica.
 - **Token anche per le letture di contenuto pubblicato** — scartato: il contenuto è già pubblico, un token aggiungerebbe solo overhead di gestione senza alcun beneficio di sicurezza.
