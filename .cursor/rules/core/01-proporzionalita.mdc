@@ -1,0 +1,26 @@
+---
+description: Principio di proporzionalità — soluzioni adeguate al progetto, non over-engineering
+globs:
+alwaysApply: true
+stato: validato
+---
+
+# Principio di proporzionalità
+
+> Piattaforma di gestione per due strutture ricettive boutique (Vietnamonamour, Villa Dorée): siti vetrina pubblici, sistema di prenotazione ristorante e menù digitale, più un backoffice per un piccolo team di manager/admin. A differenza di un tool solo interno, il traffico pubblico è reale — prenotazioni e consultazione menù arrivano da ospiti, non solo dallo staff: un disservizio è visibile ai clienti finali. La scala resta però quella di un ristorante singolo con due servizi al giorno, non una catena o un locale ad alto volume — niente floor plan, integrazioni POS/KDS, AI seating o waitlist automatica, valutate e scartate come non necessarie a questa scala. **Vincolo regolatorio reale**: GDPR sui dati identificativi di prenotazione (nome, email, cellulare, eventuali note su allergie), già affrontato con conservazione a 90 giorni e anonimizzazione automatica (`ADR-007-modello-dati-sistema-prenotazioni.md`, emendato da `ADR-009-global-impostazioni-sistema.md`) — nessun dato sanitario strutturato, nessun pagamento online (deposito con carta valutato e rimandato, non nel perimetro attuale).
+
+
+## Regole vincolanti
+
+- A parità di requisito soddisfatto, **scegliere sempre la soluzione più semplice**, non la più "completa" o "professionale" in astratto.
+- **Non introdurre silenziosamente**, se non esplicitamente richiesto o già deciso nella documentazione di progetto:
+  - audit trail dedicati per eventi ordinari;
+  - differenziazioni di processo tra ambienti dev/staging/prod (es. seed differenziato, guardrail diversi);
+  - livelli di validazione, retry, logging o astrazione non richiesti dal task;
+  - librerie o dipendenze aggiuntive quando lo stack già previsto è sufficiente.
+- Se una proposta tecnica (propria o richiesta dall'umano) introduce complessità **non presente nella documentazione di progetto**, segnalarlo esplicitamente prima di implementarla, spiegando in breve il trade-off. Non implementare silenziosamente "perché è più corretto" o "più a prova di futuro" senza che sia una scelta consapevole.
+- Viceversa: se una richiesta dell'umano introduce una scorciatoia che comprometterebbe un guardrail minimo già deciso come non negoziabile (es. un super-admin di bootstrap, vincoli anti-cancellazione), segnalarlo e chiedere conferma esplicita prima di procedere — proporzionalità non significa eliminare le protezioni minime già stabilite.
+
+## Obiettivo
+
+L'agente deve essere un collaboratore che aiuta a mantenere il progetto snello, non uno che aggiunge robustezza non richiesta per abitudine o per "buona pratica generica".

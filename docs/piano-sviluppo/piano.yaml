@@ -1,0 +1,592 @@
+# ============================================================================
+# piano.yaml — DAG di progetto
+# Backend/backoffice PayloadCMS per vietnamonamour.com, villadoree.com,
+# menu.vietnamonamour.com
+# ============================================================================
+# Costruito secondo 00-come-eseguire-il-piano.md, Passo 0.2, a partire da:
+#   - Passo 0.1 (decisioni di variante), chiuso 2026-09-13
+#   - i dieci riepiloghi di sessione già in project knowledge
+#   - punti-aperti-bucket-a-d.md, riepilogo-sessione-bucket-c.md,
+#     riepilogo-sessione-bucket-d.md
+#
+# Convenzioni:
+#   - ogni nodo in "fasi" è una fase o sottofase; id "fase-N" o "fase-N.M"
+#   - ogni arco in "archi" è tipizzato "output" oppure "decisione"
+#   - un arco "decisione" porta un riferimento "adr" (titolo dell'ADR da
+#     scrivere subito dopo, secondo ADR-template.md); un arco "output" non
+#     lo richiede (adr: null)
+#   - stato di ciascun nodo: "da_fare" | "in_corso" | "fatto" | "bloccata"
+#     (dipendenza esterna non ancora risolta)
+#   - la numerazione fase-4/5/6/7 è assegnata QUI per la prima volta (il
+#     dominio applicativo non ha un ordine fissato dal catalogo) — da
+#     riportare nei file fase-N-<area>.md quando verranno scritti (vedi
+#     tracciamento-processo-adr-dag.md, punto 5)
+#   - questo file va salvato come docs/piano-sviluppo/piano.yaml al Passo 1
+#     (tracciamento-processo-adr-dag.md, punto 4)
+# ============================================================================
+
+meta:
+  progetto: "Backend PayloadCMS — Vietnam Mon Amour & Villa Dorée"
+  data_costruzione: "2026-09-13"
+  varianti_adottate:
+    provider_auth: "google-oauth"
+    provider_email: "resend"
+    database: "postgres"
+    ambiente_cloud: "gcp"
+    package_manager: "pnpm"       # fisso, non variante
+    ui_kit: "shadcn/ui"           # fisso, non variante
+  vincoli_hard:
+    - "Payload >= 3.73.0 — CVE-2026-25544 (SQL injection su adapter Drizzle-based: Postgres/SQLite)"
+    - "defaultLocale del progetto Payload è unico per l'intero progetto ('it') — riguarda solo l'interfaccia admin/app, non la lingua dei contenuti dei siti: quella è determinata dal parametro locale esplicito in ogni richiesta REST (vedi arco-01)"
+  principio_trasversale:
+    - "CI/CD sempre su Cloud Build — GitHub Actions escluso in ogni scenario. GitHub resta solo hosting del codice sorgente (Cloud Source Repositories non disponibile per nuovi clienti dal giugno 2024)."
+
+# ============================================================================
+# NODI
+# ============================================================================
+
+fasi:
+
+  # --------------------------------------------------------------------------
+  # Fase 1-3: ereditate dal catalogo cursor-payload-template, invariate salvo
+  # selezione varianti (Passo 0.1, già chiuso). Nessun nuovo ADR di progetto
+  # per la selezione delle varianti stesse: si eredita l'invariante di
+  # catalogo (vedi 00-come-eseguire-il-piano.md, "ADR di catalogo vs ADR di
+  # progetto").
+  # --------------------------------------------------------------------------
+
+  - id: fase-1
+    nome: "Setup"
+    origine: catalogo
+    file: "fase-1-setup.md"
+    varianti:
+      - "fase-1-db-postgres.md"
+    stato: "da_fare"
+
+  - id: fase-2
+    nome: "Login"
+    origine: catalogo
+    file: "fase-2-login.md"
+    varianti:
+      - "fase-2-auth-google-oauth.md"
+      - "fase-2-email-resend.md"
+    stato: "da_fare"
+    note: >
+      Include lo schema ruoli baseline (adminRole/appRole, ADR-001 di
+      catalogo, ereditato senza deviazione — riepilogo-sessione-bucket-d.md
+      §3) e l'allow-list per dominio Google Workspace già esistente per lo
+      staff (Passo 0.1).
+
+  - id: fase-3
+    nome: "Deploy"
+    origine: catalogo
+    file: "fase-3-deploy.md"
+    varianti:
+      - "fase-3-db-postgres.md"
+      - "fase-3-cloud-gcp.md"
+      - "fase-3-auth-google-oauth.md"
+    stato: "da_fare"
+
+  # --------------------------------------------------------------------------
+  # Fase 4+: dominio applicativo di questo progetto, esplicitamente fuori dal
+  # template (vedi tracciamento-processo-adr-dag.md, punto 5).
+  # --------------------------------------------------------------------------
+
+  - id: fase-4
+    nome: "CMS siti esterni (vietnamonamour.com + villadoree.com)"
+    origine: dominio-applicativo
+    file: "fase-4-cms-siti-esterni.md (da scrivere)"
+    stato: "da_fare"
+    sottofasi:
+      - id: fase-4.1
+        nome: "Scaffolding Collection pages + Global sito (impostazioni-vma, impostazioni-villadoree)"
+        stato: "da_fare"
+        note: "Non dipende dal design. riepilogo-sessione-cms-siti-esterni.md §1/§2/§6"
+      - id: fase-4.2
+        nome: "Plugin di supporto (SEO, Redirects, i18n)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-cms-siti-esterni.md §3"
+      - id: fase-4.3
+        nome: "Meccanismo di preview (Draft Mode + route /api/preview + token firmato)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-preview-e-aree-gestione.md §1"
+      - id: fase-4.4
+        nome: "Strategia di rendering (ISR on-demand) e comunicazione coi siti esterni"
+        stato: "da_fare"
+        note: "riepilogo-sessione-bucket-d.md §2/§5"
+      - id: fase-4.5
+        nome: "Definizione dei Block del layout builder"
+        stato: "bloccata"
+        note: "Dipende dal design dei due siti, non ancora pronto. riepilogo-sessione-cms-siti-esterni.md §6"
+      - id: fase-4.6
+        nome: "Content population + compilazione Redirects (from -> to)"
+        stato: "bloccata"
+        note: "Dipende da fase-4.5: le pagine devono esistere come record prima di poter essere target di un redirect interno. riepilogo-sessione-cms-siti-esterni.md §6/§7, riepilogo-sessione-bucket-c.md §4"
+
+  - id: fase-5
+    nome: "Sistema prenotazioni (vietnamonamour.com)"
+    origine: dominio-applicativo
+    file: "fase-5-sistema-prenotazioni.md (da scrivere)"
+    stato: "da_fare"
+    sottofasi:
+      - id: fase-5.1
+        nome: "Global 'Impostazioni prenotazioni' (servizi, capienza, chiusure annuali)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-sistema-prenotazioni.md §5"
+      - id: fase-5.2
+        nome: "Collection 'Eccezioni giorno' + UI custom slot-chiusi (condivisa col form pubblico)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-sistema-prenotazioni.md §5, riepilogo-sessione-bucket-c.md §1"
+      - id: fase-5.3
+        nome: "Collection 'Prenotazioni' (ciclo di vita a 5 stati, hook di controllo, anonimizzazione GDPR)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-sistema-prenotazioni.md §4/§5, riepilogo-sessione-gdpr-prenotazioni.md"
+      - id: fase-5.4
+        nome: "Integrazione push Google Calendar"
+        stato: "da_fare"
+        note: "Credenziali/service account deferite all'implementazione. Deviazione esplicita rispetto alla scelta iniziale di evitare OAuth. riepilogo-sessione-bucket-c.md §2"
+      - id: fase-5.5
+        nome: "Backoffice (app) prenotazioni — shadcn/ui, mobile-first"
+        stato: "da_fare"
+      - id: fase-5.6
+        nome: "Form pubblico 'Prenota un tavolo' (innesto su fase-4.1)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-cms-siti-esterni.md §4.1"
+
+  - id: fase-6
+    nome: "Menù digitale (menu.vietnamonamour.com)"
+    origine: dominio-applicativo
+    file: "fase-6-menu-digitale.md (da scrivere)"
+    stato: "da_fare"
+    sottofasi:
+      - id: fase-6.1
+        nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia distillato) + permessi manager/admin"
+        stato: "da_fare"
+        note: "riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
+      - id: fase-6.2
+        nome: "Collection Piatti / Vini / Birra + menu_fisso_piatto (campo porzione)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
+      - id: fase-6.3
+        nome: "Collection 'Giorni Speciali'"
+        stato: "da_fare"
+        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.1"
+      - id: fase-6.4
+        nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
+        stato: "da_fare"
+        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4"
+      - id: fase-6.5
+        nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-bucket-d.md §2"
+      - id: fase-6.6
+        nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
+        stato: "da_fare"
+      - id: fase-6.7
+        nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
+        stato: "da_fare"
+        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
+
+  - id: fase-7
+    nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
+    origine: dominio-applicativo
+    file: "fase-7-impostazioni-sistema.md (da scrivere)"
+    stato: "da_fare"
+    note: >
+      Sbloccata: la sessione dedicata alla struttura a tab si è tenuta
+      (riepilogo-sessione-impostazioni-sistema.md) e le decisioni sono
+      state chiuse in ADR-009-global-impostazioni-sistema.md (4 tab,
+      campi per tab, riconciliazione con Global 'Generali' menù e
+      'Impostazioni prenotazioni', permessi granulari). Resta "da_fare"
+      come le altre fasi di dominio: il file fase-7-impostazioni-sistema.md
+      è da scrivere, ma nessuna sottofase è più bloccata da una decisione
+      mancante.
+    sottofasi:
+      - id: fase-7.1
+        nome: "Struttura a tab e definizione campo-per-campo"
+        stato: "da_fare"
+        note: "Decisa in ADR-009 §1/§5 — questa sottofase implementa, non decide più."
+      - id: fase-7.2
+        nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
+        stato: "da_fare"
+        note: "Riconciliazione decisa in ADR-009 §2 (amendment ad ADR-007 §1 incluso)."
+      - id: fase-7.3
+        nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
+        stato: "da_fare"
+        note: "Campi decisi in ADR-009 §1 (tab 'Integrazioni future' e 'Comunicazioni')."
+      - id: fase-7.4
+        nome: "Permessi granulari campo-per-campo (orari a manager, resto ad admin/super-admin)"
+        stato: "da_fare"
+        note: "Tabella permessi decisa in ADR-009 §5."
+
+# ============================================================================
+# ARCHI
+# ============================================================================
+
+archi:
+
+  # --- Output "di catalogo", ereditati, nessun ADR di progetto -------------
+
+  - id: arco-00a
+    da: fase-1
+    a: fase-2
+    tipo: output
+    descrizione: "Ambiente locale pronto (env, Postgres locale) — arco standard di catalogo."
+    adr: null
+
+  - id: arco-00b
+    da: fase-2
+    a: fase-3
+    tipo: output
+    descrizione: "Schema ruoli/login funzionante (adminRole/appRole) da promuovere in produzione."
+    adr: null
+
+  - id: arco-00c
+    da: fase-1
+    a: fase-3
+    tipo: output
+    descrizione: "Vincolo Payload >= 3.73.0 (CVE-2026-25544) fissato in setup si applica anche all'immagine di deploy in produzione."
+    adr: null
+
+  # --- Decisioni e output di progetto — dominio CMS -------------------------
+
+  - id: arco-01
+    da: fase-1
+    a: fase-4.1
+    tipo: decisione
+    descrizione: >
+      Localizzazione nativa Payload abilitata a livello di intero progetto
+      (locales it/en, defaultLocale 'it', fallbackLocale bidirezionale
+      it<->en) e campi testuali marcati localized:true FIN DA SUBITO, prima
+      che fase-4.1 inserisca contenuti reali nelle Collection pages — evita
+      il problema di migrazione dati di Payload sui campi già popolati.
+      defaultLocale riguarda solo l'interfaccia (admin/app in italiano); la
+      lingua di ciascun sito è determinata dal parametro locale esplicito
+      obbligatorio in ogni richiesta REST (it per VMA, en per Villa Dorée
+      in release 1).
+    adr: "ADR — Plugin di supporto CMS (SEO, Redirects, i18n)"
+    fonte: "riepilogo-sessione-cms-siti-esterni.md §3.3, punti-aperti-bucket-a-d.md (Bucket A)"
+
+  - id: arco-02
+    da: fase-4.1
+    a: fase-4.2
+    tipo: decisione
+    descrizione: >
+      Collection 'pages' + Global sito scaffoldati in fase-4.1 sono
+      precondizione per il plugin SEO (meta per pagina) e per il plugin
+      Redirects (campo 'to' come relationship a pages).
+    adr: "ADR — Plugin di supporto CMS (SEO, Redirects, i18n)"
+    fonte: "riepilogo-sessione-cms-siti-esterni.md §3.1/§3.2"
+
+  - id: arco-03
+    da: fase-4.1
+    a: fase-4.5
+    tipo: decisione
+    descrizione: >
+      Modello contenuti scelto — Collection 'pages' flat (nessuna
+      gerarchia nested-docs) con campo layout a Blocks, invece di
+      rich-text libero monolitico — condiziona la forma della definizione
+      dei Block quando arriverà il design: ogni Block corrisponde 1:1 a un
+      componente visivo.
+    adr: "ADR — Modello contenuti dei siti esterni"
+    fonte: "riepilogo-sessione-cms-siti-esterni.md §1/§2/§6"
+
+  - id: arco-04
+    da: fase-4.1
+    a: fase-4.3
+    tipo: decisione
+    descrizione: >
+      Meccanismo di preview scelto — Draft Preview (route /api/preview con
+      token firmato + Draft Mode Next.js), non Live Preview né replica
+      interna — condiziona lo sviluppo della route sui due siti esterni e
+      la UI in (payload) che genera il link firmato.
+    adr: "ADR — Meccanismo di preview dei contenuti"
+    fonte: "riepilogo-sessione-preview-e-aree-gestione.md §1/§5"
+
+  - id: arco-05
+    da: fase-4.3
+    a: fase-4.4
+    tipo: decisione
+    descrizione: >
+      Draft Mode e Cookies (necessari al meccanismo di preview) non sono
+      supportati da Next.js con static export puro (output:'export') —
+      richiedono un runtime Node per-request. Questo vincolo esclude lo
+      static export come modalità di compilazione per i due siti CMS e
+      restringe la scelta a SSR pieno o ISR selettivo, risolta in
+      fase-4.4 con ISR on-demand.
+    adr: "ADR — Strategia di rendering e comunicazione con i siti esterni"
+    fonte: "riepilogo-sessione-preview-e-aree-gestione.md §1 (aggiornamento 2026-09-12), riepilogo-sessione-bucket-d.md §5"
+
+  - id: arco-06
+    da: fase-3
+    a: fase-4.4
+    tipo: output
+    descrizione: "Ambiente GCP pronto (Firebase Hosting, Cloud Functions) necessario per servire ISR on-demand."
+    adr: null
+
+  - id: arco-13
+    da: fase-4.1
+    a: fase-5.6
+    tipo: output
+    descrizione: >
+      Pagina 'Prenota un tavolo' (Collection pages di fase-4.1) ospita il
+      modulo di prenotazione, che comunica via REST pubblico con Global e
+      Collection già decisi in fase-5 — nessuna nuova decisione
+      architetturale, solo il punto di innesto frontend.
+    adr: null
+    fonte: "riepilogo-sessione-cms-siti-esterni.md §4.1"
+
+  # --- Decisioni e output di progetto — divisione area di gestione ---------
+
+  - id: arco-07
+    da: fase-2
+    a: fase-5
+    tipo: decisione
+    descrizione: >
+      Gestione prenotazioni assegnata al backoffice (app) dedicato
+      (shadcn/ui, mobile-first), non all'Admin nativo di Payload —
+      condiziona lo schema permessi granulari e l'eventuale admin.hidden
+      condizionale per ruolo in fase-2, e l'intero sviluppo di fase-5.
+    adr: "ADR — Divisione dell'area di gestione"
+    fonte: "riepilogo-sessione-preview-e-aree-gestione.md §2/§5, riepilogo-sessione-bucket-d.md §1/§3/§4"
+
+  - id: arco-08
+    da: fase-2
+    a: fase-6
+    tipo: decisione
+    descrizione: >
+      Gestione menù digitale assegnata al backoffice (app) dedicato,
+      stessa motivazione e stesso arco di decisione di arco-07 —
+      condiziona fase-2 (permessi) e l'intero sviluppo di fase-6.
+    adr: "ADR — Divisione dell'area di gestione"
+    fonte: "riepilogo-sessione-preview-e-aree-gestione.md §2/§5, riepilogo-sessione-bucket-d.md §1/§3/§4"
+
+  # --- Decisioni e output di progetto — dominio prenotazioni ----------------
+
+  - id: arco-09
+    da: fase-5.3
+    a: fase-5.5
+    tipo: decisione
+    descrizione: >
+      I cinque stati della prenotazione (confermata/in-attesa-conferma/
+      rifiutata/cancellata/no-show) e le transizioni ammesse condizionano
+      la logica applicativa del backoffice (app) — quali azioni sono
+      disponibili in quale stato — e i controlli automatici via hook.
+    adr: "ADR — Ciclo di vita della prenotazione"
+    fonte: "riepilogo-sessione-sistema-prenotazioni.md §4/§7"
+
+  - id: arco-10
+    da: fase-5.1
+    a: fase-5.3
+    tipo: output
+    descrizione: "Global 'Impostazioni prenotazioni' (orari servizi, durata slot, capienza) fornisce i dati su cui la Collection Prenotazioni calcola servizio dedotto e capienza residua."
+    adr: null
+
+  - id: arco-11
+    da: fase-5.3
+    a: fase-5.4
+    tipo: decisione
+    descrizione: >
+      Scrittura push diretta su Google Calendar (non feed iCal
+      sottoscrivibile) — deviazione esplicita rispetto alla scelta
+      iniziale di evitare un'integrazione OAuth, motivata dal ritardo di
+      refresh non controllabile dei feed iCal. Condiziona il campo
+      google-calendar-event-id sulla Collection Prenotazioni e gli hook di
+      sincronizzazione, e rimanda a fase di implementazione la scelta
+      delle credenziali/service account.
+    adr: "ADR — Modello dati del sistema di prenotazioni"
+    fonte: "riepilogo-sessione-sistema-prenotazioni.md §3/§7, riepilogo-sessione-bucket-c.md §2"
+
+  - id: arco-12
+    da: fase-5.3
+    a: fase-5.5
+    tipo: decisione
+    descrizione: >
+      Policy di conservazione (90 giorni da data-ora) e meccanismo di
+      anonimizzazione (job schedulato giornaliero + azione manuale
+      'Anonimizza ora') condizionano sia il job Cloud Scheduler sia il
+      pulsante dedicato nel backoffice (app).
+    adr: "ADR — Modello dati del sistema di prenotazioni"
+    fonte: "riepilogo-sessione-gdpr-prenotazioni.md §2"
+
+  - id: arco-25
+    da: fase-3
+    a: fase-5.3
+    tipo: output
+    descrizione: "Ambiente GCP pronto (Cloud Scheduler) necessario per il job giornaliero di anonimizzazione GDPR."
+    adr: null
+
+  # --- Decisioni e output di progetto — dominio menù digitale ---------------
+
+  - id: arco-14
+    da: fase-6.1
+    a: fase-6.2
+    tipo: decisione
+    descrizione: >
+      Tassonomie (Categoria piatto, Allergeni, geografia vini a 4 livelli
+      Paese/Regione/Denominazione/Classificazione, Tipologia distillato) e
+      la classificazione manager/admin campo-per-campo condizionano lo
+      schema delle Collection Piatti/Vini/Birra e i permessi granulari da
+      applicare in Payload.
+    adr: "ADR — Modello dati del menù digitale"
+    fonte: "riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
+
+  - id: arco-15
+    da: fase-6.2
+    a: fase-6.6
+    tipo: decisione
+    descrizione: >
+      Il piatto come record unico (nessuna entità 'variante') con il
+      campo porzione sulla relazione menu_fisso_piatto, di competenza
+      manager — condiziona la UI del backoffice (app) per la
+      composizione dei menu fissi.
+    adr: "ADR — Modello dati del menù digitale"
+    fonte: "riepilogo-sessione-varianti-porzione-piatto.md §2/§4, riepilogo-sessione-criterio-manager-admin-menu.md §2"
+
+  - id: arco-16
+    da: fase-6.2
+    a: fase-6.4
+    tipo: output
+    descrizione: "Schema Piatti/Vini/Birra (incl. stato disponibilità) fornisce i campi che il job di reset e la generazione di disponibilita.json devono aggiornare/leggere."
+    adr: null
+
+  - id: arco-17
+    da: fase-3
+    a: fase-6.4
+    tipo: output
+    descrizione: "Ambiente GCP pronto (Cloud Scheduler, GCS) necessario per il reset automatico di 'terminato' e per la pubblicazione di disponibilita.json."
+    adr: null
+
+  - id: arco-18
+    da: fase-6.4
+    a: fase-6.5
+    tipo: output
+    descrizione: >
+      Due meccanismi complementari già distinti in progetto: Cloud
+      Scheduler per la disponibilità runtime (fase-6.4) e Cloud Build per
+      il rebuild strutturale del sito SSG (fase-6.5) — stesso pattern
+      'trigger pianificato/manuale -> aggiornamento -> rebuild', ambiti
+      diversi, non in conflitto.
+    adr: null
+
+  - id: arco-19
+    da: fase-4.4
+    a: fase-6.5
+    tipo: decisione
+    descrizione: >
+      Principio trasversale confermato (CI/CD sempre su Cloud Build, mai
+      GitHub Actions) e meccanismo verificato (trigger manuale Cloud Build
+      -> immagine builder firebase-tools -> firebase deploy) si applicano
+      identicamente al rebuild del menù SSG, invocato da un pulsante nel
+      backoffice (app) invece che da un hook afterChange automatico.
+    adr: "ADR — Strategia di rendering e comunicazione con i siti esterni"
+    fonte: "riepilogo-sessione-bucket-d.md §2"
+
+  - id: arco-20
+    da: fase-6.4
+    a: fase-6.7
+    tipo: output
+    descrizione: "disponibilita.json su GCS alimenta via polling client-side (~5 min) il banner di stato unificato del frontend pubblico SSG."
+    adr: null
+
+  # --- Decisioni e output di progetto — impostazioni-sistema (bloccata) -----
+
+  - id: arco-21
+    da: fase-5.1
+    a: fase-7.2
+    tipo: decisione
+    descrizione: >
+      Global 'Impostazioni prenotazioni' era una delle due fonti duplicate
+      di orari/chiusure (l'altra è il Global 'Generali' del menù,
+      fase-6.1). Riconciliazione decisa: fonte unica su impostazioni-sistema
+      (fase-7), con amendment esplicito ad ADR-007 §1 (rimozione dei tre
+      campi orario/chiusura da 'Impostazioni prenotazioni').
+    adr: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
+    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-009-global-impostazioni-sistema.md §2/§3"
+
+  - id: arco-22
+    da: fase-6.1
+    a: fase-7.2
+    tipo: decisione
+    descrizione: >
+      Stessa duplicazione dal lato menù (Global 'Generali') — stessa
+      riconciliazione su impostazioni-sistema, decisa in ADR-009 §2/§4
+      (campi orario/chiusure spostati, isSpecialPeriod deprecato).
+    adr: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
+    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-009-global-impostazioni-sistema.md §2/§4"
+
+  - id: arco-23
+    da: fase-2
+    a: fase-7.4
+    tipo: output
+    descrizione: >
+      Il meccanismo nativo di Payload per l'access control su Global e
+      singolo campo (già convenzionato e già usato per le Collection del
+      menù) copre nativamente anche impostazioni-sistema — nessuna nuova
+      funzionalità custom necessaria, solo applicazione del meccanismo già
+      esistente quando la struttura a tab sarà definita.
+    adr: null
+    fonte: "riepilogo-sessione-bucket-d.md §4"
+
+  - id: arco-24
+    da: fase-5.4
+    a: fase-7.3
+    tipo: output
+    descrizione: "L'id del calendario Google Calendar usato dall'integrazione push (fase-5.4) è un riferimento non sensibile che troverà casa in impostazioni-sistema."
+    adr: null
+    fonte: "riepilogo-sessione-bucket-c.md §3"
+
+# ============================================================================
+# RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
+# ============================================================================
+# Chiave "adr_da_scrivere" mantenuta per compatibilità di struttura. Tutti e
+# nove gli ADR sono stati scritti (2026-09-13) e promossi da "proposta" ad
+# "accettata" (2026-09-13, decisione esplicita dell'umano — vedi
+# tracciamento-processo-adr-dag.md), coerentemente con la regola di
+# governance di 00-come-eseguire-il-piano.md/processo-v2-operativo.md
+# ("nessun artefatto passa da bozza/proposta a validato/accettata senza il
+# passaggio esplicito dell'umano"). "stato" qui sotto ora riflette lo stesso
+# valore del campo "Stato" nel corpo di ciascun file ADR-NNN-*.md.
+
+adr_da_scrivere:
+  - titolo: "ADR — Modello contenuti dei siti esterni"
+    archi: ["arco-03"]
+    stato: "accettata"
+    file: "ADR-001-modello-contenuti-siti-esterni.md"
+  - titolo: "ADR — Divisione dell'area di gestione"
+    archi: ["arco-07", "arco-08"]
+    stato: "accettata"
+    file: "ADR-002-divisione-area-di-gestione.md"
+  - titolo: "ADR — Plugin di supporto CMS (SEO, Redirects, i18n)"
+    archi: ["arco-01", "arco-02"]
+    stato: "accettata"
+    file: "ADR-003-plugin-supporto-cms.md"
+  - titolo: "ADR — Meccanismo di preview dei contenuti"
+    archi: ["arco-04"]
+    stato: "accettata"
+    file: "ADR-004-meccanismo-preview-contenuti.md"
+  - titolo: "ADR — Strategia di rendering e comunicazione con i siti esterni"
+    archi: ["arco-05", "arco-19"]
+    stato: "accettata"
+    file: "ADR-005-strategia-rendering-comunicazione-siti-esterni.md"
+  - titolo: "ADR — Ciclo di vita della prenotazione"
+    archi: ["arco-09"]
+    stato: "accettata"
+    file: "ADR-006-ciclo-vita-prenotazione.md"
+  - titolo: "ADR — Modello dati del sistema di prenotazioni"
+    archi: ["arco-11", "arco-12"]
+    stato: "accettata"
+    file: "ADR-007-modello-dati-sistema-prenotazioni.md"
+  - titolo: "ADR — Modello dati del menù digitale"
+    archi: ["arco-14", "arco-15"]
+    stato: "accettata"
+    file: "ADR-008-modello-dati-menu-digitale.md"
+  - titolo: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
+    archi: ["arco-21", "arco-22"]
+    stato: "accettata"
+    file: "ADR-009-global-impostazioni-sistema.md"
+    nota: >
+      Sbloccato dalla sessione dedicata alla struttura a tab
+      (riepilogo-sessione-impostazioni-sistema.md); include amendment
+      esplicito ad ADR-007 §1 (rimozione di tre campi orario/chiusura,
+      ora unificati su impostazioni-sistema).
