@@ -125,16 +125,22 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.7 — Verifica finale di chiusura fase
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: verificare che la fase sia effettivamente conclusa e pronta per la Fase 2 — non è il punto in cui si fa "il commit della fase": ogni sottofase precedente ha già il proprio commit locale (vedi `00-come-eseguire-il-piano.md`, policy commit per sottofase). Questo è un controllo di chiusura, non un'operazione Git a sé.
 
 **Checklist**:
-- [ ] Verificare che ogni sottofase da 1.1 a 1.6 abbia effettivamente un commit locale corrispondente — se qualcuna ne è priva, farlo ora prima di considerare la fase chiusa.
-- [ ] Verificare che `.gitignore` escluda correttamente `.env`, `node_modules`, cartelle di build.
-- [ ] Verificare che nessun segreto (secret Payload, credenziali database) sia finito per errore in un file tracciato da Git, in nessuno dei commit della fase.
-- [ ] Se manca ancora il push dei commit di questa fase, ricordarlo esplicitamente all'umano: il push resta un'azione manuale da GitHub Desktop, l'agente non lo esegue.
-- [ ] Aggiornare lo stato a ✅ per tutte le sottofasi completate, sia in questo file sia in `00-piano-generale.md`.
+- [x] Verificare che ogni sottofase da 1.1 a 1.6 abbia effettivamente un commit locale corrispondente — se qualcuna ne è priva, farlo ora prima di considerare la fase chiusa.
+- [x] Verificare che `.gitignore` escluda correttamente `.env`, `node_modules`, cartelle di build.
+- [x] Verificare che nessun segreto (secret Payload, credenziali database) sia finito per errore in un file tracciato da Git, in nessuno dei commit della fase.
+- [x] Se manca ancora il push dei commit di questa fase, ricordarlo esplicitamente all'umano: il push resta un'azione manuale da GitHub Desktop, l'agente non lo esegue.
+- [x] Aggiornare lo stato a ✅ per tutte le sottofasi completate, sia in questo file sia in `00-piano-generale.md`.
+
+**Eseguito (2026-09-15)**:
+- Commit 1.1–1.6 tutti presenti su `main`: `b29be1f` (1.1), `2b25526` (1.2), `6cac56a` (1.3), `e3dae8d` (1.4), `b20ed3f` (1.5), `ba49241` (1.6). Nessun commit da creare a posteriori.
+- `.gitignore` esclude `.env` / `.env.*` (con eccezione `!.env.example`), `/node_modules`, `/.next/`, `/out/`, `/build`, `/dist`. `git check-ignore` conferma; `.env` risulta `!!` (ignorato, non tracciato).
+- Nessun segreto nei file tracciati né nella history della fase: `.env` non è mai stato committato; `.env.example` ha `PAYLOAD_SECRET=` vuoto e `DATABASE_URL` solo con placeholder; `payload.config.ts` legge da `process.env`; `git grep` non trova connection string reali né pattern di chiavi private.
+- I commit 1.1–1.6 risultano **già su `origin/main`** (HEAD = origin/main prima di questo commit di chiusura). Il push di *questo* commit 1.7 resta un'azione manuale da GitHub Desktop.
 
 ---
 
@@ -142,7 +148,18 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 Al termine della Fase 1, prima di iniziare `fase-2-login.md`:
 - [ ] Confermare con l'umano che l'ambiente di sviluppo è stabile (nessun errore bloccante al riavvio).
-- [ ] Segnalare esplicitamente qualunque deviazione da questo piano avvenuta durante l'esecuzione (es. una versione di libreria diversa da quella prevista, un passaggio saltato, un cambio di package manager), così da tenerne conto in Fase 2.
+- [x] Segnalare esplicitamente qualunque deviazione da questo piano avvenuta durante l'esecuzione (es. una versione di libreria diversa da quella prevista, un passaggio saltato, un cambio di package manager), così da tenerne conto in Fase 2.
+
+**Deviazioni e versioni effettive da tenere d'occhio in Fase 2** (non bloccano la chiusura):
+- **Stack effettivo**: Next.js 16.3.5, React 19.2.8, Payload 3.89.0, Tailwind CSS v4 (`@tailwindcss/postcss`), pnpm 11.18.0. Il piano non vincolava versioni esatte oltre Payload `>= 3.73.0` (soddisfatto). Tailwind v4 è il percorso standard attuale con Next.js 16, non un setup v3.
+- **Installazione Payload (1.2)**: percorso manuale (documentazione ufficiale + file route del template blank), non wizard `create-payload-app`.
+- **PostgreSQL (1.3)**: 18.3 locale già presente (database `vma_vd_dev`, utente `vma_vd_app`); non installato in sessione. Migrazioni `payload migrate` **non generate**: `push: true` in sviluppo, da committare prima della Fase 3.
+- **shadcn/ui** non installato in Fase 1 (rimandato esplicitamente in 1.4).
+- **Collection `users` di default del CMS** creata da Payload al primo `push` — non è la collection di dominio della Fase 2.
+- **Warning non bloccanti ancora aperti**: email adapter assente (Resend è Fase 2); race ESM `POST /api/graphql` 500 su `graphql@17` vista in 1.3 e non riprodotta nel passaggio browser 1.6; esperimento Turbopack `turbopackServerFastRefresh`.
+- **ADR di progetto** rinumerati da `ADR-001`…`ADR-009` a `ADR-101`…`ADR-109` per evitare collisione con le ADR di catalogo (rename puro, decisioni invariate).
+
+Al momento della verifica 1.7 il `pnpm dev` già in ascolto su `http://localhost:3000` rispondeva 200 su `/`, `/app` e `/admin` (nessun riavvio a freddo in questa sottofase). La conferma di stabilità al riavvio resta all'umano, prima di aprire Fase 2.
 
 ## Incoerenze note
 

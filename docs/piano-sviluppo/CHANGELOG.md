@@ -10,8 +10,13 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+## [0.1.0] — 2026-09-15
+
+Chiusura Fase 1 (setup progetto).
+
 ### Added
 
+- Fase 1.7: verifica di chiusura Fase 1. Commit 1.1–1.6 presenti su `main` (`b29be1f`…`ba49241`); `.gitignore` esclude `.env`, `node_modules` e cartelle di build; nessuno dei commit della fase contiene `PAYLOAD_SECRET` valorizzato o credenziali database (`.env` mai tracciato; `.env.example` solo placeholder). I commit 1.1–1.6 erano già su `origin/main`; il push di questo commit di chiusura resta manuale.
 - Fase 1.6: avvio locale verificato end-to-end su `http://localhost:3000`. `/` (vetrina), `/app` (placeholder Tailwind) e `/admin` (pannello Payload, redirect a `/admin/create-first-user`) raggiungibili. Warning non bloccanti annotati: email adapter assente (Fase 2), esperimento Turbopack `turbopackServerFastRefresh`, race ESM GraphQL già vista in 1.3 e non riprodotta in questo passaggio.
 - Fase 1.5: verificata la struttura a tre route group (`app/(payload)/`, `app/(app)/`, `app/(frontend)/`) in un solo progetto Next.js+Payload (un `package.json`, nessun CORS). README di progetto sostituito al template `create-next-app` con mappa URL ↔ cartelle (`/` vetrina, `/app` Area App, `/admin` Payload) e avvio `pnpm`; commenti di disambiguazione cartella `app/` vs path URL `/app`.
 - Fase 1.4: Tailwind CSS v4 (`tailwindcss`, `@tailwindcss/postcss`, `postcss.config.mjs`); `@import` / `@source` in `app/globals.css` per `app/(app)/**` e futura cartella `components/**`, senza scan di `(payload)`. Route group `(app)` con layout dedicato e placeholder `/app` con classi Tailwind di prova; nessuna libreria UI aggiuntiva (shadcn/ui in fasi successive).
@@ -32,6 +37,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
+- Fase 1.7: `git log` conferma i sei commit 1.1–1.6; `git check-ignore` su `.env`, `node_modules`, `.next`, `out`, `build`, `dist`; `git ls-files` / `git log -- .env` vuoti (`.env` mai tracciato); `git grep` su connection string reali e pattern di chiavi private: nessun match nei file tracciati. `HEAD` coincideva con `origin/main` prima di questo commit. Controllo spot sul `pnpm dev` già in ascolto: `GET /`, `/app`, `/admin` → 200 (non è un riavvio a freddo).
 - Fase 1.6: `pnpm dev` già in ascolto; browser su `http://localhost:3000`: `GET /` 200 (vetrina Next.js), `GET /app` 200 con `bg-emerald-600` applicato (testo bianco, `border-radius` 8px sul badge), `GET /admin` 200 → redirect a `/admin/create-first-user` (Welcome / Create first user). `GET /api/users/me` 200 durante il redirect Admin. GraphQL 500 della 1.3 non riprodotto in questo passaggio.
 - Fase 1.5: verifica su filesystem (non runtime — quella è 1.6): presenti `app/(payload)/`, `app/(app)/app/page.tsx`, `app/(frontend)/page.tsx`; unico `package.json` in root; `rg` su CORS/`SameSite`/`Bearer` solo in documentazione (divieto esplicito), non in codice. README non cita più `app/page.tsx`.
 - Fase 1.4: `pnpm run build` OK (route statica `/app` presente); `pnpm exec tsc --noEmit` OK dopo tipizzazione layout `(app)`.
