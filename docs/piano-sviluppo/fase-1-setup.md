@@ -99,16 +99,27 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.6 — Primo avvio locale e verifica di raggiungibilità
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: avere una conferma concreta, non solo teorica, che l'installazione funziona end-to-end prima di chiudere la fase.
 
 **Checklist**:
-- [ ] Avviare il progetto in locale.
-- [ ] Verificare che `/admin` sia raggiungibile e mostri il pannello Payload (anche se privo di collection utili — potrebbe chiedere di creare il primo utente Payload di default, cosa attesa a questo stadio e non ancora la collection `users` finale della Fase 2).
-- [ ] Verificare che una pagina placeholder del route group App (path `/app`) sia raggiungibile e mostri lo styling Tailwind applicato in 1.4.
-- [ ] Verificare che la home page pubblica (`/`) sia raggiungibile.
-- [ ] Annotare eventuali warning in console che non bloccano l'avvio, per non perderli, ma non necessariamente risolverli ora se non richiesto per procedere (es. è normale un warning sul provider email non ancora configurato: verrà affrontato in Fase 2).
+- [x] Avviare il progetto in locale.
+- [x] Verificare che `/admin` sia raggiungibile e mostri il pannello Payload (anche se privo di collection utili — potrebbe chiedere di creare il primo utente Payload di default, cosa attesa a questo stadio e non ancora la collection `users` finale della Fase 2).
+- [x] Verificare che una pagina placeholder del route group App (path `/app`) sia raggiungibile e mostri lo styling Tailwind applicato in 1.4.
+- [x] Verificare che la home page pubblica (`/`) sia raggiungibile.
+- [x] Annotare eventuali warning in console che non bloccano l'avvio, per non perderli, ma non necessariamente risolverli ora se non richiesto per procedere (es. è normale un warning sul provider email non ancora configurato: verrà affrontato in Fase 2).
+
+**Eseguito (2026-09-15)**: `pnpm dev` già in ascolto su `http://localhost:3000` (Next.js 16.3.5 / Turbopack, PID Node sulla 3000). Verifica browser:
+- `/` → 200, vetrina `create-next-app` ("To get started, edit the page.tsx file.")
+- `/app` → 200, placeholder Area App con badge `bg-emerald-600` applicato (testo bianco, `border-radius` 8px)
+- `/admin` → 200, reindirizza a `/admin/create-first-user` (Welcome / Create first user) — atteso, nessun utente Payload ancora; non è la collection `users` di Fase 2
+
+**Warning non bloccanti** (non risolti qui):
+- `WARN: No email adapter provided. Email will be written to console.` — atteso; Resend è Fase 2.
+- Esperimento Turbopack `turbopackServerFastRefresh` in avvio — warning Next.js, non blocca le tre route.
+- `POST /api/graphql` 500 per race ESM su `graphql@17` (`ERR_INTERNAL_ASSERTION`) — già visto in 1.3 nella stessa sessione `pnpm dev`; **non riprodotto** nel passaggio browser 1.6 (`/`, `/app`, `/admin` e `/api/users/me` tutti 200). Non blocca l'Admin REST; GraphQL non è usato in Fase 1.
+- Riavvio automatico precedente perché `.next/dev` era stato cancellato a caldo: il server si è ripreso da solo (`Ready`).
 
 ---
 
