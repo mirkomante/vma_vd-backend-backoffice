@@ -12,7 +12,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.1 — Inizializzazione progetto Next.js
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: avere un progetto Next.js funzionante (App Router), pronto ad accogliere PayloadCMS.
 
