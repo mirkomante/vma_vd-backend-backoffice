@@ -1,3 +1,4 @@
+// Home pubblica: URL `/` (route group `(frontend)`). Non è `app/page.tsx` né l'Area App `/app`.
 import Image from 'next/image'
 
 import styles from './page.module.css'

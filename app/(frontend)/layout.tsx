@@ -1,3 +1,4 @@
+// Route group vetrina pubblica: URL `/`. Non è l'Area App (URL `/app`, cartella `app/(app)/`).
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 

@@ -1,3 +1,4 @@
+// Route group Area App: URL `/app` (vedi `app/(app)/app/`). Distinto dalla cartella App Router `app/`.
 import type { Metadata } from 'next'
 import type React from 'react'
 import { Geist, Geist_Mono } from 'next/font/google'

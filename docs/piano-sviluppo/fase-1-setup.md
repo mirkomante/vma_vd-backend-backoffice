@@ -83,15 +83,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.5 — Verifica struttura cartelle secondo l'architettura decisa
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: confermare che la struttura fisica del progetto rispecchi l'architettura di `01-architettura.mdc` prima di costruire qualunque funzionalità sopra.
 
 **Checklist**:
-- [ ] Verificare che dentro `/app` esistano, come cartelle separate e riconoscibili, tutti e tre i route group previsti da `01-architettura.mdc`: `(payload)` (auto-generato, non toccato), `(app)` custom dell'Area App, e `(frontend)` per il sito pubblico.
-- [ ] Verificare che non esista alcuna configurazione CORS, alcun secondo progetto, alcun deploy separato: un solo `package.json`, un solo processo di build.
-- [ ] Verificare che la cartella `/app` di progetto non venga confusa, in nessun file di configurazione o commento, con il path URL `/app` dell'Area App (sono due cose distinte).
-- [ ] Documentare in breve (commento o nota nel `README.md` del progetto) dove si trova cosa, per chi arriverà dopo.
+- [x] Verificare che dentro `/app` esistano, come cartelle separate e riconoscibili, tutti e tre i route group previsti da `01-architettura.mdc`: `(payload)` (auto-generato, non toccato), `(app)` custom dell'Area App, e `(frontend)` per il sito pubblico.
+- [x] Verificare che non esista alcuna configurazione CORS, alcun secondo progetto, alcun deploy separato: un solo `package.json`, un solo processo di build.
+- [x] Verificare che la cartella `/app` di progetto non venga confusa, in nessun file di configurazione o commento, con il path URL `/app` dell'Area App (sono due cose distinte).
+- [x] Documentare in breve (commento o nota nel `README.md` del progetto) dove si trova cosa, per chi arriverà dopo.
+
+**Eseguito (2026-09-15)**: i tre route group sono già presenti da 1.2/1.4 (`app/(payload)/`, `app/(app)/`, `app/(frontend)/`). Un solo `package.json`, un solo `next.config.ts` con `withPayload`, nessun CORS/`SameSite=None`/Bearer nel codice. Il README di `create-next-app` citava ancora `app/page.tsx` (inesistente): sostituito con mappa URL ↔ cartelle e avvio `pnpm`. Commenti di disambiguazione su `app/(frontend)/layout.tsx`, `app/(frontend)/page.tsx`, `app/(app)/layout.tsx` (già presente su `app/(app)/app/page.tsx`). `fase-1-db-postgres.md` allineato alla 1.3 già chiusa (checkbox + nota eseguito).
 
 ---
 

@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VMA / Villa Dorée — backend e backoffice
 
-## Getting Started
+Un solo progetto Next.js (App Router) con PayloadCMS v3. Stessa origine, stesso server, stesso build: nessuna configurazione CORS, nessun secondo deploy, nessun token Bearer per parlare col CMS.
 
-First, run the development server:
+Package manager: **pnpm**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Dove si trova cosa
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La cartella di progetto `app/` è l'App Router di Next.js. **Non** coincide con il path URL `/app` (Area App).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| URL pubblica | Cosa | Cartella (route group) |
+|---|---|---|
+| `/` | Sito vetrina, pubblico | `app/(frontend)/` |
+| `/app` | Area App (utenti autenticati) | `app/(app)/` → pagina in `app/(app)/app/page.tsx` |
+| `/admin` | Area Admin Payload | `app/(payload)/` (auto-generato, non modificare a mano) |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Il layout in `app/layout.tsx` è pass-through (solo `children`): ogni route group gestisce il proprio `html`/`body`.
 
-## Learn More
+Altri file utili:
 
-To learn more about Next.js, take a look at the following resources:
+- `payload.config.ts` — configurazione Payload (adapter PostgreSQL su `DATABASE_URL`)
+- `docs/piano-sviluppo/` — piano di sviluppo e stato delle fasi
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Avvio locale
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Copiare `.env.example` in `.env` e valorizzare `PAYLOAD_SECRET` e `DATABASE_URL` (PostgreSQL locale, non produzione).
+2. `pnpm install`
+3. `pnpm dev`
+4. Aprire [http://localhost:3000](http://localhost:3000) (vetrina), [http://localhost:3000/app](http://localhost:3000/app) (Area App), [http://localhost:3000/admin](http://localhost:3000/admin) (Admin).
