@@ -67,15 +67,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.4 — Installazione e configurazione Tailwind CSS
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: Tailwind disponibile per lo styling del route group App (l'Area Admin ha già il proprio styling nativo da Payload e non va toccata).
 
 **Checklist**:
-- [ ] Installare Tailwind seguendo il percorso di integrazione standard per Next.js App Router.
-- [ ] Configurare i percorsi di scan (`content`) in modo da includere il route group App e i componenti condivisi, **escludendo** la necessità di toccare i file auto-generati di `(payload)`.
-- [ ] Verificare che una classe Tailwind di prova, applicata in una pagina placeholder del route group App, produca l'effetto atteso in locale.
-- [ ] Non introdurre altre librerie di componenti UI in questo passo, salvo diversa conferma (coerente con `01-stile-codice.mdc`).
+- [x] Installare Tailwind seguendo il percorso di integrazione standard per Next.js App Router.
+- [x] Configurare i percorsi di scan (`content`) in modo da includere il route group App e i componenti condivisi, **escludendo** la necessità di toccare i file auto-generati di `(payload)`.
+- [x] Verificare che una classe Tailwind di prova, applicata in una pagina placeholder del route group App, produca l'effetto atteso in locale.
+- [x] Non introdurre altre librerie di componenti UI in questo passo, salvo diversa conferma (coerente con `01-stile-codice.mdc`).
+
+**Eseguito (2026-09-15)**: Tailwind CSS v4 con `@tailwindcss/postcss` e `postcss.config.mjs`. Direttive `@import` / `@source` in `app/globals.css` limitate a `app/(app)/**` e `components/**` (cartella condivisa ancora assente). Route group `(app)` con layout html/body dedicato e placeholder `/app` (`app/(app)/app/page.tsx`) con classi di prova (`bg-emerald-600`, ecc.). `(payload)` non importa `globals.css`; shadcn/ui rimandato a fasi successive.
 
 ---
 

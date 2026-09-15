@@ -1,3 +1,9 @@
+@import 'tailwindcss';
+
+/* Scan limitato ad Area App e componenti condivisi — non (payload) (admin nativo Payload). */
+@source './(app)/**/*.{js,ts,jsx,tsx,mdx}';
+@source '../components/**/*.{js,ts,jsx,tsx,mdx}';
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

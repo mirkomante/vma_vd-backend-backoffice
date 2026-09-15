@@ -1,0 +1,32 @@
+import type { Metadata } from 'next'
+import type React from 'react'
+import { Geist, Geist_Mono } from 'next/font/google'
+
+import '../globals.css'
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+})
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+})
+
+export const metadata: Metadata = {
+  title: 'Area App',
+  description: 'Backoffice operativo — placeholder Fase 1',
+}
+
+type AppAreaLayoutProps = {
+  children: React.ReactNode
+}
+
+export default function AppAreaLayout({ children }: AppAreaLayoutProps) {
+  return (
+    <html lang="it" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>{children}</body>
+    </html>
+  )
+}

@@ -25,7 +25,7 @@
 
 | Fase | Descrizione | Stato | File di dettaglio |
 |---|---|---|---|
-| Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | 🔶 in corso (1.1 ✅, 1.2 ✅, 1.3 ✅) | `fase-1-setup.md` (+ file di variante database) |
+| Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | 🔶 in corso (1.1 ✅, 1.2 ✅, 1.3 ✅, 1.4 ✅) | `fase-1-setup.md` (+ file di variante database) |
 | Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔲 da fare | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔲 da fare | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
@@ -75,5 +75,5 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 1, sottofase 1.4 — vedi `fase-1-setup.md`.
+- **Prossimo passo**: Fase 1, sottofase 1.5 — vedi `fase-1-setup.md`.
 - Aggiornare questo indice e il file di fase corrispondente a ogni sottofase completata.
