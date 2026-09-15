@@ -76,5 +76,5 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 ## Prossimi passi
 
 - **Prossimo passo**: Fase 2, sottofase 2.1 — collection `users`, vedi `fase-2-login.md`. In pratica, dopo 2.1 conviene eseguire 2.8 (seed super-admin) prima del SSO.
-- **Prima di aprire la 2.1**: confermare che l'ambiente di sviluppo è stabile (nessun errore bloccante al riavvio) — checkbox ancora aperta in `fase-1-setup.md` § Note di chiusura fase.
+- Fase 1 chiusa: ambiente locale confermato stabile (App e Admin si avviano); push di `f98a812` su `origin/main`.
 - Aggiornare questo indice e il file di fase corrispondente a ogni sottofase completata.

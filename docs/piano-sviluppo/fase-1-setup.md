@@ -140,14 +140,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 - Commit 1.1–1.6 tutti presenti su `main`: `b29be1f` (1.1), `2b25526` (1.2), `6cac56a` (1.3), `e3dae8d` (1.4), `b20ed3f` (1.5), `ba49241` (1.6). Nessun commit da creare a posteriori.
 - `.gitignore` esclude `.env` / `.env.*` (con eccezione `!.env.example`), `/node_modules`, `/.next/`, `/out/`, `/build`, `/dist`. `git check-ignore` conferma; `.env` risulta `!!` (ignorato, non tracciato).
 - Nessun segreto nei file tracciati né nella history della fase: `.env` non è mai stato committato; `.env.example` ha `PAYLOAD_SECRET=` vuoto e `DATABASE_URL` solo con placeholder; `payload.config.ts` legge da `process.env`; `git grep` non trova connection string reali né pattern di chiavi private.
-- I commit 1.1–1.6 risultano **già su `origin/main`** (HEAD = origin/main prima di questo commit di chiusura). Il push di *questo* commit 1.7 resta un'azione manuale da GitHub Desktop.
+- I commit 1.1–1.6 risultano **già su `origin/main`** (HEAD = origin/main prima di questo commit di chiusura). Il push del commit 1.7 (`f98a812`) è stato fatto dall'umano e verificato: `main` e `origin/main` coincidono.
 
 ---
 
 ## Note di chiusura fase
 
 Al termine della Fase 1, prima di iniziare `fase-2-login.md`:
-- [ ] Confermare con l'umano che l'ambiente di sviluppo è stabile (nessun errore bloccante al riavvio).
+- [x] Confermare con l'umano che l'ambiente di sviluppo è stabile (nessun errore bloccante al riavvio).
 - [x] Segnalare esplicitamente qualunque deviazione da questo piano avvenuta durante l'esecuzione (es. una versione di libreria diversa da quella prevista, un passaggio saltato, un cambio di package manager), così da tenerne conto in Fase 2.
 
 **Deviazioni e versioni effettive da tenere d'occhio in Fase 2** (non bloccano la chiusura):
@@ -159,7 +159,7 @@ Al termine della Fase 1, prima di iniziare `fase-2-login.md`:
 - **Warning non bloccanti ancora aperti**: email adapter assente (Resend è Fase 2); race ESM `POST /api/graphql` 500 su `graphql@17` vista in 1.3 e non riprodotta nel passaggio browser 1.6; esperimento Turbopack `turbopackServerFastRefresh`.
 - **ADR di progetto** rinumerati da `ADR-001`…`ADR-009` a `ADR-101`…`ADR-109` per evitare collisione con le ADR di catalogo (rename puro, decisioni invariate).
 
-Al momento della verifica 1.7 il `pnpm dev` già in ascolto su `http://localhost:3000` rispondeva 200 su `/`, `/app` e `/admin` (nessun riavvio a freddo in questa sottofase). La conferma di stabilità al riavvio resta all'umano, prima di aprire Fase 2.
+Conferma umana (2026-09-15): Area App e Area Admin si avviano senza errori bloccanti. Nessun utente Payload creato (atteso a questo stadio; la collection `users` di dominio è Fase 2). Controllo spot successivo: `GET /`, `/app`, `/admin` → 200.
 
 ## Incoerenze note
 
