@@ -45,7 +45,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.3 — Configurazione connessione al database (locale, sviluppo)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: Payload configurato per usare, in locale durante lo sviluppo, il database scelto per questo progetto (variante decisa al Passo 0, prima di iniziare la Fase 1 — vedi `00-come-eseguire-il-piano.md`).
 
@@ -54,12 +54,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 > - PostgreSQL → `fase-1-db-postgres.md` *(quando disponibile nel catalogo)*
 
 **Checklist di chiusura sottofase (valida per qualunque variante — verificare dopo aver seguito il file di variante)**:
-- [ ] La connessione al database locale è verificata (Payload si avvia senza errori di connessione).
-- [ ] La stringa/i parametri di connessione sono in una variabile d'ambiente (`.env`), mai hardcoded.
-- [ ] `.gitignore` esclude `.env`.
-- [ ] `.env.example` riflette la variabile d'ambiente richiesta, con un commento che indica che il valore è per sviluppo locale — non l'ambiente di produzione, che si affronta in Fase 3.
+- [x] La connessione al database locale è verificata (Payload si avvia senza errori di connessione).
+- [x] La stringa/i parametri di connessione sono in una variabile d'ambiente (`.env`), mai hardcoded.
+- [x] `.gitignore` esclude `.env`.
+- [x] `.env.example` riflette la variabile d'ambiente richiesta, con un commento che indica che il valore è per sviluppo locale — non l'ambiente di produzione, che si affronta in Fase 3.
 
 **Nota**: l'ambiente cloud del database (creazione istanza di produzione, credenziali, connection string di produzione) non entra in questa sottofase — verrà affrontato in Fase 3.
+
+**Eseguito (2026-09-15)**: PostgreSQL 18.3 locale già in ascolto su `127.0.0.1:5432`; database `vma_vd_dev` e utente applicativo `vma_vd_app` già presenti. Adapter `postgresAdapter` su `DATABASE_URL` e `push` solo fuori da production già configurati in 1.2; Payload `3.89.0` soddisfa il requisito `>= 3.73.0`. All'avvio Payload ha creato le tabelle di sistema (incluso il `users` di default del CMS — la collection di dominio resta Fase 2). `/admin` reindirizza a `/admin/create-first-user` (atteso a questo stadio). Migrazioni `payload migrate` non generate qui: `push: true` è ammesso in sviluppo, le migrazioni si committano prima della Fase 3. Warning non bloccante: `POST /api/graphql` 500 per race ESM su `graphql@17` — non è un errore di connessione.
 
 ---
 
