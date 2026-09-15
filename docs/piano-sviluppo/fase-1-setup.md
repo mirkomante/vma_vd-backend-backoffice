@@ -28,7 +28,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 1.2 — Installazione e configurazione PayloadCMS v3
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: PayloadCMS v3 installato **dentro** il progetto Next.js esistente (non come progetto separato), secondo l'architettura a origine unica.
 

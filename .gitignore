@@ -1,6 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dipendenze
 /node_modules
 /.pnp
 .pnp.*
@@ -10,32 +8,68 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# Build e output
 /.next/
 /out/
-
-# production
 /build
+/dist
+*.tsbuildinfo
 
-# misc
-.DS_Store
+# Test e coverage
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Variabili d'ambiente e segreti (mai committare valori reali)
+.env
+.env.*
+!.env.example
 *.pem
+credentials.json
+secrets.json
 
-# debug
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux / editor
+*~
+*.swp
+*.swo
+.idea/
+
+# Log e debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
+# Hosting / tooling locale
 .vercel
+.turbo
 
-# typescript
-*.tsbuildinfo
+# TypeScript (generato da Next.js in locale)
 next-env.d.ts
