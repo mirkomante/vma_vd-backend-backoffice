@@ -1,16 +1,22 @@
 import { ValidationError } from 'payload'
 
-import type { AdminRole, LoginMethod, UserAccessFields } from './roles'
+import {
+  loginMethodIncludesLocal,
+  type AdminRole,
+  type LoginMethod,
+  type UserAccessFields,
+  type UserWriteData,
+} from './roles'
 
-type LocalPasswordContext = {
+type LocalCredentialsContext = {
   adminRole: AdminRole
   loginMethod: LoginMethod
 }
 
-function resolveLocalPasswordContext(
-  data: Partial<UserAccessFields> | undefined,
+function resolveLocalCredentialsContext(
+  data: UserWriteData | undefined,
   originalDoc: UserAccessFields | undefined,
-): LocalPasswordContext {
+): LocalCredentialsContext {
   return {
     adminRole: (data?.adminRole ?? originalDoc?.adminRole ?? 'none') as AdminRole,
     loginMethod: (data?.loginMethod ?? originalDoc?.loginMethod ?? 'sso') as LoginMethod,
@@ -18,19 +24,53 @@ function resolveLocalPasswordContext(
 }
 
 /**
- * Guardrail parziale (completato in 2.8): solo super-admin tra gli Admin può avere password locale;
- * loginMethod `sso` esclude qualsiasi password impostata.
+ * True se il payload di create darebbe a un Admin di pannello (non super-admin)
+ * un metodo locale o una password. Usato dall'access control: senza `data`
+ * (es. pulsante Crea in lista) non si può giudicare, quindi resta false.
+ */
+export function grantsLocalCredentialsToPanelAdmin(data?: UserWriteData): boolean {
+  if (!data || data.adminRole !== 'admin') {
+    return false
+  }
+
+  if (loginMethodIncludesLocal(data.loginMethod)) {
+    return true
+  }
+
+  return Boolean(data.password)
+}
+
+/**
+ * Solo i super-admin, tra chi ha un ruolo Admin, possono avere credenziali locali.
+ * `loginMethod: sso` esclude qualsiasi password. Gli utenti solo App (adminRole none)
+ * restano liberi di usare il login locale (ADR-003).
  */
 export function assertLocalPasswordAllowed(args: {
-  data?: Partial<UserAccessFields>
+  data?: UserWriteData
   originalDoc?: UserAccessFields
 }): void {
-  const password = (args.data as { password?: string } | undefined)?.password
+  const { adminRole, loginMethod } = resolveLocalCredentialsContext(
+    args.data,
+    args.originalDoc,
+  )
+  const password = args.data?.password
+
+  if (adminRole === 'admin' && loginMethodIncludesLocal(loginMethod)) {
+    throw new ValidationError({
+      collection: 'users',
+      errors: [
+        {
+          message:
+            'Gli utenti Admin (non super-admin) non possono avere credenziali locali; usare SSO.',
+          path: 'loginMethod',
+        },
+      ],
+    })
+  }
+
   if (!password) {
     return
   }
-
-  const { adminRole, loginMethod } = resolveLocalPasswordContext(args.data, args.originalDoc)
 
   if (loginMethod === 'sso') {
     throw new ValidationError({

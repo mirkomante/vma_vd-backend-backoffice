@@ -10,7 +10,8 @@
     "lint": "eslint",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
-    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types"
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "seed:super-admin": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-super-admin.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.89.0",

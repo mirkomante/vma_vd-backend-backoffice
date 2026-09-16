@@ -49,7 +49,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 - Campo array (non `hasMany` testuale) con sotto-campi: l'identificatore rilevante per il provider scelto (es. `domain` per Google Workspace) e flag per area (`allowAdmin`, `allowApp`).
 - Hook `beforeValidate`/`beforeChange`: trim, lowercase, validazione formato, prevenzione duplicati.
 - Access control in scrittura ristretto al solo ruolo `super-admin` (campo `adminRole`).
-- Non implementare ancora il guardrail "non salvabile se vuoto": è trattato in 2.8 insieme agli altri guardrail, per tenerli tutti in un unico posto.
+- Implementare qui il guardrail "non salvabile se vuoto" (hook sulla Global): era in checklist 2.8, ma è stato rimandato esplicitamente (scelta b, 2026-09-16) perché questa Global non esisteva ancora. Non è coperto da 2.8; va fatto insieme allo schema, non lasciato implicito.
+
 
 **Nota**: per il dettaglio specifico di cosa significa "identità autorizzata" per il provider scelto (dominio Workspace, tenant Azure AD, ecc.), vedi il file di variante auth corrispondente.
 
@@ -144,7 +145,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 2.8 — Script di seed super-admin + guardrail
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: primo super-admin creato in modo ripetibile, e i due vincoli minimi di sicurezza attivi.
 
@@ -154,6 +155,10 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 - Implementare il vincolo: non è possibile salvare l'allow-list identità (Global, 2.2) se risulterebbe vuota.
 - Implementare il vincolo: nessun altro utente Admin può essere creato con credenziali locali oltre al/ai super-admin di bootstrap — a livello di access control sulla collection.
 - Non implementare elementi non richiesti dalla specifica del progetto (es. procedura "vetro da rompere" fuori applicazione, audit log dedicato per interventi di emergenza, differenziazione di processo tra ambienti per il seed) — coerente con `core/01-proporzionalita.mdc`.
+
+**Eseguito (2026-09-16)**: script `scripts/seed-super-admin.ts` (`pnpm seed:super-admin`) con email/password da `SEED_SUPERADMIN_EMAIL` / `SEED_SUPERADMIN_PASSWORD`; idempotente sulla stessa email se già super-admin locale attivo, rifiuta se l'email esiste con un altro profilo. Guardrail ultimo super-admin locale in `lib/auth/lastLocalSuperAdmin.ts` (delete, `active = false`, e anche declassamento ruolo / passaggio a solo-SSO, altrimenti aggirabile). Access control `canCreateUser` + hook `assertLocalPasswordAllowed` completato: Admin di pannello senza credenziali locali; App e super-admin restano ammessi. Nessun ramo seed diverso per ambiente.
+
+**Pendente — vincolo allow-list vuota (scelta b)**: la Global Settings (2.2) non esiste ancora, sequenza pratica 2.8 subito dopo 2.1. Non è stato creato uno schema minimo anticipato. Il vincolo "non salvabile se vuota" va implementato in 2.2 insieme allo schema; non è implicito né parzialmente coperto.
 
 ---
 

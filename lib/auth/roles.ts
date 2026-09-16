@@ -24,12 +24,27 @@ export type AdminRole = (typeof ADMIN_ROLE_OPTIONS)[number]['value']
 export type AppRole = (typeof APP_ROLE_OPTIONS)[number]['value']
 export type LoginMethod = (typeof LOGIN_METHOD_OPTIONS)[number]['value']
 
+/** Metodi che ammettono una password locale (emergenza super-admin o login App). */
+export const LOCAL_LOGIN_METHODS: readonly LoginMethod[] = ['local', 'sso-and-local']
+
+export function loginMethodIncludesLocal(
+  method: LoginMethod | null | undefined,
+): boolean {
+  return method === 'local' || method === 'sso-and-local'
+}
+
 /** Sezioni dell'Area App il cui enforcement permessi verrà collegato in Fase 5/6 */
 export type AppSection = 'menu' | 'reservations'
 
 export type UserAccessFields = {
+  id?: number | string
   active?: boolean | null
   adminRole?: AdminRole | null
   appRole?: AppRole | null
   loginMethod?: LoginMethod | null
+}
+
+/** Payload in scrittura (create/update), include l'eventuale password in chiaro. */
+export type UserWriteData = Partial<UserAccessFields> & {
+  password?: string | null
 }

@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { ValidationError } from 'payload'
 
+import { assertNotLastLocalSuperAdmin } from '@/lib/auth/lastLocalSuperAdmin'
 import { assertLocalPasswordAllowed } from '@/lib/auth/localPasswordGuard'
 import { validatePasswordPolicy } from '@/lib/auth/passwordPolicy'
 import {
@@ -8,8 +9,14 @@ import {
   APP_ROLE_OPTIONS,
   LOGIN_METHOD_OPTIONS,
   type UserAccessFields,
+  type UserWriteData,
 } from '@/lib/auth/roles'
-import { canAccessAdminPanel, isStaffAdminRequest, isSuperAdminRequest } from '@/lib/auth/userAccess'
+import {
+  canAccessAdminPanel,
+  canCreateUser,
+  isStaffAdminRequest,
+  isSuperAdminRequest,
+} from '@/lib/auth/userAccess'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -20,7 +27,7 @@ export const Users: CollectionConfig = {
   },
   access: {
     admin: ({ req }) => canAccessAdminPanel(req.user as UserAccessFields),
-    create: ({ req }) => isStaffAdminRequest(req),
+    create: ({ req, data }) => canCreateUser({ req, data }),
     read: ({ req }) => isStaffAdminRequest(req),
     update: ({ req }) => isStaffAdminRequest(req),
     delete: ({ req }) => isSuperAdminRequest(req),
@@ -70,13 +77,25 @@ export const Users: CollectionConfig = {
   ],
   hooks: {
     beforeValidate: [
-      ({ data, originalDoc }) => {
+      async ({ data, originalDoc, operation, req }) => {
+        const writeData = data as UserWriteData | undefined
+        const current = originalDoc as UserAccessFields | undefined
+
         assertLocalPasswordAllowed({
-          data: data as UserAccessFields | undefined,
-          originalDoc: originalDoc as UserAccessFields | undefined,
+          data: writeData,
+          originalDoc: current,
         })
 
-        const password = (data as { password?: string } | undefined)?.password
+        if (operation === 'update' && current) {
+          await assertNotLastLocalSuperAdmin({
+            req,
+            operation: 'update',
+            data: writeData,
+            originalDoc: current,
+          })
+        }
+
+        const password = writeData?.password
         if (!password) {
           return data
         }
@@ -90,6 +109,15 @@ export const Users: CollectionConfig = {
         }
 
         return data
+      },
+    ],
+    beforeDelete: [
+      async ({ req, id }) => {
+        await assertNotLastLocalSuperAdmin({
+          req,
+          operation: 'delete',
+          id,
+        })
       },
     ],
   },
