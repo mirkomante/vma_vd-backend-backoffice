@@ -26,7 +26,7 @@
 | Fase | Descrizione | Stato | File di dettaglio |
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
-| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1 ✅, 2.8 ✅) | `fase-2-login.md` (+ file di variante auth ed email) |
+| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1 ✅, 2.2 ✅, 2.8 ✅) | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔲 da fare | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
@@ -75,7 +75,8 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 2, sottofase 2.2 (Global Settings — allow-list), incluso il vincolo anti-lista-vuota rimandato esplicitamente da 2.8.
-- Fase 2.8 chiusa in codice (seed + ultimo super-admin locale + no credenziali locali per Admin di pannello). Vincolo allow-list vuota **pendente**, da fare in 2.2 — non è stato creato uno schema Settings anticipato.
+- **Prossimo passo**: Fase 2, sottofase 2.3 (setup credenziali Google OAuth — passaggio esterno, vedi `fase-2-auth-google-oauth.md`).
+- Fase 2.2 chiusa: Global `settings` (Identità autorizzate) con allow-list domini e guardrail anti-lista-vuota (debito di 2.8, scelta b).
+- Fase 2.8 chiusa in codice (seed + ultimo super-admin locale + no credenziali locali per Admin di pannello).
 - Fase 1 chiusa: ambiente locale confermato stabile (App e Admin si avviano); push di `f98a812` su `origin/main`.
 - Aggiornare questo indice e il file di fase corrispondente a ogni sottofase completata.

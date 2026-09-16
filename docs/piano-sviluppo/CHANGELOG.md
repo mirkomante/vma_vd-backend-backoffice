@@ -12,18 +12,22 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 2.2: Global Payload `settings` (`globals/Settings.ts`, etichetta Admin «Identità autorizzate») con array `allowedDomains` (`domain`, `allowAdmin`, `allowApp`). Hook `beforeValidate` in `lib/auth/allowedDomains.ts`: trim, lowercase, formato FQDN, prevenzione duplicati, rifiuto se la lista risultasse vuota (vincolo rimandato da 2.8). Scrittura solo super-admin.
 - Fase 2.8: script `pnpm seed:super-admin` (`scripts/seed-super-admin.ts`) che crea un super-admin locale da `SEED_SUPERADMIN_EMAIL` / `SEED_SUPERADMIN_PASSWORD` (nessuna credenziale in codice); idempotente se l'email è già un super-admin locale attivo. Guardrail applicativo: non si può eliminare, disattivare, declassare o passare a solo-SSO l'ultimo super-admin locale. Access control in create: un Admin di pannello non può nascere con metodo locale o password; hook `assertLocalPasswordAllowed` completato anche per `loginMethod` locale su Admin.
 - Fase 2.1: collection Payload `users` con auth nativa, ruoli `adminRole`/`appRole`, `loginMethod`, `active`; accesso pannello Admin per admin/super-admin; policy password di catalogo e guardrail password locale parziale; stub `canAccessSection` per sezioni Area App future.
 
 ### Changed
 
-- Fase 2.8, chiusura sessione — vincolo allow-list vuota. **Ufficiale**: 2.8 chiedeva anche «non è possibile salvare l'allow-list se risulterebbe vuota». **Percepito** (dichiarato in chat prima dell'implementazione): scelta **(b)** rimandare quel singolo vincolo, senza creare ora uno schema minimo della Global Settings (2.2 non ancora eseguita, sequenza pratica 2.8 dopo 2.1). **Osservato**: nessun Global Settings, nessun hook anti-lista-vuota; il debito è annotato in 2.2 e in 2.8 come pendente, da implementare insieme allo schema.
+- Fase 2.2, nome e accesso. **Ufficiale**: Global «Settings o equivalente»; scrittura solo super-admin; lettura non specificata. **Percepito**: slug `settings` (catalogo); etichetta Admin «Identità autorizzate» per non sovrapporsi ai Global `impostazioni-*` di dominio; lettura per staff Admin, come la collection `users`. **Osservato**: così in `globals/Settings.ts`.
+- Fase 2.2, flag per area. **Ufficiale**: sotto-campi `allowAdmin`/`allowApp`. **Percepito**: default `false` (fail-closed: un dominio in lista non abilita un’area finché il flag non è esplicito). **Osservato**: checkbox con `defaultValue: false`.
+- Fase 2.8, chiusura sessione — vincolo allow-list vuota. **Ufficiale**: 2.8 chiedeva anche «non è possibile salvare l'allow-list se risulterebbe vuota». **Percepito** (dichiarato in chat prima dell'implementazione): scelta **(b)** rimandare quel singolo vincolo, senza creare ora uno schema minimo della Global Settings (2.2 non ancora eseguita, sequenza pratica 2.8 dopo 2.1). **Osservato**: implementato in 2.2 insieme allo schema (`prepareAllowedDomains`); 2.8 non ha più debito pendente su questo punto.
 - Fase 2.8, ultimo super-admin. **Ufficiale**: bloccare eliminazione e `active = false`. **Percepito**: estendere a declassamento `adminRole` e passaggio a `loginMethod: sso`, altrimenti il vincolo è aggirabile senza cancellare il record. **Osservato**: `assertNotLastLocalSuperAdmin` rifiuta tutte e quattro le operazioni se non resta un altro super-admin locale attivo.
 - Note di chiusura Fase 1: conferma umana che Area App e Area Admin si avviano senza errori bloccanti; nessun utente Payload creato (atteso). Push del commit 1.7 (`f98a812`) verificato su `origin/main`.
 
 ### Tests
 
-- Fase 2.8: `pnpm exec tsc --noEmit` e `pnpm lint` senza errori. `pnpm seed:super-admin` senza credenziali in env → messaggio `SEED_SUPERADMIN_EMAIL mancante o vuota` (exit 1 dopo correzione del top-level await: `payload run` altrimenti non attendeva lo script e usciva 0). Conferma umana: test runtime ok (seed + accesso Admin). Guardrail allow-list vuota non testabile: Global assente per scelta (b).
+- Fase 2.2: `pnpm run generate:types`, `pnpm exec tsc --noEmit` e `pnpm lint` senza errori. Runtime Admin (salvataggio lista vuota / dominio non valido / duplicato / permesso admin vs super-admin) da verificare con l’umano.
+- Fase 2.8: `pnpm exec tsc --noEmit` e `pnpm lint` senza errori. `pnpm seed:super-admin` senza credenziali in env → messaggio `SEED_SUPERADMIN_EMAIL mancante o vuota` (exit 1 dopo correzione del top-level await: `payload run` altrimenti non attendeva lo script e usciva 0). Conferma umana: test runtime ok (seed + accesso Admin). Guardrail allow-list vuota non testabile in 2.8: Global assente per scelta (b); coperto in 2.2.
 - Fase 2.1: `pnpm run generate:types`, `pnpm exec tsc --noEmit` e `pnpm lint` senza errori (warning stub risolto).
 - Conferma umana + controllo spot: `GET /`, `/app`, `/admin` → 200 su `http://localhost:3000`. `git status` allineato a `origin/main` sul commit 1.7.
 

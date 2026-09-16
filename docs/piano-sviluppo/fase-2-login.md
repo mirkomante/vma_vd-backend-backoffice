@@ -40,7 +40,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 2.2 — Global "Settings" — allow-list identità autorizzate
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: allow-list delle identità autorizzate (domini, tenant, o equivalente a seconda del provider SSO scelto), gestita da pannello Admin, pronta a differenziare i permessi per area.
 
@@ -53,6 +53,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 
 **Nota**: per il dettaglio specifico di cosa significa "identità autorizzata" per il provider scelto (dominio Workspace, tenant Azure AD, ecc.), vedi il file di variante auth corrispondente.
+
+**Eseguito (2026-09-16)**: Global `settings` in `globals/Settings.ts` (etichetta Admin «Identità autorizzate», per non confondersi con i Global `impostazioni-*` di dominio). Array `allowedDomains` con `domain` + `allowAdmin`/`allowApp` (default false). Hook `beforeValidate` in `lib/auth/allowedDomains.ts`: trim, lowercase, FQDN, duplicati, rifiuto lista vuota (anche `[]` esplicito; un update che omette il campo riusa il valore già salvato). Scrittura solo `super-admin`; lettura staff Admin. La verifica del claim `hd` in login SSO resta 2.4/2.5; il login locale (2.6) non deve usare questa lista.
 
 ---
 
@@ -158,7 +160,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 **Eseguito (2026-09-16)**: script `scripts/seed-super-admin.ts` (`pnpm seed:super-admin`) con email/password da `SEED_SUPERADMIN_EMAIL` / `SEED_SUPERADMIN_PASSWORD`; idempotente sulla stessa email se già super-admin locale attivo, rifiuta se l'email esiste con un altro profilo. Guardrail ultimo super-admin locale in `lib/auth/lastLocalSuperAdmin.ts` (delete, `active = false`, e anche declassamento ruolo / passaggio a solo-SSO, altrimenti aggirabile). Access control `canCreateUser` + hook `assertLocalPasswordAllowed` completato: Admin di pannello senza credenziali locali; App e super-admin restano ammessi. Nessun ramo seed diverso per ambiente.
 
-**Pendente — vincolo allow-list vuota (scelta b)**: la Global Settings (2.2) non esiste ancora, sequenza pratica 2.8 subito dopo 2.1. Non è stato creato uno schema minimo anticipato. Il vincolo "non salvabile se vuota" va implementato in 2.2 insieme allo schema; non è implicito né parzialmente coperto.
+**Chiuso in 2.2 — vincolo allow-list vuota (scelta b)**: implementato insieme allo schema del Global `settings`, non in questo passo.
 
 ---
 

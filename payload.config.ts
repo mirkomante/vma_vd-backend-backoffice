@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Users } from './collections/Users'
+import { Settings } from './globals/Settings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -27,5 +28,6 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users],
+  globals: [Settings],
   sharp,
 })

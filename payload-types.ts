@@ -85,8 +85,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    settings: Setting;
+  };
+  globalsSelect: {
+    settings: SettingsSelect<false> | SettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -290,6 +294,43 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Domini Google Workspace ammessi al login SSO, con flag separati per Area Admin e Area App. Almeno un dominio è obbligatorio.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings".
+ */
+export interface Setting {
+  id: number;
+  /**
+   * Un dominio per riga (es. vietnamonamour.com). I flag scelgono in quale area quel dominio è ammesso.
+   */
+  allowedDomains: {
+    domain: string;
+    allowAdmin?: boolean | null;
+    allowApp?: boolean | null;
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings_select".
+ */
+export interface SettingsSelect<T extends boolean = true> {
+  allowedDomains?:
+    | T
+    | {
+        domain?: T;
+        allowAdmin?: T;
+        allowApp?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

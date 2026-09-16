@@ -29,3 +29,5 @@ Altri file utili:
 4. Aprire [http://localhost:3000](http://localhost:3000) (vetrina), [http://localhost:3000/app](http://localhost:3000/app) (Area App), [http://localhost:3000/admin](http://localhost:3000/admin) (Admin).
 
 Per autenticarsi in Admin prima del login SSO: valorizzare `SEED_SUPERADMIN_EMAIL` e `SEED_SUPERADMIN_PASSWORD` in `.env`, poi `pnpm seed:super-admin`. Lo script è idempotente sulla stessa email. Finché la route di emergenza (sottofase 2.7) non esiste, il form nativo di `/admin/login` accetta quelle credenziali.
+
+I domini Google Workspace ammessi al login SSO si gestiscono in Admin → **Identità autorizzate** (Global `settings`). Serve almeno un dominio: il salvataggio con lista vuota è bloccato. Solo un super-admin può modificare l’elenco.
