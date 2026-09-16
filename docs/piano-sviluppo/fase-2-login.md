@@ -18,7 +18,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 ## 2.1 — Collection `users`
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: unica collection `users` con lo schema definitivo dei ruoli, pronta ad accogliere sia utenti SSO sia utenti locali.
 
@@ -33,6 +33,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 - Non implementare in questa sottofase l'enforcement dei permessi per singola sezione App: è rimandato per natura allo sviluppo di quelle sezioni. Qui basta che lo schema di `appRole` sia corretto.
 - Scrivere comunque, fin da ora, lo stub di una funzione centralizzata di controllo permessi per sezione (es. `canAccessSection`), anche se nessuna sezione la richiama ancora — la collocazione fisica definitiva del file resta un punto aperto, da decidere solo quando si svilupperà la prima sezione App che la userà davvero, non ora.
 - Access control della collection: la creazione di utenti con credenziali locali va ristretta secondo la regola generale (vedi 2.8 più sotto e `auth/01-autenticazione-invarianti.mdc`) — non ogni utente può avere una password.
+
+**Eseguito (2026-09-16)**: collection `users` in `collections/Users.ts` registrata in `payload.config.ts` con auth nativa Payload, campi `adminRole`/`appRole`/`loginMethod`/`active`, accesso Admin tramite `access.admin` (admin o super-admin attivi). Policy password di catalogo in `lib/auth/passwordPolicy.ts` (hook `beforeValidate`); guardrail password locale parziale in `lib/auth/localPasswordGuard.ts` (Admin non super-admin e `loginMethod: sso`); stub `canAccessSection` in `lib/auth/canAccessSection.ts`. `appRole`: `none` | `manager` (ADR-102). Guardrail completi (ultimo super-admin, seed) in 2.8.
 
 ---
 

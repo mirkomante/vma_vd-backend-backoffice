@@ -10,12 +10,17 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Added
+
+- Fase 2.1: collection Payload `users` con auth nativa, ruoli `adminRole`/`appRole`, `loginMethod`, `active`; accesso pannello Admin per admin/super-admin; policy password di catalogo e guardrail password locale parziale; stub `canAccessSection` per sezioni Area App future.
+
 ### Changed
 
 - Note di chiusura Fase 1: conferma umana che Area App e Area Admin si avviano senza errori bloccanti; nessun utente Payload creato (atteso). Push del commit 1.7 (`f98a812`) verificato su `origin/main`.
 
 ### Tests
 
+- Fase 2.1: `pnpm run generate:types`, `pnpm exec tsc --noEmit` e `pnpm lint` senza errori (warning stub risolto).
 - Conferma umana + controllo spot: `GET /`, `/app`, `/admin` → 200 su `http://localhost:3000`. `git status` allineato a `origin/main` sul commit 1.7.
 
 ## [0.1.0] — 2026-09-15

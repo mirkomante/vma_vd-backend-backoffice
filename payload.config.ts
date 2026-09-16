@@ -5,6 +5,8 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+import { Users } from './collections/Users'
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -21,7 +23,9 @@ export default buildConfig({
     // push consentito solo in sviluppo locale (migrazioni obbligatorie altrove — vedi stack/01a-db-postgres.mdc)
     push: process.env.NODE_ENV !== 'production',
   }),
-  // Collection `users` e altre entità di dominio: Fase 2
-  collections: [],
+  admin: {
+    user: Users.slug,
+  },
+  collections: [Users],
   sharp,
 })

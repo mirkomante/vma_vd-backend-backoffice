@@ -26,7 +26,7 @@
 | Fase | Descrizione | Stato | File di dettaglio |
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
-| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔲 da fare | `fase-2-login.md` (+ file di variante auth ed email) |
+| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1 ✅) | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔲 da fare | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
@@ -75,6 +75,6 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 2, sottofase 2.1 — collection `users`, vedi `fase-2-login.md`. In pratica, dopo 2.1 conviene eseguire 2.8 (seed super-admin) prima del SSO.
+- **Prossimo passo**: Fase 2, sottofase 2.8 (seed super-admin + guardrail) — sequenza consigliata subito dopo 2.1, prima del SSO; vedi `fase-2-login.md`. In alternativa ordinata: 2.2 Global Settings allow-list.
 - Fase 1 chiusa: ambiente locale confermato stabile (App e Admin si avviano); push di `f98a812` su `origin/main`.
 - Aggiornare questo indice e il file di fase corrispondente a ogni sottofase completata.
