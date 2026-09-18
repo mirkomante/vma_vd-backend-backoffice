@@ -16,14 +16,17 @@ stato: validato
 - Creare (o riusare) un progetto su Google Cloud Console.
 - Configurare l'OAuth consent screen in modalità **Internal** (limitato all'organizzazione Google Workspace) — o **External** se il progetto non ha un Workspace organizzativo (vedi nota sotto).
 - Creare credenziali OAuth 2.0 (Client ID e Client Secret) di tipo "Web application".
-- Registrare i redirect URI necessari — **attenzione**: serviranno redirect URI distinti per l'istanza Admin e per l'istanza App (vedi 2.4/2.5), sia per l'ambiente locale (`http://localhost:3000/...`) sia, più avanti, per l'ambiente di produzione (vedi Fase 3).
+- Registrare i redirect URI necessari — **attenzione**: serviranno redirect URI distinti per l'istanza Admin e per l'istanza App (vedi 2.4/2.5), sia per l'ambiente locale (`http://localhost:3000/...`) sia, più avanti, per l'ambiente di produzione (vedi Fase 3). In locale, sullo stesso client Web OAuth:
+  - `http://localhost:3000/api/users/oauth/google-admin/callback`
+  - `http://localhost:3000/api/users/oauth/google-app/callback`
+  (dettaglio e rotazione segreti: `docs/operativo/credenziali-google-oauth.md`.)
 - Scope richiesti: `openid`, `email`, `profile`.
 - Comunicare all'agente Client ID e Client Secret (da inserire come variabili d'ambiente, mai hardcoded).
 
 **Checklist per l'agente (dopo conferma umana)**:
-- Salvare Client ID/Secret come variabili d'ambiente (`.env`, non committate).
-- Verificare che `.gitignore` le escluda.
-- Documentare in una nota operativa interna dove/come si trovano queste credenziali per chi gestirà il sistema in futuro.
+- Salvare Client ID/Secret come variabili d'ambiente (`.env`, non committate) — nomi: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`; impostare anche `NEXT_PUBLIC_URL` (locale: `http://localhost:3000`). Placeholder in `.env.example`.
+- Verificare che `.gitignore` le escluda (già coperto da `.env` / `.env.*`).
+- Nota operativa interna: `docs/operativo/credenziali-google-oauth.md` (redirect URI locali previsti per 2.4/2.5: `…/oauth/google-admin/callback` e `…/oauth/google-app/callback`).
 
 **Nota**: il codice deve essere scritto in modo da funzionare identicamente se in futuro il progetto Google Cloud passerà da Internal a External (o viceversa), senza refactoring — Client ID, Secret, redirect URI, scope restano gli stessi tra le due modalità. Il lavoro di branding specifico per External (homepage separata, privacy policy, dominio verificato) è fuori scope qui.
 

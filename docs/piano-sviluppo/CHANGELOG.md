@@ -12,6 +12,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 2.3: setup credenziali Google OAuth di sviluppo — variabili `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXT_PUBLIC_URL` documentate in `.env.example` (valori reali solo in `.env`); nota operativa `docs/operativo/credenziali-google-oauth.md` (console GCP, redirect locali `google-admin` / `google-app`, dev vs produzione Fase 3); checklist variante auth allineata.
 - Fase 2.2: Global Payload `settings` (`globals/Settings.ts`, etichetta Admin «Identità autorizzate») con array `allowedDomains` (`domain`, `allowAdmin`, `allowApp`). Hook `beforeValidate` in `lib/auth/allowedDomains.ts`: trim, lowercase, formato FQDN, prevenzione duplicati, rifiuto se la lista risultasse vuota (vincolo rimandato da 2.8). Scrittura solo super-admin.
 - Fase 2.8: script `pnpm seed:super-admin` (`scripts/seed-super-admin.ts`) che crea un super-admin locale da `SEED_SUPERADMIN_EMAIL` / `SEED_SUPERADMIN_PASSWORD` (nessuna credenziale in codice); idempotente se l'email è già un super-admin locale attivo. Guardrail applicativo: non si può eliminare, disattivare, declassare o passare a solo-SSO l'ultimo super-admin locale. Access control in create: un Admin di pannello non può nascere con metodo locale o password; hook `assertLocalPasswordAllowed` completato anche per `loginMethod` locale su Admin.
 - Fase 2.1: collection Payload `users` con auth nativa, ruoli `adminRole`/`appRole`, `loginMethod`, `active`; accesso pannello Admin per admin/super-admin; policy password di catalogo e guardrail password locale parziale; stub `canAccessSection` per sezioni Area App future.
@@ -26,6 +27,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
+- Fase 2.3: verifica agente che `.env` locale valorizza le tre variabili OAuth (senza committare segreti); nessun test runtime OAuth fino a 2.4. Conferma umana: client GCP e `.env` completati.
 - Fase 2.2: `pnpm run generate:types`, `pnpm exec tsc --noEmit` e `pnpm lint` senza errori. Runtime Admin (salvataggio lista vuota / dominio non valido / duplicato / permesso admin vs super-admin) da verificare con l’umano.
 - Fase 2.8: `pnpm exec tsc --noEmit` e `pnpm lint` senza errori. `pnpm seed:super-admin` senza credenziali in env → messaggio `SEED_SUPERADMIN_EMAIL mancante o vuota` (exit 1 dopo correzione del top-level await: `payload run` altrimenti non attendeva lo script e usciva 0). Conferma umana: test runtime ok (seed + accesso Admin). Guardrail allow-list vuota non testabile in 2.8: Global assente per scelta (b); coperto in 2.2.
 - Fase 2.1: `pnpm run generate:types`, `pnpm exec tsc --noEmit` e `pnpm lint` senza errori (warning stub risolto).

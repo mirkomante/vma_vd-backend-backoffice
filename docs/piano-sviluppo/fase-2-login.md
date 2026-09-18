@@ -64,16 +64,18 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 > - Google OAuth → `fase-2-auth-google-oauth.md`
 > - *(altri provider, quando disponibili nel catalogo)*
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: credenziali del provider SSO scelto pronte per l'integrazione.
 
-**Questo è un passaggio esterno a Cursor.** Seguire la regola dedicata in `core/02-processo-lavoro-agente.mdc`: non assumere che sia già stato fatto, fermarsi e attendere conferma.
+**Questo è un passaggio esterno a Cursor.** Seguire la regla dedicata in `core/02-processo-lavoro-agente.mdc`: non assumere che sia già stato fatto, fermarsi e attendere conferma.
 
 **Checklist di chiusura sottofase (valida per qualunque variante — verificare dopo aver seguito il file di variante)**:
-- [ ] Credenziali (client ID/secret o equivalente) salvate come variabili d'ambiente, mai hardcoded.
-- [ ] `.gitignore` le esclude.
-- [ ] Documentata una nota operativa interna su dove/come si trovano queste credenziali, per chi gestirà il sistema in futuro.
+- [x] Credenziali (client ID/secret o equivalente) salvate come variabili d'ambiente, mai hardcoded.
+- [x] `.gitignore` le esclude.
+- [x] Documentata una nota operativa interna su dove/come si trovano queste credenziali, per chi gestirà il sistema in futuro.
+
+**Eseguito (2026-09-18)**: client OAuth Web Google (sviluppo) in console GCP con redirect locali `google-admin` / `google-app` (path previsti per 2.4/2.5). Valori in `.env`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXT_PUBLIC_URL=http://localhost:3000` (non committati). Placeholder in `.env.example`. Nota operativa `docs/operativo/credenziali-google-oauth.md`. Variante auth aggiornata con URI espliciti.
 
 ---
 
