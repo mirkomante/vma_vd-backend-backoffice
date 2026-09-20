@@ -3,7 +3,7 @@ export const AUTH_FAILURE_QUERY_PARAM = 'authFailed'
 
 /** Messaggio unico per ogni fallimento di autenticazione (SSO, locale, inattivo, ecc.). */
 export const GENERIC_LOGIN_FAILURE_MESSAGE =
-  'Accesso non riuscito. Verifica le credenziali o contatta l’amministratore.'
+  'Accesso non riuscito. Se ritieni di dover avere accesso, contatta l’amministratore.'
 
 export function loginFailureRedirectPath(loginPath: string): string {
   const separator = loginPath.includes('?') ? '&' : '?'

@@ -26,7 +26,7 @@
 | Fase | Descrizione | Stato | File di dettaglio |
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
-| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1–2.5 ✅, 2.7–2.8 ✅; restano 2.6, 2.9, 2.10) | `fase-2-login.md` (+ file di variante auth ed email) |
+| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1–2.5 ✅, 2.7–2.9 ✅; restano 2.6, 2.10) | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔲 da fare | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 

@@ -11,6 +11,7 @@ import {
   type UserAccessFields,
   type UserWriteData,
 } from '@/lib/auth/roles'
+import { logAuthLoginHook, logAuthLogoutHook } from '@/lib/activityLog/userAuthHooks'
 import { hashLocalCredentialsBeforeChange } from '@/lib/auth/localCredentials/hashLocalCredentialsBeforeChange'
 import { localLoginEndpoints } from '@/lib/auth/localLogin/endpoints'
 import { googleOAuthUserCallbackEndpoints } from '@/lib/auth/googleOAuth/callbackEndpoints'
@@ -121,6 +122,8 @@ export const Users: CollectionConfig = {
       },
     ],
     beforeChange: [hashLocalCredentialsBeforeChange],
+    afterLogin: [logAuthLoginHook],
+    afterLogout: [logAuthLogoutHook],
     beforeDelete: [
       async ({ req, id }) => {
         await assertNotLastLocalSuperAdmin({

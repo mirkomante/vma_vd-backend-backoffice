@@ -12,6 +12,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 2.9: collection `activity-log` e log eventi auth — schema in `collections/ActivityLog.ts`, scrittura in `lib/activityLog/logActivity.ts`, hook `afterLogin`/`afterLogout` su `users`; `accessDenied` quando l’utente è censito (callback OAuth e login locale Admin); campi `collection`/`documentId` solo in schema, senza hook CRUD su altre collection.
 - Fase 2.7: login locale di emergenza Admin — hook `beforeChange` per hashing PBKDF2-SHA256 (`lib/auth/localCredentials/`), endpoint `POST /api/users/login/local` (cookie Payload + hook `afterLogin` espliciti), pagina non linkata `/admin/login/local`, `useSessions: false` su `users`; nota operativa `docs/operativo/login-locale-emergenza-admin.md`. Debito 2.8 punto 2 (hook hashing) chiuso.
 - Fase 2.4 / 2.5: integrazione Google OAuth con `payload-oauth2` — istanze isolate `google-admin` e `google-app` (path authorize/callback distinti); validazione server del claim `hd` contro Global `settings`; `getUserInfo` limitato a `email`/`sub`; whitelist-per-record (`onUserNotFoundBehavior: error`); callback custom con `jwtSign` Payload; Admin `/admin/login` solo bottone Google (`disableLocalStrategy` + componente `beforeLogin`); pagina App `/app/login` con link all’istanza App; messaggio di rifiuto generico condiviso (`lib/auth/loginMessages.ts`).
 - Fase 2.3: setup credenziali Google OAuth di sviluppo — variabili `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `NEXT_PUBLIC_URL` documentate in `.env.example` (valori reali solo in `.env`); nota operativa `docs/operativo/credenziali-google-oauth.md` (console GCP, redirect locali `google-admin` / `google-app`, dev vs produzione Fase 3); checklist variante auth allineata.
@@ -21,6 +22,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Fase 2.9: messaggio generico di rifiuto login (`GENERIC_LOGIN_FAILURE_MESSAGE`) — rimosso il riferimento alle «credenziali», fuorviante su SSO quando l’utente è censito ma non autorizzato o non abilitato; resta un unico testo per tutti i fallimenti (invariante auth).
 - Fase 2.7: login locale Admin falliva sempre — gli endpoint custom sulla collection non passano da `wrapInternalEndpoints`, quindi il body JSON non veniva parsato in `req.data`; aggiunto `addDataAndFileToRequest` all’handler `POST /api/users/login/local`.
 - Fase 2.7: form emergenza mostrava sempre errore nonostante credenziali corrette — `fetch(..., { redirect: 'manual' })` espone redirect come status `0` (opaque), interpretato come fallimento; sostituito con form HTML `POST` (redirect 302 nativo del browser) e parsing `application/x-www-form-urlencoded` sull’endpoint.
 

@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'activity-log': ActivityLog;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -75,6 +76,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'activity-log': ActivityLogSelect<false> | ActivityLogSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -118,6 +120,38 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * Eventi di autenticazione e, in futuro, azioni sui documenti. Scrittura solo da hook di sistema.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activity-log".
+ */
+export interface ActivityLog {
+  id: number;
+  /**
+   * Utente coinvolto nell’evento.
+   */
+  user: number | User;
+  /**
+   * Area applicativa (Admin o App), quando applicabile.
+   */
+  area?: ('admin' | 'app') | null;
+  eventType: 'login' | 'logout' | 'accessDenied' | 'create' | 'update' | 'delete';
+  /**
+   * Metodo di autenticazione (eventi auth).
+   */
+  method?: ('sso' | 'local') | null;
+  /**
+   * Collection interessata (eventi CRUD futuri, non ancora attivi).
+   */
+  collection?: string | null;
+  /**
+   * Documento interessato (eventi CRUD futuri, non ancora attivi).
+   */
+  documentId?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -177,10 +211,15 @@ export interface PayloadKv {
  */
 export interface PayloadLockedDocument {
   id: number;
-  document?: {
-    relationTo: 'users';
-    value: number | User;
-  } | null;
+  document?:
+    | ({
+        relationTo: 'activity-log';
+        value: number | ActivityLog;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null);
   globalSlug?: string | null;
   user: {
     relationTo: 'users';
@@ -222,6 +261,20 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "activity-log_select".
+ */
+export interface ActivityLogSelect<T extends boolean = true> {
+  user?: T;
+  area?: T;
+  eventType?: T;
+  method?: T;
+  collection?: T;
+  documentId?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

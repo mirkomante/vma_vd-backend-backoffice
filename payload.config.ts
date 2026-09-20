@@ -5,6 +5,7 @@ import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
+import { ActivityLog } from './collections/ActivityLog'
 import { Users } from './collections/Users'
 import { Settings } from './globals/Settings'
 import { isGoogleOAuthConfigured } from './lib/auth/googleOAuth/env'
@@ -32,7 +33,7 @@ export default buildConfig({
       beforeLogin: ['@/components/auth/AdminGoogleLoginBefore'],
     },
   },
-  collections: [Users],
+  collections: [Users, ActivityLog],
   globals: [Settings],
   plugins: isGoogleOAuthConfigured()
     ? [googleOAuthAdminPlugin(), googleOAuthAppPlugin()]

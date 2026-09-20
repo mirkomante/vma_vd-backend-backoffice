@@ -8,6 +8,7 @@ import { addDataAndFileToRequest, generatePayloadCookie, getFieldsToSign, jwtSig
 
 import type { User } from '@/payload-types'
 
+import { logAuthAccessDenied } from '@/lib/activityLog/logAuthAccessDenied'
 import { verifyLocalPassword } from '@/lib/auth/localCredentials/hash'
 import { loginFailureRedirectPath } from '@/lib/auth/loginMessages'
 
@@ -185,10 +186,26 @@ async function adminLocalLoginHandler(req: PayloadRequest): Promise<Response> {
       return failureResponse()
     }
 
-    assertUserAllowedForAdminLocalLogin(user)
+    try {
+      assertUserAllowedForAdminLocalLogin(user)
+    } catch {
+      await logAuthAccessDenied({
+        req,
+        userId: user.id,
+        area: 'admin',
+        method: 'local',
+      })
+      return failureResponse()
+    }
 
     const passwordValid = await verifyLocalPassword(password, user)
     if (!passwordValid) {
+      await logAuthAccessDenied({
+        req,
+        userId: user.id,
+        area: 'admin',
+        method: 'local',
+      })
       return failureResponse()
     }
 

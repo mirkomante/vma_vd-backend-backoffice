@@ -216,7 +216,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 ## 2.9 — Collection `activityLog` (eventi di autenticazione)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: log applicativo unico e condiviso tra Admin e App; eventi auth implementati: login, logout, accesso negato (con utente identificato).
 
@@ -233,6 +233,8 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 - `area` e `method` derivano dal contesto della strategia/istanza che ha autenticato (identificatori distinti tra le istanze, 2.4/2.5, forniscono già questa informazione).
 - **2.6/2.7 useranno endpoint custom** (per via di `disableLocalStrategy`, vedi `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc`): gli hook `afterLogin`/`afterLogout` non scattano da soli su quel percorso — verificare che l'endpoint li richiami esplicitamente, altrimenti `activityLog` resta silenziosamente incompleto per quei login.
 - **Non attivare ancora** i campi `collection`/`documentId` dello schema generale, né agganciare hook di logging ad altre collection: restano fuori scope finché una specifica di progetto non richiede esplicitamente di tracciare azioni CRUD su una collection specifica — coerente con `core/01-proporzionalita.mdc` (vedi `payload-pattern/03-log-azioni.mdc`, sezione "Attivazione: decisione di progetto, non default"). Non è un'omissione silenziosa: è la stessa distinzione meccanismo/attivazione descritta lì, applicata qui.
+
+**Eseguito (2026-09-20)**: collection `activity-log` in `collections/ActivityLog.ts` (schema `payload-pattern/03-log-azioni.mdc`, campi CRUD presenti ma non popolati); scrittura centralizzata in `lib/activityLog/logActivity.ts`; hook `afterLogin`/`afterLogout` su `users` (`lib/activityLog/userAuthHooks.ts`); `area`/`method` da `_strategy` Payload o contesto OAuth; accessi negati con utente censito in callback Google (`lib/auth/googleOAuth/callbackEndpoint.ts`) e login locale Admin (`lib/auth/localLogin/endpoint.ts`). Logout via operazione Payload nativa coperto da `afterLogout`; endpoint custom 2.6 dovranno richiamare gli hook come già fa 2.7 per `afterLogin`.
 
 ---
 

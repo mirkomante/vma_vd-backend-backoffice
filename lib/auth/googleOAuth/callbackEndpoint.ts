@@ -6,6 +6,8 @@ import type { User } from '@/payload-types'
 
 import type { UserAccessFields } from '@/lib/auth/roles'
 
+import { logAuthAccessDenied } from '@/lib/activityLog/logAuthAccessDenied'
+
 import { getOAuthLoginArea } from './areas'
 import { OAuthLoginRejectedError } from './errors'
 import { extractOAuthCallbackCode } from './extractOAuthCode'
@@ -70,7 +72,17 @@ function createCallbackHandler(pluginOptions: PluginTypes) {
 
       const oauthArea = getOAuthLoginArea(req)
       if (oauthArea) {
-        assertUserAllowedForOAuthLogin(user as UserAccessFields, oauthArea)
+        try {
+          assertUserAllowedForOAuthLogin(user as UserAccessFields, oauthArea)
+        } catch {
+          await logAuthAccessDenied({
+            req,
+            userId: user.id,
+            area: oauthArea,
+            method: 'sso',
+          })
+          throw new OAuthLoginRejectedError()
+        }
       }
 
       const updateData: Record<string, unknown> = { ...userInfo }
