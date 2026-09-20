@@ -1,0 +1,34 @@
+---
+description: Pattern per conciliare login locale (super-admin di bootstrap, e/o Area App) con un'area SSO-esclusiva sulla stessa collection users — limite reale di Payload e soluzione collaudata
+globs: **/collections/[Uu]sers*, **/auth/**, **/*login*, **/payload.config.ts
+alwaysApply: false
+stato: bozza
+---
+
+# Login locale con Admin SSO-esclusiva — limite di Payload e pattern
+
+Si applica quando il progetto ha bisogno di login locale — la route di emergenza del super-admin di bootstrap (§2.7 del template di piano-sviluppo) e/o il login locale dell'Area App come default (§2.6, `ADR-003-login-locale-app-default.md`) — sulla stessa collection `users` che serve anche un'Area Admin dove deve comparire **solo** il pulsante SSO (§2.4, invariante generale in `01-autenticazione-invarianti.mdc`).
+
+## Il limite reale di Payload
+
+- `disableLocalStrategy` è un interruttore a livello di **intera collection**, non di singola vista. Quando attivo, l'operazione nativa di login (email+password) viene rifiutata su qualunque endpoint o route che usi quella collection — non solo sulla vista standard `/admin/login`. È la stessa documentazione ufficiale di Payload a dirlo: da usare solo se si è già sostituito il meccanismo di autenticazione con uno proprio.
+- Effetto collaterale meno visibile: con `disableLocalStrategy` attivo, Payload smette anche di hashare automaticamente la password in create/update per quella collection.
+- Non esiste, nativamente, un'opzione "nascondi il form solo su questa vista, mantieni l'operazione di login attiva altrove" sulla stessa collection.
+
+## Pattern collaudato (verificato su un progetto reale)
+
+- Tenere `disableLocalStrategy: { enableFields: true }`: nasconde il form dalla vista Admin standard e mantiene comunque i campi `password`/`hash`/`salt` nello schema.
+- Reimplementare l'hashing della password con un hook `beforeChange` che replica lo stesso algoritmo di Payload (PBKDF2-SHA256, hash 512 byte, salt 32 byte) — Payload non lo fa più da solo su questa collection.
+- Costruire un endpoint custom per ogni percorso di login locale necessario (es. `/api/users/login/local` per il super-admin di bootstrap, `/api/users/login/app` per l'Area App): verifica la password a mano contro l'hash, poi genera il cookie di sessione con le utility native di Payload (`generatePayloadCookie`) per restare compatibile col resto del sistema di sessione.
+- Richiamare **esplicitamente**, dentro questi endpoint, gli hook `afterLogin`/`afterLogout` della collection: non scattano da soli, perché l'operazione nativa che normalmente li invoca (`loginOperation`) qui non viene mai chiamata. Necessario perché `activityLog` (vedi `03-log-azioni.mdc`, ancora `stato: bozza`) dipende da questi hook per registrare gli eventi di login/logout — l'omissione produce un log silenziosamente incompleto, senza errori visibili.
+- Verificare `useSessions`: con `disableLocalStrategy` attivo, alcuni plugin OAuth non creano sessioni proprie; se `useSessions: true` resta impostato, la verifica del JWT può fallire dopo un login SSO riuscito. Impostare esplicitamente `useSessions: false` se si osserva questo comportamento.
+
+## Cosa NON fare
+
+- Non assumere che nascondere il form dalla vista `/admin/login` lasci comunque disponibile l'operazione di login nativa su una route separata: non è così, il blocco è sulla collection intera.
+- Non lasciare l'hashing della password al comportamento di default di Payload quando `disableLocalStrategy` è attivo: senza reimplementarlo esplicitamente, le password locali non saranno mai verificabili.
+- Non dimenticare il richiamo manuale degli hook `afterLogin`/`afterLogout` negli endpoint custom.
+
+## Alternativa non collaudata
+
+Sostituire il componente della vista di login (`admin.components.views.login`) invece di usare `disableLocalStrategy`, lasciando l'operazione nativa attiva, è tecnicamente possibile ma non è mai stata verificata su un progetto reale di questo catalogo. Chi la sceglie la tratta come non validata e ne documenta l'esito nel file di fase del proprio progetto.
