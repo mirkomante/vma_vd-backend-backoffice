@@ -68,6 +68,9 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - [ ] L'accesso ai secret è scoped al servizio che ne ha bisogno, non concesso a livello di intero progetto/account.
 - [ ] La pipeline di deploy è automatica (push su un branch di riferimento → build → deploy), non un comando manuale eseguito ad ogni release.
 - [ ] Verificato con un push di test che il trigger si attiva, la build parte, e il servizio risponde su una richiesta di base.
+- [ ] **Provider email (variante)**: dominio mittente verificato presso il provider scelto (per Resend: stato "Verified" in dashboard — vedi `email/01a-resend.mdc`). La scelta del percorso è stata fatta a §2.6 di `fase-2-email-resend.md`: se lì si era scelto di restare sul sandbox, qui va risolto — un dominio reale va verificato prima di andare in produzione, il sandbox non raggiunge utenti reali. Se invece a §2.6 era già stato verificato un dominio provvisorio/di sviluppo, qui va sostituito con il dominio reale del progetto (vedi nota sotto).
+
+**Nota** (solo se a §2.6 è stato usato un dominio provvisorio/di sviluppo, non quello finale): ripetere qui la verifica dominio presso il provider email con il dominio reale del progetto (nuovi record DNS, nuova propagazione) e aggiornare `RESEND_FROM_ADDRESS`/`RESEND_FROM_NAME` (o equivalenti) di conseguenza — stesso pattern del rimando auth descritto in § 3.3 per il dominio personalizzato dell'app.
 
 ---
 
@@ -129,7 +132,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Note di apertura fase
 
-- **Fuori scope Fase 3** (esplicitamente rimandato, salvo richiesta esplicita): dominio personalizzato/DNS avanzato, CDN, monitoring dedicato oltre agli alert minimi di § 3.5, eventuale migrazione a un tier di database superiore (annotare quando ci si avvicina all'uso reale — per il dettaglio vedi il file di variante DB).
+- **Fuori scope Fase 3** (esplicitamente rimandato, salvo richiesta esplicita): dominio personalizzato/DNS avanzato **per l'hosting dell'app** (l'app resta sull'URL assegnato dal cloud — vedi § 3.3), CDN, monitoring dedicato oltre agli alert minimi di § 3.5, eventuale migrazione a un tier di database superiore (annotare quando ci si avvicina all'uso reale — per il dettaglio vedi il file di variante DB). **Non rientra in questo rimando il dominio per l'invio email** (§ 3.2, variante email): senza un dominio verificato presso il provider, l'invio in produzione resta sul sandbox e non raggiunge utenti reali, quindi va gestito comunque in questa fase — anche con un dominio provvisorio se quello definitivo non è ancora confermato.
 - **Proporzionalità**: nessuna duplicazione dev/staging/prod con seed o guardrail diversi non previsti in documentazione — un solo script di seed, un solo utente DB, un solo set di guardrail, validi ovunque.
 
 ## Incoerenze note

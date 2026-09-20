@@ -10,6 +10,9 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Changed
+
+- Sincronizzate regole email dal catalogo prima di 2.6: `01-email-invarianti.mdc`, `01a-resend.mdc` (cursor-rules@a5c1b68), `fase-2-email-resend.md` (cursor-payload-template@e9bb93b) — scelta esplicita sandbox vs sottodominio verificato, invariante deliverability da chiudere in Fase 3.
 ### Added
 
 - Fase 2.9: collection `activity-log` e log eventi auth — schema in `collections/ActivityLog.ts`, scrittura in `lib/activityLog/logActivity.ts`, hook `afterLogin`/`afterLogout` su `users`; `accessDenied` quando l’utente è censito (callback OAuth e login locale Admin); campi `collection`/`documentId` solo in schema, senza hook CRUD su altre collection.

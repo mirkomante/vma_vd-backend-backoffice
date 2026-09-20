@@ -10,6 +10,12 @@ stato: validato
 
 ## 2.6 (parte email) — Invio email di attivazione e reset password via Resend
 
+**Scelta del dominio mittente — decisione da prendere qui, non vincolata**: prima di configurare `RESEND_FROM_ADDRESS`, scegliere tra due percorsi, entrambi legittimi:
+- **(a) Restare sul sandbox Resend** (`onboarding@resend.dev` o equivalente) e rimandare la verifica di un dominio reale alla Fase 3 (§3.2 di `fase-3-deploy.md`) — più veloce ora, ma il sandbox non invia a indirizzi arbitrari: non permette di validare la deliverability reale (finire in spam, blacklist) prima del deploy.
+- **(b) Verificare già ora un sottodominio dedicato all'invio transazionale** (consigliato) — del dominio finale del progetto se già noto, oppure di un dominio di sviluppo già posseduto (es. `dev-mail.tuodominio.it`, riusabile su più progetti) se il dominio finale non è ancora deciso. Permette di testare la deliverability reale fin da questa sottofase. **Sempre un sottodominio, mai il dominio radice**: isola la reputazione di invio ed evita conflitti con l'SPF/MX già esistente sul dominio radice per la posta reale dell'azienda.
+
+Se si sceglie (b) con un dominio diverso da quello finale del progetto, annotarlo esplicitamente (es. in cima a `00-piano-generale.md`): andrà sostituito con il dominio reale prima del go-live (vedi `fase-3-deploy.md` §3.2).
+
 **Checklist**:
 - **Prima di procedere**: verificare la compatibilità della versione di `@payloadcms/email-resend` con la versione di Payload in uso in questo progetto — il comportamento sulla durata reale dei token descritto più sotto è stato verificato su una versione specifica e potrebbe differire su un'altra.
 - Configurare l'adapter `@payloadcms/email-resend` in `payload.config.ts`.
