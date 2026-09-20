@@ -26,7 +26,7 @@
 | Fase | Descrizione | Stato | File di dettaglio |
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
-| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1–2.5 ✅, 2.7–2.9 ✅; restano 2.6, 2.10) | `fase-2-login.md` (+ file di variante auth ed email) |
+| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1–2.9 ✅; resta 2.10) | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔲 da fare | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
@@ -75,11 +75,11 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: chiudere i debiti riaperti in Fase 2 — 2.2 (popolare l'allow-list con `vietnamonamour.com`) e 2.8 (secondo utente Workspace per test SSO + hook di hashing) — poi implementare il pattern `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc` (necessario sia per 2.7 sia per 2.6), prima di riprendere 2.6.
+- **Prossimo passo**: **2.10** — spike e2e finale (unica sottofase Fase 2 ancora aperta): giro completo con credenziali reali, inclusi eventuali flussi non ancora coperti dal test puntuali (es. forgot/reset password App se non già verificati in dev).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.
 - Fase 2.2 chiusa in codice, riaperta 2026-09-20: Global `settings` (Identità autorizzate) con allow-list domini e guardrail anti-lista-vuota (debito di 2.8, scelta b) — manca il dominio reale, vedi sopra.
-- Fase 2.8 chiusa in codice, riaperta 2026-09-20: seed + ultimo super-admin locale + no credenziali locali per Admin di pannello — manca identità Workspace per test SSO e hook di hashing, vedi sopra.
+- Fase 2.8: seed bootstrap + guardrail ultimo super-admin con credenziali `bootstrapCredential*` (ADR-004); migrazione legacy `pnpm migrate:bootstrap-credentials`. Identità Workspace per SSO Admin: chiusa (due identità separate, vedi `fase-2-login.md` 2.8).
 - Fase 1 chiusa: ambiente locale confermato stabile (App e Admin si avviano); push di `f98a812` su `origin/main`.
 - Aggiornare questo indice e il file di fase corrispondente a ogni sottofase completata.

@@ -24,12 +24,13 @@ function resolveLocalCredentialsContext(
 }
 
 /**
- * True se il payload di create darebbe a un Admin di pannello (non super-admin)
- * un metodo locale o una password. Usato dall'access control: senza `data`
- * (es. pulsante Crea in lista) non si può giudicare, quindi resta false.
+ * True se il payload di create darebbe a un utente con ruolo Admin di pannello
+ * (admin o super-admin) un metodo locale o una password sul campo auth standard.
+ * Usato dall'access control: senza `data` (es. pulsante Crea in lista) non si può
+ * giudicare, quindi resta false. Il bootstrap usa campi dedicati via script seed.
  */
 export function grantsLocalCredentialsToPanelAdmin(data?: UserWriteData): boolean {
-  if (!data || data.adminRole !== 'admin') {
+  if (!data || data.adminRole === 'none') {
     return false
   }
 
@@ -41,9 +42,9 @@ export function grantsLocalCredentialsToPanelAdmin(data?: UserWriteData): boolea
 }
 
 /**
- * Solo i super-admin, tra chi ha un ruolo Admin, possono avere credenziali locali.
- * `loginMethod: sso` esclude qualsiasi password. Gli utenti solo App (adminRole none)
- * restano liberi di usare il login locale (ADR-003).
+ * ADR-004: nessun adminRole ≠ none può avere loginMethod locale né password sul
+ * campo auth standard. Gli utenti solo App (adminRole none) restano liberi (ADR-003).
+ * Credenziali emergenza super-admin: bootstrapCredentialHash/Salt (solo script).
  */
 export function assertLocalPasswordAllowed(args: {
   data?: UserWriteData
@@ -55,13 +56,13 @@ export function assertLocalPasswordAllowed(args: {
   )
   const password = args.data?.password
 
-  if (adminRole === 'admin' && loginMethodIncludesLocal(loginMethod)) {
+  if (adminRole !== 'none' && loginMethodIncludesLocal(loginMethod)) {
     throw new ValidationError({
       collection: 'users',
       errors: [
         {
           message:
-            'Gli utenti Admin (non super-admin) non possono avere credenziali locali; usare SSO.',
+            'Gli utenti con accesso Admin non possono avere credenziali locali sul profilo; usare SSO.',
           path: 'loginMethod',
         },
       ],
@@ -85,13 +86,13 @@ export function assertLocalPasswordAllowed(args: {
     })
   }
 
-  if (adminRole === 'admin') {
+  if (adminRole !== 'none') {
     throw new ValidationError({
       collection: 'users',
       errors: [
         {
           message:
-            'Gli utenti Admin (non super-admin) non possono avere credenziali locali; usare SSO.',
+            'Gli utenti con accesso Admin non possono avere credenziali locali sul profilo; usare SSO.',
           path: 'password',
         },
       ],

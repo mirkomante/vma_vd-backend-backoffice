@@ -5,11 +5,15 @@ import {
   GOOGLE_APP_STRATEGY,
 } from '@/lib/auth/googleOAuth/constants'
 import { getOAuthLoginArea } from '@/lib/auth/googleOAuth/areas'
+import {
+  LOCAL_JWT_STRATEGY_ADMIN,
+  LOCAL_JWT_STRATEGY_APP,
+} from '@/lib/auth/localLogin/constants'
 
 import type { ActivityLogArea, ActivityLogMethod } from './constants'
 
-/** Deve coincidere con `LOCAL_JWT_STRATEGY` in `lib/auth/localLogin/endpoint.ts`. */
-export const LOCAL_JWT_STRATEGY = 'local-jwt'
+/** Alias storico: login locale Admin (2.7). Preferire `LOCAL_JWT_STRATEGY_ADMIN`. */
+export const LOCAL_JWT_STRATEGY = LOCAL_JWT_STRATEGY_ADMIN
 
 export type ResolvedAuthContext = {
   area?: ActivityLogArea
@@ -30,8 +34,11 @@ export function resolveAuthContext(
 ): ResolvedAuthContext {
   const strategy = readAuthStrategy(user) ?? readAuthStrategy(req.user)
   if (typeof strategy === 'string') {
-    if (strategy === LOCAL_JWT_STRATEGY) {
+    if (strategy === LOCAL_JWT_STRATEGY_ADMIN) {
       return { area: 'admin', method: 'local' }
+    }
+    if (strategy === LOCAL_JWT_STRATEGY_APP) {
+      return { area: 'app', method: 'local' }
     }
     if (strategy === GOOGLE_ADMIN_STRATEGY) {
       return { area: 'admin', method: 'sso' }

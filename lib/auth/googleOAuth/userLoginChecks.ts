@@ -1,5 +1,5 @@
 import type { UserAccessFields } from '@/lib/auth/roles'
-import { canAccessAdminPanel } from '@/lib/auth/userAccess'
+import { canAccessAdminPanel, canAccessAppArea } from '@/lib/auth/userAccess'
 
 import type { OAuthLoginArea } from './areas'
 import { OAuthLoginRejectedError } from './errors'
@@ -24,7 +24,7 @@ export function assertUserAllowedForOAuthLogin(
     return
   }
 
-  if (user.appRole === 'none' || user.appRole == null) {
+  if (!canAccessAppArea(user)) {
     throw new OAuthLoginRejectedError()
   }
 }

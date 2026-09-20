@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
@@ -10,6 +11,12 @@ import { Users } from './collections/Users'
 import { Settings } from './globals/Settings'
 import { isGoogleOAuthConfigured } from './lib/auth/googleOAuth/env'
 import { googleOAuthAdminPlugin, googleOAuthAppPlugin } from './lib/auth/googleOAuth/plugins'
+import {
+  getResendApiKey,
+  getResendFromAddress,
+  getResendFromName,
+  isResendConfigured,
+} from './lib/email/env'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -38,5 +45,14 @@ export default buildConfig({
   plugins: isGoogleOAuthConfigured()
     ? [googleOAuthAdminPlugin(), googleOAuthAppPlugin()]
     : [],
+  ...(isResendConfigured()
+    ? {
+        email: resendAdapter({
+          apiKey: getResendApiKey(),
+          defaultFromAddress: getResendFromAddress(),
+          defaultFromName: getResendFromName(),
+        }),
+      }
+    : {}),
   sharp,
 })

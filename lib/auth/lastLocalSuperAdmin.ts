@@ -1,7 +1,7 @@
 import { ValidationError } from 'payload'
 import type { PayloadRequest } from 'payload'
 
-import { loginMethodIncludesLocal, type UserAccessFields, type UserWriteData } from './roles'
+import { type UserAccessFields, type UserWriteData } from './roles'
 
 const LAST_LOCAL_SUPER_ADMIN_MESSAGE =
   'Non è possibile eliminare o disattivare l’ultimo super-admin locale rimasto.'
@@ -13,7 +13,7 @@ export function isActiveLocalSuperAdmin(
     return false
   }
 
-  return user.adminRole === 'super-admin' && loginMethodIncludesLocal(user.loginMethod)
+  return user.adminRole === 'super-admin' && Boolean(user.bootstrapCredentialHash)
 }
 
 function resolveNextState(
@@ -23,16 +23,13 @@ function resolveNextState(
   return {
     ...current,
     adminRole: data?.adminRole ?? current.adminRole,
-    loginMethod: data?.loginMethod ?? current.loginMethod,
     active: data?.active ?? current.active,
   }
 }
 
 /**
- * Impedisce un update o una delete che lascerebbe zero super-admin locali attivi.
- * Oltre a delete e `active = false` (testo della checklist 2.8), blocca anche
- * declassamento del ruolo o passaggio a solo-SSO: altrimenti il vincolo sarebbe
- * aggirabile senza cancellare il record.
+ * Impedisce un update o una delete che lascerebbe zero super-admin di bootstrap attivi
+ * (credenziali emergenza). Oltre a delete e `active = false`, blocca declassamento ruolo.
  */
 export async function assertNotLastLocalSuperAdmin(args: {
   req: PayloadRequest
@@ -60,7 +57,7 @@ export async function assertNotLastLocalSuperAdmin(args: {
         { id: { not_equals: current.id } },
         { adminRole: { equals: 'super-admin' } },
         { active: { not_equals: false } },
-        { loginMethod: { in: ['local', 'sso-and-local'] } },
+        { bootstrapCredentialHash: { exists: true } },
       ],
     },
   })
@@ -112,9 +109,6 @@ function pathForBlockedUpdate(data: UserWriteData | undefined): string {
   }
   if (data?.adminRole && data.adminRole !== 'super-admin') {
     return 'adminRole'
-  }
-  if (data?.loginMethod && !loginMethodIncludesLocal(data.loginMethod)) {
-    return 'loginMethod'
   }
   return 'active'
 }

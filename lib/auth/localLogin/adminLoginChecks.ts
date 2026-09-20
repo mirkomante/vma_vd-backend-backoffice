@@ -1,6 +1,6 @@
 import type { User } from '@/payload-types'
 
-import { loginMethodIncludesLocal, type UserAccessFields } from '@/lib/auth/roles'
+import type { UserAccessFields } from '@/lib/auth/roles'
 import { canAccessAdminPanel } from '@/lib/auth/userAccess'
 
 export class AdminLocalLoginRejectedError extends Error {
@@ -10,7 +10,7 @@ export class AdminLocalLoginRejectedError extends Error {
   }
 }
 
-/** Accesso locale di emergenza: solo super-admin attivo con metodo che ammette password locale. */
+/** Accesso locale di emergenza: solo super-admin attivo con credenziali bootstrap dedicate. */
 export function assertUserAllowedForAdminLocalLogin(user: UserAccessFields): void {
   if (user.active === false) {
     throw new AdminLocalLoginRejectedError()
@@ -24,7 +24,7 @@ export function assertUserAllowedForAdminLocalLogin(user: UserAccessFields): voi
     throw new AdminLocalLoginRejectedError()
   }
 
-  if (!loginMethodIncludesLocal(user.loginMethod)) {
+  if (!user.bootstrapCredentialHash) {
     throw new AdminLocalLoginRejectedError()
   }
 }

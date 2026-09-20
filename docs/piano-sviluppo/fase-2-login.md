@@ -35,23 +35,48 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 **Stato**: ✅ fatto
 
+**Chiusura (2026-09-20)**: schema allineato ad ADR-004 — `active`/`emailVerified` con default false; `access.create`/`update`/`delete` con matrice di ruoli (`lib/auth/userAccess.ts`); vincolo `adminRole ≠ none` ⇒ `loginMethod` non locale esteso anche a super-admin (`assertLocalPasswordAllowed`). Verificato via Local API, REST diretto e form Admin (password/conferma, permessi CRUD, create utente App locale).
+
 **Obiettivo**: unica collection `users` con lo schema definitivo dei ruoli, pronta ad accogliere sia utenti SSO sia utenti locali.
 
 **Dipende da**: Nessuna.
 
-> **Decisione documentata**: schema ruoli baseline (`adminRole`/`appRole` separati, non cumulabili) — vedi `ADR-001-schema-ruoli-baseline.md`. Un progetto che estende l'enum di `appRole` non ridiscute questa ADR, la eredita; una deviazione dalla separazione stessa richiede una nuova ADR di progetto che la referenzi.
+> **Decisione documentata**: schema ruoli baseline (`adminRole`/`appRole` separati, non cumulabili) — vedi `ADR-001-schema-ruoli-baseline.md` (ADR di catalogo, in `cursor-payload-template` — non cercarla nella cartella ADR di questo progetto). Un progetto che estende l'enum di `appRole` non ridiscute questa ADR, la eredita; una deviazione dalla separazione stessa richiede una nuova ADR di progetto che la referenzi.
 
 **Checklist**:
-- Creare la collection `users` con i campi: `email` (text, required, unique — funge anche da username per il login locale), `adminRole` (select singolo: none/admin/super-admin), `appRole` (select singolo: none/[ruoli App del progetto]), `active` (checkbox, default true).
+
+- Creare la collection `users` con i campi: `email` (text, required, unique — funge anche da username per il login locale), `adminRole` (select singolo: none/admin/super-admin), `appRole` (select singolo: none/[ruoli App del progetto]), `active` (checkbox, **default false** — va selezionato esplicitamente in creazione, mai concesso implicitamente).
 - Non aggiungere un campo `roles` cumulativo unico: i due ruoli sono campi separati, non cumulabili all'interno della stessa area.
 - Il campo `password` è gestito nativamente da Payload (auth abilitata sulla collection): non ricostruire un meccanismo di hashing custom.
 - Implementare la validazione custom sul campo `password` secondo la policy password decisa per il progetto (Payload impone nativamente solo un minimo di 8 caratteri).
 - Campo `loginMethod` (o equivalente) che distingue **SSO esterno** da **locale**: tipicamente un Admin pannello userà sempre SSO, un utente App potrà usare SSO o locale a seconda della policy del progetto.
+- Vincolo di validazione: un utente con `adminRole ≠ none` non può avere `loginMethod: locale` — bloccante in creazione/modifica, non solo convenzione UI. Vedi `ADR-004-permessi-crud-utenti.md` (ADR di catalogo) e il pattern in `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc`.
+- Se il progetto usa login locale per l'Area App (§2.6): aggiungere anche il campo `emailVerified` (checkbox, **default false**), aggiornato solo da hook di verifica — mai selezionabile a mano nel form Admin (vedi `fase-2-email-resend.md`, sezione Admin UX).
 - Non implementare in questa sottofase l'enforcement dei permessi per singola sezione App: è rimandato per natura allo sviluppo di quelle sezioni. Qui basta che lo schema di `appRole` sia corretto.
 - Scrivere comunque, fin da ora, lo stub di una funzione centralizzata di controllo permessi per sezione (es. `canAccessSection`), anche se nessuna sezione la richiama ancora — la collocazione fisica definitiva del file resta un punto aperto, da decidere solo quando si svilupperà la prima sezione App che la userà davvero, non ora.
 - Access control della collection: la creazione di utenti con credenziali locali va ristretta secondo la regola generale (vedi 2.8 più sotto e `auth/01-autenticazione-invarianti.mdc`) — non ogni utente può avere una password.
 
-**Eseguito (2026-09-16)**: collection `users` in `collections/Users.ts` registrata in `payload.config.ts` con auth nativa Payload, campi `adminRole`/`appRole`/`loginMethod`/`active`, accesso Admin tramite `access.admin` (admin o super-admin attivi). Policy password di catalogo in `lib/auth/passwordPolicy.ts` (hook `beforeValidate`); guardrail password locale parziale in `lib/auth/localPasswordGuard.ts` (Admin non super-admin e `loginMethod: sso`); stub `canAccessSection` in `lib/auth/canAccessSection.ts`. `appRole`: `none` | `manager` (ADR-102). Guardrail completi (ultimo super-admin, seed) in 2.8.
+> **Decisione documentata**: modello di permessi CRUD su `users` (vincolo admin≠locale, matrice ruoli, self-delete vietato per tutti) — vedi `ADR-004-permessi-crud-utenti.md` (ADR di catalogo, in `cursor-payload-template`). Pattern di implementazione (`access.create`/`access.update`/`access.delete`) in `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc`.
+
+### Matrice dei casi di creazione utente
+
+| Caso | adminRole | appRole | loginMethod | Password/conferma | active/emailVerified | Vincolo |
+|---|---|---|---|---|---|---|
+| A — Solo Admin | admin/super-admin | none | SSO (obbligato) | nascosti | non rilevante | — |
+| B — Admin + anche utente App | admin/super-admin | ≠ none | SSO (obbligato per tutto il record) | nascosti | non rilevante | `loginMethod: locale` bloccato in validazione |
+| C — Solo App via SSO | none | ≠ none | SSO | nascosti | non rilevante | — |
+| D — Solo App locale | none | ≠ none | locale | **mostrati, obbligatori** | **da selezionare esplicitamente, default false** | unico caso con password |
+| E — Nessun ruolo | none | none | — | — | — | **bloccato in validazione**: un record senza alcun ruolo non ha accesso possibile |
+
+### Matrice permessi CRUD (ruolo dell'attore vs record target)
+
+| Azione | super-admin | admin | target = se stesso | target = super-admin |
+|---|---|---|---|---|
+| create | sì | sì (non può assegnare `adminRole: super-admin`) | — | — |
+| update | sì | sì | sempre permesso | solo se attore è super-admin |
+| delete | sì | sì | **mai, nessun ruolo** | solo se attore è super-admin, e non se è l'ultimo (guardrail 2.8, invariato) |
+
+Entrambe le matrici sono vincolanti per ogni progetto che eredita questo template, non un'opzione per-progetto — una deviazione richiede una nuova ADR di progetto che la referenzi, non un'omissione silenziosa.
 
 ---
 
@@ -147,7 +172,19 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 ## 2.6 — Login locale (form App)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
+
+**Cronologia implementazione Admin + email (2026-09-20)**:
+
+- Campo password sostituito da componente custom (`components/payload/AppLocalPasswordField.tsx`): il componente nativo `@payloadcms/ui/fields/Password#PasswordField` crashava (`Cannot destructure property 'config'…`) perché presuppone il contesto del proprio meccanismo auth nativo, incompatibile con `disableLocalStrategy` — non riusabile fuori da quel contesto. Stesso componente su `password` e `passwordConfirm` (`virtual: true`). Limite generale: `04-auth-locale-con-sso-esclusivo.mdc`.
+- Campo `emailVerificationToken` (`access` read/create/update: `() => false`) non arriva al `doc` dell’hook `afterChange` della stessa collection — Payload applica l’access control del field anche agli hook interni, non solo alle risposte REST/GraphQL. Fix: il token passa da `prepareActivationBeforeChange` a `sendActivationAfterChange` via `req.context` (`lib/auth/localEmail/activationContext.ts`), non via `doc`.
+- Verificato end-to-end reale: create da form Admin → mail ricevuta → link cliccato → `emailVerified: true` confermato dal login App riuscito (`assertUserAllowedForAppLocalLogin` blocca esplicitamente se `emailVerified === false`).
+
+**Deviazione processo — diagnosi PasswordField (2026-09-20)**:
+
+- **Ufficiale**: la diagnosi del crash su `PasswordField` era richiesta come «solo diagnosi, non correggere ancora nulla».
+- **Percepito**: è stato applicato subito il fix (`AppLocalPasswordField`) invece di fermarsi alla diagnosi, comunicandolo solo a lavoro fatto.
+- **Osservato**: fix funzionante, verificato a runtime in create ed edit, nessuna regressione.
 
 **Obiettivo**: form locale funzionante sotto `/app`, con verifica password nativa e invio email di attivazione/reset gestito dal provider email scelto per il progetto.
 
@@ -183,7 +220,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 - Verificare che sia accessibile **solo** digitando l'URL direttamente, non tramite navigazione da `/admin/login`.
 - Scrivere la nota operativa interna che documenta l'esistenza e lo scopo di questa route, per chi gestirà il sistema — coerente con la regola di documentazione obbligatoria. Senza questa nota, la route rischia di essere dimenticata proprio nel momento in cui serve davvero.
 
-**Eseguito (2026-09-20)**: hook `beforeChange` PBKDF2-SHA256 in `lib/auth/localCredentials/`; verifica password in `verifyLocalPassword`; endpoint `POST /api/users/login/local` con `generatePayloadCookie` e richiamo esplicito hook `beforeLogin`/`afterLogin`; pagina `/admin/login/local` (form minimo, non linkata); `useSessions: false` su `users`. Nota operativa `docs/operativo/login-locale-emergenza-admin.md`.
+**Eseguito (2026-09-20)**: hook `beforeChange` PBKDF2-SHA256 in `lib/auth/localCredentials/`; verifica password in `verifyLocalPassword` contro `bootstrapCredentialHash`/`Salt` (non hash/salt standard); endpoint `POST /api/users/login/local` con `generatePayloadCookie` e richiamo esplicito hook `beforeLogin`/`afterLogin`; pagina `/admin/login/local` (form minimo, non linkata); `useSessions: false` su `users`. Nota operativa `docs/operativo/login-locale-emergenza-admin.md`. **Ridisegno ADR-004 (2026-09-20)**: ammissione endpoint via `bootstrapCredentialHash`; nessun rate-limit dedicato (lacuna preesistente, nota in operativo).
 
 ---
 
@@ -203,7 +240,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 - Implementare il vincolo: nessun altro utente Admin può essere creato con credenziali locali oltre al/ai super-admin di bootstrap — a livello di access control sulla collection.
 - Non implementare elementi non richiesti dalla specifica del progetto (es. procedura "vetro da rompere" fuori applicazione, audit log dedicato per interventi di emergenza, differenziazione di processo tra ambienti per il seed) — coerente con `core/01-proporzionalita.mdc`.
 
-**Eseguito (2026-09-16)**: script `scripts/seed-super-admin.ts` (`pnpm seed:super-admin`) con email/password da `SEED_SUPERADMIN_EMAIL` / `SEED_SUPERADMIN_PASSWORD`; idempotente sulla stessa email se già super-admin locale attivo, rifiuta se l'email esiste con un altro profilo. Guardrail ultimo super-admin locale in `lib/auth/lastLocalSuperAdmin.ts` (delete, `active = false`, e anche declassamento ruolo / passaggio a solo-SSO, altrimenti aggirabile). Access control `canCreateUser` + hook `assertLocalPasswordAllowed` completato: Admin di pannello senza credenziali locali; App e super-admin restano ammessi. Nessun ramo seed diverso per ambiente.
+**Eseguito (2026-09-16, aggiornato 2026-09-20)**: script `scripts/seed-super-admin.ts` (`pnpm seed:super-admin`) con email/password da env; crea super-admin con `loginMethod: sso` e credenziali emergenza in `bootstrapCredential*` (PBKDF2 via `hashLocalPassword`); idempotente se l'email è già bootstrap attivo (`bootstrapCredentialHash` presente). Migrazione record legacy: `pnpm migrate:bootstrap-credentials` (copia hash/salt → bootstrap, stessa password di emergenza). Guardrail ultimo bootstrap in `lib/auth/lastLocalSuperAdmin.ts` (criterio: `bootstrapCredentialHash`, delete / `active = false` / declassamento `adminRole`). Access control + `assertLocalPasswordAllowed`: nessun ruolo Admin con `loginMethod` locale o `password` sul profilo standard; App (`adminRole: none`) invariata. Nessun ramo seed diverso per ambiente.
 
 **Chiuso in 2.2 — vincolo allow-list vuota (scelta b)**: implementato insieme allo schema del Global `settings`, non in questo passo.
 

@@ -1,13 +1,13 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
-import { loginMethodIncludesLocal } from '@/lib/auth/roles'
+import { hashLocalPassword } from '@/lib/auth/localCredentials/hash'
 import { validatePasswordPolicy } from '@/lib/auth/passwordPolicy'
 
 /**
- * Crea il super-admin locale di bootstrap. Credenziali solo da env, mai hardcoded.
- * Idempotente: se l’email esiste già ed è un super-admin locale attivo, esce senza
- * toccare la password. Stesso script in ogni ambiente (nessun ramo dev/prod).
+ * Crea il super-admin di bootstrap. Credenziali emergenza in bootstrapCredential*;
+ * loginMethod SSO (ADR-004). Email/password solo da env, mai hardcoded.
+ * Idempotente: se l’email esiste già come bootstrap attivo, esce senza toccare le credenziali.
  *
  * Uso: SEED_SUPERADMIN_EMAIL=... SEED_SUPERADMIN_PASSWORD=... pnpm seed:super-admin
  */
@@ -39,6 +39,7 @@ async function seedSuperAdmin(): Promise<void> {
       depth: 0,
       limit: 1,
       overrideAccess: true,
+      showHiddenFields: true,
       where: { email: { equals: email } },
     })
 
@@ -47,30 +48,33 @@ async function seedSuperAdmin(): Promise<void> {
       const isBootstrap =
         found.adminRole === 'super-admin' &&
         found.active !== false &&
-        loginMethodIncludesLocal(found.loginMethod)
+        Boolean(found.bootstrapCredentialHash)
 
       if (isBootstrap) {
         payload.logger.info(
-          `Seed super-admin: utente ${email} già presente come super-admin locale attivo. Nessuna modifica.`,
+          `Seed super-admin: utente ${email} già presente come super-admin bootstrap attivo. Nessuna modifica.`,
         )
         return
       }
 
       throw new Error(
-        `Esiste già un utente con email ${email}, ma non è un super-admin locale attivo. Interrompo senza sovrascrivere.`,
+        `Esiste già un utente con email ${email}, ma non è un super-admin bootstrap attivo. Interrompo senza sovrascrivere.`,
       )
     }
+
+    const { hash, salt } = await hashLocalPassword(password)
 
     await payload.create({
       collection: 'users',
       overrideAccess: true,
       data: {
         email,
-        password,
         adminRole: 'super-admin',
         appRole: 'none',
-        loginMethod: 'local',
+        loginMethod: 'sso',
         active: true,
+        bootstrapCredentialHash: hash,
+        bootstrapCredentialSalt: salt,
       },
     })
 

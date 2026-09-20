@@ -172,9 +172,21 @@ export interface User {
    */
   loginMethod: 'sso' | 'local' | 'sso-and-local';
   /**
-   * Utente disattivato: nessun login ammesso (SSO o locale).
+   * Spuntare per consentire l’accesso. Default disattivato (ADR-004): compare solo dopo l’assegnazione di un ruolo.
    */
   active?: boolean | null;
+  /**
+   * Gestito da hook (attivazione email App). Non modificare manualmente salvo casi eccezionali.
+   */
+  emailVerified?: boolean | null;
+  password?: string | null;
+  /**
+   * Ripetere la password per conferma.
+   */
+  passwordConfirm?: string | null;
+  emailVerificationToken?: string | null;
+  bootstrapCredentialHash?: string | null;
+  bootstrapCredentialSalt?: string | null;
   sub?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -185,7 +197,6 @@ export interface User {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
-  password?: string | null;
   collection: 'users';
 }
 /**
@@ -285,6 +296,12 @@ export interface UsersSelect<T extends boolean = true> {
   appRole?: T;
   loginMethod?: T;
   active?: T;
+  emailVerified?: T;
+  password?: T;
+  passwordConfirm?: T;
+  emailVerificationToken?: T;
+  bootstrapCredentialHash?: T;
+  bootstrapCredentialSalt?: T;
   sub?: T;
   updatedAt?: T;
   createdAt?: T;

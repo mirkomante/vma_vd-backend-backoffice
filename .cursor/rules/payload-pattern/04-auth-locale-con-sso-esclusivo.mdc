@@ -1,6 +1,6 @@
 ---
 description: Pattern per conciliare login locale (super-admin di bootstrap, e/o Area App) con un'area SSO-esclusiva sulla stessa collection users — limite reale di Payload e soluzione collaudata
-globs: **/collections/[Uu]sers*, **/auth/**, **/*login*, **/payload.config.ts
+globs: **/collections/[Uu]sers*, **/collections/users/**, **/*[Ll]ogin*, **/hashLocalCredentials*
 alwaysApply: false
 stato: bozza
 ---
@@ -14,6 +14,7 @@ Si applica quando il progetto ha bisogno di login locale — la route di emergen
 - `disableLocalStrategy` è un interruttore a livello di **intera collection**, non di singola vista. Quando attivo, l'operazione nativa di login (email+password) viene rifiutata su qualunque endpoint o route che usi quella collection — non solo sulla vista standard `/admin/login`. È la stessa documentazione ufficiale di Payload a dirlo: da usare solo se si è già sostituito il meccanismo di autenticazione con uno proprio.
 - Effetto collaterale meno visibile: con `disableLocalStrategy` attivo, Payload smette anche di hashare automaticamente la password in create/update per quella collection.
 - Non esiste, nativamente, un'opzione "nascondi il form solo su questa vista, mantieni l'operazione di login attiva altrove" sulla stessa collection.
+- **Access control sui field e hook interni**: un field con `access.read`/`create`/`update` tutti `() => false` non compare nemmeno nel `doc` passato agli hook `afterChange`/`afterLogin` (e analoghi) della **stessa** collection — non solo nelle risposte REST/GraphQL. Per passare un valore sensibile generato in `beforeChange` a un hook `afterChange` successivo **nella stessa richiesta**, usare `req.context` (es. chiave dedicata), non affidarsi al campo persistito nel `doc` dell’hook. Comportamento generale di Payload, riusabile in altri progetti con lo stesso pattern.
 
 ## Pattern collaudato (verificato su un progetto reale)
 
@@ -28,6 +29,30 @@ Si applica quando il progetto ha bisogno di login locale — la route di emergen
 - Non assumere che nascondere il form dalla vista `/admin/login` lasci comunque disponibile l'operazione di login nativa su una route separata: non è così, il blocco è sulla collection intera.
 - Non lasciare l'hashing della password al comportamento di default di Payload quando `disableLocalStrategy` è attivo: senza reimplementarlo esplicitamente, le password locali non saranno mai verificabili.
 - Non dimenticare il richiamo manuale degli hook `afterLogin`/`afterLogout` negli endpoint custom.
+
+## Vincolo di ruolo: Admin non può essere locale
+
+`ADR-004-permessi-crud-utenti.md` (catalogo, in `cursor-payload-template`) impone: un record con `adminRole ≠ none` non può avere `loginMethod: locale`. Implementare come validazione in `beforeChange` sulla collection `users`, non come semplice disciplina lato form — un client REST/GraphQL diretto deve ricevere lo stesso rifiuto del form Admin.
+
+## Pattern access control CRUD (`ADR-004-permessi-crud-utenti.md`)
+
+Le funzioni `access.create`/`access.update`/`access.delete` di Payload possono restituire una query di vincolo oltre a `true`/`false` — usarle per esprimere la matrice di ruoli senza hook aggiuntivi:
+
+```ts
+delete: ({ req }) => {
+  if (!req.user) return false
+  const notSelf = { id: { not_equals: req.user.id } } // nessun ruolo elimina se stesso
+  if (req.user.adminRole === 'super-admin') return notSelf
+  if (req.user.adminRole === 'admin') {
+    return { and: [notSelf, { adminRole: { not_equals: 'super-admin' } }] }
+  }
+  return false
+}
+```
+
+Stessa struttura per `update` (senza `notSelf`: il self-update resta sempre permesso). Per `create`, il vincolo "un admin non-super non assegna `adminRole: super-admin`" va verificato sul campo `data.adminRole` in ingresso, non tramite query — `access.create` non ha un record esistente su cui filtrare.
+
+Il guardrail "non eliminare l'ultimo super-admin" (§2.7/§2.8 del template di fase) resta un controllo **separato**, tipicamente in un hook `beforeDelete`: la query sopra da sola non lo copre, perché un secondo super-admin supererebbe comunque il controllo `access.delete`.
 
 ## Alternativa non collaudata
 

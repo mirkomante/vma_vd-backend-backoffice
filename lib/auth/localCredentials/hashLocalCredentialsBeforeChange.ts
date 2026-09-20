@@ -25,6 +25,7 @@ export const hashLocalCredentialsBeforeChange: CollectionBeforeChangeHook = asyn
   writeData.hash = hash
   writeData.salt = salt
   delete writeData.password
+  delete writeData.passwordConfirm
 
   return data
 }

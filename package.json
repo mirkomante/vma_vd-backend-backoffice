@@ -11,10 +11,12 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "seed:super-admin": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-super-admin.ts"
+    "seed:super-admin": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-super-admin.ts",
+    "migrate:bootstrap-credentials": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/migrate-bootstrap-credentials.ts"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.89.0",
+    "@payloadcms/email-resend": "3.89.0",
     "@payloadcms/next": "3.89.0",
     "@payloadcms/richtext-lexical": "3.89.0",
     "@payloadcms/ui": "3.89.0",

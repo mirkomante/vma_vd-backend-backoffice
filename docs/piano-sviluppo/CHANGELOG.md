@@ -12,9 +12,23 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Fase 2.1 / 2.6 / 2.7 / 2.8 (sessione 2026-09-20, commit unico): allineamento ADR-004 completo su `users` (default `active`/`emailVerified` false, matrice CRUD in `access.create`/`update`/`delete`, `passwordConfirm` virtual, UX form Admin); ridisegno credenziali bootstrap super-admin (`bootstrapCredentialHash`/`Salt`, `loginMethod: sso`, route `/admin/login/local`, migrazione legacy); `AppLocalPasswordField` al posto di `PasswordField` nativo con `disableLocalStrategy`; propagazione token attivazione email via `req.context` (`activationContext.ts`) perché `emailVerificationToken` con field access negato non compare nel `doc` di `afterChange`. **Deviazione (PasswordField) — Ufficiale**: diagnosi richiesta «solo diagnosi, non correggere ancora nulla». **Percepito**: fix applicato subito, comunicato a lavoro fatto. **Osservato**: create/edit Admin ok, e2e attivazione (form Admin → mail → verify → login App) ok in dev.
 - Sincronizzate regole email dal catalogo prima di 2.6: `01-email-invarianti.mdc`, `01a-resend.mdc` (cursor-rules@a5c1b68), `fase-2-email-resend.md` (cursor-payload-template@e9bb93b) — scelta esplicita sandbox vs sottodominio verificato, invariante deliverability da chiudere in Fase 3.
+
+### Fixed
+
+- Fase 2.6 / email attivazione App locale non partiva: `emailVerificationToken` ha `access.read: false` quindi assente nel `doc` di `afterChange`; token passato via `req.context.pendingActivationToken` (`prepareActivationBeforeChange` → `sendActivationAfterChange`, helper `activationContext.ts`) senza allentare l’access sul campo.
+- Fase 2.6 / Admin create utente App locale: crash browser `Cannot destructure property 'config'` su form-state quando comparivano i campi password — causa `PasswordField` nativo con `disableLocalStrategy`; sostituito con `AppLocalPasswordField` custom.
+
+### Tests
+
+- Fase 2.6 e2e attivazione (dev, 2026-09-20): create utente App locale da Admin → `POST /api/users` 201; link `/app/login/verify?token=…` 200; login `/api/users/login/app` 302 e `/app` 200 (verifica umana + log server).
+- Fase 2.1/2.6 Admin create utente (dev, verifica umana 2026-09-20): nessun crash al passaggio Login Method → locale; compaiono password + conferma (una volta ciascuna); checkbox Active solo dopo assegnazione di un ruolo Admin o App.
+- Fase 2.1 ADR-004 CRUD (dev, 2026-09-20): Local API con `overrideAccess: false` — matrice permessi admin/super-admin; REST e form Admin coerenti.
+
 ### Added
 
+- Script `pnpm migrate:bootstrap-credentials` (`scripts/migrate-bootstrap-credentials.ts`) per super-admin legacy (`loginMethod` locale + hash/salt standard → campi bootstrap + `loginMethod: sso`).
 - Fase 2.9: collection `activity-log` e log eventi auth — schema in `collections/ActivityLog.ts`, scrittura in `lib/activityLog/logActivity.ts`, hook `afterLogin`/`afterLogout` su `users`; `accessDenied` quando l’utente è censito (callback OAuth e login locale Admin); campi `collection`/`documentId` solo in schema, senza hook CRUD su altre collection.
 - Fase 2.7: login locale di emergenza Admin — hook `beforeChange` per hashing PBKDF2-SHA256 (`lib/auth/localCredentials/`), endpoint `POST /api/users/login/local` (cookie Payload + hook `afterLogin` espliciti), pagina non linkata `/admin/login/local`, `useSessions: false` su `users`; nota operativa `docs/operativo/login-locale-emergenza-admin.md`. Debito 2.8 punto 2 (hook hashing) chiuso.
 - Fase 2.4 / 2.5: integrazione Google OAuth con `payload-oauth2` — istanze isolate `google-admin` e `google-app` (path authorize/callback distinti); validazione server del claim `hd` contro Global `settings`; `getUserInfo` limitato a `email`/`sub`; whitelist-per-record (`onUserNotFoundBehavior: error`); callback custom con `jwtSign` Payload; Admin `/admin/login` solo bottone Google (`disableLocalStrategy` + componente `beforeLogin`); pagina App `/app/login` con link all’istanza App; messaggio di rifiuto generico condiviso (`lib/auth/loginMessages.ts`).
@@ -40,6 +54,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
+- Fase 2.7/2.8 (ridisegno bootstrap, 2026-09-20): `tsc`/`lint` OK; migrazione dev 1 record; `POST /api/users/login/local` con password seed → 302 `/admin`; password errata e email inesistente → stesso redirect `?authFailed=1`; `GET /api/users/1` autenticato super-admin senza campi `bootstrapCredential*` in JSON. Guardrail validazione super-admin+`loginMethod: local` non coperto da script automatico — comportamento atteso da hook `beforeValidate`. Rate-limit route emergenza: non testato (non implementato).
 - Fase 2.2 / 2.8 (dati) / 2.4 (Admin): conferma umana (2026-09-20) — allow-list con `vietnamonamour.com`, utente Workspace censito in `users` (solo SSO), login Google su `/admin/login` → `/admin` OK. Debiti manuali 2.2 e 2.8.1 chiusi.
 - Fase 2.7: conferma umana — login locale su `/admin/login/local` OK, messaggio generico su fallimento OK, `/admin/login` resta solo Google. Record `activityLog` (`method: local`) ancora non verificabile: collection 2.9 assente. Validazione codice: `tsc`/`lint` OK (sessione implementazione).
 - Fase 2.5: conferma umana (2026-09-20) — login Google su `/app/login` → redirect `/app` OK (istanza `google-app`, claim `hd` dominio Workspace).

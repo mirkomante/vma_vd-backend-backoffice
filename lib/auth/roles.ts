@@ -42,9 +42,16 @@ export type UserAccessFields = {
   adminRole?: AdminRole | null
   appRole?: AppRole | null
   loginMethod?: LoginMethod | null
+  /** Assente sui record precedenti all’introduzione del campo: trattato come verificato. */
+  emailVerified?: boolean | null
+  /** Credenziali route emergenza /admin/login/local; non esposte in Admin né via API. */
+  bootstrapCredentialHash?: string | null
+  bootstrapCredentialSalt?: string | null
 }
 
 /** Payload in scrittura (create/update), include l'eventuale password in chiaro. */
 export type UserWriteData = Partial<UserAccessFields> & {
   password?: string | null
+  /** Solo form Admin; non persistito (campo virtual o rimosso in hook). */
+  passwordConfirm?: string | null
 }
