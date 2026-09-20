@@ -11,6 +11,7 @@ import {
   type UserAccessFields,
   type UserWriteData,
 } from '@/lib/auth/roles'
+import { googleOAuthUserCallbackEndpoints } from '@/lib/auth/googleOAuth/callbackEndpoints'
 import {
   canAccessAdminPanel,
   canCreateUser,
@@ -20,7 +21,12 @@ import {
 
 export const Users: CollectionConfig = {
   slug: 'users',
-  auth: true,
+  auth: {
+    disableLocalStrategy: {
+      enableFields: true,
+    },
+  },
+  endpoints: googleOAuthUserCallbackEndpoints(),
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'adminRole', 'appRole', 'loginMethod', 'active'],

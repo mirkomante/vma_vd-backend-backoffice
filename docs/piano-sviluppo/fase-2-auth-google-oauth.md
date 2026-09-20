@@ -59,6 +59,8 @@ stato: validato
 
 **Attenzione — problema noto**: il callback predefinito del plugin `payload-oauth2` firma il JWT con `jose.SignJWT`, diverso da `jwtSign` nativo di Payload usato dal login locale — questo può causare un redirect fallito dopo un login riuscito (record creato in `activityLog` ma redirect su una pagina di login con errore), specialmente in combinazione con Server Components Next.js che leggono la sessione lato server. Se capita, la soluzione verificata è un callback OAuth custom registrato su `users` **prima** del plugin, che usa `jwtSign` nativo invece del callback predefinito. Documentare questa deviazione esplicitamente se necessaria: non è una violazione del piano, è un fix noto per questo plugin specifico.
 
+**Eseguito in 2.4/2.5 (2026-09-18)**: callback custom in `lib/auth/googleOAuth/callbackEndpoint.ts`, registrato su `users` via `googleOAuthUserCallbackEndpoints()` in `collections/Users.ts` (stessi path del plugin, che non duplica l’endpoint). Il plugin resta responsabile delle route `authorize` e delle auth strategy; la firma sessione passa da `jwtSign` Payload.
+
 ---
 
 ## 2.10 (parte Google) — Verifiche specifiche del provider

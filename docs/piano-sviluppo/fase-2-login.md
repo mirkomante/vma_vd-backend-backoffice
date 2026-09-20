@@ -83,15 +83,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 > **Sottofase a variante (provider auth).** Vedi file di variante: `fase-2-auth-google-oauth.md` (o equivalente).
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: login tramite il provider SSO scelto funzionante su `/admin`, con validazione identità e whitelist-per-record.
 
 > **Decisione documentata**: isolamento delle istanze SSO tra Admin e App — vedi `ADR-002-isolamento-istanze-sso.md`.
 
 **Checklist di chiusura sottofase (valida per qualunque variante)**:
-- [ ] Il flusso rispetta tutti gli invarianti di `auth/01-autenticazione-invarianti.mdc` (whitelist-per-record, nessun autoprovisioning, messaggio di rifiuto generico, validazione lato server, mai toccare il campo `password`).
-- [ ] La login view standard di `/admin/login` mostra solo il pulsante del provider SSO — nessun form locale visibile qui.
+- [x] Il flusso rispetta tutti gli invarianti di `auth/01-autenticazione-invarianti.mdc` (whitelist-per-record, nessun autoprovisioning, messaggio di rifiuto generico, validazione lato server, mai toccare il campo `password`).
+- [x] La login view standard di `/admin/login` mostra solo il pulsante del provider SSO — nessun form locale visibile qui.
+
+**Eseguito (2026-09-18)**: dipendenze `payload-oauth2` e `jose`; due plugin OAuth (Admin `google-admin`, App `google-app`) in `payload.config.ts` se le variabili Google sono valorizzate. Logica condivisa in `lib/auth/googleOAuth/` (validazione claim `hd` nell’hook `getToken`, `getUserInfo` solo `email`/`sub`, allow-list Global `settings`, `onUserNotFoundBehavior: error`, `useEmailAsIdentity: true`). Callback custom su `users` con `jwtSign` Payload (prima del plugin) al posto del default `jose.SignJWT` del plugin. Admin: `disableLocalStrategy` + `beforeLogin` con bottone Google; messaggio di rifiuto generico via `authFailed` su `/admin/login`.
 
 ---
 
@@ -99,15 +101,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e nel file indice `00-piano-gene
 
 > **Sottofase a variante (provider auth).** Vedi file di variante: `fase-2-auth-google-oauth.md` (o equivalente).
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: login tramite il provider SSO scelto funzionante su `/app`, stessa logica dell'istanza Admin ma su configurazione distinta.
 
 > **Decisione documentata**: stessa ADR di §2.4 — vedi `ADR-002-isolamento-istanze-sso.md`.
 
 **Checklist di chiusura sottofase (valida per qualunque variante)**:
-- [ ] Le due istanze (Admin e App) sono isolate (identificatori distinti), come richiesto da `auth/01-autenticazione-invarianti.mdc`.
-- [ ] Il bottone SSO sulla pagina di login custom dell'App usa questa istanza, non quella Admin.
+- [x] Le due istanze (Admin e App) sono isolate (identificatori distinti), come richiesto da `auth/01-autenticazione-invarianti.mdc`.
+- [x] Il bottone SSO sulla pagina di login custom dell'App usa questa istanza, non quella Admin.
+
+**Eseguito (2026-09-18)**: pagina `/app/login` con link a `/api/users/oauth/google-app` (istanza App); stessi guardrail dell’istanza Admin con flag `allowApp` sull’allow-list. Redirect post-login su `/app`; fallimento su `/app/login?authFailed=1` con lo stesso messaggio generico dell’Admin.
 
 ---
 

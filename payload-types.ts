@@ -141,6 +141,7 @@ export interface User {
    * Utente disattivato: nessun login ammesso (SSO o locale).
    */
   active?: boolean | null;
+  sub?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -238,6 +239,7 @@ export interface UsersSelect<T extends boolean = true> {
   appRole?: T;
   loginMethod?: T;
   active?: T;
+  sub?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

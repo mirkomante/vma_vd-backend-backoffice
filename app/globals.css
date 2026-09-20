@@ -48,6 +48,34 @@ a {
   text-decoration: none;
 }
 
+/* Allineato a Payload Admin: btn btn--style-primary btn--size-large */
+.google-oauth-login-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  width: 100%;
+  max-width: 20rem;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 15px;
+  border: 0;
+  border-radius: 4px;
+  background-color: var(--theme-elevation-900, #141414);
+  color: var(--theme-elevation-0, #ffffff);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.google-oauth-login-button:hover {
+  background-color: var(--theme-elevation-800, #2e2e2e);
+  color: var(--theme-elevation-0, #ffffff);
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

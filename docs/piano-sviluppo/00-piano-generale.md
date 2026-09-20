@@ -26,7 +26,7 @@
 | Fase | Descrizione | Stato | File di dettaglio |
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
-| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1 ✅, 2.2 ✅, 2.3 ✅, 2.8 ✅) | `fase-2-login.md` (+ file di variante auth ed email) |
+| Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | 🔶 in corso (2.1 ✅, 2.2 ✅, 2.3 ✅, 2.4 ✅, 2.5 ✅, 2.8 ✅) | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔲 da fare | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
@@ -75,7 +75,8 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 2, sottofase 2.4 (integrazione `payload-oauth2` — istanza Admin, vedi `fase-2-auth-google-oauth.md`).
+- **Prossimo passo**: Fase 2, sottofase 2.6 (login locale Area App, vedi `fase-2-login.md` e variante email se applicabile).
+- Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.
 - Fase 2.2 chiusa: Global `settings` (Identità autorizzate) con allow-list domini e guardrail anti-lista-vuota (debito di 2.8, scelta b).
 - Fase 2.8 chiusa in codice (seed + ultimo super-admin locale + no credenziali locali per Admin di pannello).

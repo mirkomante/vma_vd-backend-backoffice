@@ -58,7 +58,7 @@ Copiare da `.env.example` e valorizzare in `.env`:
 - `GOOGLE_CLIENT_ID` — Client ID del client Web OAuth di **sviluppo**.
 - `GOOGLE_CLIENT_SECRET` — Client secret associato.
 
-Dopo averle impostate, la sottofase 2.3 si considera chiusa lato repo; l’integrazione plugin resta 2.4 / 2.5.
+Dopo averle impostate, la sottofase 2.3 si considera chiusa lato repo. L’integrazione plugin (2.4 / 2.5) usa questi path e variabili — vedi `lib/auth/googleOAuth/` e `payload.config.ts`.
 
 ## Rotazione e accesso
 

@@ -1,0 +1,23 @@
+/* Login Admin — bottone Google centrato orizzontalmente nella colonna login Payload */
+.login .login-oauth {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.login .login-oauth .btn {
+  width: 100%;
+  max-width: 20rem;
+  justify-content: center;
+  text-align: center;
+}
+
+.login .login-oauth [role='alert'] {
+  width: 100%;
+  max-width: 20rem;
+  text-align: left;
+}

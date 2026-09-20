@@ -27,7 +27,7 @@ type AppAreaLayoutProps = {
 export default function AppAreaLayout({ children }: AppAreaLayoutProps) {
   return (
     <html lang="it" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body>{children}</body>
+      <body className="flex min-h-dvh w-full flex-col">{children}</body>
     </html>
   )
 }
