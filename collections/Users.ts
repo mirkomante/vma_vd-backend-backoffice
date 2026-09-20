@@ -11,6 +11,8 @@ import {
   type UserAccessFields,
   type UserWriteData,
 } from '@/lib/auth/roles'
+import { hashLocalCredentialsBeforeChange } from '@/lib/auth/localCredentials/hashLocalCredentialsBeforeChange'
+import { localLoginEndpoints } from '@/lib/auth/localLogin/endpoints'
 import { googleOAuthUserCallbackEndpoints } from '@/lib/auth/googleOAuth/callbackEndpoints'
 import {
   canAccessAdminPanel,
@@ -25,8 +27,9 @@ export const Users: CollectionConfig = {
     disableLocalStrategy: {
       enableFields: true,
     },
+    useSessions: false,
   },
-  endpoints: googleOAuthUserCallbackEndpoints(),
+  endpoints: [...googleOAuthUserCallbackEndpoints(), ...localLoginEndpoints()],
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'adminRole', 'appRole', 'loginMethod', 'active'],
@@ -117,6 +120,7 @@ export const Users: CollectionConfig = {
         return data
       },
     ],
+    beforeChange: [hashLocalCredentialsBeforeChange],
     beforeDelete: [
       async ({ req, id }) => {
         await assertNotLastLocalSuperAdmin({

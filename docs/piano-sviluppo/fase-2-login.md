@@ -57,7 +57,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 ## 2.2 — Global "Settings" — allow-list identità autorizzate
 
-**Stato**: 🔶 in corso (riaperta il 2026-09-20 — vedi nota di debito sotto)
+**Stato**: ✅ fatto
 
 **Obiettivo**: allow-list delle identità autorizzate (domini, tenant, o equivalente a seconda del provider SSO scelto), gestita da pannello Admin, pronta a differenziare i permessi per area.
 
@@ -76,7 +76,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 **Eseguito (2026-09-16)**: Global `settings` in `globals/Settings.ts` (etichetta Admin «Identità autorizzate», per non confondersi con i Global `impostazioni-*` di dominio). Array `allowedDomains` con `domain` + `allowAdmin`/`allowApp` (default false). Hook `beforeValidate` in `lib/auth/allowedDomains.ts`: trim, lowercase, FQDN, duplicati, rifiuto lista vuota (anche `[]` esplicito; un update che omette il campo riusa il valore già salvato). Scrittura solo `super-admin`; lettura staff Admin. La verifica del claim `hd` in login SSO resta 2.4/2.5; il login locale (2.6) non deve usare questa lista.
 
-**Debito riaperto (2026-09-20, da fix di catalogo)**: il meccanismo esiste (schema + hook + guardrail), ma nessun dominio è mai stato inserito nell'allow-list — un dominio in lista non è mai stato lo stesso di "il meccanismo funziona". Confermato: nessun record in `allowedDomains`. Azione da chiudere prima di poter testare l'SSO in 2.4/2.5/2.10: aggiungere via pannello Admin la riga `domain: vietnamonamour.com`, con `allowAdmin`/`allowApp` secondo la policy di progetto (staff amministrativo — dominio confermato 2026-09-20). Nessuna modifica di codice richiesta, solo la scrittura del dato reale.
+**Debito riaperto (2026-09-20, da fix di catalogo) — chiuso (2026-09-20)**: dominio `vietnamonamour.com` popolato via pannello Admin (flag area secondo policy di progetto). Conferma umana: login Google su `/admin` riuscito dopo allow-list e utente censito.
 
 ---
 
@@ -171,7 +171,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 ## 2.7 — Route locale di emergenza per super-admin
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: via di accesso locale riservata al super-admin di bootstrap, non raggiungibile da alcun link visibile.
 
@@ -183,11 +183,13 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 - Verificare che sia accessibile **solo** digitando l'URL direttamente, non tramite navigazione da `/admin/login`.
 - Scrivere la nota operativa interna che documenta l'esistenza e lo scopo di questa route, per chi gestirà il sistema — coerente con la regola di documentazione obbligatoria. Senza questa nota, la route rischia di essere dimenticata proprio nel momento in cui serve davvero.
 
+**Eseguito (2026-09-20)**: hook `beforeChange` PBKDF2-SHA256 in `lib/auth/localCredentials/`; verifica password in `verifyLocalPassword`; endpoint `POST /api/users/login/local` con `generatePayloadCookie` e richiamo esplicito hook `beforeLogin`/`afterLogin`; pagina `/admin/login/local` (form minimo, non linkata); `useSessions: false` su `users`. Nota operativa `docs/operativo/login-locale-emergenza-admin.md`.
+
 ---
 
 ## 2.8 — Script di seed super-admin + guardrail
 
-**Stato**: 🔶 in corso (riaperta il 2026-09-20 — vedi nota di debito sotto)
+**Stato**: ✅ fatto
 
 **Obiettivo**: primo super-admin creato in modo ripetibile, e i due vincoli minimi di sicurezza attivi.
 
@@ -207,8 +209,8 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 **Debito riaperto (2026-09-20, da fix di catalogo)**, due punti distinti:
 
-1. **Identità del seed**: l'email in `SEED_SUPERADMIN_EMAIL` è un account Gmail personale, non del dominio Workspace del progetto (`vietnamonamour.com`) — per la policy di questo progetto (Google login ristretto ai domini aziendali, coerente con l'allow-list di 2.2) questo account non potrà mai autenticarsi via SSO. **Decisione presa (2026-09-20): due identità separate**, non una sola. Questo account Gmail resta l'identità di **solo accesso locale di emergenza** (2.7) — non richiede modifiche. Azione da fare: creare/promuovere un **secondo** utente in `users` con `adminRole: super-admin` (o `admin`) ed email reale del dominio `vietnamonamour.com`, dedicato al test SSO in 2.4/2.10. Non è un problema del seed script, che resta generico e corretto: è un dato da creare a parte.
-2. **Hook di hashing mancante**: verificato via ispezione diretta del DB che il record del seed ha `hash`/`salt` validi (formato compatibile con `authenticateLocalStrategy`) nonostante `disableLocalStrategy` fosse già attivo al momento della creazione — il record attuale è quindi utilizzabile così com'è. Ma l'hook di hashing manuale richiesto da `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc` (equivalente a `hashLocalCredentials` di Event Manager) non è stato ancora scritto: senza di esso, un futuro cambio password per questo utente non verrebbe più hashato correttamente, e nessun endpoint può oggi verificare la password (manca anche l'endpoint di 2.7, vedi lì). Azione: scrivere l'hook prima o insieme all'endpoint di 2.7.
+1. **Identità del seed** — **chiuso (2026-09-20)**: decisione **due identità separate** confermata in produzione dati. Il Gmail del seed resta solo emergenza locale (2.7); creato in `users` un secondo account `@vietnamonamour.com` (solo SSO) per l’Area Admin. Conferma umana: login Google su `/admin` OK.
+2. **Hook di hashing mancante** — **chiuso (2026-09-20, con 2.7)**: hook `beforeChange` in `lib/auth/localCredentials/` + endpoint `/api/users/login/local` con verifica manuale. Il record seed esistente resta valido senza rigenerazione.
 
 ---
 
