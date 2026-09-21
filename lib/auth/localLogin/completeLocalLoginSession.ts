@@ -3,6 +3,8 @@ import { generatePayloadCookie, getFieldsToSign, jwtSign } from 'payload'
 
 import type { User } from '@/payload-types'
 
+import { withSessionStrategyClaim } from '@/lib/auth/jwt/sessionStrategyClaim'
+
 const USERS_SLUG = 'users' as const
 
 export async function completeLocalLoginSession(args: {
@@ -37,12 +39,15 @@ export async function completeLocalLoginSession(args: {
     _strategy: strategy,
   }) as TypedUser
 
-  const fieldsToSign = getFieldsToSign({
-    collectionConfig,
-    email: activeUser.email || '',
-    sid: undefined,
-    user: sessionUser,
-  })
+  const fieldsToSign = withSessionStrategyClaim(
+    getFieldsToSign({
+      collectionConfig,
+      email: activeUser.email || '',
+      sid: undefined,
+      user: sessionUser,
+    }),
+    strategy,
+  )
 
   const tokenExpiration =
     typeof collectionConfig.auth === 'object' && collectionConfig.auth?.tokenExpiration

@@ -66,6 +66,8 @@ async function resetPasswordHandler(req: PayloadRequest): Promise<Response> {
       collection: USERS_SLUG,
       data: {
         password,
+        // Allineato al form Admin (campo virtual passwordConfirm obbligatorio in beforeValidate).
+        passwordConfirm: password,
         resetPasswordToken: null,
         resetPasswordExpiration: new Date().toISOString(),
         emailVerified: true,

@@ -10,6 +10,19 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-09-21
+
+Chiusura Fase 2 (login e autenticazione).
+
+### Fixed
+
+- Fase 2.10: sessione SSO App riportata come `google-admin` su `/api/users/me` — due strategie `payload-oauth2` accettavano lo stesso JWT; claim `strategy` in firma cookie + `patchUsersAuthStrategiesPlugin` (`lib/auth/jwt/`).
+- Fase 2.10: reset password App falliva in silenzio (`resetFailed=1` senza token in URL) — update senza `passwordConfirm` rifiutato da `beforeValidate` su `users`; allineato in `resetPasswordEndpoint.ts`.
+
+### Tests
+
+- Fase 2.10 spike e2e (dev, 2026-09-21): SSO Admin/App con cookie e `strategy` distinte; rifiuto utente Workspace non censito (messaggio generico); OAuth GCP Internal blocca identità fuori org prima del callback; login locale App; matrice casi A–E e CRUD; forgot/reset con utente reale; token reset monouso; campi sensibili assenti in read. Cookie HTTPS in produzione **non** testato (Fase 3 § 3.3). Utenti `*@spike.local` rimossi post-spike.
+
 ### Changed
 
 - Fase 2.1 / 2.6 / 2.7 / 2.8 (sessione 2026-09-20, commit unico): allineamento ADR-004 completo su `users` (default `active`/`emailVerified` false, matrice CRUD in `access.create`/`update`/`delete`, `passwordConfirm` virtual, UX form Admin); ridisegno credenziali bootstrap super-admin (`bootstrapCredentialHash`/`Salt`, `loginMethod: sso`, route `/admin/login/local`, migrazione legacy); `AppLocalPasswordField` al posto di `PasswordField` nativo con `disableLocalStrategy`; propagazione token attivazione email via `req.context` (`activationContext.ts`) perché `emailVerificationToken` con field access negato non compare nel `doc` di `afterChange`. **Deviazione (PasswordField) — Ufficiale**: diagnosi richiesta «solo diagnosi, non correggere ancora nulla». **Percepito**: fix applicato subito, comunicato a lavoro fatto. **Osservato**: create/edit Admin ok, e2e attivazione (form Admin → mail → verify → login App) ok in dev.

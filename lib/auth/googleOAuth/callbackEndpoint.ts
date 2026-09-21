@@ -11,6 +11,8 @@ import { logAuthAccessDenied } from '@/lib/activityLog/logAuthAccessDenied'
 import { getOAuthLoginArea } from './areas'
 import { OAuthLoginRejectedError } from './errors'
 import { extractOAuthCallbackCode } from './extractOAuthCode'
+import { withSessionStrategyClaim } from '@/lib/auth/jwt/sessionStrategyClaim'
+
 import { assertUserAllowedForOAuthLogin } from './userLoginChecks'
 
 const USERS_SLUG = 'users' as const
@@ -118,12 +120,15 @@ function createCallbackHandler(pluginOptions: PluginTypes) {
         _strategy: pluginOptions.strategyName,
       }) as TypedUser
 
-      const fieldsToSign = getFieldsToSign({
-        collectionConfig,
-        email: excludeEmailFromJwtToken ? '' : activeUser.email || '',
-        sid: undefined,
-        user: sessionUser,
-      })
+      const fieldsToSign = withSessionStrategyClaim(
+        getFieldsToSign({
+          collectionConfig,
+          email: excludeEmailFromJwtToken ? '' : activeUser.email || '',
+          sid: undefined,
+          user: sessionUser,
+        }),
+        pluginOptions.strategyName,
+      )
 
       const tokenExpiration =
         typeof collectionConfig.auth === 'object' && collectionConfig.auth?.tokenExpiration

@@ -16,7 +16,7 @@ stato: validato
 
 Se si sceglie (b) con un dominio diverso da quello finale del progetto, annotarlo esplicitamente (es. in cima a `00-piano-generale.md`): andrà sostituito con il dominio reale prima del go-live (vedi `fase-3-deploy.md` §3.2).
 
-**Scelta di progetto (2026-09-20)**: percorso **(b) sottodominio verificato**. Sottodominio **`mail.vietnamonamour.com`** — stato **Verified** in Resend. Mittente: `info@mail.vietnamonamour.com`, nome «Backoffice - Vietnamonamour». Credenziali in `.env` (`RESEND_API_KEY`, `RESEND_FROM_*`). Test invio (attivazione/reset) da chiudere in 2.6 / spike 2.10.
+**Scelta di progetto (2026-09-20)**: percorso **(b) sottodominio verificato**. Sottodominio **`mail.vietnamonamour.com`** — stato **Verified** in Resend. Mittente: `info@mail.vietnamonamour.com`, nome «Backoffice - Vietnamonamour». Credenziali in `.env` (`RESEND_API_KEY`, `RESEND_FROM_*`). Test invio attivazione/reset verificati in 2.6 e spike 2.10 (reset con utente reale).
 
 **Checklist**:
 - **Prima di procedere**: verificare la compatibilità della versione di `@payloadcms/email-resend` con la versione di Payload in uso in questo progetto — il comportamento sulla durata reale dei token descritto più sotto è stato verificato su una versione specifica e potrebbe differire su un'altra.

@@ -10,6 +10,7 @@ import { ActivityLog } from './collections/ActivityLog'
 import { Users } from './collections/Users'
 import { Settings } from './globals/Settings'
 import { isGoogleOAuthConfigured } from './lib/auth/googleOAuth/env'
+import { patchUsersAuthStrategiesPlugin } from './lib/auth/jwt/patchUsersAuthStrategiesPlugin'
 import { googleOAuthAdminPlugin, googleOAuthAppPlugin } from './lib/auth/googleOAuth/plugins'
 import {
   getResendApiKey,
@@ -43,7 +44,7 @@ export default buildConfig({
   collections: [Users, ActivityLog],
   globals: [Settings],
   plugins: isGoogleOAuthConfigured()
-    ? [googleOAuthAdminPlugin(), googleOAuthAppPlugin()]
+    ? [googleOAuthAdminPlugin(), googleOAuthAppPlugin(), patchUsersAuthStrategiesPlugin()]
     : [],
   ...(isResendConfigured()
     ? {

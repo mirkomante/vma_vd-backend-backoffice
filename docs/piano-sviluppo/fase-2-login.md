@@ -277,13 +277,11 @@ Entrambe le matrici sono vincolanti per ogni progetto che eredita questo templat
 
 ## 2.10 — Spike di test end-to-end con credenziali reali
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto
 
 **Obiettivo**: conferma pratica, non solo di codice, che il flusso di login funziona davvero nell'ambiente reale.
 
 **Dipende da**: 2.1–2.9 (tutte le sottofasi precedenti).
-
-**Questo passaggio richiede credenziali/ambiente reali (vedi 2.3) — coordinarsi con l'umano prima di eseguirlo.**
 
 **Checklist**:
 1. Avviare l'app in locale con le due istanze del provider SSO configurate (Admin e App).
@@ -292,16 +290,25 @@ Entrambe le matrici sono vincolanti per ogni progetto che eredita questo templat
 4. Ripetere lo stesso su `/app` (istanza separata).
 5. Login locale su `/app` con un utente locale di test.
 6. Tentativo con un'identità non autorizzata (fuori allow-list) → verificare rifiuto con messaggio generico. Per il dettaglio di come si presenta questo scenario nel provider scelto, vedi il file di variante auth.
-7. Ripetere i punti rilevanti sull'ambiente di produzione, per verificare il comportamento del cookie httpOnly su HTTPS dietro proxy/load balancer, prima del rilascio definitivo — **da eseguire in Fase 3**, non qui: non bloccante per chiudere Fase 2.
+7. Ripetere i punti rilevanti sull'ambiente di produzione, per verificare il comportamento del cookie httpOnly su HTTPS dietro proxy/load balancer, prima del rilascio definitivo — **da eseguire in Fase 3** (§ 3.3), non qui: non bloccante per chiudere Fase 2.
 
 **Non serve** un framework di test automatizzato per questo spike: è manuale, una tantum, in fase di sviluppo — non va rimandato al deploy né trasformato in un'infrastruttura di test permanente (coerente con `core/01-proporzionalita.mdc`).
+
+**Eseguito (2026-09-21, dev locale)**:
+
+- SSO `/admin` e `/app` con account Workspace in allow-list: cookie `payload-token` valido; `/api/users/me` con `strategy`/`_strategy` coerenti (`google-admin` vs `google-app`) dopo fix claim JWT `strategy` e plugin `patchUsersAuthStrategiesPlugin` (prima del fix, entrambe le istanze payload-oauth2 accettavano lo stesso JWT e vinceva sempre `google-admin`).
+- Rifiuto in-app: account `@vietnamonamour.com` non censito → messaggio generico su Admin e App. Con OAuth GCP **Internal**, identità fuori organizzazione (es. `@dude.it`) viene bloccata da Google (`403 org_internal`) **prima** del callback — perimetro aggiuntivo, non sostituto del test allow-list lato app.
+- Login locale App (regressione): 302 `/app`, sessione valida; matrice casi A–E e CRUD (create/update/delete) verificata in sequenza (Local API + HTTP).
+- Forgot/reset password App: `POST /forgot-password/app` → `forgot?sent=1`; reset con utente reale verificato a mano; fix `passwordConfirm` sull’endpoint reset (allineamento hook `beforeValidate`); token monouso e assenza campi sensibili in read verificati.
+- Punto checklist **7** (cookie HTTPS in produzione): **rimandato a Fase 3** § 3.3, esplicitamente non chiuso qui.
+- Utenti di test `*@spike.local` creati durante lo spike: eliminati dal DB (inclusi log `activity-log` collegati).
 
 ---
 
 ## Note di chiusura fase
 
 Al termine della Fase 2, prima di iniziare `fase-3-deploy.md`:
-- [ ] Sottofasi 2.1–2.10 marcate ✅ in questo file e in `00-piano-generale.md` (il punto 7 di 2.10, se rimandato a Fase 3, va segnalato esplicitamente come tale, non semplicemente ✅).
+- [x] Sottofasi 2.1–2.10 marcate ✅ in questo file e in `00-piano-generale.md` (punto 7 di 2.10 rimandato a Fase 3 § 3.3, segnalato esplicitamente in § 2.10 sopra).
 - [ ] Segnalare esplicitamente qualunque deviazione dal piano avvenuta durante l'esecuzione (es. un fix non previsto, un comportamento diverso da quello atteso in una libreria/plugin), così da tenerne conto nelle fasi successive.
 - [ ] Verificare che nessun test dev pendente sia rimasto "in sospeso silenzioso": se qualcosa è stato rimandato a Fase 3, deve essere esplicitamente scritto in `fase-3-deploy.md`, non solo nella cronologia della chat.
 
