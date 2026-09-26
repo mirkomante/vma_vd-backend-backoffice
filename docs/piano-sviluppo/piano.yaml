@@ -416,6 +416,33 @@ archi:
     descrizione: "Ambiente GCP pronto (Cloud Scheduler) necessario per il job giornaliero di anonimizzazione GDPR."
     adr: null
 
+  - id: arco-26
+    da: fase-3
+    a: fase-5
+    tipo: decisione
+    descrizione: >
+      Istanza Cloud SQL di produzione dedicata (non condivisa con
+      vtn-postgres), db-f1-micro, zona singola senza HA all'avvio —
+      nessun carico ospiti dipende da questa istanza finché fase-5 non vi
+      migra dati reali di prenotazioni. Prima che quel go-live entri in
+      produzione, l'attivazione di HA va rivalutata esplicitamente come
+      voce della checklist di chiusura fase, non lasciata implicita.
+    adr: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
+    fonte: "ADR-110-istanza-cloud-sql-produzione.md §3"
+
+  - id: arco-27
+    da: fase-3
+    a: fase-6
+    tipo: decisione
+    descrizione: >
+      Stessa istanza e stesso criterio di arco-26, applicato al go-live
+      pubblico del menù digitale (fase-6): nessun carico ospiti dipende
+      da questa istanza finché fase-6 non la porta in produzione reale —
+      a quel punto l'HA va rivalutata esplicitamente, non lasciata
+      implicita.
+    adr: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
+    fonte: "ADR-110-istanza-cloud-sql-produzione.md §3"
+
   # --- Decisioni e output di progetto — dominio menù digitale ---------------
 
   - id: arco-14
@@ -590,3 +617,15 @@ adr_da_scrivere:
       (riepilogo-sessione-impostazioni-sistema.md); include amendment
       esplicito ad ADR-107 §1 (rimozione di tre campi orario/chiusura,
       ora unificati su impostazioni-sistema).
+  - titolo: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
+    archi: ["arco-26", "arco-27"]
+    stato: "accettata"
+    file: "ADR-110-istanza-cloud-sql-produzione.md"
+    nota: >
+      Decimo ADR di progetto, non parte della sequenza originaria del
+      punto 3 di tracciamento-processo-adr-dag.md (quella si è chiusa
+      con i primi nove, 2026-09-13) — emerso durante la pianificazione
+      operativa di Fase 3.1, non alla composizione iniziale. Nessuna
+      deviazione da un default di catalogo: fase-3-db-postgres.md
+      lascia tier e disponibilità esplicitamente aperti al progetto.
+      Validato dall'utente il 2026-09-26.
