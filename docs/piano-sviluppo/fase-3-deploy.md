@@ -27,13 +27,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 > - MongoDB → `fase-3-db-mongodb.md`
 > - PostgreSQL → `fase-3-db-postgres.md` *(quando disponibile nel catalogo)*
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-09-29)
 
 **Obiettivo**: istanza di produzione del database pronta, sostituta di quella locale, con region e rete allineate alle scelte prese per l'ambiente cloud (§ 3.2).
 
 **Checklist di chiusura sottofase (valida per qualunque variante — verificare dopo aver seguito il file di variante)**:
-- [ ] La connection string di produzione è pronta, non annotata in chiaro da nessuna parte — andrà direttamente nel gestore di secret dell'ambiente cloud scelto (§ 3.2).
-- [ ] `.env.example` aggiornato con un commento che indica che il valore reale è di produzione (nessuna credenziale reale nel file).
+- [x] La connection string di produzione è pronta, non annotata in chiaro da nessuna parte — andrà direttamente nel gestore di secret dell'ambiente cloud scelto (§ 3.2).
+- [x] `.env.example` aggiornato con un commento che indica Cloud SQL / produzione (nessuna credenziale reale nel file).
+- [x] Migrazioni Payload committate **e** applicate su Cloud SQL prod (`migrations/`, `pnpm payload migrate` via Auth Proxy su `127.0.0.1:5433` — vedi `docs/operativo/cloud-sql-produzione.md`).
 
 ---
 

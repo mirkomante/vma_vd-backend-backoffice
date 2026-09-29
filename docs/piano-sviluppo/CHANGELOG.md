@@ -12,7 +12,16 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 3.1: migrazione Payload iniziale `20260929_141010_initial_schema` (schema Fase 2: `users`, `activity_log`, global `settings`, tabelle di sistema Payload); script npm `migrate` / `migrate:status` / `migrate:create`; `scripts/prod-db.sh` e `docs/operativo/cloud-sql-produzione.md` (connessione Auth Proxy, migrate/seed su prod).
 - Fase 3.1 (pre-lavoro): `ADR-110-istanza-cloud-sql-produzione.md` — istanza Cloud SQL for PostgreSQL 18 dedicata (non condivisa con `vtn-postgres`, in dismissione a rilascio pubblico), Enterprise, `db-f1-micro`, europe-west1, zona singola **senza HA all'avvio** — nessun default di catalogo scartato (`fase-3-db-postgres.md` lascia tier/disponibilità aperti al progetto), ma decisione che condiziona fase-5/fase-6: HA da rivalutare esplicitamente prima che dati reali di prenotazioni o il go-live pubblico del menù entrino in produzione su questa istanza, non lasciata implicita. Fissa anche la regione (chiude un rimando circolare tra `fase-3-db-postgres.md` §3.1 e `fase-3-cloud-gcp.md` §3.2). `piano.yaml` aggiornato con `arco-26` (fase-3 → fase-5) e `arco-27` (fase-3 → fase-6), non presenti alla composizione iniziale del 2026-09-13.
+
+### Changed
+
+- Fase 3.1: stato §3.1 in `fase-3-deploy.md` / `fase-3-db-postgres.md` e indice `00-piano-generale.md`; `piano.yaml` fase-3 → `in_corso`. Nota operativa: migrate prod preferito con `DATABASE_URL` inline (5433 + proxy), `.env` resta locale.
+
+### Tests
+
+- Fase 3.1: `pnpm payload migrate:create initial_schema` OK; `pnpm payload migrate` su DB **locale** rifiutato / errore DDL perché lo schema esiste già da `push` (atteso). Migrate su Cloud SQL prod (2026-09-29): OK via Auth Proxy `127.0.0.1:5433`, migrazione `20260929_141010_initial_schema` applicata (~276ms); `pnpm migrate:status` → Batch 1, Ran Yes. Tentativi falliti prima del successo per `DATABASE_URL` su porta 5432 (Postgres locale) con utente Cloud SQL — errore `role "vma-vd-user" does not exist` (atteso).
 
 ## [0.2.0] — 2026-09-21
 
