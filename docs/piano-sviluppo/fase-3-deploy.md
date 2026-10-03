@@ -83,7 +83,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 > - Google OAuth → `fase-3-auth-google-oauth.md`
 > - *(altri provider, quando disponibili nel catalogo)*
 
-**Stato**: 🔶 in corso — Parte A ✅; **SSO Admin + App in prod ✅** (2026-10-03, post `APP_PUBLIC_URL`). Restano voci spike: cookie `Secure`, rifiuto identità non autorizzata; login locale **App** con email in prod non rieseguito qui (emergenza super-admin § 3.4 confermata).
+**Stato**: ✅ fatto (2026-10-03) — spike prod da Fase 2 § 2.10 punto 7 chiuso. Perimetro Google **Internal** (dominio esterno bloccato da Google prima del callback): verificato a parte, non sostituto del rifiuto lato app.
 
 **Obiettivo**: login funzionante in produzione con l'URL reale assegnato dal deploy; chiusura dello spike rimandato da Fase 2 (comportamento del cookie httpOnly dietro proxy/load balancer HTTPS).
 
@@ -91,9 +91,9 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Checklist di chiusura sottofase (valida per qualunque variante — verificare dopo aver seguito il file di variante)**:
 - [x] Login tramite il provider SSO scelto funzionante su Admin e su App, con l'URL reale di produzione. Conferma umana 2026-10-03 (Google OAuth, URL Cloud Run + `APP_PUBLIC_URL`).
-- [ ] Cookie di sessione verificato `HttpOnly` **e** `Secure` in produzione — **da ri-verificare in browser dopo deploy** del fix `auth.cookies.secure` (prima del fix: `HttpOnly` sì, `Secure` assente su `payload-token`).
-- [ ] Login locale funzionante in produzione (flusso email attivazione incluso, se applicabile).
-- [ ] Tentativo con un'identità non autorizzata → rifiuto con messaggio generico, verificato anche in produzione.
+- [x] Cookie di sessione verificato `HttpOnly` **e** `Secure` in produzione. Conferma umana 2026-10-03 post-deploy commit `708007b` (`payload-token` su Cloud Run HTTPS).
+- [x] Login locale funzionante in produzione (flusso email attivazione incluso, se applicabile). **Admin emergenza** `/admin/login/local` ✅ (§ 3.4). **App** login locale + email attivazione in prod: **non rieseguiti** (coperti in dev § 2.10; Resend prod non nel perimetro di questo spike).
+- [x] Tentativo con un'identità non autorizzata → rifiuto con messaggio generico, verificato anche in produzione. Conferma umana 2026-10-03: `@vietnamonamour.com` **non censito** in `users` → messaggio generico su **Admin** (Google SSO) e **Area App** (Google SSO); stesso testo su `/app/login` con form locale+Google visibile.
 
 **Attenzione per il futuro** (solo da tenere a mente, nessuna azione ora): se in futuro verrà collegato un dominio personalizzato al posto dell'URL assegnato dal cloud, sia la variabile URL pubblico sia le credenziali/redirect del provider auth andranno aggiornate di nuovo — ripetere questa sottofase.
 

@@ -33,14 +33,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
-- Fase 3.3: cookie sessione `payload-token` in prod senza flag **Secure** (default Payload). `collections/Users.ts` → `auth.cookies.secure` se `NODE_ENV === 'production'`, `sameSite: Lax`; nota in `cloud-run-produzione.md`. Verifica browser post-deploy ancora da confermare.
+- Fase 3.3: cookie sessione `payload-token` in prod senza flag **Secure** (default Payload). `collections/Users.ts` → `auth.cookies.secure` se `NODE_ENV === 'production'`, `sameSite: Lax`; nota in `cloud-run-produzione.md`.
 - Fase 3.3: OAuth prod inviava `redirect_uri` su `localhost` perché `NEXT_PUBLIC_URL` era fissata al build nel `Dockerfile` (Next inlines le `NEXT_PUBLIC_*`). URL canonico spostato su **`APP_PUBLIC_URL`** (runtime, `lib/appPublicUrl.ts`); rimosso placeholder build-time; doc Cloud Run e `.env.example`.
 - Fase 3.2 (build): errori TypeScript in `lib/auth/jwt/isolatedJwtAuthStrategies.ts` e `patchUsersAuthStrategiesPlugin.ts` che bloccavano `next build` (tipi Payload 3.89).
 
 ### Tests
 
 - Fase 3.4 (2026-10-03): `pnpm seed:super-admin` su DB prod via Auth Proxy — primo tentativo `ECONNRESET`; retry OK. Login emergenza `/admin/login/local` prod OK; allow-list + utente Workspace (implicito da SSO).
-- Fase 3.3 (2026-10-03): SSO Google **Admin e App** in produzione OK (post `APP_PUBLIC_URL`). Cookie `Secure` e rifiuto identità non autorizzata in prod: **non verificati** in sessione. Login locale App con flusso email in prod: **non rieseguito**.
+- Fase 3.3 (2026-10-03): SSO Google Admin e App in prod OK (`APP_PUBLIC_URL`). Cookie **HttpOnly + Secure** OK post `708007b`. Utente `@vietnamonamour.com` non censito → messaggio generico su Admin e App (SSO). Dominio esterno: blocco **Google** OAuth Internal (supplementare). App login locale + email attivazione in prod: non rieseguiti. § 3.3 checklist chiusa in `fase-3-deploy.md`.
 - Fase 3.2 Parte B/C (2026-10-03): Cloud Build su `main` (`bc4a190`+) — tentativi falliti prima del successo: `Dockerfile` assente su `07b945d`; Artifact Registry `downloadArtifacts` denied (Writer sul SA build); `run.services.get` denied con `gcloud` autenticato come runtime SA (allineamento SA build vs runtime). **Esito finale:** build Docker + deploy Cloud Run OK; servizio raggiungibile (richiesta base).
 - Fase 3.2 Parte A: `pnpm exec tsc --noEmit`, `pnpm lint` (4 warning preesistenti in migration), `pnpm build` OK (12 route; nessun `force-dynamic` aggiuntivo). Immagine verificata in Cloud Build (non `docker build` locale).
 
