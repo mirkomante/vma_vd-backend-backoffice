@@ -10,6 +10,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Changed
+
+- Allineati in `piano.yaml` gli stati di `fase-1` e `fase-2` a `fatto` (coerenza con `00-piano-generale.md`); unificato il blocco `### Added` duplicato nella sezione 0.3.0 del CHANGELOG.
+
 ## [0.3.0] — 2026-10-03
 
 Chiusura Fase 3 (deploy produzione).
@@ -20,9 +24,6 @@ Chiusura Fase 3 (deploy produzione).
 - Fase 3.2 Parte A: `Dockerfile` multi-stage (pnpm, Node 24 Alpine, standalone, porta 8080 Cloud Run), `.dockerignore`; `output: 'standalone'` in `next.config.ts`; `engines.node` in `package.json`. Formato `DATABASE_URL` Cloud Run (socket `/cloudsql/...`) in `docs/operativo/cloud-sql-produzione.md`.
 - Fase 3.1: migrazione Payload iniziale `20260929_141010_initial_schema` (schema Fase 2: `users`, `activity_log`, global `settings`, tabelle di sistema Payload); script npm `migrate` / `migrate:status` / `migrate:create`; `scripts/prod-db.sh` e `docs/operativo/cloud-sql-produzione.md` (connessione Auth Proxy, migrate/seed su prod).
 - Fase 3.1 (pre-lavoro): `ADR-110-istanza-cloud-sql-produzione.md` — istanza Cloud SQL for PostgreSQL 18 dedicata (non condivisa con `vtn-postgres`, in dismissione a rilascio pubblico), Enterprise, `db-f1-micro`, europe-west1, zona singola **senza HA all'avvio** — nessun default di catalogo scartato (`fase-3-db-postgres.md` lascia tier/disponibilità aperti al progetto), ma decisione che condiziona fase-5/fase-6: HA da rivalutare esplicitamente prima che dati reali di prenotazioni o il go-live pubblico del menù entrino in produzione su questa istanza, non lasciata implicita. Fissa anche la regione (chiude un rimando circolare tra `fase-3-db-postgres.md` §3.1 e `fase-3-cloud-gcp.md` §3.2). `piano.yaml` aggiornato con `arco-26` (fase-3 → fase-5) e `arco-27` (fase-3 → fase-6), non presenti alla composizione iniziale del 2026-09-13.
-
-### Added
-
 - Operativo: `docs/operativo/app-public-url.md` (APP_PUBLIC_URL vs NEXT_PUBLIC al build Docker; cambio dominio senza rebuild). Segnalazione catalogo: `docs/piano-sviluppo/segnalazione-catalogo-app-public-url.md`.
 
 ### Changed

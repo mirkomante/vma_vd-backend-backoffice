@@ -61,7 +61,7 @@ fasi:
     file: "fase-1-setup.md"
     varianti:
       - "fase-1-db-postgres.md"
-    stato: "da_fare"
+    stato: "fatto"
 
   - id: fase-2
     nome: "Login"
@@ -70,7 +70,7 @@ fasi:
     varianti:
       - "fase-2-auth-google-oauth.md"
       - "fase-2-email-resend.md"
-    stato: "da_fare"
+    stato: "fatto"
     note: >
       Include lo schema ruoli baseline (adminRole/appRole, ADR-001 di
       catalogo, ereditato senza deviazione — riepilogo-sessione-bucket-d.md
