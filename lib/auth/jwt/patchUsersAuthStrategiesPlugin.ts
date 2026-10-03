@@ -1,4 +1,4 @@
-import type { Plugin } from 'payload'
+import type { AuthStrategy, Plugin } from 'payload'
 
 import {
   buildGoogleOAuthAdminPluginOptions,
@@ -26,16 +26,20 @@ export function patchUsersAuthStrategiesPlugin(): Plugin {
   return (incomingConfig) => {
     const config = { ...incomingConfig }
     const usersCollection = config.collections?.find((collection) => collection.slug === USERS_SLUG)
-    if (!usersCollection || usersCollection.auth === false || usersCollection.auth === undefined) {
+    if (
+      !usersCollection ||
+      usersCollection.auth === false ||
+      usersCollection.auth === undefined ||
+      typeof usersCollection.auth !== 'object'
+    ) {
       return config
     }
 
-    const authConfig =
-      typeof usersCollection.auth === 'object' ? usersCollection.auth : { disableLocalStrategy: true }
+    const authConfig = usersCollection.auth
 
     const isolatedNames = new Set<string>(ISOLATED_AUTH_STRATEGY_NAMES)
     const remainingStrategies = (authConfig.strategies ?? []).filter(
-      (strategy) => !isolatedNames.has(strategy.name),
+      (strategy: AuthStrategy) => !isolatedNames.has(strategy.name),
     )
 
     const isolatedStrategies = [

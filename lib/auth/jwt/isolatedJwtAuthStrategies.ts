@@ -1,6 +1,6 @@
 import { jwtVerify } from 'jose'
 import type { PluginTypes } from 'payload-oauth2'
-import type { AuthStrategy, TypedUser } from 'payload'
+import type { AuthStrategy, Payload, TypedUser } from 'payload'
 import { extractJWT } from 'payload'
 
 import { GOOGLE_ADMIN_STRATEGY, GOOGLE_APP_STRATEGY } from '@/lib/auth/googleOAuth/constants'
@@ -30,10 +30,12 @@ async function decodeJwtPayload(
   }
 }
 
+type AuthenticatedUser = TypedUser & { collection: string; _strategy?: string }
+
 async function loadUserById(
-  payload: PayloadRequest['payload'],
+  payload: Payload,
   id: string | number,
-): Promise<(TypedUser & { collection: string }) | null> {
+): Promise<AuthenticatedUser | null> {
   const collectionConfig = payload.collections[USERS_SLUG]?.config
   if (!collectionConfig) {
     return null
@@ -58,7 +60,7 @@ async function loadUserById(
     return null
   }
 
-  return { ...user, collection: USERS_SLUG } as TypedUser & { collection: string }
+  return { ...user, collection: USERS_SLUG } as AuthenticatedUser
 }
 
 function getJwtUserId(jwtPayload: Record<string, unknown>): string | number | undefined {
@@ -136,9 +138,10 @@ export function createIsolatedOAuthJwtAuthStrategy(
           return { user: null }
         }
 
-        user.collection = USERS_SLUG
-        user._strategy = readSessionStrategyClaim(jwtPayload) ?? expectedStrategy
-        return { user }
+        const authUser = user as AuthenticatedUser
+        authUser.collection = USERS_SLUG
+        authUser._strategy = readSessionStrategyClaim(jwtPayload) ?? expectedStrategy
+        return { user: authUser }
       } catch (error) {
         payload.logger.error(error)
         return { user: null }

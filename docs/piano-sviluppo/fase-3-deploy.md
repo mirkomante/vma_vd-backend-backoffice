@@ -40,17 +40,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 3.2 — Build container, secret e deploy
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (Parte A ✅ 2026-10-03; Parte B/C 🔲 — passaggio umano console GCP)
 
 **Obiettivo**: immagine container funzionante, secret configurati con accesso scoped, servizio raggiungibile con pipeline di deploy continuo attiva.
 
 ### Parte A — Build del container (agente, indipendente dal resto, può partire subito)
 
 **Checklist**:
-- [ ] Scrivere `Dockerfile` multi-stage e `.dockerignore` secondo lo standard fisso del progetto (vedi `stack/01-stile-codice.mdc`) — non è specifico di questa fase, è già una convenzione dello stack.
-- [ ] Verificare che la build di produzione passi (`tsc --noEmit`, `lint`, `build`) in locale prima di affidarsi alla pipeline cloud per scoprire eventuali errori.
-- [ ] **Allineamento variabile URL pubblico**: verificare che un'unica variabile d'ambiente (es. `SERVER_URL`) sia usata coerentemente in tutto il codice per l'URL pubblico dell'app — non introdurre variabili parallele (es. una versione `NEXT_PUBLIC_*` e una server-only che divergono).
-- [ ] Conferma umana sui punti aperti: versione Node LTS e `output: 'standalone'` (già standard fisso, verificare che siano applicati).
+- [x] Scrivere `Dockerfile` multi-stage e `.dockerignore` secondo lo standard fisso del progetto (vedi `stack/01-stile-codice.mdc`) — non è specifico di questa fase, è già una convenzione dello stack.
+- [x] Verificare che la build di produzione passi (`tsc --noEmit`, `lint`, `build`) in locale prima di affidarsi alla pipeline cloud per scoprire eventuali errori.
+- [x] **Allineamento variabile URL pubblico**: variabile canonica **`NEXT_PUBLIC_URL`** (OAuth via `getGoogleOAuthServerURL()`, email transazionali, `.env.example`); nessuna `SERVER_URL` parallela nel codice.
+- [x] Node **24** LTS (`node:24-alpine` nel Dockerfile, `engines.node`: `24.x.x` allineato a runtime Cloud Run `nodejs24`) e `output: 'standalone'` in `next.config.ts`.
 
 > **Nota**: se durante la build emerge un errore di prerendering perché una pagina/layout protetto chiama il database durante `next build` (nessun DB disponibile nel container di build), la soluzione tipica è forzare il rendering dinamico su quella route (es. `export const dynamic = 'force-dynamic'`) — non è una violazione del piano, è una conseguenza nota di avere route protette che richiedono dati a runtime.
 

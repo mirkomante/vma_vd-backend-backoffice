@@ -40,7 +40,13 @@ Formato (sostituire `NOME_DATABASE` e password):
 postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/NOME_DATABASE?sslmode=disable
 ```
 
-Su **Cloud Run** (§ 3.2) la stringa userà il connettore Cloud SQL (socket/host gestito da GCP), non `127.0.0.1:5433`.
+Su **Cloud Run** (§ 3.2) la stringa va nel secret `DATABASE_URL` e usa il socket Unix del connettore (non `127.0.0.1:5433`). Sul servizio Cloud Run abilitare la connessione all'istanza `vma-vd:europe-west1:vma-vd-database`, poi:
+
+```text
+postgresql://vma-vd-user:PASSWORD@/vma-vd-backoffice?host=/cloudsql/vma-vd:europe-west1:vma-vd-database
+```
+
+(Sostituire `PASSWORD`; nessuna password in repo.)
 
 ## Migrate / seed su produzione
 

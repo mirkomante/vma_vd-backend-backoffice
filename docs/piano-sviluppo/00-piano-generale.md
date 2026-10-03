@@ -27,7 +27,7 @@
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
 | Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | ✅ fatto (2.1–2.10; spike cookie prod → Fase 3 § 3.3) | `fase-2-login.md` (+ file di variante auth ed email) |
-| Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔶 in corso (3.1 ✅) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
+| Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔶 in corso (3.1 ✅, 3.2 Parte A ✅) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
 ## Fase 1 — Setup, panoramica sottofasi
@@ -75,7 +75,7 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: **Fase 3.2** — Parte A `Dockerfile`/build in parallelo se non fatto; Parte B/C Secret Manager + Cloud Run `europe-west1` (`fase-3-cloud-gcp.md`). § 3.3: spike cookie HTTPS (Fase 2 § 2.10). § 3.1 chiusa 2026-09-29 (Cloud SQL + migrate prod).
+- **Prossimo passo**: **Fase 3.2 Parte B/C** (umano) — Secret Manager + servizio Cloud Run `europe-west1`, deploy continuo da GitHub `main` (`fase-3-cloud-gcp.md`). Parte A container/build ✅ 2026-10-03. Poi § 3.3 spike cookie HTTPS + URL reale su `NEXT_PUBLIC_URL`. § 3.1 chiusa 2026-09-29 (Cloud SQL + migrate prod).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.
