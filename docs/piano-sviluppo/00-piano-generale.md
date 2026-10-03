@@ -27,7 +27,7 @@
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
 | Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | ✅ fatto (2.1–2.10; spike cookie prod → Fase 3 § 3.3) | `fase-2-login.md` (+ file di variante auth ed email) |
-| Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔶 in corso (3.1 ✅, 3.2 Parte A ✅) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
+| Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔶 in corso (3.1 ✅, 3.2 ✅) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
 ## Fase 1 — Setup, panoramica sottofasi
@@ -62,7 +62,7 @@ Dettaglio completo in `fase-2-login.md`. Nota: l'ordine pratico consigliato eseg
 Dettaglio completo in `fase-3-deploy.md`. Non esiste un ambiente di staging separato: un solo deploy, quello di produzione.
 
 1. Database di produzione (variante — vedi file di variante database, § 3.1) — ✅ fatto (2026-09-29)
-2. Build container (generico) + secret e deploy sull'ambiente cloud (variante, vedi file di variante cloud, § 3.2)
+2. Build container (generico) + secret e deploy sull'ambiente cloud (variante, vedi file di variante cloud, § 3.2) — ✅ fatto (2026-10-03)
 3. Auth in produzione e spike cookie HTTPS (variante, vedi file di variante auth, § 3.3)
 4. Bootstrap super-admin e dati iniziali
 5. Verifica finale di chiusura fase
@@ -75,7 +75,7 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: **Fase 3.2 Parte B/C** (umano) — Secret Manager + servizio Cloud Run `europe-west1`, deploy continuo da GitHub `main` (`fase-3-cloud-gcp.md`). Parte A container/build ✅ 2026-10-03. Poi § 3.3 spike cookie HTTPS + URL reale su `NEXT_PUBLIC_URL`. § 3.1 chiusa 2026-09-29 (Cloud SQL + migrate prod).
+- **Prossimo passo**: **Fase 3.3** — auth in produzione, `NEXT_PUBLIC_URL` con URL Cloud Run, redirect OAuth prod, spike cookie HTTPS (`fase-3-auth-google-oauth.md`). § 3.2 chiusa 2026-10-03 (Secret Manager, Cloud Run `europe-west1`, pipeline `main` OK — vedi `docs/operativo/cloud-run-produzione.md`).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.

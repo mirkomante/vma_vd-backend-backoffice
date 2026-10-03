@@ -40,7 +40,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 3.2 — Build container, secret e deploy
 
-**Stato**: 🔶 in corso (Parte A ✅ 2026-10-03; Parte B/C 🔲 — passaggio umano console GCP)
+**Stato**: ✅ fatto (2026-10-03) — `NEXT_PUBLIC_URL` definitivo e OAuth prod in § 3.3
 
 **Obiettivo**: immagine container funzionante, secret configurati con accesso scoped, servizio raggiungibile con pipeline di deploy continuo attiva.
 
@@ -60,16 +60,18 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 > - Google Cloud Run → `fase-3-cloud-gcp.md`
 > - Azure / AWS → *(quando disponibili nel catalogo)*
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-03)
 
 **Obiettivo**: tutte le variabili d'ambiente e i segreti necessari configurati in modo sicuro (mai in chiaro nel repository), servizio deployato e raggiungibile via pipeline automatica.
 
 **Checklist di chiusura sottofase (valida per qualunque variante)**:
-- [ ] Ogni credenziale/segreto (DB, provider auth, provider email, secret applicativo) è in un gestore di secret dedicato dell'ambiente cloud, non in variabili d'ambiente in chiaro dove evitabile.
-- [ ] L'accesso ai secret è scoped al servizio che ne ha bisogno, non concesso a livello di intero progetto/account.
-- [ ] La pipeline di deploy è automatica (push su un branch di riferimento → build → deploy), non un comando manuale eseguito ad ogni release.
-- [ ] Verificato con un push di test che il trigger si attiva, la build parte, e il servizio risponde su una richiesta di base.
-- [ ] **Provider email (variante)**: dominio mittente verificato presso il provider scelto (per Resend: stato "Verified" in dashboard — vedi `email/01a-resend.mdc`). La scelta del percorso è stata fatta a §2.6 di `fase-2-email-resend.md`: se lì si era scelto di restare sul sandbox, qui va risolto — un dominio reale va verificato prima di andare in produzione, il sandbox non raggiunge utenti reali. Se invece a §2.6 era già stato verificato un dominio provvisorio/di sviluppo, qui va sostituito con il dominio reale del progetto (vedi nota sotto).
+- [x] Ogni credenziale/segreto (DB, provider auth, provider email, secret applicativo) è in un gestore di secret dedicato dell'ambiente cloud, non in variabili d'ambiente in chiaro dove evitabile.
+- [x] L'accesso ai secret è scoped al servizio che ne ha bisogno, non concesso a livello di intero progetto/account.
+- [x] La pipeline di deploy è automatica (push su un branch di riferimento → build → deploy), non un comando manuale eseguito ad ogni release.
+- [x] Verificato con push/trigger su `main`: Cloud Build (Docker + deploy) OK; servizio raggiungibile (richiesta base es. `/`).
+- [x] **Provider email (variante)**: dominio `mail.vietnamonamour.com` già Verified in Fase 2 §2.6 (percorso b); `RESEND_FROM_*` su Cloud Run come env plain.
+
+**Eseguito (2026-10-03)**: Secret Manager + servizio `europe-west1`, connettore Cloud SQL, runtime SA `vma-vd-backoffice-run`, deploy continuo GitHub `main`. Nota operativa IAM e troubleshooting: `docs/operativo/cloud-run-produzione.md`, dettaglio GCP `fase-3-cloud-gcp.md`.
 
 **Nota** (solo se a §2.6 è stato usato un dominio provvisorio/di sviluppo, non quello finale): ripetere qui la verifica dominio presso il provider email con il dominio reale del progetto (nuovi record DNS, nuova propagazione) e aggiornare `RESEND_FROM_ADDRESS`/`RESEND_FROM_NAME` (o equivalenti) di conseguenza — stesso pattern del rimando auth descritto in § 3.3 per il dominio personalizzato dell'app.
 

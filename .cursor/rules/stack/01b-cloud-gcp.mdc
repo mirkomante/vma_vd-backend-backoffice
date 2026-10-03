@@ -14,3 +14,5 @@ Questo file si applica in aggiunta a `01-stile-codice.mdc` quando il progetto vi
 - Deploy su **Google Cloud Run**, build via Cloud Build a partire da un `Dockerfile` multi-stage nel repo.
 - Segreti e variabili sensibili in **Google Cloud Secret Manager**, mai in file committati.
 - Dettaglio operativo di configurazione (cluster/servizio, region, secret, redirect URI di produzione) è specifico della fase di deploy del progetto, non di questa regola di stile.
+- **Due service account distinti** nel deploy continuo da GitHub: (1) SA del **trigger Cloud Build** — build Docker, push Artifact Registry, `gcloud run deploy` (Run Admin + SA User sul runtime SA + Artifact Registry Writer); (2) SA **runtime** del servizio — Cloud SQL Client, Secret Accessor **per secret**, **senza** Run Admin. Non usare `roles/editor` sul SA build.
+- Dopo modifiche a trigger/IAM, validare con una **nuova** build (non solo Retry); nel log deploy controllare che `gcloud` sia autenticato come SA build, non come runtime SA.
