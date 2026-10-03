@@ -88,7 +88,7 @@ Dettaglio completo in `fase-3-deploy.md`. Non esiste un ambiente di staging sepa
 
 Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene solo i contenuti dei due siti (Payload su Cloud Run); i due siti sono applicazioni separate, in un altro progetto, non ancora sviluppate, ciascuna su un proprio progetto Firebase Hosting distinto. Le parti che richiedono i frontend o il design sono rimandate.
 
-0. Localizzazione nativa Payload (recupero della deviazione da Fase 1, ADR-103) — 🔲 da fare
+0. Localizzazione nativa Payload (recupero della deviazione da Fase 1, ADR-103) — ✅ fatto (2026-10-03)
 1. Scaffolding Collection pagine e Global sito — 🔲 da fare
 2. Plugin di supporto (SEO, Redirects) — 🔲 da fare
 3. Meccanismo di preview — Parte A lato CMS e contratto ADR-111: 🔲 da fare; Parte B lato siti: ⏸ rimandata

@@ -50,7 +50,7 @@ Per questo i **tab dei Global sono non nominati** (solo `label`): la disposizion
 
 ## 4.0 — Localizzazione (prerequisito, deviazione da Fase 1)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-03; migrate su Cloud SQL prod da applicare prima del push su `main`)
 
 **Dipende da**: Fase 3 chiusa. Precede 4.1.
 
@@ -92,12 +92,12 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 - Nessun campo esistente (`users`, `settings`, `activityLog`) viene marcato `localized`: sono dati di configurazione, non contenuti.
 
 **Checklist di chiusura sottofase**:
-- [ ] `localization` presente in `payload.config.ts`, valori identici a ADR-103.
-- [ ] Configurazione `i18n` applicata secondo la scelta confermata; `@payloadcms/translations` dipendenza diretta alla stessa versione di Payload; interfaccia Admin in italiano verificata a runtime.
-- [ ] Tipi rigenerati; `pnpm build` e avvio locale senza errori; selettore lingua dei contenuti nell'Admin: senza campi `localized` può non comparire; in tal caso annotarlo come non verificabile in 4.0 e verificarlo in 4.1.
-- [ ] Login (SSO e locale di emergenza) e Global `settings` invariati e funzionanti.
-- [ ] `payload migrate:create` eseguito. **La migrazione non è vuota**: con `localization` attiva l'adapter Postgres crea nello schema il tipo enum `_locales` (`it`, `en`) anche senza campi `localized` (verificato nel codice di `@payloadcms/drizzle` 3.89.0). Verificare che contenga solo la creazione dell'enum; migrazione committata e **applicata su Cloud SQL prod prima del push**.
-- [ ] Deviazione annotata in `fase-1-setup.md`, CHANGELOG aggiornato, stato aggiornato in `00-piano-generale.md`.
+- [x] `localization` presente in `payload.config.ts`, valori identici a ADR-103.
+- [x] Configurazione `i18n` applicata secondo la scelta confermata; `@payloadcms/translations` dipendenza diretta alla stessa versione di Payload; interfaccia Admin in italiano verificata a runtime.
+- [x] Tipi rigenerati; `pnpm build` e avvio locale senza errori; selettore lingua contenuti: non verificabile in 4.0 (nessun campo `localized`); da verificare in 4.1.
+- [x] Login (SSO e locale di emergenza) e Global `settings` invariati e funzionanti.
+- [x] `payload migrate:create` eseguito (`20261003_155849_localization_enum`, solo enum `_locales`). Migrazione da committare; **applicare su Cloud SQL prod prima del push su `main`**.
+- [x] Deviazione annotata in `fase-1-setup.md`, CHANGELOG aggiornato, stato aggiornato in `00-piano-generale.md`.
 
 ---
 

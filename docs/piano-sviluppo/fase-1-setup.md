@@ -163,4 +163,4 @@ Conferma umana (2026-09-15): Area App e Area Admin si avviano senza errori blocc
 
 ## Incoerenze note
 
-*(Nessuna al momento. Sezione per segnalare esplicitamente contraddizioni o ambiguità non risolte tra questo file e altri — vedi `processo-v2-operativo.md` §3, Balzer 1991.)*
+- **Localizzazione Payload (ADR-103 / `arco-01`) non abilitata in Fase 1.** Il piano e l'ADR richiedevano `localization` già in setup; la Fase 1 è stata chiusa ✅ (2026-09-15) senza configurazione nel codice. Recupero in **Fase 4.0** (2026-10-03): nessun campo `localized` né contenuto CMS al momento dell'intervento, quindi nessuna migrazione dati su valori esistenti. Deviazione registrata anche in CHANGELOG `[Unreleased]`.

@@ -1,6 +1,7 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { resendAdapter } from '@payloadcms/email-resend'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { it } from '@payloadcms/translations/languages/it'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -24,6 +25,18 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   editor: lexicalEditor(),
+  i18n: {
+    supportedLanguages: { it },
+    fallbackLanguage: 'it',
+  },
+  localization: {
+    locales: [
+      { label: 'Italiano', code: 'it', fallbackLocale: 'en' },
+      { label: 'English', code: 'en', fallbackLocale: 'it' },
+    ],
+    defaultLocale: 'it',
+    fallback: true,
+  },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
