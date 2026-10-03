@@ -96,29 +96,40 @@ fasi:
   - id: fase-4
     nome: "CMS siti esterni (vietnamonamour.com + villadoree.com)"
     origine: dominio-applicativo
-    file: "fase-4-cms-siti-esterni.md (da scrivere)"
+    file: "fase-4-cms-siti-esterni.md"
     stato: "da_fare"
+    note: >
+      Fase definita il 2026-10-03. Questo progetto contiene solo i contenuti
+      dei due siti (Payload su Cloud Run); i due siti sono applicazioni
+      separate, in un altro progetto, non ancora sviluppate, ciascuna su un
+      proprio progetto Firebase Hosting distinto. Parti rimandate fino a
+      frontend/design disponibili: fase-4.5, fase-4.6 e le parti "lato siti"
+      di fase-4.3 e fase-4.4 (condizioni di sblocco in fase-4-cms-siti-esterni.md).
     sottofasi:
+      - id: fase-4.0
+        nome: "Localizzazione nativa Payload (recupero della deviazione da fase-1)"
+        stato: "da_fare"
+        note: "Prerequisito di fase-4.1. ADR-103 §3 e arco-01 la richiedevano già in fase-1; assente nel codice alla chiusura di fase-3 (verificato 2026-10-03). Nessun contenuto esistente: costo basso."
       - id: fase-4.1
         nome: "Scaffolding Collection pages + Global sito (impostazioni-vma, impostazioni-villadoree)"
         stato: "da_fare"
-        note: "Non dipende dal design. riepilogo-sessione-cms-siti-esterni.md §1/§2/§6"
+        note: "Dipende da fase-4.0. Non dipende dal design. riepilogo-sessione-cms-siti-esterni.md §1/§2/§6"
       - id: fase-4.2
-        nome: "Plugin di supporto (SEO, Redirects, i18n)"
+        nome: "Plugin di supporto (SEO, Redirects)"
         stato: "da_fare"
-        note: "riepilogo-sessione-cms-siti-esterni.md §3"
+        note: "La parte i18n è in fase-4.0. Aperti: due siti con una sola collection redirects del plugin; storage dei media. riepilogo-sessione-cms-siti-esterni.md §3"
       - id: fase-4.3
         nome: "Meccanismo di preview (Draft Mode + route /api/preview + token firmato)"
         stato: "da_fare"
-        note: "riepilogo-sessione-preview-e-aree-gestione.md §1"
+        note: "Parte A (lato CMS + contratto ADR-111) eseguibile dopo fase-4.1. Parte B (route /api/preview sui siti, Draft Mode, verifica end-to-end) rimandata: richiede i frontend dei siti. riepilogo-sessione-preview-e-aree-gestione.md §1"
       - id: fase-4.4
         nome: "Strategia di rendering (ISR on-demand) e comunicazione coi siti esterni"
         stato: "da_fare"
-        note: "riepilogo-sessione-bucket-d.md §2/§5"
+        note: "Parte A (hook afterChange di revalidation lato Payload, contratto ADR-111) eseguibile; Parte B (ISR e verifica end-to-end) rimandata fino ai frontend. Nessuna attività Firebase in questo progetto. riepilogo-sessione-bucket-d.md §2/§5"
       - id: fase-4.5
         nome: "Definizione dei Block del layout builder"
         stato: "bloccata"
-        note: "Dipende dal design dei due siti, non ancora pronto. riepilogo-sessione-cms-siti-esterni.md §6"
+        note: "Dipende dal design e dai frontend dei due siti (progetto separato), non ancora disponibili; richiede anche la decisione sullo storage dei media. riepilogo-sessione-cms-siti-esterni.md §6"
       - id: fase-4.6
         nome: "Content population + compilazione Redirects (from -> to)"
         stato: "bloccata"
@@ -252,7 +263,7 @@ archi:
   # --- Decisioni e output di progetto — dominio CMS -------------------------
 
   - id: arco-01
-    da: fase-1
+    da: fase-4.0
     a: fase-4.1
     tipo: decisione
     descrizione: >
@@ -264,7 +275,9 @@ archi:
       defaultLocale riguarda solo l'interfaccia (admin/app in italiano); la
       lingua di ciascun sito è determinata dal parametro locale esplicito
       obbligatorio in ogni richiesta REST (it per VMA, en per Villa Dorée
-      in release 1).
+      in release 1). Nota 2026-10-03: l'ADR la prevedeva già in fase-1, ma
+      la fase-1 è stata chiusa senza; l'arco parte quindi da fase-4.0
+      (recupero della deviazione).
     adr: "ADR — Plugin di supporto CMS (SEO, Redirects, i18n)"
     fonte: "riepilogo-sessione-cms-siti-esterni.md §3.3, punti-aperti-bucket-a-d.md (Bucket A)"
 
@@ -318,12 +331,11 @@ archi:
     adr: "ADR — Strategia di rendering e comunicazione con i siti esterni"
     fonte: "riepilogo-sessione-preview-e-aree-gestione.md §1 (aggiornamento 2026-09-12), riepilogo-sessione-bucket-d.md §5"
 
-  - id: arco-06
-    da: fase-3
-    a: fase-4.4
-    tipo: output
-    descrizione: "Ambiente GCP pronto (Firebase Hosting, Cloud Functions) necessario per servire ISR on-demand."
-    adr: null
+  # arco-06 rimosso il 2026-10-03: errore di scrittura. Attribuiva alla
+  # fase-3 un ambiente "Firebase Hosting, Cloud Functions" per fase-4.4.
+  # Firebase appartiene ai due siti esterni (altro progetto, un progetto
+  # Firebase distinto per ciascun sito), non a questo progetto né a fase-3.
+  # L'id non viene riassegnato.
 
   - id: arco-13
     da: fase-4.1
@@ -443,6 +455,20 @@ archi:
       implicita.
     adr: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     fonte: "ADR-110-istanza-cloud-sql-produzione.md §3"
+
+  - id: arco-28
+    da: fase-4.1
+    a: fase-4.3
+    tipo: decisione
+    descrizione: >
+      Contratto CMS <-> siti esterni definito PRIMA che i due siti esistano
+      (sono sviluppati in un altro progetto): link di preview firmato,
+      token per le letture in draft, endpoint e secret di revalidation
+      (include anche fase-4.4), nomi canonici di slug, campi e variabili
+      d'ambiente congelati alla chiusura di fase-4.1. Chiude i punti aperti
+      di ADR-104 e ADR-105 (nome/percorso dell'endpoint e del secret).
+    adr: "ADR — Contratto CMS <-> siti esterni (preview e revalidation)"
+    fonte: "fase-4-cms-siti-esterni.md §4.3 Parte A, ADR-104, ADR-105"
 
   # --- Decisioni e output di progetto — dominio menù digitale ---------------
 
@@ -630,3 +656,12 @@ adr_da_scrivere:
       deviazione da un default di catalogo: fase-3-db-postgres.md
       lascia tier e disponibilità esplicitamente aperti al progetto.
       Validato dall'utente il 2026-09-26.
+  - titolo: "ADR — Contratto CMS <-> siti esterni (preview e revalidation)"
+    archi: ["arco-28"]
+    stato: "da_scrivere"
+    file: "ADR-111-contratto-cms-siti-esterni.md (da scrivere in fase-4.3 Parte A)"
+    nota: >
+      Undicesimo ADR di progetto, emerso alla definizione di fase-4
+      (2026-10-03) perché i due siti esterni sono sviluppati in un altro
+      progetto e hanno bisogno di un'interfaccia fissata dal lato CMS.
+      Nessuna deviazione da un default di catalogo.

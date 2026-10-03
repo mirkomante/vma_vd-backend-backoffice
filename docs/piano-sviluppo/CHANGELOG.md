@@ -10,9 +10,19 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Added
+
+- Fase 4 definita: `fase-4-cms-siti-esterni.md` (stato `validato`, 2026-10-03) con sottofasi 4.0 (localizzazione: recupero della deviazione da Fase 1 richiesta da ADR-103/arco-01), 4.1, 4.2, parte CMS di 4.3 e 4.4 (contratto ADR-111 da scrivere) e 4.5/4.6 rimandate; riga e panoramica sottofasi in `00-piano-generale.md`.
+- `piano.yaml`: sottofase `fase-4.0`, `arco-28` (contratto CMS ↔ siti esterni) e voce ADR-111 (da scrivere).
+
 ### Changed
 
+- `piano.yaml`: `arco-01` parte ora da `fase-4.0` (localizzazione non consegnata da Fase 1); note di `fase-4.3`/`4.4` con parte CMS eseguibile e parte sui siti rimandata. `ADR-105`: nota di chiarimento sui due siti (applicazioni distinte, ciascuna su un proprio progetto Firebase).
 - Allineati in `piano.yaml` gli stati di `fase-1` e `fase-2` a `fatto` (coerenza con `00-piano-generale.md`); unificato il blocco `### Added` duplicato nella sezione 0.3.0 del CHANGELOG.
+
+### Fixed
+
+- `piano.yaml`: rimosso `arco-06` (errore di scrittura): attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» che appartiene ai due siti esterni (altro progetto, un progetto Firebase distinto per ciascun sito).
 
 ## [0.3.0] — 2026-10-03
 

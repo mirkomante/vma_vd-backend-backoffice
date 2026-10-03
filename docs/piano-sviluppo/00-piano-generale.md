@@ -18,7 +18,7 @@
 - **Procedimento dettagliato su come condurre le sessioni** (struttura delle chat, prerequisiti, documenti da allegare, quando fare test in ambiente dev): vedi `00-come-eseguire-il-piano.md`.
 - Le regole di comportamento dell'agente (`.cursor/rules/*.mdc`) si applicano sempre, indipendentemente da quale fase/file di piano è in lavorazione: in particolare, fermarsi su installazioni problematiche e su passaggi esterni a Cursor (vedi `core/02-processo-lavoro-agente.mdc`), distinguere validazione di codice da test in ambiente dev (vedi `core/03-validazione-testing.mdc`), e mantenere aggiornato il changelog prima di ogni commit (vedi `core/04-changelog-commit.mdc`).
 - **Cronologia delle modifiche**: `docs/piano-sviluppo/CHANGELOG.md`, formato Keep a Changelog — distinto dai file di fase (che indicano cosa fare e lo stato attuale), il changelog è uno storico append-only di cosa è stato effettivamente fatto, sessione per sessione, inclusi esiti dei test.
-- Ogni sottofase ha uno stato: 🔲 da fare — 🔶 in corso — ✅ fatto. Aggiornare questo indice (e il file di dettaglio) subito dopo il completamento, non a posteriori.
+- Ogni sottofase ha uno stato: 🔲 da fare — 🔶 in corso — ✅ fatto — ⏸ rimandata (dipendenza esterna non ancora risolta; condizione di sblocco scritta nel file di fase). Aggiornare questo indice (e il file di dettaglio) subito dopo il completamento, non a posteriori.
 - **Riferimento di contesto per le decisioni di prodotto/dominio**: le specifiche di questo progetto in `docs/` (es. `specifica-login-payloadcms.md` e le altre specifiche di dominio — da creare per questo progetto, non sono un template). Per l'auth e il pattern architetturale standard, il riferimento di default è già `.cursor/rules/` + i file di fase: **serve una specifica dedicata solo se il progetto devia** da quello standard (policy password diversa, ruolo con permessi non banali, requisito di compliance non coperto — vedi nota in `fase-2-login.md`), non come documento sempre presente per ripetere l'ovvio. I file di piano traducono le eventuali specifiche di deviazione in passi operativi; non le sostituiscono. **Regola di precedenza**: in caso di conflitto tra una specifica e il file di fase corrispondente, vince il file di fase più recente — annotare esplicitamente qui quando questo accade per una fase specifica, con la data della sessione in cui è stata presa la decisione.
 
 ## Stato generale
@@ -28,7 +28,8 @@
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
 | Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | ✅ fatto (2.1–2.10; spike cookie prod → Fase 3 § 3.3) | `fase-2-login.md` (+ file di variante auth ed email) |
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | ✅ fatto (3.1–3.5) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
-| Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
+| Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔲 da fare (4.0–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
+| Fase 5–7 | Sistema prenotazioni, menù digitale, impostazioni di sistema — da scrivere | 🔲 da fare | `fase-5-*.md`, `fase-6-*.md`, `fase-7-*.md` (da scrivere) |
 
 ## Fase 1 — Setup, panoramica sottofasi
 
@@ -67,7 +68,21 @@ Dettaglio completo in `fase-3-deploy.md`. Non esiste un ambiente di staging sepa
 4. Bootstrap super-admin e dati iniziali — ✅ fatto (2026-10-03)
 5. Verifica finale di chiusura fase — ✅ fatto (2026-10-03)
 
-## Fase 4 in poi — dominio specifico del progetto
+## Fase 4 — CMS siti esterni, panoramica sottofasi
+
+Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene solo i contenuti dei due siti (Payload su Cloud Run); i due siti sono applicazioni separate, in un altro progetto, non ancora sviluppate, ciascuna su un proprio progetto Firebase Hosting distinto. Le parti che richiedono i frontend o il design sono rimandate.
+
+0. Localizzazione nativa Payload (recupero della deviazione da Fase 1, ADR-103) — 🔲 da fare
+1. Scaffolding Collection pagine e Global sito — 🔲 da fare
+2. Plugin di supporto (SEO, Redirects) — 🔲 da fare
+3. Meccanismo di preview — Parte A lato CMS e contratto ADR-111: 🔲 da fare; Parte B lato siti: ⏸ rimandata
+4. Revalidation e comunicazione coi siti — Parte A lato CMS: 🔲 da fare; Parte B ISR e verifica end-to-end: ⏸ rimandata
+5. Definizione dei Block del layout builder — ⏸ rimandata
+6. Content population e compilazione Redirects — ⏸ rimandata
+
+## Fase 5 in poi — dominio specifico del progetto
+
+> Nota di progetto (2026-10-03): la Fase 4 è definita (sezione sopra). Restano da scrivere i file di Fase 5 (prenotazioni), 6 (menù digitale) e 7 (impostazioni di sistema), già presenti come nodi in `piano.yaml`.
 
 Le fasi da 4 in avanti non fanno parte di questo template: sono la logica applicativa specifica di *questo* progetto (es. import dati da una fonte esterna, funzionalità di dominio, aree specifiche dell'Area App). Vanno scritte da zero, seguendo la stessa forma dei file di fase (intestazione con riferimenti, sottofasi con Stato/Obiettivo/Checklist, note di chiusura) usata in Fase 1-3, ma con contenuto proprio di questo progetto — non c'è contenuto da riusare qui.
 
@@ -75,7 +90,7 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: definire e avviare **Fase 4** (dominio applicativo del progetto — vedi sezione sotto). Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App + email attivazione non rieseguiti in prod (rimando da § 3.3, coperti in dev § 2.10).
+- **Prossimo passo**: avviare **Fase 4.0** (localizzazione, prerequisito di 4.1), poi 4.1 e 4.2; la Fase 4 è definita (2026-10-03) in `fase-4-cms-siti-esterni.md`. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App + email attivazione non rieseguiti in prod (rimando da § 3.3, coperti in dev § 2.10).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.

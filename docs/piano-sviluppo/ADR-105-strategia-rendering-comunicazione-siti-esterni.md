@@ -47,3 +47,9 @@ Fase 4.4 eredita la modalità di compilazione (ISR on-demand su Firebase Hosting
 Fase 6.5 eredita l'intero meccanismo Cloud Build (trigger manuale, endpoint custom, builder `firebase-tools`, IAM) come pattern già verificato, da applicare al rebuild del menù SSG invocato dal pulsante di backoffice — nessuna nuova valutazione di alternative CI/CD necessaria a valle.
 
 Restano punti aperti, non bloccanti per questo ADR: nome/percorso esatto dell'endpoint di revalidation e del secret condiviso con i due siti CMS; credenziali/service account dedicati al trigger Cloud Build; meccanismo di notifica di completamento/fallimento del rebuild menù (candidato: Pub/Sub su cambio stato build), oggi solo fire-and-forget con log dell'id build.
+
+## Nota di chiarimento (2026-10-03)
+
+Non modifica la decisione. Precisa un fatto di architettura che il testo sopra lasciava implicito: vietnamonamour.com e villadoree.com sono **due applicazioni Next.js distinte, sviluppate in un altro progetto**, ciascuna deployata su **un proprio progetto Firebase Hosting distinto**. Nessuna risorsa Firebase appartiene a questo repository né alle fasi di questo progetto: qui vive solo Payload su Cloud Run.
+
+Il meccanismo Cloud Build con builder `firebase-tools` descritto sopra si applica al **menù digitale** (Fase 6.5), non ai due siti CMS, che usano l'ISR on-demand. I punti aperti sul nome/percorso dell'endpoint di revalidation e del secret condiviso sono chiusi da `ADR-111-contratto-cms-siti-esterni.md` (da scrivere in Fase 4.3 Parte A).
