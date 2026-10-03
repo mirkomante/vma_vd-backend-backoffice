@@ -83,7 +83,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 > - Google OAuth → `fase-3-auth-google-oauth.md`
 > - *(altri provider, quando disponibili nel catalogo)*
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso — **Parte A ✅** (2026-10-03: `NEXT_PUBLIC_URL` su Cloud Run, redirect OAuth prod, smoke 200 su `/admin/login` e `/app/login`). **Spike e2e checklist generica ⏸** dopo § 3.4 (allow-list + utenti in prod).
 
 **Obiettivo**: login funzionante in produzione con l'URL reale assegnato dal deploy; chiusura dello spike rimandato da Fase 2 (comportamento del cookie httpOnly dietro proxy/load balancer HTTPS).
 
@@ -101,17 +101,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 3.4 — Bootstrap super-admin e dati iniziali
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (2026-10-03: seed prod da locale OK; verifiche browser e allow-list in sospeso)
 
 **Obiettivo**: primo accesso Admin possibile su ambiente deployato, con database di produzione ancora vuoto.
 
 **Checklist**:
-- [ ] Eseguire lo script di seed **da locale**, puntato temporaneamente al database di produzione — non un job dedicato sull'ambiente cloud per un'operazione una tantum: introdurrebbe una risorsa infrastrutturale permanente da mantenere solo per questo, sproporzionato (vedi `core/01-proporzionalita.mdc`; per il dettaglio del perché nello specifico ambiente cloud scelto, vedi il file di variante cloud).
-- [ ] **Attenzione al secret applicativo**: puntare il database locale a quello di produzione non basta da solo — usare anche il secret applicativo (es. quello che firma le sessioni) **di produzione**, lo stesso già salvato nel gestore di secret (§ 3.2), non quello di sviluppo.
-- [ ] Mini-procedura operativa: backup del proprio `.env` locale → sovrascrivere temporaneamente le variabili necessarie con i valori di produzione → eseguire il seed → **ripristinare subito** il proprio `.env` di sviluppo, prima di riprendere a lavorare in locale.
-- [ ] Verificare **prima in locale/test** che lo script di seed sia effettivamente idempotente, prima di lanciarlo sul database di produzione.
+- [x] Eseguire lo script di seed **da locale**, puntato temporaneamente al database di produzione — non un job dedicato sull'ambiente cloud per un'operazione una tantum: introdurrebbe una risorsa infrastrutturale permanente da mantenere solo per questo, sproporzionato (vedi `core/01-proporzionalita.mdc`; per il dettaglio del perché nello specifico ambiente cloud scelto, vedi il file di variante cloud). Esecuzione: Auth Proxy `5433`, `DATABASE_URL` + `PAYLOAD_SECRET` + `SEED_SUPERADMIN_*` prod inline (credenziali seed da Secret Manager, distinte da dev); `./scripts/prod-db.sh -- env … pnpm seed:super-admin` → log «creato utente».
+- [x] **Attenzione al secret applicativo**: puntare il database locale a quello di produzione non basta da solo — usare anche il secret applicativo (es. quello che firma le sessioni) **di produzione**, lo stesso già salvato nel gestore di secret (§ 3.2), non quello di sviluppo.
+- [x] Mini-procedura operativa: backup del proprio `.env` locale → sovrascrivere temporaneamente le variabili necessarie con i valori di produzione → eseguire il seed → **ripristinare subito** il proprio `.env` di sviluppo, prima di riprendere a lavorare in locale. *In questa sessione:* equivalente rispettato passando **solo inline** al comando, `.env` restato dev — vedi `docs/operativo/cloud-sql-produzione.md`.
+- [x] Verificare **prima in locale/test** che lo script di seed sia effettivamente idempotente, prima di lanciarlo sul database di produzione. Copertura: Fase 2.8 in dev; secondo run su prod opzionale (atteso messaggio «già presente»).
 - [ ] Verificare il login locale di emergenza in produzione — accesso confermato.
-- [ ] Confermare se serve o meno una migrazione di dati pregressi (dipende dal progetto: se si parte da database vuoto, nessuna azione).
+- [x] Confermare se serve o meno una migrazione di dati pregressi (dipende dal progetto: se si parte da database vuoto, nessuna azione). Cloud SQL prod: solo schema migrate § 3.1, nessun dato legacy → skip.
 - [ ] Configurare l'allow-list identità (Global Settings) in produzione come super-admin; verificare che il guardrail anti-lista-vuota sia attivo anche qui.
 
 ---
@@ -140,4 +140,4 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Incoerenze note
 
-*(Nessuna al momento. Sezione per segnalare esplicitamente contraddizioni o ambiguità non risolte tra questo file e altri — vedi `processo-v2-operativo.md` §3, Balzer 1991.)*
+- **Ordine § 3.3 vs § 3.4 (2026-10-03)**: `fase-3-auth-google-oauth.md` suggerisce di completare lo spike § 3.3 prima di § 3.4; in pratica lo spike e2e (SSO, cookie `Secure`, rifiuti) richiede allow-list e utenti in DB prod → sequenza adottata: Parte A § 3.3 → § 3.4 bootstrap → spike § 3.3. Nessuna modifica codice; solo ordine operativo documentato qui.

@@ -19,6 +19,9 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Operativo: `docs/operativo/login-locale-emergenza-admin.md` — sezione rotazione password bootstrap (Secret Manager ≠ DB; seed idempotente non aggiorna; workaround delete + re-seed; script dedicato fuori scope).
+- Fase 3.4 (parziale): seed super-admin su Cloud SQL prod da locale (`pnpm seed:super-admin`, proxy Auth `5433`, `DATABASE_URL`/`PAYLOAD_SECRET`/`SEED_*` prod inline; credenziali seed da Secret Manager). Stato § 3.4 e ordine 3.3/3.4 in `fase-3-deploy.md`; indice `00-piano-generale.md`.
+- Fase 3.3: Parte A marcata ✅ (URL Cloud Run, OAuth prod, smoke login); spike e2e rimandato post-bootstrap.
 - Fase 3.2: chiusura §3.2 in `fase-3-deploy.md`, `fase-3-cloud-gcp.md`, indice `00-piano-generale.md` (prossimo passo § 3.3).
 - Fase 3.2 Parte A: immagine Docker e `engines.node` portati a **Node 24 LTS** (runtime Cloud Run `nodejs24`; Node 20 EoL upstream e decommission GCP ott 2026).
 - Fase 3.2 Parte A: stato §3.2 e indice `00-piano-generale.md`; `.env.example` chiarisce `NEXT_PUBLIC_URL` come URL pubblico canonico dev/prod.
@@ -26,10 +29,12 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Fase 3.3: OAuth prod inviava `redirect_uri` su `localhost` perché `NEXT_PUBLIC_URL` era fissata al build nel `Dockerfile` (Next inlines le `NEXT_PUBLIC_*`). URL canonico spostato su **`APP_PUBLIC_URL`** (runtime, `lib/appPublicUrl.ts`); rimosso placeholder build-time; doc Cloud Run e `.env.example`.
 - Fase 3.2 (build): errori TypeScript in `lib/auth/jwt/isolatedJwtAuthStrategies.ts` e `patchUsersAuthStrategiesPlugin.ts` che bloccavano `next build` (tipi Payload 3.89).
 
 ### Tests
 
+- Fase 3.4 (2026-10-03): `pnpm seed:super-admin` su DB prod via Auth Proxy — primo tentativo `ECONNRESET` (connessione/proxy); retry OK, log «Seed super-admin: creato utente». Idempotenza su prod non rieseguita in sessione. Login `/admin/login/local`, allow-list e utente SSO Admin: **da confermare in browser**.
 - Fase 3.2 Parte B/C (2026-10-03): Cloud Build su `main` (`bc4a190`+) — tentativi falliti prima del successo: `Dockerfile` assente su `07b945d`; Artifact Registry `downloadArtifacts` denied (Writer sul SA build); `run.services.get` denied con `gcloud` autenticato come runtime SA (allineamento SA build vs runtime). **Esito finale:** build Docker + deploy Cloud Run OK; servizio raggiungibile (richiesta base).
 - Fase 3.2 Parte A: `pnpm exec tsc --noEmit`, `pnpm lint` (4 warning preesistenti in migration), `pnpm build` OK (12 route; nessun `force-dynamic` aggiuntivo). Immagine verificata in Cloud Build (non `docker build` locale).
 

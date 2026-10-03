@@ -18,7 +18,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Placeholder solo per `next build` (nessun DB in fase di build). Valori reali su Cloud Run (Secret Manager).
 ENV PAYLOAD_SECRET=build-time-placeholder-not-for-runtime
 ENV DATABASE_URL=postgresql://build:build@127.0.0.1:5432/build
-ENV NEXT_PUBLIC_URL=http://localhost:3000
+# URL pubblico OAuth/email: APP_PUBLIC_URL a runtime su Cloud Run (non NEXT_PUBLIC_* — inlined al build).
 RUN pnpm run build
 
 FROM base AS runner

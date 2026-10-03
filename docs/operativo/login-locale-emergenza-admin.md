@@ -28,6 +28,27 @@ Solo utenti con `adminRole: super-admin`, `active: true` e credenziali bootstrap
 
 Record creati con il seed **prima** del 2026-09-20 (modello legacy `loginMethod: local` + hash/salt standard): eseguire una volta `pnpm migrate:bootstrap-credentials` (copia hash/salt → bootstrap, imposta `loginMethod: sso`) **senza** cambiare la password in chiaro.
 
+## Rotazione password bootstrap — lacuna operativa
+
+**Non è previsto** oggi un comando o una UI Admin per **cambiare** la password di emergenza di un super-admin già creato.
+
+| Azione | Effetto |
+|--------|--------|
+| Nuova versione di `SEED_SUPERADMIN_PASSWORD` in Secret Manager | Solo copia operativa per chi lancia il seed da locale; **non** aggiorna il DB e **non** cambia il login su Cloud Run (i `SEED_*` di solito **non** sono montati sul servizio — vedi `docs/operativo/cloud-run-produzione.md`). |
+| Rilancio `pnpm seed:super-admin` con password nuova | **Nessuna modifica** se l’email esiste già come super-admin bootstrap attivo (`bootstrapCredentialHash` presente): lo script è idempotente e **non sovrascrive** hash/salt (evita di riscrivere credenziali su prod per errore). Vedi `scripts/seed-super-admin.ts`. |
+| Modifica utente da pannello Admin | I campi `bootstrapCredentialHash` / `bootstrapCredentialSalt` sono nascosti e non aggiornabili via UI/API standard. |
+
+**Password effettiva al login** (`POST /api/users/login/local`): quella codificata nel **record `users` su PostgreSQL**, non il valore in Secret Manager.
+
+**Workaround accettato a questa scala** (database ancora gestibile, un solo utente seed):
+
+1. Auth Proxy + `DATABASE_URL` prod come per migrate/seed (`docs/operativo/cloud-sql-produzione.md`).
+2. Eliminare il record seed (es. `DELETE FROM users WHERE email = '<email seed>';` via `psql`) — attenzione a eventuali FK su `activity_log` se già popolato.
+3. Eseguire di nuovo `pnpm seed:super-admin` con `SEED_SUPERADMIN_*` (nuova password) e `PAYLOAD_SECRET` prod inline.
+4. Allineare Secret Manager alla nuova password (e verificare `/admin/login/local`).
+
+**Fuori scope attuale**: script dedicato tipo `rotate-bootstrap-password` o flag `--force-rotate` sul seed — da introdurre solo se la rotazione diventa frequente o serve evitare DELETE manuale; se aggiunto, documentarlo qui e in `fase-2-login.md` § 2.8.
+
 ## Implementazione (riferimento tecnico)
 
 - Seed: `pnpm seed:super-admin` scrive `bootstrapCredential*` via `hashLocalPassword`; `loginMethod: sso`.
@@ -40,3 +61,4 @@ Record creati con il seed **prima** del 2026-09-20 (modello legacy `loginMethod:
 - Non sostituisce l’SSO per l’uso quotidiano del team Admin su dominio Workspace.
 - Non abilita login locale per utenti `admin` (non super-admin): guardrail invariati.
 - **Lacuna preesistente (non in scope 2.7/2.8)**: nessun rate-limiting o lockout dedicato su `/admin/login/local` — da valutare in un passaggio sicurezza separato se necessario.
+- **Lacuna documentata (2026-10-03)**: rotazione password bootstrap — vedi sezione «Rotazione password bootstrap» sopra.

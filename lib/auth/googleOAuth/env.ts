@@ -1,9 +1,7 @@
+import { getAppPublicURL, isAppPublicURLConfigured } from '@/lib/appPublicUrl'
+
 export function getGoogleOAuthServerURL(): string {
-  const url = process.env.NEXT_PUBLIC_URL?.trim()
-  if (!url) {
-    throw new Error('NEXT_PUBLIC_URL mancante: necessario per OAuth Google.')
-  }
-  return url.replace(/\/$/, '')
+  return getAppPublicURL()
 }
 
 export function getGoogleOAuthClientId(): string {
@@ -24,7 +22,7 @@ export function getGoogleOAuthClientSecret(): string {
 
 export function isGoogleOAuthConfigured(): boolean {
   return Boolean(
-    process.env.NEXT_PUBLIC_URL?.trim() &&
+    isAppPublicURLConfigured() &&
       process.env.GOOGLE_CLIENT_ID?.trim() &&
       process.env.GOOGLE_CLIENT_SECRET?.trim(),
   )

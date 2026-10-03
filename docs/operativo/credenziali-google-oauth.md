@@ -35,7 +35,7 @@ Valori reali **mai** nel codice sorgente, nei commit Git né in Payload. `.env.e
 
 ### Authorized redirect URIs — sviluppo locale
 
-Base URL app in locale: `http://localhost:3000` (allineare `NEXT_PUBLIC_URL` in `.env`).
+Base URL app: `APP_PUBLIC_URL` (locale `http://localhost:3000` in `.env`; prod su Cloud Run — env plain, vedi `cloud-run-produzione.md`).
 
 Path scelti per l’isolamento Admin/App (ADR catalogo isolamento istanze SSO; implementazione in 2.4 / 2.5 con `payload-oauth2`):
 
@@ -54,7 +54,7 @@ Redirect URI con l’URL pubblico reale del servizio (Fase 3, `fase-3-auth-googl
 
 Copiare da `.env.example` e valorizzare in `.env`:
 
-- `NEXT_PUBLIC_URL` — base pubblica dell’app (locale: `http://localhost:3000`, senza slash finale).
+- `APP_PUBLIC_URL` — base pubblica dell’app (locale/prod, senza slash finale). Fallback dev: `NEXT_PUBLIC_URL`.
 - `GOOGLE_CLIENT_ID` — Client ID del client Web OAuth di **sviluppo**.
 - `GOOGLE_CLIENT_SECRET` — Client secret associato.
 

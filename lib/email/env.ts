@@ -1,9 +1,7 @@
+import { getAppPublicURL } from '@/lib/appPublicUrl'
+
 export function getPublicAppUrl(): string {
-  const url = process.env.NEXT_PUBLIC_URL?.trim()
-  if (!url) {
-    throw new Error('NEXT_PUBLIC_URL mancante: necessario per i link nelle email transazionali.')
-  }
-  return url.replace(/\/$/, '')
+  return getAppPublicURL()
 }
 
 export function isResendConfigured(): boolean {
