@@ -40,7 +40,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 3.2 — Build container, secret e deploy
 
-**Stato**: ✅ fatto (2026-10-03) — `NEXT_PUBLIC_URL` definitivo e OAuth prod in § 3.3
+**Stato**: ✅ fatto (2026-10-03) — URL pubblico prod: **`APP_PUBLIC_URL`** a runtime (emendamento post-deploy § 3.3; vedi `docs/operativo/app-public-url.md`)
 
 **Obiettivo**: immagine container funzionante, secret configurati con accesso scoped, servizio raggiungibile con pipeline di deploy continuo attiva.
 
@@ -49,7 +49,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Checklist**:
 - [x] Scrivere `Dockerfile` multi-stage e `.dockerignore` secondo lo standard fisso del progetto (vedi `stack/01-stile-codice.mdc`) — non è specifico di questa fase, è già una convenzione dello stack.
 - [x] Verificare che la build di produzione passi (`tsc --noEmit`, `lint`, `build`) in locale prima di affidarsi alla pipeline cloud per scoprire eventuali errori.
-- [x] **Allineamento variabile URL pubblico**: variabile canonica **`NEXT_PUBLIC_URL`** (OAuth via `getGoogleOAuthServerURL()`, email transazionali, `.env.example`); nessuna `SERVER_URL` parallela nel codice.
+- [x] **Allineamento variabile URL pubblico**: **`APP_PUBLIC_URL`** a runtime per OAuth (`getGoogleOAuthServerURL()` → `getAppPublicURL()`) e email; fallback dev `NEXT_PUBLIC_URL`. **Emendamento 2026-10-03:** non usare `NEXT_PUBLIC_*` nel build Docker (Next inlined → OAuth localhost in prod). Vedi `docs/operativo/app-public-url.md`.
 - [x] Node **24** LTS (`node:24-alpine` nel Dockerfile, `engines.node`: `24.x.x` allineato a runtime Cloud Run `nodejs24`) e `output: 'standalone'` in `next.config.ts`.
 
 > **Nota**: se durante la build emerge un errore di prerendering perché una pagina/layout protetto chiama il database durante `next build` (nessun DB disponibile nel container di build), la soluzione tipica è forzare il rendering dinamico su quella route (es. `export const dynamic = 'force-dynamic'`) — non è una violazione del piano, è una conseguenza nota di avere route protette che richiedono dati a runtime.
@@ -83,7 +83,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 > - Google OAuth → `fase-3-auth-google-oauth.md`
 > - *(altri provider, quando disponibili nel catalogo)*
 
-**Stato**: 🔶 in corso — **Parte A ✅** (2026-10-03: `NEXT_PUBLIC_URL` su Cloud Run, redirect OAuth prod, smoke 200 su `/admin/login` e `/app/login`). **Spike e2e checklist generica ⏸** dopo § 3.4 (allow-list + utenti in prod).
+**Stato**: 🔶 in corso — **Parte A ✅** (2026-10-03: URL Cloud Run, redirect OAuth prod, smoke 200 su `/admin/login` e `/app/login`; **`APP_PUBLIC_URL`** su servizio post-fix). **Spike e2e checklist generica ⏸** dopo § 3.4 (allow-list + utenti in prod).
 
 **Obiettivo**: login funzionante in produzione con l'URL reale assegnato dal deploy; chiusura dello spike rimandato da Fase 2 (comportamento del cookie httpOnly dietro proxy/load balancer HTTPS).
 

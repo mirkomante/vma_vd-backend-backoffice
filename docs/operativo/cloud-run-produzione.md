@@ -25,11 +25,11 @@ Service agent (Google-managed): `service-437074136999@gcp-sa-cloudbuild.iam.gser
 ## Secret e env
 
 - Secret montati a runtime: `DATABASE_URL`, `PAYLOAD_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY` (seed opzionale, di solito non montato sul servizio).
-- Env plain: `RESEND_FROM_ADDRESS`, `RESEND_FROM_NAME`, **`APP_PUBLIC_URL`** (URL HTTPS Cloud Run, senza slash finale — OAuth redirect e link email; **runtime**, non serve rebuild al cambio dominio). Legacy: se manca, il codice accetta ancora `NEXT_PUBLIC_URL` (in Docker **non** usare solo `NEXT_PUBLIC_*` al build: Next le incorpora nell’immagine — vedi `lib/appPublicUrl.ts`).
+- Env plain: `RESEND_FROM_ADDRESS`, `RESEND_FROM_NAME`, **`APP_PUBLIC_URL`** (URL HTTPS Cloud Run, senza slash finale). Dettaglio tecnico, cambio dominio e anti-pattern: **`docs/operativo/app-public-url.md`**.
 
 ## OAuth — redirect_uri localhost in produzione
 
-Se Google segnala `redirect_uri=http://localhost:3000/...` da Cloud Run: l’immagine è stata buildata con `NEXT_PUBLIC_URL` inlined, oppure manca **`APP_PUBLIC_URL`** sul servizio. Impostare `APP_PUBLIC_URL` all’URL reale, redeploy (nuova revision, **senza** obbligo di rebuild dopo fix codice); registrare le stesse URI sul client OAuth prod (`docs/operativo/credenziali-google-oauth.md`).
+Se Google segnala `redirect_uri=http://localhost:3000/...` da Cloud Run: vedi **`docs/operativo/app-public-url.md`** (immagine pre-fix con `NEXT_PUBLIC_*` al build, oppure manca `APP_PUBLIC_URL` sul servizio).
 
 Formato `DATABASE_URL` su Cloud Run: vedi `docs/operativo/cloud-sql-produzione.md`.
 

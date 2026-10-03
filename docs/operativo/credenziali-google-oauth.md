@@ -35,7 +35,7 @@ Valori reali **mai** nel codice sorgente, nei commit Git né in Payload. `.env.e
 
 ### Authorized redirect URIs — sviluppo locale
 
-Base URL app: `APP_PUBLIC_URL` (locale `http://localhost:3000` in `.env`; prod su Cloud Run — env plain, vedi `cloud-run-produzione.md`).
+Base URL app: `APP_PUBLIC_URL` (locale `http://localhost:3000` in `.env`; prod su Cloud Run — env plain). Perché non `NEXT_PUBLIC_*` in Docker: `docs/operativo/app-public-url.md`.
 
 Path scelti per l’isolamento Admin/App (ADR catalogo isolamento istanze SSO; implementazione in 2.4 / 2.5 con `payload-oauth2`):
 

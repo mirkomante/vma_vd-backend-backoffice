@@ -17,6 +17,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 3.1: migrazione Payload iniziale `20260929_141010_initial_schema` (schema Fase 2: `users`, `activity_log`, global `settings`, tabelle di sistema Payload); script npm `migrate` / `migrate:status` / `migrate:create`; `scripts/prod-db.sh` e `docs/operativo/cloud-sql-produzione.md` (connessione Auth Proxy, migrate/seed su prod).
 - Fase 3.1 (pre-lavoro): `ADR-110-istanza-cloud-sql-produzione.md` — istanza Cloud SQL for PostgreSQL 18 dedicata (non condivisa con `vtn-postgres`, in dismissione a rilascio pubblico), Enterprise, `db-f1-micro`, europe-west1, zona singola **senza HA all'avvio** — nessun default di catalogo scartato (`fase-3-db-postgres.md` lascia tier/disponibilità aperti al progetto), ma decisione che condiziona fase-5/fase-6: HA da rivalutare esplicitamente prima che dati reali di prenotazioni o il go-live pubblico del menù entrino in produzione su questa istanza, non lasciata implicita. Fissa anche la regione (chiude un rimando circolare tra `fase-3-db-postgres.md` §3.1 e `fase-3-cloud-gcp.md` §3.2). `piano.yaml` aggiornato con `arco-26` (fase-3 → fase-5) e `arco-27` (fase-3 → fase-6), non presenti alla composizione iniziale del 2026-09-13.
 
+### Added
+
+- Operativo: `docs/operativo/app-public-url.md` (APP_PUBLIC_URL vs NEXT_PUBLIC al build Docker; cambio dominio senza rebuild). Segnalazione catalogo: `docs/piano-sviluppo/segnalazione-catalogo-app-public-url.md`.
+
 ### Changed
 
 - Operativo: `docs/operativo/login-locale-emergenza-admin.md` — sezione rotazione password bootstrap (Secret Manager ≠ DB; seed idempotente non aggiorna; workaround delete + re-seed; script dedicato fuori scope).
