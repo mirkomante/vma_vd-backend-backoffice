@@ -27,12 +27,13 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Cancellazione utente in Admin: hook `users.beforeDelete` elimina prima le voci `activity-log` collegate (FK Postgres `ON DELETE SET NULL` incompatibile con `user_id` NOT NULL); bug emerso in verifica 4.0, non introdotto dalla localizzazione.
 - `fase-4-cms-siti-esterni.md` § 4.0: la migrazione non è vuota (con `localization` attiva l'adapter Postgres crea l'enum `_locales`); aggiunta la configurazione `i18n` mancante per l'interfaccia in italiano e corretta la semantica di `defaultLocale`.
 - `piano.yaml`: rimosso `arco-06` (errore di scrittura): attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» che appartiene ai due siti esterni (altro progetto, un progetto Firebase distinto per ciascun sito).
 
 ### Tests
 
-- Fase 4.0: verifiche runtime OK (Admin italiano, login Google SSO, login locale `/admin/login/local`, Global `settings` salvabile). Selettore lingua contenuti non verificabile in 4.0 (nessun campo `localized`; da verificare in 4.1). `pnpm migrate:status` su DB locale (5432): schema allineato con `push` — non eseguire `pnpm migrate` su 5432. Durante test delete utente: 500 per FK `activity_log.user_id` (pre-esistente, non causato da 4.0).
+- Fase 4.0: verifiche runtime OK (Admin italiano, login Google SSO, login locale `/admin/login/local`, Global `settings` salvabile). Selettore lingua contenuti non verificabile in 4.0 (nessun campo `localized`; da verificare in 4.1). `pnpm migrate:status` su DB locale (5432): schema allineato con `push` — non eseguire `pnpm migrate` su 5432. Delete utente: 500 pre-fix per FK `activity_log`; dopo fix hook, delete verificato OK in dev.
 
 ## [0.3.0] — 2026-10-03
 

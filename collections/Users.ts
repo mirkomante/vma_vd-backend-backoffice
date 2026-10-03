@@ -11,6 +11,7 @@ import {
   type UserAccessFields,
   type UserWriteData,
 } from '@/lib/auth/roles'
+import { purgeActivityLogForUserBeforeDelete } from '@/lib/activityLog/purgeForUserBeforeDelete'
 import { logAuthLoginHook, logAuthLogoutHook } from '@/lib/activityLog/userAuthHooks'
 import { localEmailEndpoints } from '@/lib/auth/localEmail/endpoints'
 import { prepareActivationBeforeChange } from '@/lib/auth/localEmail/prepareActivationBeforeChange'
@@ -287,6 +288,7 @@ export const Users: CollectionConfig = {
           operation: 'delete',
           id,
         })
+        await purgeActivityLogForUserBeforeDelete(req, id)
       },
     ],
   },
