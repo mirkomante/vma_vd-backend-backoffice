@@ -53,3 +53,10 @@ localization: {
 - La raccolta delle sole URL sorgente (`from`) del plugin Redirects è anticipabile senza rischio; la compilazione completa (`from` → `to`) resta invece bloccata a fase-4.6, perché il campo `to` richiede pagine destinazione già esistenti come record (vincolo di sequenza già annotato in `piano.yaml`, fase-4.6, e in `riepilogo-sessione-bucket-c.md` §4).
 - Ogni sviluppo dei due frontend Next.js eredita l'obbligo di passare `locale` esplicito in ogni chiamata REST verso Payload — convenzione di codice vincolante, non solo nota di progetto.
 - Resta punto aperto, non bloccante: verificare in fase di scaffolding se l'Admin UI di Payload mostri il valore di fallback anche in editing, o il campo vuoto per segnalare "da tradurre" — comportamento di default da controllare quando si arriva a costruire i field (§3.3).
+
+## Nota di chiarimento (2026-10-03)
+
+Non modifica la decisione su `locales`, `fallbackLocale`, `fallback` e sull'obbligo di `locale` esplicito nelle richieste dei due siti. Precisa due fatti verificati su Payload 3.89.0:
+
+- **`defaultLocale` non è la lingua dell'interfaccia.** Nei tipi di `BaseLocalizationConfig` è la locale dei **contenuti** per chi non ne ha espressa una. La lingua d'interfaccia di Admin e `(app)` dipende dalla configurazione `i18n` (`supportedLanguages`, `fallbackLanguage`), separata. Gli effetti pratici descritti sopra restano validi: le richieste senza `locale` ricevono `it`. Per ottenere l'interfaccia in italiano serve `i18n`, applicata in Fase 4.0.
+- **La migrazione non è vuota.** Con `localization` attiva l'adapter Postgres crea nello schema il tipo enum `_locales` anche in assenza di campi `localized`.

@@ -21,6 +21,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Ordine di dipendenza reale
 
+L'ordine di esecuzione **tra le fasi** è in `00-piano-generale.md`, «Ordine di esecuzione corrente»: la 4.0 è la prima sottofase eseguita; 4.1–4.4 (parte CMS) seguono dopo Fase 7, 8 e 6.
+
 - **4.0** (localizzazione) → **4.1** (scaffolding) → **4.2** (plugin).
 - **4.3 Parte A** e **4.4 Parte A** (lato CMS + contratto ADR-111) partono dopo 4.1 e possono procedere in parallelo tra loro.
 - **4.3 Parte B**, **4.4 Parte B**, **4.5**, **4.6**: ⏸ rimandate a quando i frontend (e il design) dei due siti saranno disponibili. Non bloccano le Fasi 5 e 6, salvo 5.6 (vedi `piano.yaml`, arco-13).
@@ -69,16 +71,32 @@ localization: {
 }
 ```
 
-**Regole che ne derivano** (da ADR-103):
-- `defaultLocale: 'it'` riguarda solo la lingua di interfaccia (Admin e `(app)`) e le chiamate interne senza locale; **non** determina la lingua dei siti.
+**Lingua dell'interfaccia (aggiunta rispetto ad ADR-103)**: `localization.defaultLocale` **non** imposta la lingua dell'interfaccia: nei tipi di Payload 3.89 è la locale dei **contenuti** per chi non ne ha espressa una (vedi nota di chiarimento in `ADR-103`). Per avere Admin e `(app)` in italiano, come prevedono ADR-102 e ADR-103, serve la configurazione `i18n`, oggi assente in `payload.config.ts` (l'Admin è quindi in inglese):
+
+```ts
+import { it } from '@payloadcms/translations/languages/it'
+
+i18n: {
+  supportedLanguages: { it },
+  fallbackLanguage: 'it',
+}
+```
+
+Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, versione esatta uguale a quella di Payload (`3.89.0`): oggi è solo transitiva.
+
+**Passaggio da confermare con l'umano prima di scrivere codice**: lingue d'interfaccia. Proposta per proporzionalità: **solo italiano**. Alternativa: italiano e inglese selezionabili (`supportedLanguages: { it, en }`, `fallbackLanguage: 'it'`).
+
+**Regole che ne derivano** (da ADR-103, con la precisazione sopra):
+- `defaultLocale: 'it'` è la locale dei contenuti per le richieste senza `locale` (chiamate interne, Local API, script) e la locale iniziale di modifica nell'Admin; **non** determina la lingua dei siti (la decide il `locale` esplicito di ogni richiesta) **né la lingua dell'interfaccia** (la decide `i18n`).
 - Ogni richiesta REST dai siti passa `locale` esplicito: `it` per vietnamonamour.com, `en` per villadoree.com (release 1). Convenzione vincolante, da riportare nel contratto ADR-111.
 - Nessun campo esistente (`users`, `settings`, `activityLog`) viene marcato `localized`: sono dati di configurazione, non contenuti.
 
 **Checklist di chiusura sottofase**:
 - [ ] `localization` presente in `payload.config.ts`, valori identici a ADR-103.
-- [ ] Tipi rigenerati; `pnpm build` e avvio locale senza errori; selettore lingua visibile nell'Admin.
+- [ ] Configurazione `i18n` applicata secondo la scelta confermata; `@payloadcms/translations` dipendenza diretta alla stessa versione di Payload; interfaccia Admin in italiano verificata a runtime.
+- [ ] Tipi rigenerati; `pnpm build` e avvio locale senza errori; selettore lingua dei contenuti nell'Admin: senza campi `localized` può non comparire; in tal caso annotarlo come non verificabile in 4.0 e verificarlo in 4.1.
 - [ ] Login (SSO e locale di emergenza) e Global `settings` invariati e funzionanti.
-- [ ] `payload migrate:create` eseguito: verificato se produce modifiche di schema (atteso nessuna senza campi `localized`); migrazione, se presente, committata e **applicata su Cloud SQL prod prima del push**.
+- [ ] `payload migrate:create` eseguito. **La migrazione non è vuota**: con `localization` attiva l'adapter Postgres crea nello schema il tipo enum `_locales` (`it`, `en`) anche senza campi `localized` (verificato nel codice di `@payloadcms/drizzle` 3.89.0). Verificare che contenga solo la creazione dell'enum; migrazione committata e **applicata su Cloud SQL prod prima del push**.
 - [ ] Deviazione annotata in `fase-1-setup.md`, CHANGELOG aggiornato, stato aggiornato in `00-piano-generale.md`.
 
 ---
@@ -272,6 +290,7 @@ Valori di sviluppo in `.env.example` già dalla Fase 4.0/4.1, non nella fase in 
 - **`piano.yaml` arco-06 (errore di scrittura) — corretto 2026-10-03.** Attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» necessario per 4.4. Firebase appartiene ai due siti (due progetti Firebase distinti, in un altro progetto), non a questo progetto. L'arco è stato rimosso (id non riassegnato, commento nel file); nessuna attività Firebase in questo repository.
 - **ADR-105, omissione — corretta 2026-10-03.** Diceva che i siti sono «su Firebase Hosting» senza precisare che sono due applicazioni distinte, ciascuna su un proprio progetto Firebase. Aggiunta una «Nota di chiarimento» in fondo all'ADR; la decisione non cambia.
 - **ADR-103 e due siti.** Il plugin Redirects genera una sola collection mentre i siti sono due: scelta da fare in 4.2 (punto aperto 1).
+- **ADR-103, semantica di `defaultLocale`.** Attribuisce a `defaultLocale` anche la lingua d'interfaccia, ma in Payload 3.89 è la locale dei contenuti; l'interfaccia dipende da `i18n`. Nota di chiarimento aggiunta in `ADR-103` (2026-10-03); la decisione su locales, fallback e `locale` esplicito non cambia. Inoltre l'abilitazione di `localization` crea l'enum `_locales` nello schema: la migrazione di 4.0 non è vuota.
 - **Storage dei media non deciso.** Nessuna collection `media` né storage esterno (vedi 4.2, punto aperto 2). Prerequisito di 4.5.
 - **Archi 17 e 25 (nota per le Fasi 5 e 6).** `piano.yaml` indica la Fase 3 come produttrice di «Cloud Scheduler» (arco-25, per 5.3) e «Cloud Scheduler, GCS» (arco-17, per 6.4). Né `fase-3-deploy.md` né il CHANGELOG riportano la loro predisposizione: sono prerequisiti reali non consegnati, da predisporre prima di 5.3 e 6.4. Questa volta non sono un errore di scrittura, ma un debito.
 - **Sottofasi rimandate e Fase 5.6.** Il form pubblico «Prenota un tavolo» (5.6) innesta sulla pagina di 4.1 ma vive nel frontend del sito: va rimandato insieme a esso.

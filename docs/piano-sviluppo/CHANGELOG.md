@@ -14,14 +14,18 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 - Fase 4 definita: `fase-4-cms-siti-esterni.md` (stato `validato`, 2026-10-03) con sottofasi 4.0 (localizzazione: recupero della deviazione da Fase 1 richiesta da ADR-103/arco-01), 4.1, 4.2, parte CMS di 4.3 e 4.4 (contratto ADR-111 da scrivere) e 4.5/4.6 rimandate; riga e panoramica sottofasi in `00-piano-generale.md`.
 - `piano.yaml`: sottofase `fase-4.0`, `arco-28` (contratto CMS ↔ siti esterni) e voce ADR-111 (da scrivere).
+- Fase 8 (shell `(app)` + shadcn/ui) in `piano.yaml` con sottofasi 8.1–8.4; `meta.ordine_esecuzione` (4.0, 7, 8, 6, poi 4.x e 5); sezione `punti_aperti` con scadenza e punto di registrazione per ciascuna decisione aperta (po-01…po-08); `arco-29`…`arco-32`; voce ADR-112 (contratto CMS ↔ frontend menù, da scrivere); stato `fuori_perimetro`. «Ordine di esecuzione corrente» e righe Fase 5–8 in `00-piano-generale.md`.
+- `ADR-103`: nota di chiarimento su `defaultLocale` (locale dei contenuti, non lingua d'interfaccia) e sull'enum `_locales`.
 
 ### Changed
 
 - `piano.yaml`: `arco-01` parte ora da `fase-4.0` (localizzazione non consegnata da Fase 1); note di `fase-4.3`/`4.4` con parte CMS eseguibile e parte sui siti rimandata. `ADR-105`: nota di chiarimento sui due siti (applicazioni distinte, ciascuna su un proprio progetto Firebase).
 - Allineati in `piano.yaml` gli stati di `fase-1` e `fase-2` a `fatto` (coerenza con `00-piano-generale.md`); unificato il blocco `### Added` duplicato nella sezione 0.3.0 del CHANGELOG.
+- `piano.yaml`: `arco-21`, `arco-22` e `arco-24` invertiti (la fonte unica degli orari su `impostazioni-sistema` precede lo scaffolding di fase-5.1 e fase-6.1, come prevede ADR-109); fase-6.7 `fuori_perimetro` (frontend del menù in un altro progetto); note di 6.1, 6.2, 6.4, 6.5, 6.6, 7.2, 7.3, 5.5; note di `arco-17` e `arco-25` (Cloud Scheduler e GCS non consegnati da fase-3).
 
 ### Fixed
 
+- `fase-4-cms-siti-esterni.md` § 4.0: la migrazione non è vuota (con `localization` attiva l'adapter Postgres crea l'enum `_locales`); aggiunta la configurazione `i18n` mancante per l'interfaccia in italiano e corretta la semantica di `defaultLocale`.
 - `piano.yaml`: rimosso `arco-06` (errore di scrittura): attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» che appartiene ai due siti esterni (altro progetto, un progetto Firebase distinto per ciascun sito).
 
 ## [0.3.0] — 2026-10-03

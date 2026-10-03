@@ -15,8 +15,9 @@
 #   - un arco "decisione" porta un riferimento "adr" (titolo dell'ADR da
 #     scrivere subito dopo, secondo ADR-template.md); un arco "output" non
 #     lo richiede (adr: null)
-#   - stato di ciascun nodo: "da_fare" | "in_corso" | "fatto" | "bloccata"
-#     (dipendenza esterna non ancora risolta)
+#   - stato di ciascun nodo: "da_fare" | "in_corso" | "fatto" | "bloccata" | "fuori_perimetro"
+#     (bloccata: dipendenza esterna non ancora risolta; fuori_perimetro:
+#     sviluppato in un altro progetto, non eseguito da questo piano)
 #   - la numerazione fase-4/5/6/7 è assegnata QUI per la prima volta (il
 #     dominio applicativo non ha un ordine fissato dal catalogo) — da
 #     riportare nei file fase-N-<area>.md quando verranno scritti (vedi
@@ -35,6 +36,15 @@ meta:
     ambiente_cloud: "gcp"
     package_manager: "pnpm"       # fisso, non variante
     ui_kit: "shadcn/ui"           # fisso, non variante
+  # L'ordine di esecuzione non coincide con la numerazione delle fasi.
+  # Priorità decisa il 2026-10-03: portare a compimento prima il menù digitale
+  # (parte CMS, API e backoffice; il frontend pubblico è fuori perimetro).
+  ordine_esecuzione:
+    - "fase-4.0 (localizzazione e lingua d'interfaccia)"
+    - "fase-7 (impostazioni-sistema: orari e chiusure sono fonte unica per menù e prenotazioni)"
+    - "fase-8 (shell (app) + shadcn/ui)"
+    - "fase-6 (menù digitale; 6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)"
+    - "poi fase-4.1/4.2/4.3-A/4.4-A, quindi fase-5"
   vincoli_hard:
     - "Payload >= 3.73.0 — CVE-2026-25544 (SQL injection su adapter Drizzle-based: Postgres/SQLite)"
     - "defaultLocale del progetto Payload è unico per l'intero progetto ('it') — riguarda solo l'interfaccia admin/app, non la lingua dei contenuti dei siti: quella è determinata dal parametro locale esplicito in ogni richiesta REST (vedi arco-01)"
@@ -144,7 +154,7 @@ fasi:
       - id: fase-5.1
         nome: "Global 'Impostazioni prenotazioni' (servizi, capienza, chiusure annuali)"
         stato: "da_fare"
-        note: "riepilogo-sessione-sistema-prenotazioni.md §5"
+        note: "Nasce senza i tre campi orario/chiusura (ADR-109 §3). riepilogo-sessione-sistema-prenotazioni.md §5"
       - id: fase-5.2
         nome: "Collection 'Eccezioni giorno' + UI custom slot-chiusi (condivisa col form pubblico)"
         stato: "da_fare"
@@ -160,6 +170,7 @@ fasi:
       - id: fase-5.5
         nome: "Backoffice (app) prenotazioni — shadcn/ui, mobile-first"
         stato: "da_fare"
+        note: "Dipende da fase-8 (shell (app) + shadcn/ui)."
       - id: fase-5.6
         nome: "Form pubblico 'Prenota un tavolo' (innesto su fase-4.1)"
         stato: "da_fare"
@@ -170,15 +181,19 @@ fasi:
     origine: dominio-applicativo
     file: "fase-6-menu-digitale.md (da scrivere)"
     stato: "da_fare"
+    note: >
+      Priorità del progetto (2026-10-03): completa e funzionante per prima,
+      per la parte CMS, API e backoffice. Il frontend pubblico (6.7) è un'app
+      Firebase in un altro progetto. Si esegue dopo fase-7 e fase-8.
     sottofasi:
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia distillato) + permessi manager/admin"
         stato: "da_fare"
-        note: "riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
+        note: "Scaffolda anche il Global 'Generali' senza i campi orario/chiusura (ADR-109 §2/§4): gli orari si leggono da impostazioni-sistema (fase-7.2). riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
       - id: fase-6.2
         nome: "Collection Piatti / Vini / Birra + menu_fisso_piatto (campo porzione)"
         stato: "da_fare"
-        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
+        note: "Prerequisiti: contratto ADR-112 e decisione po-05 sui piatti/vini già esistenti. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
       - id: fase-6.3
         nome: "Collection 'Giorni Speciali'"
         stato: "da_fare"
@@ -186,18 +201,19 @@ fasi:
       - id: fase-6.4
         nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
         stato: "da_fare"
-        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4"
+        note: "Prerequisiti: Cloud Scheduler, bucket GCS e IAM da predisporre (arco-17, debito di fase-3); schema di disponibilita.json dal contratto ADR-112; confini di servizio letti da impostazioni-sistema (fase-7.2). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4"
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
         stato: "da_fare"
-        note: "riepilogo-sessione-bucket-d.md §2"
+        note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end) dipende dal frontend del menù e da un progetto Firebase di test: è l'unica sottofase di fase-6 che dipende dal progetto esterno. riepilogo-sessione-bucket-d.md §2"
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "da_fare"
+        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2."
       - id: fase-6.7
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
-        stato: "da_fare"
-        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
+        stato: "fuori_perimetro"
+        note: "Sviluppato in un altro progetto (app Firebase del menù): fuori dal perimetro di questo piano, confermato il 2026-10-03. Questo piano fornisce solo API di lettura e disponibilita.json secondo il contratto ADR-112. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
 
   - id: fase-7
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
@@ -221,15 +237,43 @@ fasi:
       - id: fase-7.2
         nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
         stato: "da_fare"
-        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso)."
+        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario."
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
         stato: "da_fare"
-        note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni')."
+        note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni'). Prima di costruire il tab Comunicazioni chiudere po-01 (mittenti: env RESEND_FROM_* e array 'mittenti-resend'). Calendario e Comunicazioni restano senza consumatori fino a fase-5."
       - id: fase-7.4
         nome: "Permessi granulari campo-per-campo (orari a manager, resto ad admin/super-admin)"
         stato: "da_fare"
         note: "Tabella permessi decisa in ADR-109 §5."
+
+  - id: fase-8
+    nome: "Shell dell'Area App (app) + shadcn/ui (infrastruttura condivisa del backoffice)"
+    origine: dominio-applicativo
+    file: "fase-8-shell-app.md (da scrivere)"
+    stato: "da_fare"
+    note: >
+      Aggiunta il 2026-10-03: nessuna sottofase di fase-5 o fase-6 creava la
+      shell condivisa dal backoffice. Oggi esiste solo /app/login,
+      canAccessSection è uno stub che restituisce false e shadcn/ui non è
+      installato. Il numero non indica l'ordine di esecuzione (vedi
+      meta.ordine_esecuzione). Struttura delle sottofasi da confermare quando
+      si scrive il file di fase.
+    sottofasi:
+      - id: fase-8.1
+        nome: "Installazione e verifica di shadcn/ui (compatibilità con le versioni di Tailwind e Next in uso)"
+        stato: "da_fare"
+      - id: fase-8.2
+        nome: "Layout (app) mobile-first e navigazione per sezione (menu, reservations)"
+        stato: "da_fare"
+      - id: fase-8.3
+        nome: "Guardia di accesso per sezione (canAccessSection) e decisione sulla granularità dei ruoli"
+        stato: "da_fare"
+        note: "Chiudere prima po-02: oggi appRole è solo manager/none e le due sezioni non sono assegnabili separatamente."
+      - id: fase-8.4
+        nome: "Verifica in produzione di login locale App ed email di attivazione"
+        stato: "da_fare"
+        note: "Debito di fase-3.3 (coperto solo in sviluppo, fase-2.10): criterio di accettazione prima del primo accesso dei manager (po-03)."
 
 # ============================================================================
 # ARCHI
@@ -426,7 +470,7 @@ archi:
     da: fase-3
     a: fase-5.3
     tipo: output
-    descrizione: "Ambiente GCP pronto (Cloud Scheduler) necessario per il job giornaliero di anonimizzazione GDPR."
+    descrizione: "Ambiente GCP pronto (Cloud Scheduler) necessario per il job giornaliero di anonimizzazione GDPR. Nota 2026-10-03: non consegnato da fase-3 (assente in fase-3-deploy.md e nel CHANGELOG); da predisporre prima di fase-5.3."
     adr: null
 
   - id: arco-26
@@ -470,6 +514,39 @@ archi:
     adr: "ADR — Contratto CMS <-> siti esterni (preview e revalidation)"
     fonte: "fase-4-cms-siti-esterni.md §4.3 Parte A, ADR-104, ADR-105"
 
+  - id: arco-29
+    da: fase-7.2
+    a: fase-6.4
+    tipo: output
+    descrizione: "Orari di servizio su impostazioni-sistema: definiscono i confini di servizio dei trigger Cloud Scheduler per il reset di 'terminato' (e, in futuro, gli input del banner di stato)."
+    adr: null
+
+  - id: arco-30
+    da: fase-8
+    a: fase-6.6
+    tipo: output
+    descrizione: "Shell (app) con shadcn/ui, navigazione e guardia di accesso per sezione, necessaria al backoffice del menù."
+    adr: null
+
+  - id: arco-31
+    da: fase-8
+    a: fase-5.5
+    tipo: output
+    descrizione: "Stessa shell (app), necessaria al backoffice delle prenotazioni."
+    adr: null
+
+  - id: arco-32
+    da: fase-6.2
+    a: fase-6.4
+    tipo: decisione
+    descrizione: >
+      Contratto CMS <-> frontend del menù, sviluppato in un altro progetto:
+      forma delle letture REST pubbliche e schema di disponibilita.json su
+      GCS, fissati prima di 6.2 e 6.4. Il prototipo vtn-menu-ristorante-next
+      è la base di partenza. Analogo ad arco-28 per i due siti.
+    adr: "ADR — Contratto CMS <-> frontend menù digitale (letture REST e disponibilita.json)"
+    fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §4.3, ADR-105"
+
   # --- Decisioni e output di progetto — dominio menù digitale ---------------
 
   - id: arco-14
@@ -508,7 +585,7 @@ archi:
     da: fase-3
     a: fase-6.4
     tipo: output
-    descrizione: "Ambiente GCP pronto (Cloud Scheduler, GCS) necessario per il reset automatico di 'terminato' e per la pubblicazione di disponibilita.json."
+    descrizione: "Ambiente GCP pronto (Cloud Scheduler, GCS) necessario per il reset automatico di 'terminato' e per la pubblicazione di disponibilita.json. Nota 2026-10-03: non consegnato da fase-3 (assente in fase-3-deploy.md e nel CHANGELOG); da predisporre prima di fase-6.4."
     adr: null
 
   - id: arco-18
@@ -546,26 +623,31 @@ archi:
   # --- Decisioni e output di progetto — impostazioni-sistema (bloccata) -----
 
   - id: arco-21
-    da: fase-5.1
-    a: fase-7.2
+    da: fase-7.2
+    a: fase-5.1
     tipo: decisione
     descrizione: >
       Global 'Impostazioni prenotazioni' era una delle due fonti duplicate
       di orari/chiusure (l'altra è il Global 'Generali' del menù,
       fase-6.1). Riconciliazione decisa: fonte unica su impostazioni-sistema
       (fase-7), con amendment esplicito ad ADR-107 §1 (rimozione dei tre
-      campi orario/chiusura da 'Impostazioni prenotazioni').
+      campi orario/chiusura da 'Impostazioni prenotazioni'). Direzione
+      invertita il 2026-10-03: la fonte unica nasce prima dello scaffolding
+      di fase-5.1 (ADR-109: "Migrazione dati: nessuna richiesta"), quindi
+      fase-5.1 nasce già senza i tre campi.
     adr: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-109-global-impostazioni-sistema.md §2/§3"
 
   - id: arco-22
-    da: fase-6.1
-    a: fase-7.2
+    da: fase-7.2
+    a: fase-6.1
     tipo: decisione
     descrizione: >
       Stessa duplicazione dal lato menù (Global 'Generali') — stessa
       riconciliazione su impostazioni-sistema, decisa in ADR-109 §2/§4
-      (campi orario/chiusure spostati, isSpecialPeriod deprecato).
+      (campi orario/chiusure spostati, isSpecialPeriod deprecato). Direzione
+      invertita il 2026-10-03, come arco-21: fase-6.1 scaffolda 'Generali'
+      già senza i campi orario.
     adr: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     fonte: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §3, riepilogo-sessione-bucket-c.md §3, ADR-109-global-impostazioni-sistema.md §2/§4"
 
@@ -583,10 +665,10 @@ archi:
     fonte: "riepilogo-sessione-bucket-d.md §4"
 
   - id: arco-24
-    da: fase-5.4
-    a: fase-7.3
+    da: fase-7.3
+    a: fase-5.4
     tipo: output
-    descrizione: "L'id del calendario Google Calendar usato dall'integrazione push (fase-5.4) è un riferimento non sensibile che troverà casa in impostazioni-sistema."
+    descrizione: "L'id del calendario Google Calendar usato dall'integrazione push (fase-5.4) è un riferimento non sensibile che ha casa in impostazioni-sistema. Direzione invertita il 2026-10-03 con il nuovo ordine di esecuzione: il campo esiste da fase-7.3 e resta vuoto; lo valorizza e lo consuma fase-5.4."
     adr: null
     fonte: "riepilogo-sessione-bucket-c.md §3"
 
@@ -665,3 +747,59 @@ adr_da_scrivere:
       (2026-10-03) perché i due siti esterni sono sviluppati in un altro
       progetto e hanno bisogno di un'interfaccia fissata dal lato CMS.
       Nessuna deviazione da un default di catalogo.
+  - titolo: "ADR — Contratto CMS <-> frontend menù digitale (letture REST e disponibilita.json)"
+    archi: ["arco-32"]
+    stato: "da_scrivere"
+    file: "ADR-112-contratto-cms-frontend-menu.md (da scrivere a inizio fase-6)"
+    nota: >
+      Dodicesimo ADR di progetto. Il frontend del menù (6.7) è sviluppato in
+      un altro progetto: serve un'interfaccia fissata lato CMS prima di
+      6.2 e 6.4. Nessuna deviazione da un default di catalogo.
+
+# ============================================================================
+# PUNTI APERTI CON SCADENZA (2026-10-03)
+# ============================================================================
+# Decisioni non ancora prese, ciascuna da chiudere prima della fase indicata
+# e da registrare nel posto indicato. Non riaprire dopo la registrazione.
+
+punti_aperti:
+  - id: po-01
+    titolo: "Mittenti email: env RESEND_FROM_ADDRESS/NAME e array 'mittenti-resend' di ADR-109 (un solo posto per scopo)"
+    scadenza: "prima di fase-7.3"
+    registrazione: "emendamento ad ADR-109 §1"
+    stato: "aperto"
+  - id: po-02
+    titolo: "Un manager può essere solo del menù o solo delle prenotazioni? Se sì, cambia lo schema dei ruoli"
+    scadenza: "prima di fase-8.3"
+    registrazione: "ADR di progetto (cita ADR-001 di catalogo)"
+    stato: "aperto"
+  - id: po-03
+    titolo: "Provare in produzione login locale App ed email di attivazione"
+    scadenza: "criterio di accettazione di fase-8.4"
+    registrazione: "nota di verifica in fase-8-shell-app.md"
+    stato: "aperto"
+  - id: po-04
+    titolo: "Predisposizione Cloud Scheduler, bucket GCS e IAM (debito dell'arco-17): dove si colloca"
+    scadenza: "prima di fase-6.4"
+    registrazione: "checklist in fase-6-menu-digitale.md"
+    stato: "aperto"
+  - id: po-05
+    titolo: "Piatti e vini già esistenti: import o reinserimento manuale"
+    scadenza: "prima di fase-6.2"
+    registrazione: "nota o sottofase in fase-6-menu-digitale.md"
+    stato: "aperto"
+  - id: po-06
+    titolo: "Contratto con il frontend del menù: schema di disponibilita.json e letture REST"
+    scadenza: "prima di fase-6.2 e fase-6.4"
+    registrazione: "ADR-112"
+    stato: "aperto"
+  - id: po-07
+    titolo: "Come provare 6.5 senza toccare l'hosting reale (progetto Firebase di test o step di prova)"
+    scadenza: "prima di fase-6.5"
+    registrazione: "nota in fase-6-menu-digitale.md"
+    stato: "aperto"
+  - id: po-08
+    titolo: "Lingue d'interfaccia dell'Admin: solo italiano o italiano e inglese"
+    scadenza: "prima di fase-4.0"
+    registrazione: "fase-4-cms-siti-esterni.md § 4.0 (passaggio da confermare)"
+    stato: "aperto"
