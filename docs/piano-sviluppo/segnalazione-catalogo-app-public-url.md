@@ -86,6 +86,12 @@ Commit di riferimento nel repo reale: `583eb24`.
 
 ---
 
+## Aggiunta correlata (stessa sessione prod) — cookie `Secure`
+
+Spike § 3.3: in prod `payload-token` era **HttpOnly** ma **senza Secure** finché non si imposta esplicitamente `collection.auth.cookies.secure` (Payload default). Template deploy/auth: documentare `auth.cookies.secure` per `NODE_ENV === 'production'` (o equivalente) su collection `users`, non assumere che HTTPS Cloud Run lo imposti da solo.
+
+---
+
 ## Voce changelog catalogo suggerita
 
 > **Fixed (deploy/OAuth):** Document and template `APP_PUBLIC_URL` for server-side OAuth redirect and email links; do not rely on `NEXT_PUBLIC_*` in Docker build for Cloud Run — Next inlines at build time, causing `redirect_uri_mismatch` to localhost in production.

@@ -27,7 +27,7 @@
 |---|---|---|---|
 | Fase 1 | Setup progetto: Next.js, PayloadCMS, Tailwind, database locale, dipendenze base | ✅ fatto (1.1–1.7) | `fase-1-setup.md` (+ file di variante database) |
 | Fase 2 | Login: provider SSO, login locale, ruoli/permessi, sessione, activity log | ✅ fatto (2.1–2.10; spike cookie prod → Fase 3 § 3.3) | `fase-2-login.md` (+ file di variante auth ed email) |
-| Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔶 in corso (3.1 ✅, 3.2 ✅, 3.3 Parte A ✅, 3.4 🔶) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
+| Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | 🔶 in corso (3.1 ✅, 3.2 ✅, 3.3 🔶, 3.4 ✅) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4+ | Dominio specifico di questo progetto — da definire (vedi sotto) | 🔲 da fare | `fase-4-*.md`, ... |
 
 ## Fase 1 — Setup, panoramica sottofasi
@@ -63,8 +63,8 @@ Dettaglio completo in `fase-3-deploy.md`. Non esiste un ambiente di staging sepa
 
 1. Database di produzione (variante — vedi file di variante database, § 3.1) — ✅ fatto (2026-09-29)
 2. Build container (generico) + secret e deploy sull'ambiente cloud (variante, vedi file di variante cloud, § 3.2) — ✅ fatto (2026-10-03)
-3. Auth in produzione e spike cookie HTTPS (variante, vedi file di variante auth, § 3.3) — Parte A ✅; spike e2e dopo bootstrap
-4. Bootstrap super-admin e dati iniziali — 🔶 seed prod 2026-10-03; login emergenza + allow-list in sospeso
+3. Auth in produzione e spike cookie HTTPS (variante, vedi file di variante auth, § 3.3) — SSO Admin/App prod ✅; restano cookie `Secure` e test rifiuti
+4. Bootstrap super-admin e dati iniziali — ✅ fatto (2026-10-03)
 5. Verifica finale di chiusura fase
 
 ## Fase 4 in poi — dominio specifico del progetto
@@ -75,7 +75,7 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: **chiudere § 3.4** — login emergenza prod (`/admin/login/local`), Global Settings allow-list, utente Workspace per SSO Admin; poi **spike e2e § 3.3** (cookie `Secure`, SSO Admin/App, rifiuti). Seed super-admin su Cloud SQL prod eseguito 2026-10-03 da locale (proxy 5433, secret prod inline — vedi `fase-3-deploy.md` § 3.4).
+- **Prossimo passo**: **chiudere § 3.3** (cookie sessione `HttpOnly`+`Secure` in prod, rifiuto identità non autorizzata; opzionale login locale App + email in prod) → **§ 3.5** verifica chiusura Fase 3. § 3.4 ✅ 2026-10-03.
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.

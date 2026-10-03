@@ -33,6 +33,11 @@ import {
 export const Users: CollectionConfig = {
   slug: 'users',
   auth: {
+    cookies: {
+      // Cloud Run: sessione solo su HTTPS — flag Secure obbligatorio per spike § 3.3 (Payload default: assente).
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax',
+    },
     disableLocalStrategy: {
       enableFields: true,
     },

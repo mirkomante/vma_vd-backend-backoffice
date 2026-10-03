@@ -33,6 +33,10 @@ Se Google segnala `redirect_uri=http://localhost:3000/...` da Cloud Run: vedi **
 
 Formato `DATABASE_URL` su Cloud Run: vedi `docs/operativo/cloud-sql-produzione.md`.
 
+## Cookie sessione (`payload-token`)
+
+Payload legge `users.auth.cookies` (in questo progetto: `secure: true` se `NODE_ENV === 'production'`, `sameSite: Lax`). Senza `secure`, il cookie può risultare **HttpOnly** ma **senza flag Secure** in DevTools pur servendo su HTTPS — insufficiente per lo spike § 3.3. Dopo deploy, verificare in Application → Cookies dopo login SSO.
+
 ## Errori incontrati in Fase 3.2 (e fix)
 
 1. **`Dockerfile` not found** — push su `main` senza commit Parte A (`bc4a190`+).

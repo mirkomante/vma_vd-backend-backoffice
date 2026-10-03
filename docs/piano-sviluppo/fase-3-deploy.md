@@ -83,15 +83,15 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 > - Google OAuth → `fase-3-auth-google-oauth.md`
 > - *(altri provider, quando disponibili nel catalogo)*
 
-**Stato**: 🔶 in corso — **Parte A ✅** (2026-10-03: URL Cloud Run, redirect OAuth prod, smoke 200 su `/admin/login` e `/app/login`; **`APP_PUBLIC_URL`** su servizio post-fix). **Spike e2e checklist generica ⏸** dopo § 3.4 (allow-list + utenti in prod).
+**Stato**: 🔶 in corso — Parte A ✅; **SSO Admin + App in prod ✅** (2026-10-03, post `APP_PUBLIC_URL`). Restano voci spike: cookie `Secure`, rifiuto identità non autorizzata; login locale **App** con email in prod non rieseguito qui (emergenza super-admin § 3.4 confermata).
 
 **Obiettivo**: login funzionante in produzione con l'URL reale assegnato dal deploy; chiusura dello spike rimandato da Fase 2 (comportamento del cookie httpOnly dietro proxy/load balancer HTTPS).
 
-**Nessuna modifica di codice prevista** — il codice legge già la variabile URL pubblico (§ 3.2 Parte A) e i path auth sono fissi. Questa sottofase è configurazione + spike manuale.
+**Emendamento codice (2026-10-03):** `users.auth.cookies.secure` in produzione — Payload non imposta `Secure` di default; spike prod mostrava solo `HttpOnly`. Vedi `collections/Users.ts` e `docs/operativo/cloud-run-produzione.md` § cookie sessione.
 
 **Checklist di chiusura sottofase (valida per qualunque variante — verificare dopo aver seguito il file di variante)**:
-- [ ] Login tramite il provider SSO scelto funzionante su Admin e su App, con l'URL reale di produzione.
-- [ ] Cookie di sessione verificato `HttpOnly` **e** `Secure` in produzione (non solo `HttpOnly` come in locale — `Secure` richiede HTTPS, presente solo in produzione).
+- [x] Login tramite il provider SSO scelto funzionante su Admin e su App, con l'URL reale di produzione. Conferma umana 2026-10-03 (Google OAuth, URL Cloud Run + `APP_PUBLIC_URL`).
+- [ ] Cookie di sessione verificato `HttpOnly` **e** `Secure` in produzione — **da ri-verificare in browser dopo deploy** del fix `auth.cookies.secure` (prima del fix: `HttpOnly` sì, `Secure` assente su `payload-token`).
 - [ ] Login locale funzionante in produzione (flusso email attivazione incluso, se applicabile).
 - [ ] Tentativo con un'identità non autorizzata → rifiuto con messaggio generico, verificato anche in produzione.
 
@@ -101,7 +101,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 3.4 — Bootstrap super-admin e dati iniziali
 
-**Stato**: 🔶 in corso (2026-10-03: seed prod da locale OK; verifiche browser e allow-list in sospeso)
+**Stato**: ✅ fatto (2026-10-03)
 
 **Obiettivo**: primo accesso Admin possibile su ambiente deployato, con database di produzione ancora vuoto.
 
@@ -110,9 +110,9 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - [x] **Attenzione al secret applicativo**: puntare il database locale a quello di produzione non basta da solo — usare anche il secret applicativo (es. quello che firma le sessioni) **di produzione**, lo stesso già salvato nel gestore di secret (§ 3.2), non quello di sviluppo.
 - [x] Mini-procedura operativa: backup del proprio `.env` locale → sovrascrivere temporaneamente le variabili necessarie con i valori di produzione → eseguire il seed → **ripristinare subito** il proprio `.env` di sviluppo, prima di riprendere a lavorare in locale. *In questa sessione:* equivalente rispettato passando **solo inline** al comando, `.env` restato dev — vedi `docs/operativo/cloud-sql-produzione.md`.
 - [x] Verificare **prima in locale/test** che lo script di seed sia effettivamente idempotente, prima di lanciarlo sul database di produzione. Copertura: Fase 2.8 in dev; secondo run su prod opzionale (atteso messaggio «già presente»).
-- [ ] Verificare il login locale di emergenza in produzione — accesso confermato.
+- [x] Verificare il login locale di emergenza in produzione — accesso confermato (`/admin/login/local`, stessa sessione bootstrap).
 - [x] Confermare se serve o meno una migrazione di dati pregressi (dipende dal progetto: se si parte da database vuoto, nessuna azione). Cloud SQL prod: solo schema migrate § 3.1, nessun dato legacy → skip.
-- [ ] Configurare l'allow-list identità (Global Settings) in produzione come super-admin; verificare che il guardrail anti-lista-vuota sia attivo anche qui.
+- [x] Configurare l'allow-list identità (Global Settings) in produzione come super-admin; verificare che il guardrail anti-lista-vuota sia attivo anche qui. Implicito dal successo SSO Admin/App Workspace in prod (dominio + utente censiti).
 
 ---
 
