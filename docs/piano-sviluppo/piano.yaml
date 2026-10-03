@@ -85,8 +85,8 @@ fasi:
       - "fase-3-db-postgres.md"
       - "fase-3-cloud-gcp.md"
       - "fase-3-auth-google-oauth.md"
-    stato: "in_corso"
-    note: "Sottofase 3.1 chiusa 2026-09-29 (Cloud SQL ADR-110 + migrate prod). Prossimo: 3.2."
+    stato: "fatto"
+    note: "Chiusura Fase 3 § 3.5 (2026-10-03). Lacuna prod documentata: login locale App + email attivazione non rieseguiti (§ 3.3, dev § 2.10)."
 
   # --------------------------------------------------------------------------
   # Fase 4+: dominio applicativo di questo progetto, esplicitamente fuori dal

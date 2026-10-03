@@ -118,18 +118,26 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 3.5 — Verifica chiusura fase
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-03)
 
 **Obiettivo**: confermare che Fase 3 sia effettivamente conclusa, con l'intero sistema funzionante in produzione, prima di considerarla chiusa.
 
 **Checklist**:
-- [ ] Checklist e2e completa in produzione: login SSO Admin, login SSO App, login locale App, accesso di emergenza super-admin, rifiuto identità non autorizzata, rifiuto utente non censito — tutti verificati tra § 3.3 e § 3.4.
-- [ ] Test pendenti eventualmente rimandati da Fase 2 § 2.10 (es. verifica record `logout`/`accessDenied` in `activityLog`): eseguiti qui se non già fatto.
-- [ ] Verificare che il logging tecnico (richieste HTTP, errori applicativi) sia visibile nel sistema di logging nativo dell'ambiente cloud scelto, senza configurazione aggiuntiva necessaria (per il dettaglio specifico, vedi il file di variante cloud).
-- [ ] Verificare **separatamente** che i record `activityLog` siano consultabili (pannello Admin o query diretta alla collection): è un log applicativo su DB, canale distinto dal logging tecnico nativo del cloud — non vi compare per definizione (vedi `payload-pattern/03-log-azioni.mdc`).
-- [ ] **Alert minimi**: decidere esplicitamente se servono già a questa scala o se vanno rimandati (coerente con `core/01-proporzionalita.mdc`) — non lasciare la decisione implicita.
-- [ ] Build confermata OK dai deploy precedenti.
-- [ ] `00-piano-generale.md` aggiornato (Fase 3 → ✅); `CHANGELOG.md` bumpato alla versione corrispondente.
+- [x] Checklist e2e completa in produzione: login SSO Admin, login SSO App, login locale App, accesso di emergenza super-admin, rifiuto identità non autorizzata, rifiuto utente non censito — tutti verificati tra § 3.3 e § 3.4.
+- [x] Test pendenti eventualmente rimandati da Fase 2 § 2.10 (es. verifica record `logout`/`accessDenied` in `activityLog`): eseguiti qui se non già fatto.
+- [x] Verificare che il logging tecnico (richieste HTTP, errori applicativi) sia visibile nel sistema di logging nativo dell'ambiente cloud scelto, senza configurazione aggiuntiva necessaria (per il dettaglio specifico, vedi il file di variante cloud).
+- [x] Verificare **separatamente** che i record `activityLog` siano consultabili (pannello Admin o query diretta alla collection): è un log applicativo su DB, canale distinto dal logging tecnico nativo del cloud — non vi compare per definizione (vedi `payload-pattern/03-log-azioni.mdc`).
+- [x] **Alert minimi**: decidere esplicitamente se servono già a questa scala o se vanno rimandati (coerente con `core/01-proporzionalita.mdc`) — non lasciare la decisione implicita.
+- [x] Build confermata OK dai deploy precedenti.
+- [x] `00-piano-generale.md` aggiornato (Fase 3 → ✅); `CHANGELOG.md` bumpato alla versione corrispondente.
+
+**Eseguito (2026-10-03, conferma umana)**:
+
+- **E2e prod (incrocio § 3.3/3.4)**: SSO Admin/App, emergenza `/admin/login/local`, utente non censito, perimetro Google Internal — già chiusi in § 3.3/3.4. **Login locale App + email attivazione in prod: non rieseguiti** (rimando esplicito da § 3.3; copertura dev § 2.10) — non conteggiati come ✅ prod in questa chiusura fase.
+- **`activityLog` prod**: collection consultabile in Admin; `logout` OK; `accessDenied` OK (password errata su `/admin/login/local` → messaggio generico «Accesso non riuscito…», record `accessDenied` in Registro attività).
+- **Cloud Logging** (`fase-3-cloud-gcp.md` § 3.5): richieste HTTP visibili in Log Explorer (`run.googleapis.com/requests`), es. 200/302 e 404 su pagina inesistente — senza configurazione aggiuntiva.
+- **Alert minimi**: **rimandati** (proporzionalità; log e revisioni Cloud Run sufficienti a questa scala).
+- **Build/deploy**: conferma da pipeline § 3.2 e revisioni Cloud Run post-fix auth (`583eb24`, `708007b`).
 
 ---
 

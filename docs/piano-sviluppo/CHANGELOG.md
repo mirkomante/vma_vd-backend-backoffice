@@ -10,6 +10,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-10-03
+
+Chiusura Fase 3 (deploy produzione).
+
 ### Added
 
 - Fase 3.2 Parte B/C: Secret Manager (credenziali prod scoped), Cloud Run `europe-west1` + Cloud SQL, deploy continuo GitHub `main`; nota operativa `docs/operativo/cloud-run-produzione.md` (IAM due SA, errori Cloud Build). Sezione «Errori comuni deploy continuo» in `fase-3-cloud-gcp.md`; regole IAM in `stack/01b-cloud-gcp.mdc`.
@@ -23,6 +27,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Fase 3.5: chiusura fase deploy — checklist § 3.5, Fase 3 → ✅ in `00-piano-generale.md`; alert minimi esplicitamente rimandati.
 - Operativo: `docs/operativo/login-locale-emergenza-admin.md` — sezione rotazione password bootstrap (Secret Manager ≠ DB; seed idempotente non aggiorna; workaround delete + re-seed; script dedicato fuori scope).
 - Fase 3.4 (parziale): seed super-admin su Cloud SQL prod da locale (`pnpm seed:super-admin`, proxy Auth `5433`, `DATABASE_URL`/`PAYLOAD_SECRET`/`SEED_*` prod inline; credenziali seed da Secret Manager). Stato § 3.4 e ordine 3.3/3.4 in `fase-3-deploy.md`; indice `00-piano-generale.md`.
 - Fase 3.3: Parte A marcata ✅ (URL Cloud Run, OAuth prod, smoke login); spike e2e rimandato post-bootstrap.
@@ -39,6 +44,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
+- Fase 3.5 (2026-10-03): chiusura fase prod — e2e incrociato con § 3.3/3.4 (SSO Admin/App, emergenza, rifiuti); **App login locale + email attivazione in prod non rieseguiti** (rimando § 3.3, dev § 2.10). `activityLog` prod: Registro attività consultabile; `logout` OK; `accessDenied` OK (password errata `/admin/login/local`, messaggio generico). Cloud Logging: richieste HTTP 200/302/404 visibili in Log Explorer senza config extra. Alert minimi: rimandati. Build/deploy: OK da § 3.2.
 - Fase 3.4 (2026-10-03): `pnpm seed:super-admin` su DB prod via Auth Proxy — primo tentativo `ECONNRESET`; retry OK. Login emergenza `/admin/login/local` prod OK; allow-list + utente Workspace (implicito da SSO).
 - Fase 3.3 (2026-10-03): SSO Google Admin e App in prod OK (`APP_PUBLIC_URL`). Cookie **HttpOnly + Secure** OK post `708007b`. Utente `@vietnamonamour.com` non censito → messaggio generico su Admin e App (SSO). Dominio esterno: blocco **Google** OAuth Internal (supplementare). App login locale + email attivazione in prod: non rieseguiti. § 3.3 checklist chiusa in `fase-3-deploy.md`.
 - Fase 3.2 Parte B/C (2026-10-03): Cloud Build su `main` (`bc4a190`+) — tentativi falliti prima del successo: `Dockerfile` assente su `07b945d`; Artifact Registry `downloadArtifacts` denied (Writer sul SA build); `run.services.get` denied con `gcloud` autenticato come runtime SA (allineamento SA build vs runtime). **Esito finale:** build Docker + deploy Cloud Run OK; servizio raggiungibile (richiesta base).
