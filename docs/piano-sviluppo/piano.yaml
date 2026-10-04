@@ -191,13 +191,13 @@ fasi:
         stato: "da_fare"
         note: "Scaffolda anche il Global 'Generali' senza i campi orario/chiusura (ADR-109 §2/§4): gli orari si leggono da impostazioni-sistema (fase-7.2). riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
       - id: fase-6.2
-        nome: "Collection Piatti / Vini / Birra + menu_fisso_piatto (campo porzione)"
+        nome: "Collection Piatti / Vini / Birra + menu_fisso_piatto (campo porzione) + Servizi (emendamento ad ADR-108)"
         stato: "da_fare"
-        note: "Prerequisiti: contratto ADR-112 e decisione po-05 sui piatti/vini già esistenti. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
+        note: "Prerequisiti: contratto ADR-112 e decisione po-09 (menù bilingue). po-05 chiuso: l'import dei dati esistenti è in fase-6.8. Scaffolda anche la Collection Servizi (emendamento ad ADR-108, 2026-10-04). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
       - id: fase-6.3
         nome: "Collection 'Giorni Speciali'"
         stato: "da_fare"
-        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.1"
+        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.1. I menu speciali attuali (San Valentino: menu fissi con pagina dedicata nel vecchio frontend) non si importano: si ricreano con questo meccanismo (decisione del 2026-10-04)."
       - id: fase-6.4
         nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
         stato: "da_fare"
@@ -214,6 +214,10 @@ fasi:
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
         stato: "fuori_perimetro"
         note: "Sviluppato in un altro progetto (app Firebase del menù): fuori dal perimetro di questo piano, confermato il 2026-10-03. Questo piano fornisce solo API di lettura e disponibilita.json secondo il contratto ADR-112. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
+      - id: fase-6.8
+        nome: "Import dei dati esistenti dal vecchio backend (script da snapshot JSON)"
+        stato: "da_fare"
+        note: "Decisione po-05 (2026-10-04), vedi emendamento ad ADR-108: report a secco, prova in sviluppo, produzione da locale. Dipende da fase-6.2. Procedura di esportazione dello snapshot: docs/operativo/export-menu-vtn-backend.md."
 
   - id: fase-7
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
@@ -751,6 +755,19 @@ archi:
     adr: "ADR — Ruoli e permessi di Admin e App"
     fonte: "ADR-113-ruoli-permessi-admin-app.md"
 
+  # --- Import dei dati esistenti del menù (po-05, 2026-10-04) --------------
+
+  - id: arco-39
+    da: fase-6.2
+    a: fase-6.8
+    tipo: output
+    descrizione: >
+      Le collection del menù (piatti, vini, menu fissi, servizi) e le
+      tassonomie esistono dopo fase-6.2; l'import dei dati del vecchio
+      backend le popola in fase-6.8.
+    adr: null
+    fonte: "emendamento ad ADR-108 (2026-10-04), po-05"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -796,6 +813,10 @@ adr_da_scrivere:
     archi: ["arco-14", "arco-15"]
     stato: "accettata"
     file: "ADR-108-modello-dati-menu-digitale.md"
+    nota: >
+      Emendamento del 2026-10-04 (proposta): Servizi, seed esteso e import dei
+      dati esistenti (po-05).
+
   - titolo: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     archi: ["arco-21", "arco-22"]
     stato: "accettata"
@@ -884,7 +905,8 @@ punti_aperti:
     titolo: "Piatti e vini già esistenti: import o reinserimento manuale"
     scadenza: "prima di fase-6.2"
     registrazione: "nota o sottofase in fase-6-menu-digitale.md"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "Emendamento ad ADR-108 del 2026-10-04 (proposta): import con script da snapshot JSON del vecchio backend, in fase-6.8; voci nascoste importate come disabilitato; birre, cocktail e menu speciali non importati. La nota in fase-6-menu-digitale.md si scrive con il file di fase."
   - id: po-06
     titolo: "Contratto con il frontend del menù: schema di disponibilita.json e letture REST"
     scadenza: "prima di fase-6.2 e fase-6.4"

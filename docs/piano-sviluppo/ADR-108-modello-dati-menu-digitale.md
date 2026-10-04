@@ -158,3 +158,54 @@ Confermato il principio: **avviso non bloccante**, non hard-validation, per casi
   - la valutazione puntuale su quali descrizioni libere di allergeni rimuovere, oltre ai casi con valore normativo (es. Solfiti);
   - la struttura interna definitiva del campo `contenuto` su "Giorni Speciali";
   - la riconciliazione della fonte unica orari/chiusure tra il Global "Generali" del menù e "Impostazioni prenotazioni" — resta materia dell'**ADR — Global di configurazione trasversale (`impostazioni-sistema`)**, bloccato fino alla sessione dedicata alla struttura a tab.
+
+## Emendamento (2026-10-04) — Servizi, seed esteso e import dei dati esistenti (po-05)
+
+**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+
+Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del §5 e fissa i criteri dell'import dei dati esistenti. Il resto dell'ADR resta invariato.
+
+### Verifiche su cui poggia
+
+- **Snapshot dell'API v1 di `vtn-backend`** (produzione, 2026-10-04, letto da file JSON): 44 piatti (3 nascosti), 8 menu fissi, 90 vini (13 nascosti), 38 distillati (6 nascosti), 13 bevande, 1 birra, 2 cocktail, 3 servizi, 14 allergeni.
+- **Frontend attuale** (`vietnamonamour-nodejs`, ramo `vtn-backend-api-data`): mostra i servizi nel footer di tutte le pagine (`GET /api/v1/servizi`); le pagine di San Valentino sono menu fissi con ID in configurazione, senza data né sostituzione dell'offerta.
+- **Il seed del §5** era ricavato dal sito pubblico e quindi non vede le voci nascoste.
+
+### Decisione
+
+1. **Collection «Servizi»** (coperto, diritto di dolce, diritto di tappo). Campi: nome, prezzo, `disabilitato` (checkbox). Collegabile ai menu fissi con una relazione `hasMany` facoltativa sul menu fisso (oggi due business lunch hanno il «Coperto»). Operatività quotidiana, quindi **manager**, con cancellazione soft come le altre entità del menù. I servizi si mostrano in fondo alle pagine del menù, e l'esposizione fa parte del contratto `ADR-112`. Slug e nomi dei campi (inglese) nel file di fase.
+2. **Seed esteso**, che sostituisce la tabella del §5. Il seed contiene i valori **usati dai record importati**, non l'intero vocabolario del vecchio sistema:
+
+   | Tassonomia | Valori |
+   |---|---|
+   | Paese (13) | Filippine, Francia, Giappone, Guatemala, Guyana, Italia, Libano, Martinica, Scozia, Thailandia, Trinidad e Tobago, Venezuela, Vietnam |
+   | Regione (16) | le 15 del §5 più Sicilia |
+   | Denominazione (3) | Carso, Collio, Franciacorta (Valdobbiadene esiste nel vecchio sistema ma non è usata: non si crea) |
+   | Classificazione (6) | invariata: D.O.C.G., D.O.C., I.G.T., D.O.P. (Italia); A.O.C., A.O.P. (Francia) |
+   | Allergeni (14) | i 14 normativi, già coincidenti per nome con quelli del vecchio sistema |
+
+   `abilitato` è falso per Libano e Sicilia, usati solo da voci nascoste, e vero per gli altri.
+3. **Import dei dati esistenti.** Il nuovo menù è un'evoluzione del vecchio: l'import ne migliora i dati e non li copia alla lettera.
+   - **Sorgente**: snapshot JSON dell'API v1, esportato il giorno dell'import con la procedura di `docs/operativo/export-menu-vtn-backend.md`. Non si legge l'API dal vivo.
+   - **Voci nascoste** (`inLista` falso): importate come `disabilitato`.
+   - **Non importati**: Birre e Cocktail (non compaiono nel sito; i cocktail sono abbandonati) e i menu speciali, come San Valentino, che si ricreano in 6.3 con il meccanismo «Giorni Speciali».
+   - **Varianti**: «2 Nem di carne» e «2 Nem vegetariani» non diventano piatti. I due menu fissi che le usano puntano al piatto base con `porzione`.
+   - **Menu fissi**: la parte di nome che indica il servizio, «(pranzo e cena)», passa a `visibility` (Degustazione sempre; Business lunch solo pranzo, salvo diversa indicazione). Il resto del nome si mantiene.
+   - **Normalizzazioni**: spazi ai bordi, `capacita` («75cl» e «75 cl»), `certificazione` verso la Classificazione («D.O.C» e «A.O.P» diventano «D.O.C.» e «A.O.P.»).
+   - **Correzioni a mano nella revisione**: una descrizione corrotta (`Brut••75cl••COTEAUX DU LAYON•LOIRA`) e una che ripete la regione.
+   - **Scrittura**: Local API, locale `it`, idempotente per chiave naturale. Prima un report a secco, poi una prova in sviluppo, poi la produzione da locale, come il seed del super-admin (`fase-3-deploy.md` § 3.4).
+   - **Revisione nell'App prima del lancio**: campi nuovi (`visibility`, `porzione`), traduzioni se `po-09` le richiede, e i **9 piatti su 44 senza allergeni dichiarati**, da rileggere dal ristorante.
+
+### Alternative considerate
+
+- **Reinserimento manuale** — scartata: circa 200 voci in buona forma; si ridigiterebbero gli allergeni (dato di legge) e i prezzi.
+- **Import dall'API dal vivo** — scartata: dipende dal vecchio sistema e non è ripetibile né rivedibile.
+- **Scraping del sito pubblico** — scartata: perde ID, campi e voci nascoste.
+- **Servizi come elenco nel Global «Generali» o fuori dal modello** — scartate: la prima perde il legame con i menu fissi, la seconda rende ogni cambio di prezzo una modifica di codice.
+
+### Conseguenze
+
+- **Fase 6.2** scaffolda anche «Servizi»; la nuova **fase 6.8** esegue l'import dopo la 6.2 (`arco-39`); la **6.3** riceve la nota su San Valentino.
+- **`ADR-112`** deve includere i servizi nelle letture pubbliche.
+- **`po-09`**: se il menù è bilingue, l'import scrive in italiano e le traduzioni restano manuali.
+- Il file `fase-6-menu-digitale.md` riprende questi criteri.
