@@ -4,7 +4,7 @@
 
 **Stato**: accettata
 **Data**: 2026-10-04
-**Arco di decisione**: audit di coerenza del 2026-10-04 (rilievo F7) → Fase 6.4 (reset ai confini di servizio e riscrittura di `disponibilita.json`), 6.5 (avvio del rebuild), Fase 4.4 Parte A (esito della revalidation) e Fase 5.3 (anonimizzazione GDPR). Nessun arco nuovo in `piano.yaml`: la decisione tocca quattro sottofasi. **Precisa un'eccezione prevista dal catalogo**: `payload-pattern/03-log-azioni.mdc` lascia fuori gli endpoint custom che non passano da un'operazione di collection e dice che tracciarli è «una decisione da prendere e documentare a parte».
+**Arco di decisione**: audit di coerenza del 2026-10-04 (rilievo F7) → Fase 6.4 (reset ai confini di servizio e riscrittura di `disponibilita.json`), 6.5 (avvio del rebuild), Fase 4.4 Parte A (esito della revalidation) e Fase 5.3 (anonimizzazione GDPR). In `piano.yaml`: `arco-43` (6.4 → 4.4) e `arco-44` (6.4 → 5.3); la 6.5 dipende già dalla 6.4 (`arco-18`). **Precisa un'eccezione prevista dal catalogo**: `payload-pattern/03-log-azioni.mdc` lascia fuori gli endpoint custom che non passano da un'operazione di collection e dice che tracciarli è «una decisione da prendere e documentare a parte».
 
 ## Contesto
 
@@ -21,6 +21,8 @@
 5. **Scrittura**: una funzione `logSystemAction(...)` in `lib/activityLog`, lo stesso punto unico di scrittura della regola, con Local API e `overrideAccess: true` dal server. Gli `access` della collection non cambiano.
 6. **Migrazione additiva e non distruttiva**: la colonna `user_id` perde il vincolo NOT NULL, si aggiunge il valore dell'enum e la colonna `detail`. Si esegue come **primo passo di 6.4** (il primo consumatore nell'ordine di esecuzione); 6.5, 4.4 Parte A e 5.3 la riusano senza altre migrazioni. Applicata su Cloud SQL prod **prima** del push.
 7. **Cloud Logging resta** per i log tecnici (errori, tracce): non viene sostituito.
+8. **`users.beforeDelete` e `purgeActivityLogForUserBeforeDelete` restano invariati**: la cancellazione di un utente elimina le sue voci; le voci di sistema (`user` vuoto) non sono toccate.
+9. **`detail` comincia con una chiave di azione da un elenco chiuso** (`availability-reset`, `availability-write`, `rebuild-started`, `revalidation`, `anonymization`), seguita da esito e dettagli: il filtro per azione resta possibile.
 
 ## Alternative considerate
 

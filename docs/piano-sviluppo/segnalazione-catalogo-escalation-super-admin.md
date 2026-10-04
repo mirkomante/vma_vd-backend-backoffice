@@ -19,6 +19,7 @@ Un utente con `adminRole: admin` può portare sé stesso, o un altro admin, a `a
 2. Per `create` la stessa regola chiede di verificare `data.adminRole` in ingresso («`access.create` non ha un record su cui filtrare»). Per `update` il controllo equivalente manca nel pattern, nella matrice e nell'`ADR-004`.
 3. Il campo `adminRole` non ha `access` per campo e nessun hook valida il valore in ingresso.
 4. Aggravante (verificata dall'audit sui sorgenti di Payload 3.89.0, non riverificata qui): nell'aggiornamento **in blocco** (`PATCH /api/users?where=…`) Payload non passa `data` a `access.update` (`operations/update.js`, a differenza di `updateByID.js`). Un controllo scritto solo in `access.update` non copre quel percorso.
+5. Nel template, `ADR-004` (decisione 3, `access.update`) dice che «ogni utente può modificare il proprio record»: letta alla lettera, senza escludere i campi di ruolo (`adminRole`, `appRole`, `active`, `loginMethod`), permette a qualunque utente di promuoversi. Nel progetto non avviene perché `usersUpdateAccess` richiede già uno staff admin, ma in un progetto che implementi la riga alla lettera sì. Il controllo sul valore in ingresso dei campi di ruolo va previsto per tutti gli attori, non solo per l'admin.
 
 ---
 
@@ -49,6 +50,7 @@ if (
 1. **`payload-pattern/04-auth-locale-con-sso-esclusivo.mdc`**, § «Pattern access control CRUD»: per `update` il filtro `where` non sostituisce il controllo sul valore in ingresso di `adminRole`; il vincolo «un admin non-super non assegna `super-admin`» vale anche in `update` e va verificato in `beforeValidate` (copre l'aggiornamento in blocco).
 2. **`ADR-004-permessi-crud-utenti.md`**: riga `update`, colonna admin: «sì, ma non può assegnare `adminRole: super-admin`» (come `create`).
 3. **`fase-2-login.md`** (matrice e checklist): prova per ruolo: un admin che imposta `adminRole: super-admin` su sé stesso o su un altro admin è rifiutato, via REST (compreso `PATCH` con `where`) e via Local API con `overrideAccess: false`.
+4. **`ADR-004-permessi-crud-utenti.md`**, decisione 3 (`access.update`): nessun attore, nemmeno su sé stesso, imposta `adminRole`, `appRole`, `active` o `loginMethod` oltre ciò che la matrice gli concede.
 
 ---
 
@@ -65,6 +67,7 @@ if (
 Il difetto è nel codice già in produzione (`lib/auth/userAccess.ts:73-82`, `collections/Users.ts:63-74` e hook `beforeValidate`, righe 186-230). Il rischio riguarda solo gli utenti con `adminRole: admin`. Finché la correzione non è applicata conviene non assegnare `adminRole: admin` a nuovi utenti e controllare chi lo ha oggi.
 
 Il progetto traccia la correzione come `po-10`: la applica appena arriva dal catalogo, al più tardi nella sua Fase 8.3.
+La segnalazione è scritta nel repo del progetto ma non risulta inviata al repo del template: l'invio è dell'umano (`po-10`). Finché la correzione non è applicata: elenco degli utenti con `adminRole: admin` verificato dall'umano e nessuna nuova assegnazione di `admin`.
 
 ---
 

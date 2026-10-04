@@ -15,6 +15,8 @@
 #   - un arco "decisione" porta un riferimento "adr" (titolo dell'ADR da
 #     scrivere subito dopo, secondo ADR-template.md); un arco "output" non
 #     lo richiede (adr: null)
+#   - gli archi modellano output e decisioni tra fasi; gli ordini interni a
+#     una fase sono nei file di fase (per questo alcuni nodi non hanno archi)
 #   - stato di ciascun nodo: "da_fare" | "in_corso" | "fatto" | "bloccata" | "fuori_perimetro"
 #     (bloccata: dipendenza esterna non ancora risolta; fuori_perimetro:
 #     sviluppato in un altro progetto, non eseguito da questo piano)
@@ -128,7 +130,7 @@ fasi:
       - id: fase-4.2
         nome: "Plugin di supporto (SEO, Redirects)"
         stato: "da_fare"
-        note: "La parte i18n è in fase-4.0. Aperti: due siti con una sola collection redirects del plugin; storage dei media. riepilogo-sessione-cms-siti-esterni.md §3"
+        note: "La parte i18n è in fase-4.0. Redirects deciso il 2026-10-04: due istanze del plugin, una per sito (from è unique; fase-4 §4.2). Aperto: storage dei media. riepilogo-sessione-cms-siti-esterni.md §3"
       - id: fase-4.3
         nome: "Meccanismo di preview (Draft Mode + route /api/preview + token firmato)"
         stato: "da_fare"
@@ -810,7 +812,7 @@ archi:
   - id: arco-43
     da: fase-6.4
     a: fase-4.4
-    tipo: output
+    tipo: decisione
     descrizione: "La migrazione di activity-log con le azioni di sistema (ADR-115) nasce in 6.4; 4.4 Parte A la riusa per l'esito della revalidation."
     adr: "ADR — Azioni di sistema nel registro attività"
     fonte: "ADR-115-azioni-di-sistema-registro-attivita.md"
@@ -818,7 +820,7 @@ archi:
   - id: arco-44
     da: fase-6.4
     a: fase-5.3
-    tipo: output
+    tipo: decisione
     descrizione: "La migrazione di activity-log con le azioni di sistema (ADR-115) nasce in 6.4; 5.3 la riusa per l'anonimizzazione."
     adr: "ADR — Azioni di sistema nel registro attività"
     fonte: "ADR-115-azioni-di-sistema-registro-attivita.md"
@@ -838,6 +840,14 @@ archi:
     descrizione: "L'helper isActiveUser (F2) è il punto unico per la regola dell'utente disattivato, che 8.3 applica alle funzioni per adminRole manager e a canAccessSection."
     adr: null
     fonte: "fase-7-impostazioni-sistema.md §7.0 (audit 2026-10-04, F2)"
+
+  - id: arco-47
+    da: fase-8.3
+    a: fase-6.1
+    tipo: output
+    descrizione: "Valore manager di adminRole e admin.hidden (8.3): le tassonomie e il Global Generali nascono con i permessi di ADR-113."
+    adr: null
+    fonte: "fase-6-menu-digitale.md §6.1 (Dipende da)"
 
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
@@ -1033,5 +1043,6 @@ punti_aperti:
   - id: po-10
     titolo: "F1 dell'audit: un admin può promuoversi a super-admin (difetto del pattern di catalogo per update su users)"
     scadenza: "prima di fase-8.3"
-    registrazione: "segnalazione-catalogo-escalation-super-admin.md; correzione nel progetto appena arriva dal catalogo, al più tardi in fase-8.3"
+    responsabile: "umano (invio della segnalazione al template e verifica degli admin attuali)"
+    registrazione: "segnalazione-catalogo-escalation-super-admin.md (scritta, da inviare al template); correzione nel progetto appena arriva dal catalogo, al più tardi in fase-8.3. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione."
     stato: "aperto"

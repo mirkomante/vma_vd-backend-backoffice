@@ -24,8 +24,9 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `ADR-112` (proposta): contratto CMS ↔ frontend del menù. Letture REST standard senza token con `locale` esplicito, voci disabilitate incluse con flag; sezioni nel codice del frontend; schema di `disponibilita.json` (stato di piatti, vini, bevande, distillati, menu fissi e servizi; messaggio globale; chiavi in inglese); orari, chiusure e giorni speciali via rebuild; ora di riferimento Europe/Rome; variabili `MENU_CMS_URL` e `NEXT_PUBLIC_MENU_AVAILABILITY_URL`. Chiude `po-06`.
 - Fase 6: `fase-6-menu-digitale.md` (validato, 2026-10-04) con sottofasi 6.0–6.8 e ordine di esecuzione 6.0, 6.1, 6.2, 6.8, 6.3, 6.4, 6.6, 6.5. Nomi e campi delle collection proposti in inglese (slug e campi, con `winery` e `volume`), da congelare alla chiusura di 6.2; schemi derivati da `vtn-backend` e dal prototipo.
 - `ADR-108`: terzo emendamento del 2026-10-04: tipologie di vino e di bevanda (`wine-types`, `drink-types`, gestite dall'admin, popolate dall'import) e birra tra le bevande, senza collection dedicata (sostituisce il §6).
-- Audit di coerenza del 2026-10-04 (chat di controllo, HEAD `bb95fda`): `audit-repo-2026-10-04.md` (da archiviare in `docs/audit/`), 27 rilievi, nessuno bloccante per la 7.1.
+- Audit di coerenza del 2026-10-04 (chat di controllo, HEAD `bb95fda`): `audit-repo-2026-10-04.md` (archiviato in `docs/audit/`), 27 rilievi, nessuno bloccante per la 7.1.
 - `ADR-115` (accettata, 2026-10-04): azioni di sistema nel registro attività (`user` facoltativo, `eventType` `systemAction`, campo `detail`), dal rilievo F7 dell'audit. `segnalazione-catalogo-escalation-super-admin.md`: segnalazione al catalogo del rilievo F1 (un admin può promuoversi a super-admin).
+- `docs/audit/audit-verifica-2026-10-04.md`: verifica delle modifiche dopo l'audit (HEAD `1da6802`), con 15 nuovi rilievi (N1–N15).
 
 ### Changed
 
@@ -60,6 +61,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `piano.yaml`: le voci dell'audit del 2026-10-04 destinate alla Fase 5 (F6, F8, F13, F14, F20) sono riportate nelle note di `fase-5.2`, `5.3`, `5.4` e `5.6`, da trasferire nel file di fase quando sarà scritto. `docs/audit/audit-repo-2026-10-04.md` archiviato.
 - Registrata la sottofase `fase-7.0` (manutenzione dopo l'audit del 2026-10-04: F2, F9, F10, F26) in `fase-7-impostazioni-sistema.md`, `piano.yaml` (`arco-45`, `arco-46`, ordine di esecuzione) e `00-piano-generale.md`: da eseguire con Cursor prima della 7.1.
 - Checklist delle sottofasi 4.2, 4.3, 4.4, 6.5, 7.2, 7.4 e 8.3 allineate alle prove richieste dall'audit del 2026-10-04 (F1, F2, F3, F4, F5, F7, F18), perché l'esecuzione le verifichi e non restino solo nel testo; `tracciamento-processo-adr-dag.md`: sottofasi 7.0–7.4.
+- Correzioni dalla verifica del 2026-10-04: `fase-7` §7.0 (prova dell'utente disattivato eseguibile con `seed:super-admin`, controllo del lockfile con diff normalizzato, prova del 404 di GraphQL con `POST`, come leggere `max_connections` senza scrivere un numero); `fase-4` (Redirects con due istanze del plugin, `isManagerOrStaff` definita, prova di `draft=true` estesa a `:id` e ai Global); `fase-6` (checklist 6.3 e 6.4); `fase-8` (voci 9 e 10); `ADR-115` (hook di cancellazione utente invariato, `detail` con chiave di azione); `piano.yaml` (`arco-43` e `arco-44` come `decisione`, `arco-47`, `po-10` con responsabile e misura provvisoria, convenzione sugli archi); `00-piano-generale.md` (ordine con la 7.0, punto aperto `po-10`); `tracciamento` (sottofasi 6.0–6.8); segnalazione F1 (self-update di `ADR-004`, invio da fare).
 
 ### Fixed
 

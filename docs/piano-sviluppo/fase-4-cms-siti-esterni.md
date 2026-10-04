@@ -137,12 +137,12 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Permessi** (`ADR-102` §§ 1, 6): `adminRole: manager` (`ADR-113`) con read+update pieno su `impostazioni-vma` e `impostazioni-villadoree` e create/update, pubblicazione compresa, sulle pagine dei due siti; **`delete` sulle pagine riservato agli admin** (deroga esplicita al default «`delete` eredita da `update`», `ADR-113`). Funzione `access` nativa a livello di collection/global, non convenzione lato UI. Admin e super-admin accesso completo.
 
-**Bozze via REST** (audit 2026-10-04, F24): con `versions.drafts` e una lettura pubblica, `draft=true` è un parametro di query che chiunque può inviare, e Payload non filtra da solo per `_status`. `access.read` delle collection `pages-*` (e dei Global con `versions.drafts`) è quindi `({ req }) => (isManagerOrStaff(req.user) ? true : { _status: { equals: 'published' } })`, dove `isManagerOrStaff` richiede un utente attivo con `adminRole` `manager`, `admin` o `super-admin` (stesso helper dell'utente disattivato, vedi 7.4).
+**Bozze via REST** (audit 2026-10-04, F24): con `versions.drafts` e una lettura pubblica, `draft=true` è un parametro di query che chiunque può inviare, e Payload non filtra da solo per `_status`. `access.read` delle collection `pages-*` (e dei Global con `versions.drafts`) è quindi `({ req }) => (isManagerOrStaff(req.user) ? true : { _status: { equals: 'published' } })`, dove `isManagerOrStaff` richiede un utente attivo con `adminRole` `manager`, `admin` o `super-admin` (nuova funzione in `lib/auth/userAccess.ts`, costruita su `isActiveUser` di 7.0).
 
 **Checklist di chiusura sottofase**:
 - [ ] Le due collection e i due Global esistono con gli slug confermati e `localized` dove deciso.
 - [ ] Prova per ruolo: manager vede e modifica solo ciò che gli compete e non può cancellare una pagina; admin e super-admin tutto.
-- [ ] `GET /api/pages-vma?draft=true&locale=it` e `GET /api/pages-villadoree?draft=true&locale=en`, anonimi, restituiscono solo documenti pubblicati (comportamento dedotto dai sorgenti di Payload: verificare a runtime).
+- [ ] `GET /api/pages-vma?draft=true&locale=it` e `GET /api/pages-villadoree?draft=true&locale=en`, anonimi, restituiscono solo documenti pubblicati (comportamento dedotto dai sorgenti di Payload: verificare a runtime); stessa prova su `GET /api/pages-vma/:id?draft=true` e su `GET /api/globals/impostazioni-vma?draft=true` (Global con `versions.drafts`).
 - [ ] Verificato in Admin il comportamento del valore di fallback sui campi localizzati (punto aperto di ADR-103): campo vuoto o valore di fallback mostrato.
 - [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
 - [ ] **Nomi congelati**: elenco degli slug e dei `name` dei campi riportato nel CHANGELOG come base del contratto ADR-111.
@@ -166,14 +166,14 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 - Versione **identica** a quella di Payload (`3.89.0`, tutti i pacchetti `@payloadcms/*` fissati alla stessa versione).
 
 **Punti aperti da chiudere prima del codice** (non coperti da ADR-103):
-1. **Due siti, una collection `redirects`.** Il plugin genera una sola collection; i due siti hanno redirect e pagine di destinazione distinti. Verificare sulla documentazione di Payload 3.89 se si possono ottenere due insiemi (override dello slug, due istanze, oppure un campo `site` con `access` filtrato) e scegliere prima di scrivere codice; la scelta è una decisione e va annotata (ADR o emendamento ad ADR-103).
+1. **Due siti, due istanze del plugin** (decisione del 2026-10-04, dal sorgente di `@payloadcms/plugin-redirects` 3.89.0). Ogni istanza genera una collection (`overrides.slug`); il campo `from` è `unique` nella collection e `to` è una relazione alle collection indicate in `collections`. Con una collection sola i due siti non potrebbero avere lo stesso percorso sorgente (per esempio `/privacy`) e un redirect potrebbe puntare a pagine dell'altro sito. Quindi: `redirects-vma` (`collections: ['pages-vma']`) e `redirects-villadoree` (`collections: ['pages-villadoree']`), nomi proposti. Verificare a runtime che le due istanze convivano.
 2. **Immagine SEO e storage dei media.** Non esiste una collection `media` né una decisione di storage. Cloud Run ha un filesystem effimero: gli upload richiedono uno storage esterno (es. un bucket GCS con adapter). Finché non è deciso, il plugin SEO va configurato **senza campo immagine**, e la decisione sui media è prerequisito di 4.5 (Gallery, Hero) e di un'eventuale immagine nei Global.
 
 **Checklist di chiusura sottofase**:
 - [ ] Plugin installati alla versione allineata a Payload, configurati secondo i due punti aperti.
 - [ ] Campi `title` e `description` del gruppo `meta` SEO `localized` (override esplicito dei `fields` del plugin), modificabili dal manager come parte della pagina.
 - [ ] Collection `redirects`: lettura pubblica (serve ai siti; il plugin la imposta da solo) e creazione, modifica e cancellazione riservate agli admin tramite `overrides.access` (`ADR-113`); il default del plugin le lascia a qualunque utente autenticato. Prova per ruolo (audit F5).
-- [ ] Decisione annotata: una collection per sito (due istanze del plugin con `overrides.slug`) oppure una sola. Il plugin genera una collection per istanza e il tipo 301/302 solo con `redirectTypes`; con due istanze, verificare a runtime che convivano.
+- [ ] Decisione annotata: **due istanze del plugin, una per sito** (`overrides.slug` e `collections` distinti, vedi il punto aperto 1). Verificare a runtime che le due istanze convivano; il tipo 301/302 compare solo con `redirectTypes`.
 - [ ] Collection `redirects` presente e vuota; nessun redirect inserito.
 - [ ] Migrazione applicata su Cloud SQL prod prima del push; CHANGELOG aggiornato.
 
@@ -296,7 +296,7 @@ Valori di sviluppo in `.env.example` già dalla Fase 4.0/4.1, non nella fase in 
 
 - **`piano.yaml` arco-06 (errore di scrittura) — corretto 2026-10-03.** Attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» necessario per 4.4. Firebase appartiene ai due siti (due progetti Firebase distinti, in un altro progetto), non a questo progetto. L'arco è stato rimosso (id non riassegnato, commento nel file); nessuna attività Firebase in questo repository.
 - **ADR-105, omissione — corretta 2026-10-03.** Diceva che i siti sono «su Firebase Hosting» senza precisare che sono due applicazioni distinte, ciascuna su un proprio progetto Firebase. Aggiunta una «Nota di chiarimento» in fondo all'ADR; la decisione non cambia.
-- **ADR-103 e due siti.** Il plugin Redirects genera una sola collection mentre i siti sono due: scelta da fare in 4.2 (punto aperto 1).
+- **ADR-103 e due siti.** Il plugin Redirects genera una collection per istanza e i siti sono due: decisa il 2026-10-04 con due istanze, una per sito (4.2, punto aperto 1).
 - **ADR-103, semantica di `defaultLocale`.** Attribuisce a `defaultLocale` anche la lingua d'interfaccia, ma in Payload 3.89 è la locale dei contenuti; l'interfaccia dipende da `i18n`. Nota di chiarimento aggiunta in `ADR-103` (2026-10-03); la decisione su locales, fallback e `locale` esplicito non cambia. Inoltre l'abilitazione di `localization` crea l'enum `_locales` nello schema: la migrazione di 4.0 non è vuota.
 - **Storage dei media non deciso.** Nessuna collection `media` né storage esterno (vedi 4.2, punto aperto 2). Prerequisito di 4.5.
 - **Archi 17 e 25 (nota per le Fasi 5 e 6).** `piano.yaml` indica la Fase 3 come produttrice di «Cloud Scheduler» (arco-25, per 5.3) e «Cloud Scheduler, GCS» (arco-17, per 6.4). Né `fase-3-deploy.md` né il CHANGELOG riportano la loro predisposizione: sono prerequisiti reali non consegnati. Questa volta non sono un errore di scrittura, ma un debito. **Risolto il 2026-10-04 (`po-04`)**: li predispone la nuova sottofase `fase-6.0`, senza riaprire la Fase 3, e `arco-17` e `arco-25` ripartono da lì.

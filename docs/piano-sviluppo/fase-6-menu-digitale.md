@@ -281,6 +281,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Struttura di `content` approvata e documentata qui.
 - [ ] Lettura pubblica con `locale=it` e `en`; validazione della sovrapposizione.
 - [ ] Prova per ruolo.
+- [ ] `special-days` e `specialOnly` (`fixed-menus`) riportati nel CHANGELOG come aggiunta al contratto di 6.2, con una nota di chiarimento ad `ADR-112` (i menu fissi con `specialOnly` vero non compaiono nelle pagine normali del menù).
 - [ ] Migrazione applicata su Cloud SQL prod **prima** del push; CHANGELOG.
 
 ---
@@ -322,7 +323,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Le tre decisioni sopra prese e annotate qui.
 - [ ] File conforme a `ADR-112` §3; gruppi completi; `globalMessage` assente se vuoto.
 - [ ] Riscrittura su ogni cambio di stato; reset idempotente e protetto.
-- [ ] Job creato in Cloud Scheduler con il secret nell'intestazione; esecuzione di prova riuscita.
+- [ ] Job creato in Cloud Scheduler con il secret `SCHEDULER_SECRET_AVAILABILITY` nell'intestazione; esecuzione di prova riuscita.
 - [ ] Variabili d'ambiente documentate (sotto) e montate su Cloud Run; secret in Secret Manager.
 - [ ] Migrazione di `activity-log` (`ADR-115`) applicata su Cloud SQL prod prima del push; voci di sistema nel registro attività; CHANGELOG.
 
