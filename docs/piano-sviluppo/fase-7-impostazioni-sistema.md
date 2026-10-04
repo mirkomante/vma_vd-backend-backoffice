@@ -63,7 +63,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
    | `contatti-notifiche-staff` | `staffNotificationContacts` | array |
    | ↳ `nome` / `email` | `name` / `email` | text / email |
 
-   I valori `lunch`/`dinner` devono coincidere con quelli di `servizio` in ADR-107 (Eccezioni giorno e Prenotazioni, oggi `pranzo`/`cena`): la scelta vale anche per Fase 5 e 6, che usano gli stessi nomi italiani. ADR-109 non viene riscritto; questo file diventa il riferimento per i nomi.
+   I valori `lunch`/`dinner` sono quelli che la Fase 5 userà per `servizio` (Eccezioni giorno e Prenotazioni): `ADR-107` li scriveva `pranzo`/`cena` e una nota di chiarimento (2026-10-04) li allinea, come i valori in inglese di `ADR-109` (secondo emendamento). ADR-109 non viene riscritto; questo file è il riferimento per i nomi.
 2. **Tab non nominati** (solo `label`), come nei Global dei siti (Fase 4): la disposizione si può cambiare senza toccare il percorso dei dati. ADR-109 riporta tra parentesi degli identificativi (`orari-chiusure`, …) che qui sono letti come descrittivi, non come `name` dei tab.
 3. **Una migrazione per sottofase** (7.1–7.3), come in Fase 4.
 4. **Nessun `activityLog`** su questo Global: nessun requisito documentato (`payload-pattern/03-log-azioni.mdc`: collegarlo solo quando un requisito reale lo richiede).
@@ -91,6 +91,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Validazione**: `services` ha esattamente due righe, una per `lunch` e una per `dinner` (lettura di «2 voci fisse» in ADR-109); `startTime`, `endTime`, `checkInTime` e `checkOutTime` accettano solo `HH:mm` a 24 ore (`^([01]\d|2[0-3]):[0-5]\d$`) e un valore diverso viene rifiutato.
 
 **Orari come testo** (secondo Emendamento a §1 di ADR-109): `startTime`, `endTime`, `checkInTime` e `checkOutTime` sono l'ora locale del ristorante, senza data né fuso. Non si usa un campo `date`: in Payload 3.89.0 è una colonna `timestamp with time zone` e, per il solo orario, il selettore non normalizza data né fuso.
+
+**Forma delle date di chiusura** (audit 2026-10-04): `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, la forma che produce il selettore `dayOnly` di Payload (che normalizza a mezzogiorno solo `dayOnly`, `default` e `monthOnly`, non `timeOnly`). Lo stesso helper in `lib/` lo usano il pulsante festività, la sezione Orari dell'App, le Eccezioni giorno (Fase 5) e l'import; altrimenti il controllo duplicati (un solo record per data e servizio) e il confronto con le chiusure annuali falliscono.
 
 **Pulsante festività** (funzione di supporto già prevista, componente custom dell'Admin, classe A): chiede l'anno e aggiunge a `annualClosures` le 12 festività nazionali di quell'anno (1 gennaio, 6 gennaio, Pasqua, Lunedì dell'Angelo, 25 aprile, 1 maggio, 2 giugno, 15 agosto, 1 novembre, 8 dicembre, 25 dicembre, 26 dicembre), con etichette in italiano. Pasqua si calcola con una funzione senza nuove dipendenze (algoritmo gregoriano). Le date già presenti non vengono duplicate. Le righe restano modificabili e cancellabili a mano. La funzione che calcola le festività e la validazione `HH:mm` stanno in `lib/` come funzioni pure, perché le riusa la sezione Orari dell'App (Fase 8.5).
 
@@ -142,6 +144,10 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 | Altri | Nessun accesso alle altre tab |
 
 **Accesso a livello di Global**: deve ammettere gli admin, `appRole: manager` e la lettura anonima, altrimenti nessuno di loro potrebbe leggere alcun campo; la restrizione alle sole tab consentite sta sui singoli campi.
+
+**Campi non pubblici** (audit 2026-10-04): in Payload 3.89.0 un campo è nascosto solo se dichiara `access.read`; un campo senza `access.read` è leggibile da chiunque superi l'accesso del Global. Ogni campo delle tab Calendario, Comunicazioni e Integrazioni dichiara quindi `access.read` riservato ad admin e super-admin (default: nessuno). Test di non regressione: `GET /api/globals/impostazioni-sistema?locale=it` anonimo restituisce solo le chiavi della tab Orari e chiusure; ogni campo nuovo si aggiunge al test.
+
+**Utente disattivato** (audit 2026-10-04): ogni funzione `access` verifica `active !== false` oltre al ruolo, come `canAccessAdminPanel`. `isStaffAdminRequest`, `isSuperAdminRequest` e le funzioni per `appRole: manager` condividono un unico helper che esclude gli utenti disattivati. Prova: un utente con `active: false` e cookie ancora valido riceve 403 su ogni risorsa (il token vale fino a 7200 secondi, il valore predefinito di `tokenExpiration`).
 
 **Nascondere il Global dall'Admin** a `adminRole: manager` (`admin.hidden` con funzione): si implementa e si verifica in **Fase 8.3**, insieme al nuovo valore del ruolo.
 

@@ -107,7 +107,7 @@ fasi:
     nome: "CMS siti esterni (vietnamonamour.com + villadoree.com)"
     origine: dominio-applicativo
     file: "fase-4-cms-siti-esterni.md"
-    stato: "da_fare"
+    stato: "in_corso"
     note: >
       Fase definita il 2026-10-03. Questo progetto contiene solo i contenuti
       dei due siti (Payload su Cloud Run); i due siti sono applicazioni
@@ -184,12 +184,12 @@ fasi:
     note: >
       Priorità del progetto (2026-10-03): completa e funzionante per prima,
       per la parte CMS, API e backoffice. Il frontend pubblico (6.7) è un'app
-      Firebase in un altro progetto. Si esegue dopo fase-7 e fase-8.
+      Firebase in un altro progetto. Si esegue dopo fase-7 e fase-8 (8.1–8.5; la 8.6 si esegue dopo la 6.6).
     sottofasi:
       - id: fase-6.0
         nome: "Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM (recupero del debito di fase-3)"
         stato: "da_fare"
-        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e il secret condiviso degli endpoint schedulati. I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima di 6.5 Parte B. Il dominio definitivo si aggiunge al passaggio in produzione."
+        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e i secret condivisi degli endpoint schedulati (uno per scopo: disponibilità del menù e anonimizzazione GDPR). I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima di 6.5 Parte B. Il dominio definitivo si aggiunge al passaggio in produzione."
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia vino/bevanda/distillato) + Global Generali + permessi manager/admin"
         stato: "da_fare"
@@ -574,7 +574,7 @@ archi:
       Tassonomie (Categoria piatto, Allergeni, geografia vini a 4 livelli
       Paese/Regione/Denominazione/Classificazione, Tipologia distillato) e
       la classificazione manager/admin campo-per-campo condizionano lo
-      schema delle Collection Piatti/Vini/Birra e i permessi granulari da
+      schema delle Collection Piatti/Vini/Distillati/Bevande e i permessi granulari da
       applicare in Payload.
     adr: "ADR — Modello dati del menù digitale"
     fonte: "riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
@@ -595,7 +595,7 @@ archi:
     da: fase-6.2
     a: fase-6.4
     tipo: output
-    descrizione: "Schema Piatti/Vini/Birra (incl. stato disponibilità) fornisce i campi che il job di reset e la generazione di disponibilita.json devono aggiornare/leggere."
+    descrizione: "Schema Piatti/Vini/Distillati/Bevande (incl. stato disponibilità) fornisce i campi che il job di reset e la generazione di disponibilita.json devono aggiornare/leggere."
     adr: null
 
   - id: arco-17
@@ -627,6 +627,9 @@ archi:
       -> immagine builder firebase-tools -> firebase deploy) si applicano
       identicamente al rebuild del menù SSG, invocato da un pulsante nel
       backoffice (app) invece che da un hook afterChange automatico.
+      Arco informativo (audit 2026-10-04): ADR-105 è accettata e 4.4 non
+      produce nulla per 6.5; non impone un ordine di esecuzione (vale
+      meta.ordine_esecuzione).
     adr: "ADR — Strategia di rendering e comunicazione con i siti esterni"
     fonte: "riepilogo-sessione-bucket-d.md §2"
 
@@ -783,6 +786,22 @@ archi:
     adr: null
     fonte: "fase-6-menu-digitale.md (2026-10-04)"
 
+  - id: arco-41
+    da: fase-8.2
+    a: fase-8.5
+    tipo: output
+    descrizione: "La sezione Orari usa il layout e la navigazione dell'App (8.2)."
+    adr: null
+    fonte: "fase-8-shell-app.md §8.5 (audit 2026-10-04, F22)"
+
+  - id: arco-42
+    da: fase-7.4
+    a: fase-8.5
+    tipo: output
+    descrizione: "Permessi di campo su impostazioni-sistema (appRole manager sulla sola tab Orari e chiusure)."
+    adr: null
+    fonte: "fase-7-impostazioni-sistema.md §7.4, ADR-113 (audit 2026-10-04, F22)"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -870,6 +889,29 @@ adr_da_scrivere:
       (2026-10-03) perché i due siti esterni sono sviluppati in un altro
       progetto e hanno bisogno di un'interfaccia fissata dal lato CMS.
       Nessuna deviazione da un default di catalogo.
+  - titolo: "ADR — Form pubblico di prenotazione: CORS e protezione dall'abuso"
+    archi: []
+    stato: "da_scrivere"
+    file: "ADR-114-form-pubblico-prenotazioni.md (da scrivere prima di fase-5.2)"
+    nota: >
+      Emerso dall'audit del 2026-10-04 (F6, F20). Il form pubblico e la
+      lettura degli slot sono chiamati dal browser di un altro sito: la regola
+      payload-pattern/01-architettura.mdc vieta il CORS e nessun ADR dichiara
+      la deroga. Da decidere: come il form raggiunge il CMS (browser diretto
+      con cors e csrf, oppure tramite il server del sito); campi non scrivibili
+      da richieste anonime (stato, canale, anonimizzata, token-cancellazione,
+      google-calendar-event-id); rate limit e anti-spam; controllo di capienza
+      senza condizioni di gara (blocco per slot) con prova di concorrenza.
+  - titolo: "ADR — Azioni di sistema nel registro attività"
+    archi: []
+    stato: "accettata"
+    file: "ADR-115-azioni-di-sistema-registro-attivita.md"
+    nota: >
+      Emerso dall'audit del 2026-10-04 (F7). activity-log.user diventa
+      facoltativo, nuovo eventType systemAction e campo detail; migrazione
+      additiva come primo passo di fase-6.4; usata da 6.5, 4.4A e 5.3.
+      Precisa l'eccezione prevista da payload-pattern/03-log-azioni.mdc per
+      gli endpoint che non passano da un'operazione di collection.
   - titolo: "ADR — Contratto CMS <-> frontend menù digitale (letture REST e disponibilita.json)"
     archi: ["arco-32"]
     stato: "accettata"
@@ -951,3 +993,8 @@ punti_aperti:
     registrazione: "ADR-112 o emendamento ad ADR-108"
     stato: "chiuso"
     riferimento: "Emendamento (secondo) ad ADR-108 del 2026-10-04 (accettato): menù bilingue it/en con traduzione manuale; campi testuali localized fin dalla fase-6.2; le letture pubbliche accettano locale (ADR-112)."
+  - id: po-10
+    titolo: "F1 dell'audit: un admin può promuoversi a super-admin (difetto del pattern di catalogo per update su users)"
+    scadenza: "prima di fase-8.3"
+    registrazione: "segnalazione-catalogo-escalation-super-admin.md; correzione nel progetto appena arriva dal catalogo, al più tardi in fase-8.3"
+    stato: "aperto"

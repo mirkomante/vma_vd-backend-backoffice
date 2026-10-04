@@ -8,7 +8,7 @@ stato: validato
 
 Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non appena completata.
 
-**Prerequisito**: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8 completate (ordine in `00-piano-generale.md`). La 6.0 richiede azioni manuali su GCP (progetto `vma-vd`, regione `europe-west1`) e non cambia il codice.
+**Prerequisito**: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate (la 8.6 resta bloccata fino a 6.6, `arco-36` e `arco-37`; ordine in `00-piano-generale.md`). La 6.0 richiede azioni manuali su GCP (progetto `vma-vd`, regione `europe-west1`) e non cambia il codice.
 
 **Fonti degli schemi**: ADR-108 non elenca campo per campo piatti, vini, distillati e bevande («campi già confermati sufficienti»). I campi di questo file derivano da `prisma/schema.prisma` di `vtn-backend` (HEAD `35146cd`) e da `src/types/payload-types.ts` di `vtn-menu-ristorante-next` (HEAD `911d3bf`), letti il 2026-10-04, con i nomi portati in inglese. **Lo snapshot JSON dell'import non è stato letto**: i conteggi e i valori di tassonomia citati vengono da ADR-108.
 
@@ -24,7 +24,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - **Foto escluse**; nessun concetto di «variante» del piatto (la quantità sta in `portion` sul menu fisso); **cocktail non modellati**; **la birra non ha una collection**: è una bevanda con tipologia «Birre» (terzo emendamento).
 - **Import** (`ADR-108`, primo emendamento): solo dati elementari, da snapshot JSON, in 6.8; i menu fissi e le loro categorie si ricompongono a mano.
 - **Orari e chiusure** vivono in `impostazioni-sistema` (Fase 7): il Global «Generali» del menù **nasce senza quei campi** e senza `isSpecialPeriod` (`ADR-109` §2).
-- **Endpoint chiamati da Cloud Scheduler**: secret condiviso in un'intestazione (nota di `ADR-105`, 2026-10-04), perché il servizio Cloud Run è pubblico.
+- **Endpoint chiamati da Cloud Scheduler**: un secret **per scopo** (`SCHEDULER_SECRET_AVAILABILITY` per la disponibilità del menù, `SCHEDULER_SECRET_ANONYMIZATION` per l'anonimizzazione GDPR), ciascuno in un'intestazione (nota di `ADR-105`, 2026-10-04), perché il servizio Cloud Run è pubblico.
 - **CI/CD solo su Cloud Build**, mai GitHub Actions.
 
 ## Ordine di dipendenza reale
@@ -65,7 +65,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 | Service account dello Scheduler | `vma-vd-scheduler@vma-vd.iam.gserviceaccount.com` | `roles/run.invoker` sul servizio Cloud Run. **Da solo non protegge nulla** (servizio pubblico): serve il secret |
 | Bucket di `disponibilita.json` | `vma-vd-menu-availability` | `europe-west1`, accesso uniforme a livello di bucket, **lettura pubblica** (`allUsers` con `roles/storage.objectViewer`) |
 | Permesso di scrittura | runtime SA sul **solo bucket** | `roles/storage.objectAdmin` sul bucket: per sovrascrivere un oggetto servono anche i permessi di cancellazione. **Da verificare nella prova** |
-| Secret condiviso | `scheduler-shared-secret` (Secret Manager) | Variabile d'ambiente `SCHEDULER_SECRET`. Secret Accessor al runtime SA **per singolo secret**, come gli altri |
+| Secret della disponibilità | `scheduler-secret-availability` (Secret Manager) | Variabile d'ambiente `SCHEDULER_SECRET_AVAILABILITY`. Secret Accessor al runtime SA **per singolo secret**, come gli altri |
+| Secret dell'anonimizzazione | `scheduler-secret-anonymization` (Secret Manager) | Variabile d'ambiente `SCHEDULER_SECRET_ANONYMIZATION`. Usato da 5.3; un secret per scopo, così la compromissione di uno non apre l'altro |
 
 **Progetto Firebase del menù**: non esiste ancora (né quello dei due siti) e il nome verrà più avanti. Il suo ID entra nel CORS del bucket: la creazione è **manuale**, nella console di Firebase, con Hosting attivo.
 - Se il progetto esiste già alla 6.0: imposta il CORS come sotto.
@@ -80,7 +81,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Checklist di chiusura sottofase**:
 - [ ] Cloud Scheduler abilitato; service account dello Scheduler creato con `run.invoker` sul solo servizio.
 - [ ] Bucket creato, a lettura pubblica; scrittura riservata al runtime SA sul solo bucket.
-- [ ] Secret creato in Secret Manager e accessibile al runtime SA per singolo secret; **valore non scritto in nessun file del repo**.
+- [ ] Due secret creati in Secret Manager (uno per scopo) e accessibili al runtime SA per singolo secret; **valore non scritto in nessun file del repo**.
 - [ ] Oggetto di prova: servito con cache a 60 secondi; CORS verificato con `curl -I -H "Origin: …"` (o rimandato, con nota, se il progetto Firebase non c'è ancora).
 - [ ] `docs/operativo/gcp-menu-scheduler.md` scritto; `piano.yaml` e `00-piano-generale.md` aggiornati.
 
@@ -90,7 +91,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Stato**: 🔲 da fare
 
-**Dipende da**: Fase 7 e Fase 8 completate. Non dipende da 6.0.
+**Dipende da**: Fase 7 e Fase 8.3 completate (valore `manager` di `adminRole`, `admin.hidden`). Non dipende da 6.0.
 
 **Obiettivo**: le collection tassonomiche, il Global «Generali» senza i campi orario e i permessi, con il seed dei valori usati dai record da importare.
 
@@ -248,6 +249,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Report a secco: conteggi per entità, duplicati di chiave naturale, valori non abbinati. Nessun errore.
 - [ ] Prova in sviluppo; secondo `--apply` senza duplicati (idempotenza).
 - [ ] Esecuzione in produzione da locale con uno snapshot del giorno; conteggi coincidenti.
+- [ ] Rivalutazione esplicita dell'alta affidabilità di Cloud SQL (`ADR-110` §3, `arco-26`, `arco-27`): decisione e data annotate in `docs/operativo/cloud-sql-produzione.md`. La stessa voce sta nella checklist di chiusura di 5.3.
 - [ ] Lettura pubblica `locale=it` di un piatto, un vino e un distillato importati; una voce nascosta con `disabled: true`.
 - [ ] CHANGELOG; elenco della revisione consegnato all'umano.
 
@@ -267,7 +269,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 **Decisione da prendere all'inizio di 6.3: struttura di `content`** (`ADR-108` §1 la rimanda a questa sottofase). Proposta, perché un menù sostitutivo deve portare gli allergeni dei piatti:
 - `content` è una **relazione a uno o più menu fissi** (che già contengono i piatti, le porzioni, il prezzo e gli allergeni), più un `message` (L) facoltativo per il banner;
-- un menu fisso riservato a un giorno speciale deve restare fuori dalle pagine normali: servirebbe un flag `specialOnly` sul menu fisso (**campo nuovo**, da approvare e da inserire prima del congelamento dei nomi, o con una migrazione additiva).
+- un menu fisso riservato a un giorno speciale deve restare fuori dalle pagine normali: servirebbe un flag `specialOnly` sul menu fisso (**campo nuovo**, da approvare; si aggiunge con una migrazione additiva, consentita anche dopo il congelamento dei nomi, che vieta soltanto ridenominazioni e rimozioni).
 
 **Vincolo di coerenza**: due giorni speciali non possono coprire lo stesso servizio della stessa data (`day` si sovrappone a `lunch` e a `dinner`).
 
@@ -293,6 +295,8 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 **Riferimenti**: `ADR-112` §§3 e 4, `ADR-108` §§3 e 5, `ADR-105` (secret condiviso), `docs/operativo/gcp-menu-scheduler.md` (6.0).
 
+**Primo passo: registro attività** (`ADR-115`): migrazione additiva di `activity-log` (`user` facoltativo, `eventType` `systemAction`, campo `detail`), `condition` di `collection` e `documentId` estesa a `systemAction`, e una funzione `logSystemAction` in `lib/activityLog`. È il primo consumatore nell'ordine di esecuzione: 6.5, 4.4 Parte A e 5.3 la riusano senza altre migrazioni. Migrazione applicata su Cloud SQL prod **prima** del push.
+
 **Generazione del file** (schema esatto di `ADR-112` §3): ogni gruppo (`dishes`, `wines`, `drinks`, `spirits`, `fixedMenus`, `services`) elenca **tutte** le voci con lo stato corrente: `available`, `soldOut` (solo piatti) o `hidden` (`disabled`). Chiavi: gli identificativi numerici di Payload come stringhe. `updatedAt` in UTC; `schemaVersion: 1`. `globalMessage` dal Global «Generali», con `it` ed `en`, **assente** se non c'è un messaggio.
 
 **Scrittura**: un solo oggetto sul bucket, con `Cache-Control: public, max-age=60` e tipo `application/json`, impostati **a ogni scrittura** (non c'è un default utile). Dipendenza proposta: la libreria ufficiale di Cloud Storage per Node.
@@ -301,12 +305,12 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - a ogni salvataggio di una voce che cambia `disabled` o `soldOut`, di una voce nuova o eliminata, o del `globalMessage` (hook `afterChange` e `afterDelete`): il file deve seguire il manager in tempo breve;
 - a ogni reset ai confini di servizio.
 
-**Reset ai confini di servizio**: un endpoint custom, protetto dal secret condiviso (intestazione, confronto a tempo costante), **idempotente**, che azzera `soldOut` e riscrive il file. Un secret errato o assente è rifiutato senza dettagli. L'esito va nel registro attività (`payload-pattern/03-log-azioni.mdc`), come azione di sistema.
+**Reset ai confini di servizio**: un endpoint custom, protetto dal secret `SCHEDULER_SECRET_AVAILABILITY` (intestazione, confronto a tempo costante), **idempotente**, che azzera `soldOut` e riscrive il file. Un secret errato o assente è rifiutato senza dettagli. L'esito va nel registro attività come `systemAction` (`ADR-115`).
 
 **Decisioni da prendere all'inizio di 6.4**:
 1. **Che cosa significa «confine»**: reset **a fine servizio** (il piatto torna disponibile e il manager può già prepararsi) oppure **a inizio del successivo** (come dice `riepilogo-sessione-requisiti-architettura-menu-digitale.md` §2.6). Cambia anche chi marca «terminato» prima dell'apertura.
 2. **Orari fissi o job frequente**: i job hanno un orario fisso, ma i confini li può cambiare il manager (dall'App, 8.5). Soluzione candidata: un job a intervalli brevi il cui endpoint decide da solo se un confine è passato, in modo da tollerare job saltati e cambi di orario. Il **numero di job e il listino di Cloud Scheduler** si verificano prima di decidere (il costo è un vincolo del cliente).
-3. **Nomi delle variabili d'ambiente** del CMS (bucket e secret): `ADR-112` §6 le rimanda a questa sottofase.
+3. **Nomi delle variabili d'ambiente** del CMS (bucket; i secret sono fissati in 6.0): `ADR-112` §6 le rimanda a questa sottofase.
 
 **Orari**: i confini si leggono da `impostazioni-sistema` (testo `HH:mm` in ora locale) e si confrontano con l'ora **Europe/Rome** (con le API di internazionalizzazione di Node, senza dipendenze nuove). Giorni di riposo e chiusure annuali si valutano allo stesso modo.
 
@@ -320,7 +324,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Riscrittura su ogni cambio di stato; reset idempotente e protetto.
 - [ ] Job creato in Cloud Scheduler con il secret nell'intestazione; esecuzione di prova riuscita.
 - [ ] Variabili d'ambiente documentate (sotto) e montate su Cloud Run; secret in Secret Manager.
-- [ ] Voci nel registro attività; CHANGELOG.
+- [ ] Migrazione di `activity-log` (`ADR-115`) applicata su Cloud SQL prod prima del push; voci di sistema nel registro attività; CHANGELOG.
 
 ---
 
@@ -367,7 +371,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 **Riferimenti**: `ADR-105` (meccanismo di rebuild verificato e note di chiarimento), `ADR-112` §5, `riepilogo-sessione-bucket-d.md` §2.
 
-**Meccanismo**: trigger Cloud Build **manuale** nel progetto GCP `vma-vd`, collegato al repository del **progetto menù** (nome da definire; non il prototipo); un endpoint custom di Payload invoca l'API `triggers.run`; lo step di build usa l'immagine `us-docker.pkg.dev/firebase-cli/us/firebase` ed esegue `firebase deploy --project <ID> --only hosting`. Feedback «avviata» con l'id della build nel registro attività; la conferma dell'esito (Pub/Sub sul cambio di stato) **non è in questa sottofase**.
+**Meccanismo**: trigger Cloud Build **manuale** nel progetto GCP `vma-vd`, collegato al repository del **progetto menù** (nome da definire; non il prototipo); un endpoint custom di Payload invoca l'API `triggers.run`; lo step di build usa l'immagine `us-docker.pkg.dev/firebase-cli/us/firebase` ed esegue `firebase deploy --project <ID> --only hosting`. Feedback «avviata» con l'id della build nel registro attività (`systemAction`, `ADR-115`); la conferma dell'esito (Pub/Sub sul cambio di stato) **non è in questa sottofase**.
 
 **Parte A — nel CMS** (eseguibile con uno step di prova che non fa deploy):
 - Endpoint, ruolo `appRole: manager` o admin (`canAccessSection(user, 'menu')`); un secondo avvio ravvicinato viene ignorato con un messaggio.
@@ -407,7 +411,8 @@ Sviluppato in un altro progetto (app Firebase del menù). Questo piano fornisce 
 
 | Variabile | Dove | Uso | Sottofase |
 |---|---|---|---|
-| `SCHEDULER_SECRET` | Cloud Run (da Secret Manager, `scheduler-shared-secret`) | secret condiviso degli endpoint chiamati da Cloud Scheduler | 6.0, usata in 6.4 e 5.3 |
+| `SCHEDULER_SECRET_AVAILABILITY` | Cloud Run (da Secret Manager, `scheduler-secret-availability`) | secret dell'endpoint di reset e riscrittura della disponibilità, chiamato da Cloud Scheduler | 6.0, usata in 6.4 |
+| `SCHEDULER_SECRET_ANONYMIZATION` | Cloud Run (da Secret Manager, `scheduler-secret-anonymization`) | secret dell'endpoint di anonimizzazione GDPR, chiamato da Cloud Scheduler | 6.0, usata in 5.3 |
 | variabile del bucket | Cloud Run | nome del bucket di `disponibilita.json` (nome da fissare in 6.4) | 6.4 |
 | `MENU_CMS_URL`, `NEXT_PUBLIC_MENU_AVAILABILITY_URL` | app del menù (non questo repo) | `ADR-112` §6; usate dall'app di prova di 6.5 | 6.5 |
 

@@ -112,3 +112,10 @@ I cinque controlli automatici sono condizionati dal ciclo di vita fissato in `AD
   - il flusso dettagliato di coordinamento tra la cancellazione di una prenotazione ancora futura e un'anonimizzazione anticipata richiesta su quella stessa prenotazione (art. 17 GDPR);
   - un eventuale identificatore pseudonimizzato per tracciare pattern di no-show ricorrenti sullo stesso cliente nel tempo, se questo diventerà un requisito reale — oggi l'anonimizzazione a 90 giorni elimina ogni collegamento tra prenotazioni della stessa persona;
   - la riconciliazione campo-per-campo tra il Global "Impostazioni prenotazioni" e il Global "Generali" del menù digitale, per una fonte unica di orari/chiusure del ristorante — resta materia dell'**ADR — Global di configurazione trasversale (`impostazioni-sistema`)**, bloccato fino alla sessione dedicata alla struttura a tab.
+
+## Nota di chiarimento (2026-10-04)
+
+Non modifica il modello. Precisa due punti emersi dall'audit di coerenza:
+
+1. **Valori di `servizio`**: `servizi[].nome`, `servizio` delle Eccezioni giorno e `servizio` delle Prenotazioni assumono i valori `lunch` e `dinner` (valori dei select in inglese, `ADR-109` secondo emendamento), con etichette «Pranzo» e «Cena». Nel testo sopra `pranzo` e `cena` sono le etichette.
+2. **Anonimizzazione e Google Calendar** (§5): l'anonimizzazione elimina **prima** l'evento Google Calendar collegato (`google-calendar-event-id`), poi svuota il campo e i dati identificativi. Senza questo passaggio l'evento di una prenotazione servita (che resta `confermata`) conserva nome e telefono oltre i 90 giorni. Va riportato nella checklist di 5.4.

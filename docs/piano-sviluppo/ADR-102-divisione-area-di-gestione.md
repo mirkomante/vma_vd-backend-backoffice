@@ -43,3 +43,7 @@ Non modifica la divisione tra Admin e App. Precisa due punti, definiti in `ADR-1
 
 - Il «ruolo dedicato» del manager (§1) è il valore `manager` di `adminRole`: nell'Admin il manager gestisce solo il CMS dei siti.
 - La competenza del manager su orari e chiusure di `impostazioni-sistema` (§6) si esercita nell'App, sezione Orari, e non nell'Admin. Il criterio campo per campo di §6 non cambia.
+
+## Nota di chiarimento (2026-10-04)
+
+Non modifica la decisione. Il punto 4 e le Conseguenze dicono che il form pubblico di prenotazione e il menù pubblico «restano REST+token»: le letture di contenuto pubblicato e il form pubblico sono REST **senza token** (`ADR-105`, `ADR-112`); il token API è riservato alla preview delle bozze (`ADR-104`).

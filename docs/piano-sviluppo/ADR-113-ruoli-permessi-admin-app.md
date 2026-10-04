@@ -69,3 +69,7 @@ CMS dei siti per il manager:
 - **`po-02` chiuso**: il manager è unico per menù, orari e prenotazioni.
 - **Prerequisito operativo, non verificato**: chi usa l'Admin come manager ha un account Google su un dominio abilitato per l'Admin.
 - **Non verificato**: il comportamento di `admin.hidden` per ruolo a runtime. Di `ADR-004` di catalogo ho letto solo la matrice riportata da `fase-2-login.md`.
+
+## Nota di chiarimento (2026-10-04)
+
+Non modifica la decisione. La lettura anonima della sola tab Orari e chiusure di `impostazioni-sistema` è già decisa in `ADR-112` §1 e in `fase-7-impostazioni-sistema.md` §7.4; ADR-111 stabilisce soltanto se i siti usano quella stessa REST per gli orari pubblici (ristorante, check-in, check-out).

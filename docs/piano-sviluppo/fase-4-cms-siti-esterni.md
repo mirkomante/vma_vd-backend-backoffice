@@ -24,7 +24,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 L'ordine di esecuzione **tra le fasi** è in `00-piano-generale.md`, «Ordine di esecuzione corrente»: la 4.0 è la prima sottofase eseguita; 4.1–4.4 (parte CMS) seguono dopo Fase 7, 8 e 6.
 
 - **4.0** (localizzazione) → **4.1** (scaffolding) → **4.2** (plugin).
-- **4.3 Parte A** e **4.4 Parte A** (lato CMS + contratto ADR-111) partono dopo 4.1 e possono procedere in parallelo tra loro.
+- **4.3 Parte A** e **4.4 Parte A** (lato CMS + contratto ADR-111) partono dopo 4.1; **4.3 Parte A precede 4.4 Parte A** (ADR-111 nasce in 4.3 e si completa in 4.4).
 - **4.3 Parte B**, **4.4 Parte B**, **4.5**, **4.6**: ⏸ rimandate a quando i frontend (e il design) dei due siti saranno disponibili. Non bloccano le Fasi 5 e 6, salvo 5.6 (vedi `piano.yaml`, arco-13).
 - La Fase 4 si considera **chiusa solo quando anche le parti rimandate sono completate**; fino ad allora è «parzialmente chiusa» e va annotato in `00-piano-generale.md`.
 
@@ -137,9 +137,12 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Permessi** (`ADR-102` §§ 1, 6): `adminRole: manager` (`ADR-113`) con read+update pieno su `impostazioni-vma` e `impostazioni-villadoree` e create/update, pubblicazione compresa, sulle pagine dei due siti; **`delete` sulle pagine riservato agli admin** (deroga esplicita al default «`delete` eredita da `update`», `ADR-113`). Funzione `access` nativa a livello di collection/global, non convenzione lato UI. Admin e super-admin accesso completo.
 
+**Bozze via REST** (audit 2026-10-04, F24): con `versions.drafts` e una lettura pubblica, `draft=true` è un parametro di query che chiunque può inviare, e Payload non filtra da solo per `_status`. `access.read` delle collection `pages-*` (e dei Global con `versions.drafts`) è quindi `({ req }) => (isManagerOrStaff(req.user) ? true : { _status: { equals: 'published' } })`, dove `isManagerOrStaff` richiede un utente attivo con `adminRole` `manager`, `admin` o `super-admin` (stesso helper dell'utente disattivato, vedi 7.4).
+
 **Checklist di chiusura sottofase**:
 - [ ] Le due collection e i due Global esistono con gli slug confermati e `localized` dove deciso.
 - [ ] Prova per ruolo: manager vede e modifica solo ciò che gli compete e non può cancellare una pagina; admin e super-admin tutto.
+- [ ] `GET /api/pages-vma?draft=true&locale=it` e `GET /api/pages-villadoree?draft=true&locale=en`, anonimi, restituiscono solo documenti pubblicati (comportamento dedotto dai sorgenti di Payload: verificare a runtime).
 - [ ] Verificato in Admin il comportamento del valore di fallback sui campi localizzati (punto aperto di ADR-103): campo vuoto o valore di fallback mostrato.
 - [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
 - [ ] **Nomi congelati**: elenco degli slug e dei `name` dei campi riportato nel CHANGELOG come base del contratto ADR-111.
@@ -158,7 +161,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 **Riferimenti**: `ADR-103` §§ 1, 2; `riepilogo-sessione-cms-siti-esterni.md` §§ 3.1, 3.2.
 
 **Plugin**:
-- `@payloadcms/plugin-seo` su entrambe le collection pagina; campi meta `localized`.
+- `@payloadcms/plugin-seo` su entrambe le collection pagina, con un override dei `fields` che marca `localized: true` i campi `title` e `description` del gruppo `meta` (in 3.89.0 il gruppo non è `localized` di default; gli altri sotto-campi sono da verificare).
 - `@payloadcms/plugin-redirects`: aggiunge la collection `redirects` (`from`, `to` = relationship a `pages-*` oppure URL esterno, tipo 301/302). Non è automatico: i siti leggeranno la collection e applicheranno l'HTTP redirect.
 - Versione **identica** a quella di Payload (`3.89.0`, tutti i pacchetti `@payloadcms/*` fissati alla stessa versione).
 
@@ -168,7 +171,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Checklist di chiusura sottofase**:
 - [ ] Plugin installati alla versione allineata a Payload, configurati secondo i due punti aperti.
-- [ ] Campi meta SEO `localized`, modificabili dal manager come parte della pagina; collection `redirects` accessibile solo agli admin (`ADR-113`).
+- [ ] Campi `title` e `description` del gruppo `meta` SEO `localized` (override esplicito), modificabili dal manager come parte della pagina; collection `redirects` con lettura pubblica (serve ai siti, il plugin la imposta da solo) e creazione, modifica e cancellazione riservate agli admin tramite `overrides.access` (`ADR-113`): il default del plugin le lascia a qualunque utente autenticato. Una collection per sito (due istanze del plugin con `overrides.slug`) o una sola resta da decidere in questa sottofase; il plugin genera una collection per istanza e il tipo 301/302 solo con `redirectTypes`.
 - [ ] Collection `redirects` presente e vuota; nessun redirect inserito.
 - [ ] Migrazione applicata su Cloud SQL prod prima del push; CHANGELOG aggiornato.
 
@@ -188,7 +191,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Primo passo: scrivere `ADR-111-contratto-cms-siti-esterni.md`** (decisione, namespace `ADR-1NN`; aggiungere l'entry in `piano.yaml` `adr_da_scrivere`). Contenuto minimo del contratto, valido per i due siti:
 - **Link di preview firmato**: parametri (sito, collection, slug, locale, scadenza), algoritmo di firma, durata del token, route di destinazione `/api/preview` sul sito.
-- **Letture in `draft: true`**: come si emette il token API per la lettura delle bozze (ADR-104 lo prevede; modalità da decidere, ad es. utente tecnico a sola lettura per sito), con quali permessi.
+- **Letture in `draft: true`**: come si emette il token API per la lettura delle bozze (ADR-104 lo prevede; modalità da decidere, ad es. utente tecnico a sola lettura per sito), con quali permessi. **Vincolo emerso dall'audit (2026-10-04)**: `users` non ha `useAPIKey` e la creazione di un utente rifiuta chi ha entrambi i ruoli `none`, quindi un «utente tecnico» non è realizzabile senza una decisione di schema; inoltre la strategia API-key di Payload non controlla `active` né i ruoli. Opzione da valutare in ADR-111: una collection dedicata `api-clients` (`auth: { useAPIKey: true, disableLocalStrategy: true }`, un record per sito, sola lettura su `pages-*` e `impostazioni-*`), separata da `users`.
 - **Letture del contenuto pubblicato**: REST senza token (ADR-105), `locale` esplicito obbligatorio.
 - **Nomi dei campi e degli slug**: quelli congelati in 4.1.
 - **Variabili d'ambiente** (tabella sotto).
@@ -229,7 +232,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Implementazione**:
 - Hook `afterChange` (e `afterDelete`) sulle collection `pages-*` e sui Global `impostazioni-*`, che chiama l'endpoint del sito interessato con il secret condiviso. Si attiva solo sulla pubblicazione effettiva, non sul salvataggio di bozze.
-- **Mai bloccante**: errori o timeout del sito non fanno fallire il salvataggio; l'esito è registrato in `activityLog` con l'id dell'evento.
+- **Mai bloccante**: errori o timeout del sito non fanno fallire il salvataggio; l'esito è registrato in `activityLog` come `systemAction` (`ADR-115`), con l'id dell'evento in `detail`.
 - **Inattivo se l'URL del sito non è configurato** (nessun errore, voce di log), così l'hook può esistere prima dei siti.
 - Provato con un ricevente finto locale che registra le chiamate.
 

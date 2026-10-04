@@ -178,3 +178,7 @@ Modifica l'ambito della tab Orari e chiusure (§1, §2) e la prima riga della ta
 - **Fase 7.2** aggiunge il gruppo `bnb`; **Fase 7.4** applica i permessi di `ADR-113`.
 - **Fase 8.5** costruisce nell'App la sezione che modifica orari, chiusure e dati del B&B.
 - **ADR-111**: gli orari pubblici dei siti (ristorante, check-in, check-out) hanno come fonte questo Global. Poiché il Global non è pubblico per default, la forma di esposizione si decide nel contratto con i siti.
+
+## Nota di chiarimento (2026-10-04)
+
+Non modifica la decisione. La lettura anonima della sola tab Orari e chiusure di `impostazioni-sistema` è già decisa in `ADR-112` §1 e in `fase-7-impostazioni-sistema.md` §7.4; ADR-111 stabilisce soltanto se i siti usano quella stessa REST per gli orari pubblici (ristorante, check-in, check-out).
