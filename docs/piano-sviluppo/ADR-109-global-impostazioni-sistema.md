@@ -22,7 +22,7 @@ La struttura a tab e i campi per tab restavano però non progettati, bloccando l
 |---|---|---|
 | **Orari e Chiusure** (`orari-chiusure`) | `servizi` (array, 2 voci fisse: `nome` select pranzo/cena, `orario-inizio` timeOnly, `orario-fine` timeOnly), `giorni-riposo-settimanale` (select `hasMany`), `chiusure-annuali` (array: `data` dayOnly, `etichetta` text) | Punto 1 — fonte unica orari/chiusure |
 | **Calendario** (`calendario`) | `google-calendar-id` (text) — riferimento, non credenziale | Punto 2 |
-| **Comunicazioni** (`comunicazioni`) | `mittenti-resend` (array: `mittente`, `dominio-riferimento`/etichetta di scope), `contatti-notifiche-staff` (array: `nome`, `email`) | Punti 3 e 4 |
+| **Comunicazioni** (`comunicazioni`) | `mittenti-resend` (array: `mittente`, `dominio-riferimento`/etichetta di scope — ridefinito dall'Emendamento a §1 in coda a questo ADR), `contatti-notifiche-staff` (array: `nome`, `email`) | Punti 3 e 4 |
 | **Integrazioni future** (`integrazioni-future`) | nessun campo per ora — solo lo spazio riservato nella struttura a tab | Punto 5 |
 
 Funzione di supporto ereditata da `ADR-107` §1: il pulsante che precompila `chiusure-annuali` con le festività italiane note resta valido, applicato ora al campo nella sua nuova collocazione su `impostazioni-sistema`.
@@ -90,3 +90,42 @@ Meccanismo: funzione `access` Payload nativa a livello di singolo campo (non di 
 - **Punto aperto non bloccante, riportato per l'implementazione** (`riepilogo-sessione-impostazioni-sistema.md` §5): lo schema campo-per-campo del Global "Generali" del menù qui riconciliato (§2) è stato ricostruito per inferenza, non verificato su una fonte che lo documenti esattamente — da controllare contro il codice/schema attuale prima dello scaffolding di fase-6.1, se possibile; analogamente, l'assenza di migrazione dati (§2) è assunta in base allo stato "da_fare" di fase-5.1/fase-6.1 in `piano.yaml`, non verificata contro eventuali dati già presenti nel sistema attuale (Bookly, backend menù attuale) — da confermare prima dello scaffolding se sussiste il dubbio.
 - Resta punto aperto per il futuro, non trattato da questo ADR: il contenuto della tab "Integrazioni future", lasciata intenzionalmente vuota — lo schema va progettato quando TheFork o WhatsApp/SMS diventeranno requisiti reali.
 - **Con questo ADR si esaurisce l'intero elenco degli ADR del punto 3 di `tracciamento-processo-adr-dag.md`**: nessun ADR della sequenza resta da scrivere. Prossimo passaggio: punto 4 ("Composizione — Passo 1 in Cursor").
+
+## Emendamento a §1 (2026-10-04) — mittenti email (po-01)
+
+**Stato dell'emendamento**: accettata (2026-10-04, su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+
+Modifica solo il campo `mittenti-resend` della tab Comunicazioni di §1. Il resto di §1 (le altre tab, `contatti-notifiche-staff`) e i permessi di §5 restano invariati. Punto aperto di origine: `po-01` in `piano.yaml` (un solo posto per scopo).
+
+### Verifiche su cui poggia
+
+- `@payloadcms/email-resend` 3.89.0: `defaultFromAddress` e `defaultFromName` sono stringhe fissate alla creazione dell'adapter, che in `payload.config.ts` avviene alla costruzione della config, prima che il database sia disponibile. Un Global non può quindi fornirle. Lo stesso adapter rispetta invece il campo `from` passato a `payload.sendEmail` per il singolo invio.
+- Le email native di Payload (`forgotPassword`, `sendVerificationEmail`) usano sempre i default dell'adapter. Oggi non sono usate: `Users` ha `disableLocalStrategy` e le email di attivazione e reset passano da `payload.sendEmail` senza `from` (`lib/auth/localEmail/send.ts`).
+- Catalogo (verificato su `cursor-rules` `e691823`, identico alla copia del progetto): `email/01a-resend.mdc` elenca `RESEND_FROM_ADDRESS` e `RESEND_FROM_NAME` come variabili d'ambiente; `email/01-email-invarianti.mdc` vieta di cambiare il from-address tra un invio e l'altro in produzione e richiede SPF, DKIM e DMARC verificati prima di ogni invio.
+
+### Decisione
+
+Due sorgenti, ciascuna per uno scopo, senza sovrapposizione e senza fallback.
+
+1. **Mittente di sistema**: variabili d'ambiente `RESEND_FROM_ADDRESS` e `RESEND_FROM_NAME` (nomi invariati). Sono il default dell'adapter e valgono per le email di sistema verso lo staff: attivazione account, reset password, notifiche ai `contatti-notifiche-staff`.
+2. **Mittenti verso i clienti**: array `mittenti-resend` del Global, un record per sito, usato per le email destinate agli ospiti dei due siti.
+3. **Nessun fallback.** Se per il sito richiesto non esiste un record, l'invio non parte e l'errore viene registrato nel log. L'email non viene mai inviata dal mittente di sistema al posto di quello mancante. Resta valido l'invariante di catalogo per cui l'utente finale non vede dettagli tecnici del provider.
+4. **Struttura del record**: `sito` (select a valori fissi: `vietnamonamour` e `villadoree`, entrambi fin dall'inizio, come prevede `02-convenzioni-payload.mdc` per gli enum aperti; è la chiave con cui il codice cerca il mittente), `nome` (text), `indirizzo` (email). Sostituisce la formula «`mittente`, `dominio-riferimento`/etichetta di scope»: il dominio si ricava dall'indirizzo e un campo separato potrebbe contraddirlo.
+5. **Validazione** (Fase 7.3): `indirizzo` normalizzato (trim, minuscolo, formato) e al più un record per `sito`.
+6. **Prerequisito operativo, non verificato dal sistema**: prima di inserire un record, il dominio dell'indirizzo deve risultare Verified in Resend. Modificare un record dopo l'avvio in produzione è un'operazione pianificata, non un ritocco.
+
+Rapporto con il catalogo: nessun ADR di catalogo derogato. Le variabili richieste da `01a-resend.mdc` restano; l'array è un meccanismo aggiuntivo di progetto. È una lettura del progetto: `01a-resend.mdc` elenca le variabili ma non vieta altri mittenti.
+
+### Alternative considerate
+
+- **Solo env** — scartata: ogni nuovo mittente richiede un deploy e tutte le email, ospiti compresi, escono con un solo nome e indirizzo. Contraddice l'intento di `riepilogo-sessione-bucket-c.md` §3 (struttura pronta per villadoree.com).
+- **Global con env come default e fallback** — scartata: stesso scopo in due posti; una voce mancante o sbagliata fa partire l'email dal mittente sbagliato senza alcuna segnalazione.
+- **Solo Global** — non realizzabile: l'adapter richiede un default alla costruzione della config e le email native di Payload lo usano.
+
+### Conseguenze
+
+- **Fase 7.3** costruisce l'array con campi e validazione. Resta senza consumatori fino a Fase 5.
+- **Consumatore noto oggi: la conferma di prenotazione di vietnamonamour.com (Fase 5).** `ADR-106` e `ADR-107` non definiscono l'email di conferma. La sottofase che la introduce dovrà leggere il Global con `payload.findGlobal`, usare il record del sito `vietnamonamour`, passare `from` a `payload.sendEmail` e trattare l'assenza del record come errore. Oggi non esiste un arco tra `fase-7.3` e quel consumatore: va aggiunto quando la sottofase viene definita.
+- **Sviluppi futuri fuori perimetro.** Altri tipi di email o integrazioni dai due siti non sono previsti da questo progetto. La struttura li copre solo se usano un mittente per sito: aggiungere villadoree.com è un nuovo record, senza migrazione. Mittenti diversi per tipo di email sullo stesso sito richiederebbero un secondo campo (`tipo`) e una migrazione, e non sono coperti qui.
+- Rischio residuo: un record con dominio non verificato produce invii mancati visibili solo nel log. Non è previsto un test di invio al salvataggio, perché sarebbe complessità assente dalla documentazione (`core/01-proporzionalita.mdc`); da valutare in 7.3 solo se richiesto.
+- Il nome visibile delle email agli ospiti è contenuto del record, da decidere al popolamento.

@@ -24,6 +24,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `piano.yaml`: `arco-01` parte ora da `fase-4.0` (localizzazione non consegnata da Fase 1); note di `fase-4.3`/`4.4` con parte CMS eseguibile e parte sui siti rimandata. `ADR-105`: nota di chiarimento sui due siti (applicazioni distinte, ciascuna su un proprio progetto Firebase).
 - Allineati in `piano.yaml` gli stati di `fase-1` e `fase-2` a `fatto` (coerenza con `00-piano-generale.md`); unificato il blocco `### Added` duplicato nella sezione 0.3.0 del CHANGELOG.
 - `piano.yaml`: `arco-21`, `arco-22` e `arco-24` invertiti (la fonte unica degli orari su `impostazioni-sistema` precede lo scaffolding di fase-5.1 e fase-6.1, come prevede ADR-109); fase-6.7 `fuori_perimetro` (frontend del menù in un altro progetto); note di 6.1, 6.2, 6.4, 6.5, 6.6, 7.2, 7.3, 5.5; note di `arco-17` e `arco-25` (Cloud Scheduler e GCS non consegnati da fase-3).
+- `ADR-109`: emendamento a §1 sui mittenti email (`po-01`, accettato): mittente di sistema nelle variabili `RESEND_FROM_*`, mittenti verso i clienti nell'array `mittenti-resend`, un record per sito (`vietnamonamour`, `villadoree`), nessun fallback tra le due sorgenti. `piano.yaml`: `po-01` chiuso, note di `fase-7.3` e della voce ADR-109 aggiornate. Nessuna modifica al codice.
 
 ### Fixed
 

@@ -241,7 +241,7 @@ fasi:
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
         stato: "da_fare"
-        note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni'). Prima di costruire il tab Comunicazioni chiudere po-01 (mittenti: env RESEND_FROM_* e array 'mittenti-resend'). Calendario e Comunicazioni restano senza consumatori fino a fase-5."
+        note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni'). po-01 chiuso: mittenti decisi nell'Emendamento a §1 di ADR-109 (env RESEND_FROM_* per le email di sistema; array 'mittenti-resend' per sito verso i clienti, senza fallback; sito vietnamonamour/villadoree, validazione per sito unico). Calendario e Comunicazioni restano senza consumatori fino a fase-5; nessun arco verso il consumatore delle email agli ospiti finché non è definito."
       - id: fase-7.4
         nome: "Permessi granulari campo-per-campo (orari a manager, resto ad admin/super-admin)"
         stato: "da_fare"
@@ -725,7 +725,8 @@ adr_da_scrivere:
       Sbloccato dalla sessione dedicata alla struttura a tab
       (riepilogo-sessione-impostazioni-sistema.md); include amendment
       esplicito ad ADR-107 §1 (rimozione di tre campi orario/chiusura,
-      ora unificati su impostazioni-sistema).
+      ora unificati su impostazioni-sistema). Emendamento a §1 del
+      2026-10-04 (po-01, accettato): ridefinisce i mittenti email.
   - titolo: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     archi: ["arco-26", "arco-27"]
     stato: "accettata"
@@ -767,7 +768,8 @@ punti_aperti:
     titolo: "Mittenti email: env RESEND_FROM_ADDRESS/NAME e array 'mittenti-resend' di ADR-109 (un solo posto per scopo)"
     scadenza: "prima di fase-7.3"
     registrazione: "emendamento ad ADR-109 §1"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "ADR-109, sezione 'Emendamento a §1 (2026-10-04)': opzione B (env = mittente di sistema, array 'mittenti-resend' = mittenti verso i clienti, un record per sito, nessun fallback). Emendamento accettato il 2026-10-04."
   - id: po-02
     titolo: "Un manager può essere solo del menù o solo delle prenotazioni? Se sì, cambia lo schema dei ruoli"
     scadenza: "prima di fase-8.3"
