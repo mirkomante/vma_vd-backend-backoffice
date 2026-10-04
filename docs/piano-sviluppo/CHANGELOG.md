@@ -46,6 +46,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `ADR-112` (proposta): precisata la distinzione tra menù digitale (`menu.vietnamonamour.com`, SSG puro, gestito nell'App, legge il CMS solo a build-time) e i due siti (ISR on-demand, gestiti nell'Admin). Confermati 5 minuti di polling e cache di 60 secondi, da rivalutare dopo l'uso in produzione.
 - `ADR-112` e i due emendamenti di `ADR-108` (Servizi, seed e import; menù bilingue) passano da `proposta` ad `accettata` (2026-10-04, su passaggio esplicito dell'umano). Aggiornati lo stato in `piano.yaml` e i riferimenti di `po-05`, `po-06` e `po-09`.
 - `po-04` chiuso: nuova `fase-6.0` (predisposizione di Cloud Scheduler, bucket GCS e IAM, recupero del debito di Fase 3, senza riaprirla); `arco-17` e `arco-25` ripartono da `fase-6.0`. `ADR-105`: nota di chiarimento (2026-10-04): gli endpoint schedulati si proteggono con un secret condiviso, perché il servizio è pubblico. `piano.yaml`: note di `fase-6.4` (cache a 60 secondi per la scrittura del file; confini di servizio da decidere in 6.4) e `fase-5.3`.
+- `po-07` chiuso: le prove del rebuild (`fase-6.5`) si fanno sul progetto Firebase nuovo che ospiterà il frontend del menù, con un'app Next minimale che mostra messaggi di conferma; nessun progetto di test separato, e il menù attuale resta in produzione sul suo Firebase. `piano.yaml`: note di `fase-6.5` e `fase-6.0` (CORS del bucket per gli indirizzi del Firebase nuovo).
 
 ### Fixed
 
