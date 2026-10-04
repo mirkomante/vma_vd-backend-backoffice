@@ -267,7 +267,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Condizione di sblocco**: 4.5 completata.
 
-**Contenuto**: popolamento reale in Admin da parte del manager; compilazione `from` → `to` dei Redirects (riservata agli admin, `ADR-113`), con gli URL sorgente raccolti da Google Search Console («Pagine») o, in mancanza, da ricerca `site:` (una tantum al lancio). La sola raccolta degli URL `from` è anticipabile senza rischio.
+**Contenuto**: popolamento reale in Admin da parte del manager (compresa l'indicazione sulla colazione del B&B, testo della pagina e non campo di `impostazioni-sistema`); compilazione `from` → `to` dei Redirects (riservata agli admin, `ADR-113`), con gli URL sorgente raccolti da Google Search Console («Pagine») o, in mancanza, da ricerca `site:` (una tantum al lancio). La sola raccolta degli URL `from` è anticipabile senza rischio.
 
 ---
 

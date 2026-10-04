@@ -57,7 +57,6 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
    | ↳ `data` / `etichetta` | `date` / `label` | date solo giorno / text |
    | gruppo B&B (solo vietnamonamour.com) | `bnb` | group |
    | ↳ check-in / check-out | `checkInTime` / `checkOutTime` | text `HH:mm` |
-   | ↳ indicazione colazione | `breakfastNote` | text libero, non localizzato (release 1) |
    | `google-calendar-id` | `googleCalendarId` | text |
    | `mittenti-resend` | `resendSenders` | array |
    | ↳ `sito` / nome / indirizzo | `site` / `name` / `address` | select / text / email |
@@ -85,7 +84,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Dipende da**: 7.1.
 
-**Obiettivo**: tab «Orari e chiusure» con `services`, `weeklyClosedDays`, `annualClosures` e il gruppo `bnb` (ADR-109 §1 e terzo emendamento), più il pulsante che precompila `annualClosures` con le festività italiane (ADR-107 §1, spostato da ADR-109 §3).
+**Obiettivo**: tab «Orari e chiusure» con `services`, `weeklyClosedDays`, `annualClosures` e il gruppo `bnb` (ADR-109 §1 e terzo emendamento), più il pulsante che precompila `annualClosures` con le festività italiane (ADR-107 §1, spostato da ADR-109 §3). L'indicazione sulla colazione del B&B **non** è un campo di questo Global: è testo della pagina del sito, nel CMS.
 
 **Riferimenti**: `ADR-109` §§1–3.
 

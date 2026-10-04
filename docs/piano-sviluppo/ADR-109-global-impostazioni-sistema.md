@@ -165,8 +165,8 @@ Modifica l'ambito della tab Orari e chiusure (§1, §2) e la prima riga della ta
 ### Decisione
 
 1. **Ambito della tab**: gli orari operativi di vietnamonamour.com, cioè ristorante **e B&B**. Il criterio di §2 resta: il dato è condiviso tra più consumatori e non è contenuto di un solo sito.
-2. **Gruppo `bnb`** nella tab, solo per vietnamonamour.com: orario di check-in e di check-out (testo `HH:mm`, come gli orari del ristorante) e un'indicazione sulla colazione, testo libero da mostrare sul sito. Il B&B non ha chiusure proprie. Villa Dorée non ha orari in questo Global. Nomi dei campi in `fase-7-impostazioni-sistema.md` §7.1.
-3. **`breakfastNote` non è localizzato** nella release 1, in cui ogni sito usa una sola lingua. Se vietnamonamour.com diventerà bilingue servirà una migrazione dei dati (classe B).
+2. **Gruppo `bnb`** nella tab, solo per vietnamonamour.com: orario di check-in e di check-out (testo `HH:mm`, come gli orari del ristorante). Il B&B non ha chiusure proprie. Villa Dorée non ha orari in questo Global. Nomi dei campi in `fase-7-impostazioni-sistema.md` §7.1.
+3. **L'indicazione sulla colazione non è un campo di questo Global.** È testo della pagina del sito, quindi contenuto del CMS: lo gestisce il manager nell'Admin e segue la localizzazione dei contenuti delle pagine (`ADR-103`). Il Block o il campo che lo ospita si definisce con il design (Fase 4.5).
 4. **§5, riga Orari e Chiusure**: nell'Admin il manager non ha accesso a nessuna tab di `impostazioni-sistema`. La sua competenza su orari e chiusure si esercita solo nell'App, sezione Orari, con `appRole: manager` (`ADR-113-ruoli-permessi-admin-app.md`). Admin e super-admin restano invariati.
 
 ### Alternative considerate
@@ -177,4 +177,4 @@ Modifica l'ambito della tab Orari e chiusure (§1, §2) e la prima riga della ta
 
 - **Fase 7.2** aggiunge il gruppo `bnb`; **Fase 7.4** applica i permessi di `ADR-113`.
 - **Fase 8.5** costruisce nell'App la sezione che modifica orari, chiusure e dati del B&B.
-- **ADR-111**: gli orari pubblici dei siti (ristorante, check-in, check-out, colazione) hanno come fonte questo Global. Poiché il Global non è pubblico per default, la forma di esposizione si decide nel contratto con i siti.
+- **ADR-111**: gli orari pubblici dei siti (ristorante, check-in, check-out) hanno come fonte questo Global. Poiché il Global non è pubblico per default, la forma di esposizione si decide nel contratto con i siti.

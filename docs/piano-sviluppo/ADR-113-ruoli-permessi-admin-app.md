@@ -65,7 +65,7 @@ CMS dei siti per il manager:
 - **Fase 8.2 e 8.5**: la navigazione ha tre sezioni; la 8.5 costruisce la sezione Orari, che legge e scrive `impostazioni-sistema` con la sessione dell'utente.
 - **Fase 7.4**: `access` per campo su `impostazioni-sistema`: admin e super-admin tutto; `appRole: manager` solo la tab Orari e chiusure. L'Admin non la mostra al manager (verifica in 8.3).
 - **Fase 4.1** dipende da 8.3 (`arco-33`): i permessi del manager usano `adminRole: manager`. `fase-4-cms-siti-esterni.md` §§ 4.1 e 4.2 sono aggiornate (cancellazione delle pagine e Redirects riservati agli admin).
-- **ADR-111**: la fonte degli orari pubblici dei siti (ristorante, check-in, check-out, colazione) è `impostazioni-sistema`; la forma di esposizione, oggi non pubblica per default, si decide nel contratto.
+- **ADR-111**: la fonte degli orari pubblici dei siti (ristorante, check-in, check-out) è `impostazioni-sistema`; la forma di esposizione, oggi non pubblica per default, si decide nel contratto.
 - **`po-02` chiuso**: il manager è unico per menù, orari e prenotazioni.
 - **Prerequisito operativo, non verificato**: chi usa l'Admin come manager ha un account Google su un dominio abilitato per l'Admin.
 - **Non verificato**: il comportamento di `admin.hidden` per ruolo a runtime. Di `ADR-004` di catalogo ho letto solo la matrice riportata da `fase-2-login.md`.

@@ -238,7 +238,7 @@ fasi:
       - id: fase-7.2
         nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
         stato: "da_fare"
-        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario. Estesa dal terzo emendamento ad ADR-109 (2026-10-04): gruppo bnb (check-in, check-out, indicazione colazione) di vietnamonamour.com."
+        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario. Estesa dal terzo emendamento ad ADR-109 (2026-10-04): gruppo bnb (check-in e check-out) di vietnamonamour.com."
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
         stato: "da_fare"
@@ -708,7 +708,7 @@ archi:
     tipo: output
     descrizione: >
       I campi orari e chiusure del ristorante e il gruppo bnb (check-in,
-      check-out, indicazione colazione) nascono in fase-7.2; la sezione
+      check-out) nascono in fase-7.2; la sezione
       Orari dell'App li legge e li scrive.
     adr: null
     fonte: "ADR-109-global-impostazioni-sistema.md (terzo emendamento), ADR-113"
