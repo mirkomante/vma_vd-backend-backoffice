@@ -50,7 +50,7 @@ Per questo i **tab dei Global sono non nominati** (solo `label`): la disposizion
 
 ## 4.0 — Localizzazione (prerequisito, deviazione da Fase 1)
 
-**Stato**: ✅ fatto (2026-10-03; migrate su Cloud SQL prod da applicare prima del push su `main`)
+**Stato**: ✅ fatto (2026-10-03; migrazione applicata su Cloud SQL prod, conferma dell'umano del 2026-10-04)
 
 **Dipende da**: Fase 3 chiusa. Precede 4.1.
 
@@ -84,7 +84,7 @@ i18n: {
 
 Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, versione esatta uguale a quella di Payload (`3.89.0`): oggi è solo transitiva.
 
-**Passaggio da confermare con l'umano prima di scrivere codice**: lingue d'interfaccia. Proposta per proporzionalità: **solo italiano**. Alternativa: italiano e inglese selezionabili (`supportedLanguages: { it, en }`, `fallbackLanguage: 'it'`).
+**Lingue d'interfaccia (deciso)**: **solo italiano** (`supportedLanguages: { it }`, `fallbackLanguage: 'it'`), per proporzionalità; eseguito in 4.0 il 2026-10-03 (commit `62cdde8`). Scartata l'alternativa italiano e inglese selezionabili.
 
 **Regole che ne derivano** (da ADR-103, con la precisazione sopra):
 - `defaultLocale: 'it'` è la locale dei contenuti per le richieste senza `locale` (chiamate interne, Local API, script) e la locale iniziale di modifica nell'Admin; **non** determina la lingua dei siti (la decide il `locale` esplicito di ogni richiesta) **né la lingua dell'interfaccia** (la decide `i18n`).

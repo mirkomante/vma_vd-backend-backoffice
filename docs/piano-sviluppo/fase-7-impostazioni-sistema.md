@@ -1,5 +1,5 @@
 ---
-stato: bozza
+stato: validato
 ---
 
 # Fase 7 — Global `impostazioni-sistema` (configurazione tecnica trasversale)
@@ -92,7 +92,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Orari come testo** (secondo Emendamento a §1 di ADR-109): `startTime`, `endTime`, `checkInTime` e `checkOutTime` sono l'ora locale del ristorante, senza data né fuso. Non si usa un campo `date`: in Payload 3.89.0 è una colonna `timestamp with time zone` e, per il solo orario, il selettore non normalizza data né fuso.
 
-**Pulsante festività** (funzione di supporto già prevista, componente custom dell'Admin, classe A): chiede l'anno e aggiunge a `annualClosures` le 12 festività nazionali di quell'anno (1 gennaio, 6 gennaio, Pasqua, Lunedì dell'Angelo, 25 aprile, 1 maggio, 2 giugno, 15 agosto, 1 novembre, 8 dicembre, 25 dicembre, 26 dicembre), con etichette in italiano. Pasqua si calcola con una funzione senza nuove dipendenze (algoritmo gregoriano). Le date già presenti non vengono duplicate. Le righe restano modificabili e cancellabili a mano.
+**Pulsante festività** (funzione di supporto già prevista, componente custom dell'Admin, classe A): chiede l'anno e aggiunge a `annualClosures` le 12 festività nazionali di quell'anno (1 gennaio, 6 gennaio, Pasqua, Lunedì dell'Angelo, 25 aprile, 1 maggio, 2 giugno, 15 agosto, 1 novembre, 8 dicembre, 25 dicembre, 26 dicembre), con etichette in italiano. Pasqua si calcola con una funzione senza nuove dipendenze (algoritmo gregoriano). Le date già presenti non vengono duplicate. Le righe restano modificabili e cancellabili a mano. La funzione che calcola le festività e la validazione `HH:mm` stanno in `lib/` come funzioni pure, perché le riusa la sezione Orari dell'App (Fase 8.5).
 
 **Checklist di chiusura sottofase**:
 - [ ] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.

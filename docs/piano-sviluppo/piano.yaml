@@ -118,8 +118,8 @@ fasi:
     sottofasi:
       - id: fase-4.0
         nome: "Localizzazione nativa Payload (recupero della deviazione da fase-1)"
-        stato: "da_fare"
-        note: "Prerequisito di fase-4.1. ADR-103 §3 e arco-01 la richiedevano già in fase-1; assente nel codice alla chiusura di fase-3 (verificato 2026-10-03). Nessun contenuto esistente: costo basso."
+        stato: "fatto"
+        note: "Prerequisito di fase-4.1. ADR-103 §3 e arco-01 la richiedevano già in fase-1; assente nel codice alla chiusura di fase-3 (verificato 2026-10-03). Eseguita il 2026-10-03 (commit 62cdde8): localization it/en, i18n solo italiano, migrazione localization_enum."
       - id: fase-4.1
         nome: "Scaffolding Collection pages + Global sito (impostazioni-vma, impostazioni-villadoree)"
         stato: "da_fare"
@@ -227,7 +227,7 @@ fasi:
       campi per tab, riconciliazione con Global 'Generali' menù e
       'Impostazioni prenotazioni', permessi granulari). Resta "da_fare"
       come le altre fasi di dominio: il file fase-7-impostazioni-sistema.md
-      è scritto (bozza, 2026-10-04). 7.1-7.3 non sono bloccate da decisioni
+      è scritto e validato (2026-10-04). 7.1-7.3 non sono bloccate da decisioni
       mancanti; neanche 7.4: il punto sull'accesso del manager all'Admin è
       risolto da ADR-113 (accettata).
     sottofasi:
@@ -251,15 +251,14 @@ fasi:
   - id: fase-8
     nome: "Shell dell'Area App (app) + shadcn/ui (infrastruttura condivisa del backoffice)"
     origine: dominio-applicativo
-    file: "fase-8-shell-app.md (da scrivere)"
+    file: "fase-8-shell-app.md"
     stato: "da_fare"
     note: >
       Aggiunta il 2026-10-03: nessuna sottofase di fase-5 o fase-6 creava la
       shell condivisa dal backoffice. Oggi esiste solo /app/login,
       canAccessSection è uno stub che restituisce false e shadcn/ui non è
       installato. Il numero non indica l'ordine di esecuzione (vedi
-      meta.ordine_esecuzione). Struttura delle sottofasi da confermare quando
-      si scrive il file di fase.
+      meta.ordine_esecuzione). Struttura delle sottofasi confermata nel file di fase (validato, 2026-10-04).
     sottofasi:
       - id: fase-8.1
         nome: "Installazione e verifica di shadcn/ui (compatibilità con le versioni di Tailwind e Next in uso)"
@@ -267,18 +266,23 @@ fasi:
       - id: fase-8.2
         nome: "Layout (app) mobile-first e navigazione per sezione (menu, hours, reservations)"
         stato: "da_fare"
+        note: "Dipende da fase-8.1 e da fase-8.3 (la navigazione usa canAccessSection, arco-38): ordine di esecuzione 8.1, 8.3, 8.2."
       - id: fase-8.3
         nome: "Ruoli e guardia di accesso: valore manager in adminRole (migrazione), canAccessSection a tre sezioni, admin.hidden per il manager"
         stato: "da_fare"
         note: "po-02 chiuso da ADR-113 (accettata): manager unico per menù, orari e prenotazioni; accesso all'App di admin e super-admin derivato da adminRole. Deroga a ADR-001 e ADR-004 di catalogo."
       - id: fase-8.4
-        nome: "Verifica in produzione di login locale App ed email di attivazione"
+        nome: "Email di account per gli utenti dell'Admin: reinvio dell'attivazione (login locale) ed email di account creato (SSO)"
         stato: "da_fare"
-        note: "Debito di fase-3.3 (coperto solo in sviluppo, fase-2.10): criterio di accettazione prima del primo accesso dei manager (po-03)."
+        note: "Requisito del 2026-10-04: pulsante «reinvia email di attivazione» nell'Admin per gli utenti con login locale non ancora attivati; email «account creato» con indicazioni generali per gli utenti SSO, una sola volta (campo accountCreatedEmailSentAt, con migrazione). Mittente: quello di sistema (env RESEND_FROM_*, primo emendamento di ADR-109). Dettagli nel file di fase."
       - id: fase-8.5
         nome: "Sezione Orari dell'App (orari e chiusure del ristorante, orari del B&B)"
         stato: "da_fare"
         note: "Legge e scrive impostazioni-sistema (tab Orari e chiusure) con la sessione del manager (ADR-113). Dipende da fase-8.2, fase-8.3 e dai campi di fase-7.2."
+      - id: fase-8.6
+        nome: "Verifica in produzione di login locale App ed email (attivazione, reset, account creato)"
+        stato: "bloccata"
+        note: "Rimandata dall'umano il 2026-10-04 a dopo lo sviluppo delle sezioni dell'App (fase-6.6, fase-8.5). Vincolo di po-03: da completare prima del primo accesso reale dei manager. Debito di fase-3.3 (login locale App ed email coperti solo in sviluppo, fase-2.10); RESEND_API_KEY risulta già montato su Cloud Run (conferma dell'umano, non verificata sul servizio)."
 
 # ============================================================================
 # ARCHI
@@ -713,6 +717,40 @@ archi:
     adr: null
     fonte: "ADR-109-global-impostazioni-sistema.md (terzo emendamento), ADR-113"
 
+  # --- Verifica in produzione dei flussi email dell'App (po-03, 2026-10-04) --
+
+  - id: arco-36
+    da: fase-8.5
+    a: fase-8.6
+    tipo: output
+    descrizione: >
+      La verifica in produzione di login locale ed email di account si fa
+      dopo lo sviluppo delle sezioni dell'App; la sezione Orari (8.5) è
+      una di quelle.
+    adr: null
+    fonte: "decisione dell'umano, 2026-10-04 (po-03)"
+
+  - id: arco-37
+    da: fase-6.6
+    a: fase-8.6
+    tipo: output
+    descrizione: >
+      Come arco-36: il backoffice del menù (6.6) è una delle sezioni
+      dell'App che devono esistere prima della verifica in produzione.
+    adr: null
+    fonte: "decisione dell'umano, 2026-10-04 (po-03)"
+
+  - id: arco-38
+    da: fase-8.3
+    a: fase-8.2
+    tipo: decisione
+    descrizione: >
+      La navigazione dell'App mostra le sole sezioni consentite da
+      canAccessSection, che fase-8.3 implementa a tre sezioni (menu, hours,
+      reservations). Ordine di esecuzione interno a fase-8: 8.1, 8.3, 8.2.
+    adr: "ADR — Ruoli e permessi di Admin e App"
+    fonte: "ADR-113-ruoli-permessi-admin-app.md"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -835,7 +873,8 @@ punti_aperti:
     titolo: "Provare in produzione login locale App ed email di attivazione"
     scadenza: "criterio di accettazione di fase-8.4"
     registrazione: "nota di verifica in fase-8-shell-app.md"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "Decisione del 2026-10-04: le prove di invio in produzione (login locale App, email di attivazione e di reset) si rimandano a dopo lo sviluppo delle sezioni dell'App, in fase-8.6 (bloccata); vincolo: prima del primo accesso reale dei manager. RESEND_API_KEY è già montato su Cloud Run (conferma dell'umano)."
   - id: po-04
     titolo: "Predisposizione Cloud Scheduler, bucket GCS e IAM (debito dell'arco-17): dove si colloca"
     scadenza: "prima di fase-6.4"
@@ -860,4 +899,10 @@ punti_aperti:
     titolo: "Lingue d'interfaccia dell'Admin: solo italiano o italiano e inglese"
     scadenza: "prima di fase-4.0"
     registrazione: "fase-4-cms-siti-esterni.md § 4.0 (passaggio da confermare)"
+    stato: "chiuso"
+    riferimento: "Solo italiano: i18n con supportedLanguages it in payload.config.ts (commit 62cdde8), registrato in fase-4-cms-siti-esterni.md § 4.0. Chiuso il 2026-10-04."
+  - id: po-09
+    titolo: "Il menù è bilingue? Se sì, i campi testuali di piatti e vini vanno localized fin dallo scaffolding"
+    scadenza: "prima di fase-6.2"
+    registrazione: "ADR-112 o emendamento ad ADR-108"
     stato: "aperto"
