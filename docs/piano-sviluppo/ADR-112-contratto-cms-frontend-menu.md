@@ -2,7 +2,7 @@
 
 > Template minimo. Uno per ogni **arco di decisione** del DAG di progetto (`docs/piano-sviluppo/piano.yaml`) — passo standard, non facoltativo (vedi `00-come-eseguire-il-piano.md`, Passo 0). Vale anche per una scelta che resta dentro gli invarianti standard (`auth/`, `email/`, `stack/`), purché condizioni comunque più fasi a valle.
 
-**Stato**: proposta
+**Stato**: accettata
 **Data**: 2026-10-04
 **Arco di decisione**: Fase 6.2 → Fase 6.4 (`arco-32`): il frontend del menù (6.7) è sviluppato in un altro progetto, quindi l'interfaccia lato CMS va fissata prima dello scaffolding delle collection (6.2) e del file di disponibilità (6.4). Chiude il punto aperto `po-06`. Nessuna deviazione da un default di catalogo. Applica `ADR-105-strategia-rendering-comunicazione-siti-esterni.md` (letture pubbliche senza token, `disponibilita.json` su GCS, rebuild manuale) e rimanda a `ADR-108-modello-dati-menu-digitale.md` per il modello dati.
 

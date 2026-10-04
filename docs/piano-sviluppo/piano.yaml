@@ -815,9 +815,9 @@ adr_da_scrivere:
     stato: "accettata"
     file: "ADR-108-modello-dati-menu-digitale.md"
     nota: >
-      Emendamento del 2026-10-04 (proposta): Servizi, seed esteso e import dei
+      Emendamento del 2026-10-04 (accettato): Servizi, seed esteso e import dei
       dati esistenti (po-05).
-      Secondo emendamento del 2026-10-04 (proposta): menù bilingue (po-09).
+      Secondo emendamento del 2026-10-04 (accettato): menù bilingue (po-09).
 
   - titolo: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     archi: ["arco-21", "arco-22"]
@@ -856,13 +856,13 @@ adr_da_scrivere:
       Nessuna deviazione da un default di catalogo.
   - titolo: "ADR — Contratto CMS <-> frontend menù digitale (letture REST e disponibilita.json)"
     archi: ["arco-32"]
-    stato: "proposta"
+    stato: "accettata"
     file: "ADR-112-contratto-cms-frontend-menu.md"
     nota: >
       Dodicesimo ADR di progetto. Il frontend del menù (6.7) è sviluppato in
       un altro progetto: serve un'interfaccia fissata lato CMS prima di
       6.2 e 6.4. Nessuna deviazione da un default di catalogo.
-      Scritto il 2026-10-04 (proposta); chiude po-06.
+      Scritto e accettato il 2026-10-04; chiude po-06.
 
   - titolo: "ADR — Ruoli e permessi di Admin e App"
     archi: ["arco-33", "arco-34"]
@@ -909,13 +909,13 @@ punti_aperti:
     scadenza: "prima di fase-6.2"
     registrazione: "nota o sottofase in fase-6-menu-digitale.md"
     stato: "chiuso"
-    riferimento: "Emendamento ad ADR-108 del 2026-10-04 (proposta): import dei soli dati elementari con script da snapshot JSON del vecchio backend, in fase-6.8 (menu fissi ricomposti a mano); voci nascoste importate come disabilitato; birre, cocktail e menu speciali non importati. La nota in fase-6-menu-digitale.md si scrive con il file di fase."
+    riferimento: "Emendamento ad ADR-108 del 2026-10-04 (accettato): import dei soli dati elementari con script da snapshot JSON del vecchio backend, in fase-6.8 (menu fissi ricomposti a mano); voci nascoste importate come disabilitato; birre, cocktail e menu speciali non importati. La nota in fase-6-menu-digitale.md si scrive con il file di fase."
   - id: po-06
     titolo: "Contratto con il frontend del menù: schema di disponibilita.json e letture REST"
     scadenza: "prima di fase-6.2 e fase-6.4"
     registrazione: "ADR-112"
     stato: "chiuso"
-    riferimento: "ADR-112-contratto-cms-frontend-menu.md (proposta, 2026-10-04): REST standard senza token, sezioni nel codice del frontend, disponibilita.json con stato delle voci e messaggio globale (orari, chiusure e giorni speciali via rebuild), chiavi in inglese."
+    riferimento: "ADR-112-contratto-cms-frontend-menu.md (accettata, 2026-10-04): REST standard senza token, sezioni nel codice del frontend, disponibilita.json con stato delle voci e messaggio globale (orari, chiusure e giorni speciali via rebuild), chiavi in inglese."
   - id: po-07
     titolo: "Come provare 6.5 senza toccare l'hosting reale (progetto Firebase di test o step di prova)"
     scadenza: "prima di fase-6.5"
@@ -932,4 +932,4 @@ punti_aperti:
     scadenza: "prima di fase-6.2"
     registrazione: "ADR-112 o emendamento ad ADR-108"
     stato: "chiuso"
-    riferimento: "Emendamento (secondo) ad ADR-108 del 2026-10-04 (proposta): menù bilingue it/en con traduzione manuale; campi testuali localized fin dalla fase-6.2; le letture pubbliche accettano locale (ADR-112)."
+    riferimento: "Emendamento (secondo) ad ADR-108 del 2026-10-04 (accettato): menù bilingue it/en con traduzione manuale; campi testuali localized fin dalla fase-6.2; le letture pubbliche accettano locale (ADR-112)."

@@ -161,7 +161,7 @@ Confermato il principio: **avviso non bloccante**, non hard-validation, per casi
 
 ## Emendamento (2026-10-04) — Servizi, seed esteso e import dei dati esistenti (po-05)
 
-**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+**Stato dell'emendamento**: accettata (2026-10-04, su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
 
 Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del §5 e fissa i criteri dell'import dei dati esistenti. Il resto dell'ADR resta invariato.
 
@@ -214,7 +214,7 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
 
 ## Emendamento (secondo, 2026-10-04) — Menù bilingue (po-09)
 
-**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+**Stato dell'emendamento**: accettata (2026-10-04, su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
 
 ### Decisione
 
