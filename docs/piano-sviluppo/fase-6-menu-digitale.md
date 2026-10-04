@@ -393,6 +393,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Parte A: pulsante, endpoint e permessi; build di prova avviata dal CMS.
 - [ ] Parte B: deploy riuscito sul Firebase nuovo; i cinque passaggi della sequenza verificati.
 - [ ] Un utente senza ruolo non può invocare l'endpoint.
+- [ ] Avvio del rebuild registrato in `activity-log` come `systemAction`, con l'id della build in `detail` (`ADR-115`).
 - [ ] `docs/operativo/menu-rebuild-cloud-build.md` scritto.
 - [ ] Nome del repository del progetto menù e ID del progetto Firebase riportati in `ADR-105` (nota) e in `piano.yaml`.
 - [ ] CHANGELOG.

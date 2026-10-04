@@ -171,7 +171,9 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Checklist di chiusura sottofase**:
 - [ ] Plugin installati alla versione allineata a Payload, configurati secondo i due punti aperti.
-- [ ] Campi `title` e `description` del gruppo `meta` SEO `localized` (override esplicito), modificabili dal manager come parte della pagina; collection `redirects` con lettura pubblica (serve ai siti, il plugin la imposta da solo) e creazione, modifica e cancellazione riservate agli admin tramite `overrides.access` (`ADR-113`): il default del plugin le lascia a qualunque utente autenticato. Una collection per sito (due istanze del plugin con `overrides.slug`) o una sola resta da decidere in questa sottofase; il plugin genera una collection per istanza e il tipo 301/302 solo con `redirectTypes`.
+- [ ] Campi `title` e `description` del gruppo `meta` SEO `localized` (override esplicito dei `fields` del plugin), modificabili dal manager come parte della pagina.
+- [ ] Collection `redirects`: lettura pubblica (serve ai siti; il plugin la imposta da solo) e creazione, modifica e cancellazione riservate agli admin tramite `overrides.access` (`ADR-113`); il default del plugin le lascia a qualunque utente autenticato. Prova per ruolo (audit F5).
+- [ ] Decisione annotata: una collection per sito (due istanze del plugin con `overrides.slug`) oppure una sola. Il plugin genera una collection per istanza e il tipo 301/302 solo con `redirectTypes`; con due istanze, verificare a runtime che convivano.
 - [ ] Collection `redirects` presente e vuota; nessun redirect inserito.
 - [ ] Migrazione applicata su Cloud SQL prod prima del push; CHANGELOG aggiornato.
 
@@ -200,6 +202,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Checklist di chiusura sottofase**:
 - [ ] ADR-111 scritto (parte preview), stato `proposta` finché i siti non lo confermano.
+- [ ] ADR-111: meccanismo del token per la lettura delle bozze deciso, tenendo conto del vincolo emerso dall'audit (`users` non ha `useAPIKey`; opzione: collection dedicata `api-clients`; audit F4).
 - [ ] Test automatico di firma e verifica del token (valido, scaduto, manomesso, sito/locale sbagliato).
 - [ ] Il pulsante di anteprima dell'Admin genera un link coerente col contratto, verificato a mano su una bozza.
 - [ ] Segreti in Secret Manager (accessor per singolo secret sul runtime SA), non in file né in Payload.
@@ -240,6 +243,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 - [ ] ADR-111 completo (preview + revalidation).
 - [ ] Hook verificato con ricevente finto: chiamata su pubblicazione, nessuna su bozza, comportamento corretto con URL assente e con ricevente irraggiungibile.
 - [ ] Salvataggio mai bloccato da un errore di revalidation (provato).
+- [ ] Esito della revalidation registrato in `activity-log` come `systemAction`, con l'id dell'evento in `detail` (`ADR-115`; la migrazione è già stata fatta in 6.4).
 - [ ] Segreti e URL come da tabella variabili; Cloud Run configurato; CHANGELOG aggiornato.
 
 ### Parte B — ISR e verifica end-to-end (rimandata)

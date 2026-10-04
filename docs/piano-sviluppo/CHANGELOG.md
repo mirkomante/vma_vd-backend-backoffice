@@ -59,6 +59,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Controllo del repository dopo il push `6ac96bf` (2026-10-04): aggiunti i file a cui i documenti già rimandavano (`ADR-115`, `segnalazione-catalogo-escalation-super-admin.md`, nota di chiarimento di `ADR-105` sul secret per scopo); `arco-43` (`fase-6.4` → `fase-4.4`) e `arco-44` (`fase-6.4` → `fase-5.3`) per la dipendenza da `ADR-115`; `audit-repo-2026-10-04.md` da archiviare in `docs/audit/`.
 - `piano.yaml`: le voci dell'audit del 2026-10-04 destinate alla Fase 5 (F6, F8, F13, F14, F20) sono riportate nelle note di `fase-5.2`, `5.3`, `5.4` e `5.6`, da trasferire nel file di fase quando sarà scritto. `docs/audit/audit-repo-2026-10-04.md` archiviato.
 - Registrata la sottofase `fase-7.0` (manutenzione dopo l'audit del 2026-10-04: F2, F9, F10, F26) in `fase-7-impostazioni-sistema.md`, `piano.yaml` (`arco-45`, `arco-46`, ordine di esecuzione) e `00-piano-generale.md`: da eseguire con Cursor prima della 7.1.
+- Checklist delle sottofasi 4.2, 4.3, 4.4, 6.5, 7.2, 7.4 e 8.3 allineate alle prove richieste dall'audit del 2026-10-04 (F1, F2, F3, F4, F5, F7, F18), perché l'esecuzione le verifichi e non restino solo nel testo; `tracciamento-processo-adr-dag.md`: sottofasi 7.0–7.4.
 
 ### Fixed
 

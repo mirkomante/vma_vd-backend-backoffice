@@ -128,7 +128,7 @@ Elenco invariato nella sostanza rispetto alla versione precedente di questo docu
 - [ ] File di fase — Sistema prenotazioni → `fase-5-sistema-prenotazioni.md` (sottofasi 5.1–5.6)
 - [ ] Fonte mancante: `riepilogo-sessione-bucket-c.md` è citato da `piano.yaml`, `ADR-107` e `ADR-109` ma non è né nel repo né nel Project: i rimandi `bucket-c §N` non sono verificabili (da caricare nel Project, se esiste).
 - [x] File di fase — Menù digitale → `fase-6-menu-digitale.md` (sottofasi 6.1–6.7)
-- [x] File di fase — Global `impostazioni-sistema` → `fase-7-impostazioni-sistema.md` — sbloccato da `ADR-109-global-impostazioni-sistema.md` (sottofasi 7.1–7.4)
+- [x] File di fase — Global `impostazioni-sistema` → `fase-7-impostazioni-sistema.md` — sbloccato da `ADR-109-global-impostazioni-sistema.md` (sottofasi 7.0–7.4)
 
 **Promemoria da incorporare quando si scriveranno questi file** (emersi dall'analisi dell'amendment ADR-107→ADR-109, non ancora presenti in nessun ADR):
 

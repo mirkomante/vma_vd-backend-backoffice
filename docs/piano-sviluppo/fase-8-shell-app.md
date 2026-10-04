@@ -83,6 +83,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Checklist di chiusura sottofase**:
 - [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
 - [ ] Prova per ruolo: super-admin, admin, manager (`adminRole`), manager (solo `appRole`), manager con entrambi, utente senza ruoli.
+- [ ] **Escalation a super-admin** (audit F1, `po-10`): un `admin` che imposta `adminRole: super-admin` su sé stesso o su un altro admin è rifiutato, via REST (anche `PATCH /api/users?where=…`) e via Local API con `overrideAccess: false`. Se la correzione è già arrivata dal template, verificarla; altrimenti si applica qui, con un controllo in `beforeValidate`.
+- [ ] Utente con `active: false` e cookie ancora valido: `canAccessSection` falsa per le tre sezioni e 403 su ogni risorsa (helper `isActiveUser` della 7.0; audit F2).
 - [ ] `canAccessSection` verificata per le tre sezioni; nessuna route la elude.
 - [ ] Rifiuto di login locale per `adminRole: manager` verificato.
 - [ ] Matrice di `fase-2-login.md` aggiornata; CHANGELOG.

@@ -151,6 +151,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Checklist di chiusura sottofase**:
 - [ ] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
 - [ ] Pulsante festività funzionante, risultato modificabile a mano.
+- [ ] `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, con un helper unico in `lib/` (pulsante festività e, in seguito, App, Eccezioni giorno e import lo riusano): il controllo duplicati e il confronto con le chiusure annuali restano coerenti (audit F18).
 - [ ] Migrazione applicata su Cloud SQL prod prima del push.
 - [ ] Riportato nel file di fase 5 (da scrivere) che «Impostazioni prenotazioni» nasce senza questi campi; nel file di fase 6 (scritto) è già riportato per «Generali» (6.1).
 
@@ -207,6 +208,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Checklist di chiusura sottofase**:
 - [ ] Prova per ruolo su ogni campo.
+- [ ] Ogni campo delle tab Calendario, Comunicazioni e Integrazioni dichiara `access.read` riservato ad admin e super-admin; `GET /api/globals/impostazioni-sistema?locale=it`, anonimo, restituisce **solo** le chiavi della tab Orari e chiusure. Test di non regressione: ogni campo nuovo si aggiunge (audit F3).
+- [ ] Un utente con `active: false` e cookie ancora valido riceve 403 sul Global (helper `isActiveUser` della 7.0; audit F2).
 - [ ] Nessuna modifica di schema (solo `access`), quindi nessuna migrazione.
 - [ ] Voce di CHANGELOG.
 
