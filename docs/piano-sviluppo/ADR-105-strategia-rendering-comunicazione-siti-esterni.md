@@ -53,3 +53,11 @@ Restano punti aperti, non bloccanti per questo ADR: nome/percorso esatto dell'en
 Non modifica la decisione. Precisa un fatto di architettura che il testo sopra lasciava implicito: vietnamonamour.com e villadoree.com sono **due applicazioni Next.js distinte, sviluppate in un altro progetto**, ciascuna deployata su **un proprio progetto Firebase Hosting distinto**. Nessuna risorsa Firebase appartiene a questo repository né alle fasi di questo progetto: qui vive solo Payload su Cloud Run.
 
 Il meccanismo Cloud Build con builder `firebase-tools` descritto sopra si applica al **menù digitale** (Fase 6.5), non ai due siti CMS, che usano l'ISR on-demand. I punti aperti sul nome/percorso dell'endpoint di revalidation e del secret condiviso sono chiusi da `ADR-111-contratto-cms-siti-esterni.md` (da scrivere in Fase 4.3 Parte A).
+
+## Nota di chiarimento (2026-10-04)
+
+Non modifica la decisione. Precisa come si proteggono gli endpoint chiamati da Cloud Scheduler (reset di «terminato» e riscrittura di `disponibilita.json` in 6.4, anonimizzazione GDPR in 5.3):
+
+- Il servizio Cloud Run è **pubblico** (Admin, App e letture pubbliche devono essere raggiungibili senza account Google), quindi il ruolo `run.invoker` concesso al service account dello Scheduler **non limita** chi può chiamare l'endpoint.
+- Ogni endpoint schedulato **verifica un secret condiviso**, inviato dallo Scheduler in un'intestazione e conservato in Secret Manager: lo stesso pattern già previsto per la revalidation dei due siti. Il nome del secret e della variabile sono fissati nel file di fase (6.0).
+- Il service account dedicato con `run.invoker` resta comunque predisposto in 6.0, come identità dello Scheduler.

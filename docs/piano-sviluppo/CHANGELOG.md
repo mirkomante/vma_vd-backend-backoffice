@@ -45,6 +45,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `fase-7` §7.4: la tab Orari e chiusure è leggibile anche da richieste anonime (le altre tab no), come richiede `ADR-112`. `piano.yaml`: `po-06` chiuso, voce ADR-112 `proposta`. `00-piano-generale.md` aggiornato.
 - `ADR-112` (proposta): precisata la distinzione tra menù digitale (`menu.vietnamonamour.com`, SSG puro, gestito nell'App, legge il CMS solo a build-time) e i due siti (ISR on-demand, gestiti nell'Admin). Confermati 5 minuti di polling e cache di 60 secondi, da rivalutare dopo l'uso in produzione.
 - `ADR-112` e i due emendamenti di `ADR-108` (Servizi, seed e import; menù bilingue) passano da `proposta` ad `accettata` (2026-10-04, su passaggio esplicito dell'umano). Aggiornati lo stato in `piano.yaml` e i riferimenti di `po-05`, `po-06` e `po-09`.
+- `po-04` chiuso: nuova `fase-6.0` (predisposizione di Cloud Scheduler, bucket GCS e IAM, recupero del debito di Fase 3, senza riaprirla); `arco-17` e `arco-25` ripartono da `fase-6.0`. `ADR-105`: nota di chiarimento (2026-10-04): gli endpoint schedulati si proteggono con un secret condiviso, perché il servizio è pubblico. `piano.yaml`: note di `fase-6.4` (cache a 60 secondi per la scrittura del file; confini di servizio da decidere in 6.4) e `fase-5.3`.
 
 ### Fixed
 

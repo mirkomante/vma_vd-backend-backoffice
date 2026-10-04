@@ -162,7 +162,7 @@ fasi:
       - id: fase-5.3
         nome: "Collection 'Prenotazioni' (ciclo di vita a 5 stati, hook di controllo, anonimizzazione GDPR)"
         stato: "da_fare"
-        note: "riepilogo-sessione-sistema-prenotazioni.md §4/§5, riepilogo-sessione-gdpr-prenotazioni.md"
+        note: "riepilogo-sessione-sistema-prenotazioni.md §4/§5, riepilogo-sessione-gdpr-prenotazioni.md. Il job giornaliero usa l'ambiente predisposto in fase-6.0 (arco-25 rivisto)"
       - id: fase-5.4
         nome: "Integrazione push Google Calendar"
         stato: "da_fare"
@@ -186,6 +186,10 @@ fasi:
       per la parte CMS, API e backoffice. Il frontend pubblico (6.7) è un'app
       Firebase in un altro progetto. Si esegue dopo fase-7 e fase-8.
     sottofasi:
+      - id: fase-6.0
+        nome: "Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM (recupero del debito di fase-3)"
+        stato: "da_fare"
+        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e il secret condiviso degli endpoint schedulati. I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5."
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia distillato) + permessi manager/admin"
         stato: "da_fare"
@@ -201,7 +205,7 @@ fasi:
       - id: fase-6.4
         nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
         stato: "da_fare"
-        note: "Prerequisiti: Cloud Scheduler, bucket GCS e IAM da predisporre (arco-17, debito di fase-3); schema di disponibilita.json dal contratto ADR-112; confini di servizio letti da impostazioni-sistema (fase-7.2). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4"
+        note: "Prerequisiti: Cloud Scheduler, bucket GCS e IAM predisposti in fase-6.0 (arco-17); la scrittura di disponibilita.json imposta Cache-Control a 60 secondi (la cache predefinita di un oggetto pubblico è di un'ora); schema di disponibilita.json dal contratto ADR-112; confini di servizio letti da impostazioni-sistema (fase-7.2). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4. Da decidere in 6.4: i job hanno orario fisso, ma i confini di servizio li può cambiare il manager; soluzione candidata: un job frequente il cui endpoint decide da solo se un confine è passato."
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
         stato: "da_fare"
@@ -480,10 +484,10 @@ archi:
     fonte: "riepilogo-sessione-gdpr-prenotazioni.md §2"
 
   - id: arco-25
-    da: fase-3
+    da: fase-6.0
     a: fase-5.3
     tipo: output
-    descrizione: "Ambiente GCP pronto (Cloud Scheduler) necessario per il job giornaliero di anonimizzazione GDPR. Nota 2026-10-03: non consegnato da fase-3 (assente in fase-3-deploy.md e nel CHANGELOG); da predisporre prima di fase-5.3."
+    descrizione: "Ambiente GCP pronto (Cloud Scheduler) necessario per il job giornaliero di anonimizzazione GDPR. Nota 2026-10-03: non consegnato da fase-3 (assente in fase-3-deploy.md e nel CHANGELOG); da predisporre prima di fase-5.3. Rivisto il 2026-10-04 (po-04): lo predispone la nuova fase-6.0, prima di fase-5.3."
     adr: null
 
   - id: arco-26
@@ -595,10 +599,10 @@ archi:
     adr: null
 
   - id: arco-17
-    da: fase-3
+    da: fase-6.0
     a: fase-6.4
     tipo: output
-    descrizione: "Ambiente GCP pronto (Cloud Scheduler, GCS) necessario per il reset automatico di 'terminato' e per la pubblicazione di disponibilita.json. Nota 2026-10-03: non consegnato da fase-3 (assente in fase-3-deploy.md e nel CHANGELOG); da predisporre prima di fase-6.4."
+    descrizione: "Ambiente GCP pronto (Cloud Scheduler, GCS) necessario per il reset automatico di 'terminato' e per la pubblicazione di disponibilita.json. Nota 2026-10-03: non consegnato da fase-3 (assente in fase-3-deploy.md e nel CHANGELOG); da predisporre prima di fase-6.4. Rivisto il 2026-10-04 (po-04): lo predispone la nuova fase-6.0."
     adr: null
 
   - id: arco-18
@@ -903,7 +907,8 @@ punti_aperti:
     titolo: "Predisposizione Cloud Scheduler, bucket GCS e IAM (debito dell'arco-17): dove si colloca"
     scadenza: "prima di fase-6.4"
     registrazione: "checklist in fase-6-menu-digitale.md"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "Decisione del 2026-10-04: sottofase fase-6.0 all'inizio della Fase 6 (opzione A; Fase 3 non riaperta); arco-17 e arco-25 ripartono da fase-6.0. Gli endpoint chiamati da Cloud Scheduler si proteggono con un secret condiviso in Secret Manager (nota di chiarimento ad ADR-105). La checklist si scrive in fase-6-menu-digitale.md."
   - id: po-05
     titolo: "Piatti e vini già esistenti: import o reinserimento manuale"
     scadenza: "prima di fase-6.2"
