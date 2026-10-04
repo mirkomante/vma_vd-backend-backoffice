@@ -178,13 +178,13 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
 
    | Tassonomia | Valori |
    |---|---|
-   | Paese (13) | Filippine, Francia, Giappone, Guatemala, Guyana, Italia, Libano, Martinica, Scozia, Thailandia, Trinidad e Tobago, Venezuela, Vietnam |
-   | Regione (16) | le 15 del §5 più Sicilia |
+   | Paese (13, di cui 12 abilitati) | Filippine, Francia, Giappone, Guatemala, Guyana, Italia, Libano, Martinica, Scozia, Thailandia, Trinidad e Tobago, Venezuela, Vietnam |
+   | Regione (16, di cui 15 abilitate) | le 15 del §5 più Sicilia |
    | Denominazione (3) | Carso, Collio, Franciacorta (Valdobbiadene esiste nel vecchio sistema ma non è usata: non si crea) |
    | Classificazione (6) | invariata: D.O.C.G., D.O.C., I.G.T., D.O.P. (Italia); A.O.C., A.O.P. (Francia) |
    | Allergeni (14) | i 14 normativi, già coincidenti per nome con quelli del vecchio sistema |
 
-   `abilitato` è falso per Libano e Sicilia, usati solo da voci nascoste, e vero per gli altri.
+   `abilitato` è **vero** per i valori usati da voci in carta oggi (12 Paesi, 15 regioni), secondo il criterio già deciso per il seed («popolamento basato solo su dati reali oggi in carta», `riepilogo-sessione-criterio-manager-admin-menu.md`), ed è **falso** per Libano e Sicilia, usati solo da voci nascoste. Libano e Sicilia esistono perché le voci nascoste importate come `disabilitato` mantengano la loro geografia, ma il manager non li vede.
 3. **Import dei dati esistenti.** Il nuovo menù è un'evoluzione del vecchio: l'import ne migliora i dati e non li copia alla lettera.
    - **Sorgente**: snapshot JSON dell'API v1, esportato il giorno dell'import con la procedura di `docs/operativo/export-menu-vtn-backend.md`. Non si legge l'API dal vivo.
    - **Voci nascoste** (`inLista` falso): importate come `disabilitato`.
