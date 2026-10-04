@@ -21,8 +21,6 @@
 5. **Scrittura**: una funzione `logSystemAction(...)` in `lib/activityLog`, lo stesso punto unico di scrittura della regola, con Local API e `overrideAccess: true` dal server. Gli `access` della collection non cambiano.
 6. **Migrazione additiva e non distruttiva**: la colonna `user_id` perde il vincolo NOT NULL, si aggiunge il valore dell'enum e la colonna `detail`. Si esegue come **primo passo di 6.4** (il primo consumatore nell'ordine di esecuzione); 6.5, 4.4 Parte A e 5.3 la riusano senza altre migrazioni. Applicata su Cloud SQL prod **prima** del push.
 7. **Cloud Logging resta** per i log tecnici (errori, tracce): non viene sostituito.
-8. **`users.beforeDelete` e `purgeActivityLogForUserBeforeDelete` restano invariati**: la cancellazione di un utente elimina le sue voci; le voci di sistema (`user` vuoto) non sono toccate.
-9. **`detail` comincia con una chiave di azione da un elenco chiuso** (`availability-reset`, `availability-write`, `rebuild-started`, `revalidation`, `anonymization`), seguita da esito e dettagli: il filtro per azione resta possibile.
 
 ## Alternative considerate
 
@@ -36,3 +34,8 @@
 - `payload-types.ts` va rigenerato; nell'Admin queste voci mostrano `user` vuoto.
 - Non verificato: la migrazione che Payload genererà per rendere `user` facoltativo (attesa: la sola rimozione del NOT NULL, non provata).
 - Se il catalogo volesse la stessa possibilità, la segnalazione è un passo a parte: non è stata inviata.
+
+## Precisazioni (2026-10-04) — accettate su passaggio esplicito dell'umano **[da registrare]**
+
+1. `users.beforeDelete` e `purgeActivityLogForUserBeforeDelete` restano invariati: la cancellazione di un utente elimina le sue voci; le voci di sistema (`user` vuoto) non sono toccate.
+2. `detail` comincia con una chiave di azione da un elenco chiuso (`availability-reset`, `availability-write-failed`, `rebuild-started`, `revalidation`, `anonymization`), seguita da esito e dettagli. `availability-write-failed` registra solo gli errori di scrittura del file: le riscritture riuscite non si registrano (ce n'è una per ogni cambio di stato del manager).

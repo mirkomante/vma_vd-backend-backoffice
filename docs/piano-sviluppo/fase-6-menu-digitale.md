@@ -325,7 +325,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Riscrittura su ogni cambio di stato; reset idempotente e protetto.
 - [ ] Job creato in Cloud Scheduler con il secret `SCHEDULER_SECRET_AVAILABILITY` nell'intestazione; esecuzione di prova riuscita.
 - [ ] Variabili d'ambiente documentate (sotto) e montate su Cloud Run; secret in Secret Manager.
-- [ ] Migrazione di `activity-log` (`ADR-115`) applicata su Cloud SQL prod prima del push; voci di sistema nel registro attività; CHANGELOG.
+- [ ] Migrazione di `activity-log` (`ADR-115`) applicata su Cloud SQL prod prima del push; voci di sistema per il reset e per gli errori di scrittura del file (non una per ogni riscrittura riuscita); CHANGELOG.
 
 ---
 

@@ -17,6 +17,8 @@
 #     lo richiede (adr: null)
 #   - gli archi modellano output e decisioni tra fasi; gli ordini interni a
 #     una fase sono nei file di fase (per questo alcuni nodi non hanno archi)
+#   - un punto aperto può portare "responsabile" (chi lo chiude) quando non è
+#     il pianificatore o Cursor
 #   - stato di ciascun nodo: "da_fare" | "in_corso" | "fatto" | "bloccata" | "fuori_perimetro"
 #     (bloccata: dipendenza esterna non ancora risolta; fuori_perimetro:
 #     sviluppato in un altro progetto, non eseguito da questo piano)
@@ -849,6 +851,14 @@ archi:
     adr: null
     fonte: "fase-6-menu-digitale.md §6.1 (Dipende da)"
 
+  - id: arco-48
+    da: fase-7.0
+    a: fase-4.1
+    tipo: output
+    descrizione: "isActiveUser (7.0) è la base di isManagerOrStaff, che governa l'accesso in lettura alle pagine in 4.1."
+    adr: null
+    fonte: "fase-4-cms-siti-esterni.md §4.1 (Bozze via REST)"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -970,7 +980,7 @@ adr_da_scrivere:
       Scritto e accettato il 2026-10-04; chiude po-06.
 
   - titolo: "ADR — Ruoli e permessi di Admin e App"
-    archi: ["arco-33", "arco-34"]
+    archi: ["arco-33", "arco-34", "arco-38"]
     stato: "accettata"
     file: "ADR-113-ruoli-permessi-admin-app.md"
     nota: >
@@ -1044,5 +1054,5 @@ punti_aperti:
     titolo: "F1 dell'audit: un admin può promuoversi a super-admin (difetto del pattern di catalogo per update su users)"
     scadenza: "prima di fase-8.3"
     responsabile: "umano (invio della segnalazione al template e verifica degli admin attuali)"
-    registrazione: "segnalazione-catalogo-escalation-super-admin.md (scritta, da inviare al template); correzione nel progetto appena arriva dal catalogo, al più tardi in fase-8.3. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione."
+    registrazione: "segnalazione-catalogo-escalation-super-admin.md (scritta, da inviare al template); correzione nel progetto appena arriva dal catalogo, al più tardi in fase-8.3. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Prima della 7.0: l'umano controlla l'elenco degli utenti con adminRole admin e conferma che sono tutti fidati. Invio della segnalazione al template entro la fine della Fase 7."
     stato: "aperto"

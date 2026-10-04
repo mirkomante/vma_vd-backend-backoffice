@@ -27,6 +27,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Audit di coerenza del 2026-10-04 (chat di controllo, HEAD `bb95fda`): `audit-repo-2026-10-04.md` (archiviato in `docs/audit/`), 27 rilievi, nessuno bloccante per la 7.1.
 - `ADR-115` (accettata, 2026-10-04): azioni di sistema nel registro attività (`user` facoltativo, `eventType` `systemAction`, campo `detail`), dal rilievo F7 dell'audit. `segnalazione-catalogo-escalation-super-admin.md`: segnalazione al catalogo del rilievo F1 (un admin può promuoversi a super-admin).
 - `docs/audit/audit-verifica-2026-10-04.md`: verifica delle modifiche dopo l'audit (HEAD `1da6802`), con 15 nuovi rilievi (N1–N15).
+- `docs/audit/audit-verifica-2-2026-10-04.md`: terza verifica (HEAD `2471059`), con 14 nuovi rilievi (M1–M14); giudizio: Cursor può partire dalla 7.0 con riserve.
 
 ### Changed
 
@@ -62,6 +63,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Registrata la sottofase `fase-7.0` (manutenzione dopo l'audit del 2026-10-04: F2, F9, F10, F26) in `fase-7-impostazioni-sistema.md`, `piano.yaml` (`arco-45`, `arco-46`, ordine di esecuzione) e `00-piano-generale.md`: da eseguire con Cursor prima della 7.1.
 - Checklist delle sottofasi 4.2, 4.3, 4.4, 6.5, 7.2, 7.4 e 8.3 allineate alle prove richieste dall'audit del 2026-10-04 (F1, F2, F3, F4, F5, F7, F18), perché l'esecuzione le verifichi e non restino solo nel testo; `tracciamento-processo-adr-dag.md`: sottofasi 7.0–7.4.
 - Correzioni dalla verifica del 2026-10-04: `fase-7` §7.0 (prova dell'utente disattivato eseguibile con `seed:super-admin`, controllo del lockfile con diff normalizzato, prova del 404 di GraphQL con `POST`, come leggere `max_connections` senza scrivere un numero); `fase-4` (Redirects con due istanze del plugin, `isManagerOrStaff` definita, prova di `draft=true` estesa a `:id` e ai Global); `fase-6` (checklist 6.3 e 6.4); `fase-8` (voci 9 e 10); `ADR-115` (hook di cancellazione utente invariato, `detail` con chiave di azione); `piano.yaml` (`arco-43` e `arco-44` come `decisione`, `arco-47`, `po-10` con responsabile e misura provvisoria, convenzione sugli archi); `00-piano-generale.md` (ordine con la 7.0, punto aperto `po-10`); `tracciamento` (sottofasi 6.0–6.8); segnalazione F1 (self-update di `ADR-004`, invio da fare).
+- Correzioni dalla terza verifica: `fase-7` §7.0 (prerequisiti e ordine della prova dell'utente disattivato, riavvio del dev server, controllo positivo, azione umana sugli admin attuali), 7.1 (dipende da 7.0), 7.2 (importmap, checklist eseguibile), 7.4 (campi di sistema nella risposta, `access.update` del manager); `fase-8` (accesso derivato di admin e super-admin all'App in 8.3, isolamento della CLI di shadcn in 8.1, email 8.4, F1 non condizionato); `ADR-115` (precisazioni datate, `availability-write-failed`); `fase-6` (checklist 6.4); `piano.yaml` (`arco-48`, `arco-38` nell'ADR-113, convenzione su `responsabile`, `po-10`).
 
 ### Fixed
 
