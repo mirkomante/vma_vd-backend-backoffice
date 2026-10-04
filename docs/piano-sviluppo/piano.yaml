@@ -179,7 +179,7 @@ fasi:
   - id: fase-6
     nome: "Menù digitale (menu.vietnamonamour.com)"
     origine: dominio-applicativo
-    file: "fase-6-menu-digitale.md (da scrivere)"
+    file: "fase-6-menu-digitale.md"
     stato: "da_fare"
     note: >
       Priorità del progetto (2026-10-03): completa e funzionante per prima,
@@ -191,13 +191,13 @@ fasi:
         stato: "da_fare"
         note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e il secret condiviso degli endpoint schedulati. I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima di 6.5 Parte B. Il dominio definitivo si aggiunge al passaggio in produzione."
       - id: fase-6.1
-        nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia distillato) + permessi manager/admin"
+        nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia vino/bevanda/distillato) + Global Generali + permessi manager/admin"
         stato: "da_fare"
-        note: "Scaffolda anche il Global 'Generali' senza i campi orario/chiusura (ADR-109 §2/§4): gli orari si leggono da impostazioni-sistema (fase-7.2). riepilogo-sessione-criterio-manager-admin-menu.md §2/§3"
+        note: "Scaffolda anche il Global 'Generali' con il solo globalMessage, senza campi orario/chiusura (ADR-109 §2/§4): gli orari si leggono da impostazioni-sistema (fase-7.2). riepilogo-sessione-criterio-manager-admin-menu.md §2/§3. Terzo emendamento ad ADR-108 (2026-10-04): tipologie di vino (wine-types) e di bevanda (drink-types), nate vuote e popolate dall'import. Dettaglio in fase-6-menu-digitale.md."
       - id: fase-6.2
-        nome: "Collection Piatti / Vini / Birra + menu_fisso_piatto (campo porzione) + Servizi (emendamento ad ADR-108)"
+        nome: "Collection Piatti / Vini / Distillati / Bevande (birra compresa) + menu fissi (campo porzione) + Servizi (emendamenti ad ADR-108)"
         stato: "da_fare"
-        note: "Prerequisiti: contratto ADR-112. po-09 chiuso: campi testuali localized (secondo emendamento ad ADR-108). po-05 chiuso: l'import dei dati esistenti è in fase-6.8. Scaffolda anche la Collection Servizi (emendamento ad ADR-108, 2026-10-04). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
+        note: "Prerequisiti: contratto ADR-112. po-09 chiuso: campi testuali localized (secondo emendamento ad ADR-108). po-05 chiuso: l'import dei dati esistenti è in fase-6.8. Scaffolda anche la Collection Servizi (emendamento ad ADR-108, 2026-10-04). Terzo emendamento (2026-10-04): la birra è una bevanda con tipologia Birre, nessuna collection dedicata. Nomi e campi proposti in fase-6-menu-digitale.md, congelati alla chiusura di 6.2. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
       - id: fase-6.3
         nome: "Collection 'Giorni Speciali'"
         stato: "da_fare"
@@ -772,6 +772,16 @@ archi:
       mano).
     adr: null
     fonte: "emendamento ad ADR-108 (2026-10-04), po-05"
+
+  - id: arco-40
+    da: fase-6.6
+    a: fase-6.5
+    tipo: output
+    descrizione: >
+      Il pulsante «Ricompila il menù pubblico» sta nella sezione Menù
+      dell'App (fase-6.6): la fase-6.5 si completa dopo la 6.6.
+    adr: null
+    fonte: "fase-6-menu-digitale.md (2026-10-04)"
 
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)

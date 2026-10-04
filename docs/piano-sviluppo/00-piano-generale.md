@@ -30,7 +30,7 @@
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | ✅ fatto (3.1–3.5) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔶 in corso (4.0 ✅; 4.1–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
-| Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` (da scrivere) |
+| Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` |
 | Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | 🔲 da fare | `fase-7-impostazioni-sistema.md` |
 | Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔲 da fare | `fase-8-shell-app.md` |
 
@@ -98,7 +98,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 ## Fase 5 in poi — dominio specifico del progetto
 
-> Nota di progetto (2026-10-03): la Fase 4 è definita (sezione sopra). Restano da scrivere i file di Fase 5 (prenotazioni) e 6 (menù digitale), già presenti come nodi in `piano.yaml`; i file di Fase 7 e 8 sono scritti e validati (2026-10-04).
+> Nota di progetto (2026-10-03): la Fase 4 è definita (sezione sopra). Resta da scrivere il file di Fase 5 (prenotazioni), già presente come nodo in `piano.yaml`; i file di Fase 6, 7 e 8 sono scritti e validati (2026-10-04).
 
 Le fasi da 4 in avanti non fanno parte di questo template: sono la logica applicativa specifica di *questo* progetto (es. import dati da una fonte esterna, funzionalità di dominio, aree specifiche dell'Area App). Vanno scritte da zero, seguendo la stessa forma dei file di fase (intestazione con riferimenti, sottofasi con Stato/Obiettivo/Checklist, note di chiusura) usata in Fase 1-3, ma con contenuto proprio di questo progetto — non c'è contenuto da riusare qui.
 
@@ -106,7 +106,7 @@ Quando si definisce la Fase 4, aggiungere qui la sua riga nella tabella "Stato g
 
 ## Prossimi passi
 
-- **Prossimo passo**: scrivere `fase-6-menu-digitale.md` (punti aperti tutti chiusi il 2026-10-04: `po-04` fase-6.0 per Scheduler, bucket e IAM; `po-05` import da snapshot in fase-6.8; `po-06` contratto con il frontend del menù in ADR-112; `po-07` prove su un Firebase nuovo con un'app Next minimale; `po-09` menù bilingue) e scrivere `fase-6-menu-digitale.md`; poi passare a Composer, con la Fase 7.1 come prima sottofase (file di Fase 7 e 8 validati il 2026-10-04). Il file di Fase 5 si scrive più avanti, secondo l'ordine di esecuzione. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App ed email di attivazione non rieseguiti in produzione, ora tracciata in `fase-8.6` (bloccata).
+- **Prossimo passo**: passare a Composer, con la Fase 7.1 come prima sottofase (file di Fase 6, 7 e 8 validati il 2026-10-04). Punti aperti: nessuno (`po-04`, `po-05`, `po-06`, `po-07` e `po-09` chiusi il 2026-10-04). Il file di Fase 5 si scrive più avanti, secondo l'ordine di esecuzione. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App ed email di attivazione non rieseguiti in produzione, ora tracciata in `fase-8.6` (bloccata).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.

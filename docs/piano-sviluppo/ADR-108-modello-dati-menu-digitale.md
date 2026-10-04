@@ -232,3 +232,34 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
 - **Fase 6.6**: i form del backoffice offrono la scelta della lingua per i campi `localized`.
 - **`ADR-112`**: le letture pubbliche accettano `locale` (`it` o `en`) e il frontend lo passa in modo esplicito.
 - **`po-09` chiuso.**
+
+## Emendamento (terzo, 2026-10-04) — Tipologie di vino e di bevanda; la birra tra le bevande
+
+**Stato dell'emendamento**: proposta (contenuto confermato in chat il 2026-10-04; l'accettazione si registra su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+
+Aggiunge due tassonomie che il modello non prevedeva e **sostituisce il §6** (Collection «Birra»). Il resto resta invariato.
+
+### Verifiche su cui poggia
+
+- **Vecchio schema** (`prisma/schema.prisma` di `vtn-backend`, HEAD `35146cd`): ogni vino ha una `TipologiaVino` obbligatoria e ogni bevanda una `TipologiaBevanda` obbligatoria. La birra ha campi quasi identici a quelli di una bevanda (grado e capacità in più).
+- **Valori**: le tipologie di vino (Bianchi, Rosati, Rossi, Spumanti, Champagne) vengono dalla documentazione del prototipo `vtn-menu-ristorante-next` (`docs/ai/CONTEXT.md`) e **non sono verificate sullo snapshot**. Le tipologie di bevanda (Calde, Fredde, Vietnamite) vengono dall'API v1 di `vtn-backend`, letta dall'umano il 2026-10-04 (`tipologie-bevanda`, 3 valori).
+- **Birra**: lo snapshot di riferimento ne ha una sola, non visibile sul sito e non importata (primo emendamento). `ADR-112` non espone una collection di birre.
+
+### Decisione
+
+1. **Tipologia vino** (`wine-types`) e **Tipologia bevanda** (`drink-types`): collection tassonomiche con nome `localized`, senza campo `abilitato`, gestite dall'**admin** (CRUD); il manager sceglie soltanto. Obbligatorie su vini e bevande. Nascono vuote e si popolano con l'import dai nomi dello snapshot. Valori attesi: vino, Bianchi, Rosati, Rossi, Spumanti, Champagne; bevanda, Calde, Fredde, Vietnamite.
+2. **La birra non ha una collection.** È una bevanda con tipologia «Birre»; il §6 è sostituito. Le bevande ottengono tre campi facoltativi: `abv`, `volume` e `allergens` (relazione `hasMany` a «Allergeni», per esempio il glutine). Il campo `birrificio` del §6 non si porta (se serve, va nella descrizione). La disponibilità resta binaria (`disabled`). La tipologia «Birre» **non è nel seed** (la birra non si importa): la crea un admin al primo inserimento.
+3. **Tabella del §9**: si aggiungono le righe «Tipologia vino» e «Tipologia bevanda», gestione Admin (CRUD), senza `abilitato`. La riga «Tipologia birra» («non necessaria») resta valida.
+4. **Nessun altro cambiamento di modello**: il flag `soloMenuFissi` del vecchio sistema non si porta (le sole due voci che lo hanno nello snapshot sono le varianti «2 Nem», che non si importano: §4 e primo emendamento); il Global «Generali» del menù ha un solo campo, `globalMessage` (`ADR-109` §2).
+
+### Alternative considerate
+
+- **Collection «Birra» separata** (§6 originario) — scartata: un solo record, non visibile, non esposta da `ADR-112`. Costerebbe una collection, i permessi e un gruppo nel file senza ritorno. Se la birra diventasse un prodotto, il percorso resta additivo.
+- **Tipologia come testo libero su vini e bevande** — scartata: un errore di battitura rompe il raggruppamento (stesso criterio delle altre tassonomie).
+
+### Conseguenze
+
+- **Fase 6.1** scaffolda `wine-types` e `drink-types`; **6.2** ne usa il riferimento (obbligatorio) e aggiunge `abv`, `volume` e `allergens` alle bevande; **6.8** le popola per nome.
+- **`ADR-112`**: nessuna modifica. Le tassonomie sono già in lettura pubblica e non serve un gruppo `beers` nel file.
+- **Da verificare all'import**: i valori delle tipologie di vino e di distillato sullo snapshot. «Vietnamite» è una tipologia per origine e si sovrappone a «Calde» e «Fredde»: si importa com'è, da rivedere con il ristorante.
+- Applicato in `fase-6-menu-digitale.md` (nomi e campi, in inglese).
