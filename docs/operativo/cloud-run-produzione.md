@@ -24,7 +24,7 @@ Service agent (Google-managed): `service-437074136999@gcp-sa-cloudbuild.iam.gser
 
 ## Secret e env
 
-- Secret montati a runtime: `DATABASE_URL`, `PAYLOAD_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY` (seed opzionale, di solito non montato sul servizio).
+- Secret montati a runtime: `DATABASE_URL`, `PAYLOAD_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY` (montato sul servizio, come le altre chiavi: conferma dell'umano del 2026-10-04, non verificata sul servizio).
 - Env plain: `RESEND_FROM_ADDRESS`, `RESEND_FROM_NAME`, **`APP_PUBLIC_URL`** (URL HTTPS Cloud Run, senza slash finale). Dettaglio tecnico, cambio dominio e anti-pattern: **`docs/operativo/app-public-url.md`**.
 
 ## OAuth — redirect_uri localhost in produzione
