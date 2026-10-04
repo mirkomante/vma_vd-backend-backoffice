@@ -61,3 +61,11 @@ Non modifica la decisione. Precisa come si proteggono gli endpoint chiamati da C
 - Il servizio Cloud Run è **pubblico** (Admin, App e letture pubbliche devono essere raggiungibili senza account Google), quindi il ruolo `run.invoker` concesso al service account dello Scheduler **non limita** chi può chiamare l'endpoint.
 - Ogni endpoint schedulato **verifica un secret condiviso**, inviato dallo Scheduler in un'intestazione e conservato in Secret Manager: lo stesso pattern già previsto per la revalidation dei due siti. Il nome del secret e della variabile sono fissati nel file di fase (6.0).
 - Il service account dedicato con `run.invoker` resta comunque predisposto in 6.0, come identità dello Scheduler.
+
+## Nota di chiarimento (2026-10-04, repository del trigger e progetto Firebase)
+
+Non modifica il meccanismo di rebuild; sostituisce il riferimento al repository nel punto 1 del «Meccanismo di rebuild verificato»:
+
+- Il trigger Cloud Build **non si collega al prototipo** `vtn-menu-ristorante-next`, ma al repository del **progetto menù**, cioè del nuovo frontend del menù digitale. Il nome del repository verrà definito più avanti e si scrive nel file di fase.
+- Il trigger sta nel progetto GCP del CMS (`VMA-VD`). Il deploy (`firebase deploy --project PROJECT_ID --only hosting`) va sul **progetto Firebase del menù**, nuovo e non ancora creato (non esiste ancora nemmeno quello dei due siti). Il menù attuale resta in produzione sul suo Firebase fino al passaggio al nuovo.
+- I permessi del service account della build sul progetto Firebase si scrivono per il caso in cui sia un progetto diverso da `VMA-VD` (permessi incrociati); valgono anche se i due progetti coincidessero.

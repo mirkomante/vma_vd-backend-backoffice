@@ -189,7 +189,7 @@ fasi:
       - id: fase-6.0
         nome: "Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM (recupero del debito di fase-3)"
         stato: "da_fare"
-        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e il secret condiviso degli endpoint schedulati. I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del Firebase nuovo; il dominio definitivo si aggiunge al passaggio in produzione."
+        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e il secret condiviso degli endpoint schedulati. I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima di 6.5 Parte B. Il dominio definitivo si aggiunge al passaggio in produzione."
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia distillato) + permessi manager/admin"
         stato: "da_fare"
@@ -209,7 +209,7 @@ fasi:
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
         stato: "da_fare"
-        note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end): si prova sul progetto Firebase nuovo che ospiterà il frontend del menù (decisione po-07, 2026-10-04), con un'app Next minimale di prova che mostra messaggi di conferma (ora della build, lettura del CMS a build-time, lettura di disponibilita.json dal browser); non dipende dal frontend vero. Il menù attuale resta in produzione, sul suo Firebase, finché il nuovo non è pronto, quindi nessuna prova lo tocca. riepilogo-sessione-bucket-d.md §2"
+        note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end): si prova sul progetto Firebase nuovo che ospiterà il frontend del menù (decisione po-07, 2026-10-04), con un'app Next minimale di prova che mostra messaggi di conferma (ora della build, lettura del CMS a build-time, lettura di disponibilita.json dal browser); non dipende dal frontend vero. Il menù attuale resta in produzione, sul suo Firebase, finché il nuovo non è pronto, quindi nessuna prova lo tocca. Il trigger sta nel progetto GCP VMA-VD e si collega al repository del progetto menù (nome da definire, non il prototipo); il deploy va sul progetto Firebase del menù, ancora da creare: i permessi del service account della build si scrivono per il caso incrociato (build in VMA-VD, deploy su un altro progetto). riepilogo-sessione-bucket-d.md §2"
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "da_fare"
@@ -926,7 +926,7 @@ punti_aperti:
     scadenza: "prima di fase-6.5"
     registrazione: "nota in fase-6-menu-digitale.md"
     stato: "chiuso"
-    riferimento: "Decisione del 2026-10-04: si prova tutto sul progetto Firebase nuovo che ospiterà il frontend del menù (nessun progetto di test separato: il menù attuale resta in produzione sul suo Firebase fino al passaggio). In fase di prova il frontend è un'app Next minimale che mostra messaggi di conferma; la Parte A di fase-6.5 usa uno step di prova senza deploy. Da fissare nel file di fase: repository cui si collega il trigger e se il Firebase nuovo è un progetto GCP nuovo o lo stesso del backend (cambia l'IAM)."
+    riferimento: "Decisione del 2026-10-04: si prova tutto sul progetto Firebase nuovo che ospiterà il frontend del menù (nessun progetto di test separato: il menù attuale resta in produzione sul suo Firebase fino al passaggio). In fase di prova il frontend è un'app Next minimale che mostra messaggi di conferma; la Parte A di fase-6.5 usa uno step di prova senza deploy. Precisazioni del 2026-10-04: il progetto GCP del CMS è VMA-VD; su Firebase non esiste ancora alcun progetto (né per il menù né per i due siti) e il nome di quello del menù arriverà più avanti; il trigger di rebuild si collega al repository del progetto menù (nome da definire), non al prototipo vtn-menu-ristorante-next (nota di chiarimento ad ADR-105). Se il Firebase del menù sia un progetto GCP nuovo o VMA-VD si fissa alla sua creazione: l'IAM del deploy si scrive per il caso incrociato (build in VMA-VD, deploy su un altro progetto), valido anche se coincidono."
   - id: po-08
     titolo: "Lingue d'interfaccia dell'Admin: solo italiano o italiano e inglese"
     scadenza: "prima di fase-4.0"
