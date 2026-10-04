@@ -856,12 +856,13 @@ adr_da_scrivere:
       Nessuna deviazione da un default di catalogo.
   - titolo: "ADR — Contratto CMS <-> frontend menù digitale (letture REST e disponibilita.json)"
     archi: ["arco-32"]
-    stato: "da_scrivere"
-    file: "ADR-112-contratto-cms-frontend-menu.md (da scrivere a inizio fase-6)"
+    stato: "proposta"
+    file: "ADR-112-contratto-cms-frontend-menu.md"
     nota: >
       Dodicesimo ADR di progetto. Il frontend del menù (6.7) è sviluppato in
       un altro progetto: serve un'interfaccia fissata lato CMS prima di
       6.2 e 6.4. Nessuna deviazione da un default di catalogo.
+      Scritto il 2026-10-04 (proposta); chiude po-06.
 
   - titolo: "ADR — Ruoli e permessi di Admin e App"
     archi: ["arco-33", "arco-34"]
@@ -913,7 +914,8 @@ punti_aperti:
     titolo: "Contratto con il frontend del menù: schema di disponibilita.json e letture REST"
     scadenza: "prima di fase-6.2 e fase-6.4"
     registrazione: "ADR-112"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "ADR-112-contratto-cms-frontend-menu.md (proposta, 2026-10-04): REST standard senza token, sezioni nel codice del frontend, disponibilita.json con stato delle voci e messaggio globale (orari, chiusure e giorni speciali via rebuild), chiavi in inglese."
   - id: po-07
     titolo: "Come provare 6.5 senza toccare l'hosting reale (progetto Firebase di test o step di prova)"
     scadenza: "prima di fase-6.5"

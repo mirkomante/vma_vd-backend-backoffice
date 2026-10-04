@@ -17,7 +17,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - Un solo Global, slug **`impostazioni-sistema`**, a 4 tab (Orari e chiusure, Calendario, Comunicazioni, Integrazioni future): ADR-109 §1.
 - **Orari e chiusure sono la fonte unica** per menù e prenotazioni. I Global «Impostazioni prenotazioni» (5.1) e «Generali» del menù (6.1) **nascono senza quei campi** (ADR-109 §§2–3; `arco-21`, `arco-22`, direzione invertita il 2026-10-03). Questa fase **non crea** quei due Global.
 - **Mittenti email** (Emendamento a §1, accettato): mittente di sistema nelle env `RESEND_FROM_ADDRESS`/`RESEND_FROM_NAME`, **invariate**; mittenti verso i clienti nell'array del Global, **un record per sito** (`vietnamonamour`, `villadoree`); **nessun fallback** tra le due sorgenti.
-- **Permessi** (ADR-109 §5 come emendato dal terzo emendamento, e `ADR-113`): nell'Admin il manager non accede a questo Global; admin e super-admin hanno tutto; l'utente con `appRole: manager` legge e modifica solo la tab Orari e chiusure, dall'App. Meccanismo: funzione `access` nativa **a livello di singolo campo**, non di tab.
+- **Permessi** (ADR-109 §5 come emendato dal terzo emendamento, e `ADR-113`): nell'Admin il manager non accede a questo Global; admin e super-admin hanno tutto; l'utente con `appRole: manager` legge e modifica solo la tab Orari e chiusure, dall'App; la lettura pubblica (anonima) della stessa tab è prevista da `ADR-112`. Meccanismo: funzione `access` nativa **a livello di singolo campo**, non di tab.
 - Nessun segreto in campi Payload: il Global ospita solo riferimenti non sensibili. **Nessun campo `localized`**: è configurazione tecnica, non contenuto dei siti.
 
 ## Ordine di dipendenza reale
@@ -138,13 +138,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 |---|---|
 | `admin`, `super-admin` | Lettura e modifica di tutte le tab |
 | `appRole: manager` | Lettura e modifica della sola tab Orari e chiusure (chiusure e gruppo `bnb` compresi), dall'App |
-| Altri | Nessun accesso |
+| Richiesta anonima | Sola lettura dei campi della tab Orari e chiusure (servono al menù pubblico, `ADR-112`) |
+| Altri | Nessun accesso alle altre tab |
 
-**Accesso a livello di Global**: deve ammettere sia gli admin sia `appRole: manager`, altrimenti il manager non potrebbe leggere nessun campo; la restrizione alle sole tab consentite sta sui singoli campi.
+**Accesso a livello di Global**: deve ammettere gli admin, `appRole: manager` e la lettura anonima, altrimenti nessuno di loro potrebbe leggere alcun campo; la restrizione alle sole tab consentite sta sui singoli campi.
 
 **Nascondere il Global dall'Admin** a `adminRole: manager` (`admin.hidden` con funzione): si implementa e si verifica in **Fase 8.3**, insieme al nuovo valore del ruolo.
 
-**Verifiche tecniche** (non ancora fatte): prova per ruolo via Local API e REST (admin, super-admin, utente con `appRole: manager`, utente senza ruoli) su lettura e scrittura di ogni campo; rifiuto o scarto di un `update` su un campo non consentito.
+**Verifiche tecniche** (non ancora fatte): prova per ruolo via Local API e REST (admin, super-admin, utente con `appRole: manager`, utente senza ruoli, richiesta anonima) su lettura e scrittura di ogni campo; rifiuto o scarto di un `update` su un campo non consentito.
 
 **Checklist di chiusura sottofase**:
 - [ ] Prova per ruolo su ogni campo.
