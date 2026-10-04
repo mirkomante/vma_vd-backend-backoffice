@@ -34,7 +34,7 @@ EOF
 
 - I record cancellati (`deletedAt`).
 - `GET /piatti` esclude per scelta i piatti con `soloMenuFissi`: si trovano nei menu fissi (`menu-fisso.json` e file di dettaglio). Nello snapshot di riferimento sono solo due varianti, che non si importano.
-- I **menu fissi** (`menu-fisso.json` e file di dettaglio) si esportano solo come **riferimento per la ricomposizione a mano**: non si importano (`ADR-108`, emendamento).
+- I **menu fissi e le loro categorie** (`menu-fisso.json`, `categoria-menu-fisso.json` e file di dettaglio) si esportano solo come **riferimento per la ricomposizione a mano**: non si importano (`ADR-108`, emendamento).
 - I menu speciali (per esempio San Valentino) non compaiono nelle categorie esportate e non si importano (`ADR-108`, emendamento).
 
 ## Controlli sull'esito

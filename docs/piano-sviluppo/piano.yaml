@@ -217,7 +217,7 @@ fasi:
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
         stato: "da_fare"
-        note: "Decisione po-05 (2026-10-04), vedi emendamento ad ADR-108: si importano piatti, vini, distillati, bevande, servizi, tassonomie e le 2 categorie dei menu fissi; i menu fissi si ricompongono a mano. Report a secco, prova in sviluppo, produzione da locale. Dipende da fase-6.2. Procedura di esportazione dello snapshot: docs/operativo/export-menu-vtn-backend.md."
+        note: "Decisione po-05 (2026-10-04), vedi emendamento ad ADR-108: si importano piatti, vini, distillati, bevande, servizi e tassonomie; i menu fissi e le loro categorie si ricompongono a mano. Report a secco, prova in sviluppo, produzione da locale. Dipende da fase-6.2. Procedura di esportazione dello snapshot: docs/operativo/export-menu-vtn-backend.md."
 
   - id: fase-7
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
