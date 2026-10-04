@@ -77,6 +77,10 @@ In `lib/auth/userAccess.ts` solo `canAccessAdminPanel` e `canAccessAppArea` cont
 
 ---
 
+## Osservazione correlata (R1) — da valutare
+
+In `lib/auth/localLogin/appLoginChecks.ts` il login locale dell'App guarda solo `canAccessAppArea` ed `emailVerified`; il commento del file dà per scontato che un utente solo SSO non abbia `hash` e che «il confronto password fallisce da solo». Non è così se l'utente nasce come utente App con login locale e viene poi promosso ad `adminRole: admin` con `loginMethod: sso`: `hash` e `salt` restano e `POST /api/users/login/app` lo fa entrare su `/app` con la password locale (verificato il 2026-10-04 dalla chat di verifica). Contraddice `ADR-004` e l'invariante «nessun utente Admin diverso dai super-admin di bootstrap può avere credenziali locali». Fix proposto: rifiutare nel login locale dell'App ogni utente con `adminRole` diverso da `none`, con lo stesso messaggio generico. Non verificato nel template.
+
 ## Evidenza nel repo reale
 
 - `lib/auth/userAccess.ts:66,73-82` (solo `create` controlla `data.adminRole`)

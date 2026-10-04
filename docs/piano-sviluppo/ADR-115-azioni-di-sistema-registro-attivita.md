@@ -9,7 +9,7 @@
 ## Contesto
 
 - La collection `activity-log` ha `user` obbligatorio (`required: true`, e `user_id NOT NULL` nella migrazione iniziale) e `eventType` con i soli valori `login`, `logout`, `accessDenied`, `create`, `update`, `delete`. Non ha un campo per l'esito o per l'id di un evento esterno. La scrittura è riservata al sistema (`create`, `update`, `delete` negati; lettura per admin e super-admin).
-- Il piano chiede di registrare l'esito della revalidation dei siti (4.4A), il reset di «terminato» e la riscrittura del file di disponibilità da Cloud Scheduler (6.4), l'avvio del rebuild con l'id della build (6.5) e l'anonimizzazione GDPR (5.3). Sono azioni **senza utente**: il job gira con un secret, non con una sessione.
+- Il piano chiede di registrare l'esito della revalidation dei siti (4.4A), il reset di «terminato» e gli errori di scrittura del file di disponibilità (6.4), l'avvio del rebuild con l'id della build (6.5) e l'anonimizzazione GDPR (5.3). Sono azioni **senza utente**: il job gira con un secret, non con una sessione.
 - La regola `03-log-azioni.mdc` riserva a Cloud Logging i soli log tecnici (errori, richieste, debug).
 
 ## Decisione
