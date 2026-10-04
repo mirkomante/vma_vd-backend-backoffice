@@ -3,7 +3,7 @@
 **Progetto:** `vma_vd-backend-backoffice`  
 **Data:** 2026-10-04  
 **Destinatario:** agente / maintainer del template (`cursor-payload-template`: `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc`, `ADR-004-permessi-crud-utenti.md`, `fase-2-login.md`).  
-**Origine:** audit di coerenza del progetto (HEAD `bb95fda`, rilievo F1), confermato rileggendo il codice. **Non riprodotto a runtime** (nessun database nell'ambiente dell'audit).
+**Origine:** audit di coerenza del progetto (HEAD `bb95fda`, rilievo F1), confermato rileggendo il codice. **Riprodotto a runtime il 2026-10-04** dalla chat di verifica, su una copia di lavoro con PostgreSQL locale: `PATCH /api/users/<id>` con `{"adminRole":"super-admin"}` eseguito da un `admin` restituisce 200 e il ruolo cambia (cookie firmato con il secret di prova; `PATCH` in blocco non provato).
 
 ---
 
