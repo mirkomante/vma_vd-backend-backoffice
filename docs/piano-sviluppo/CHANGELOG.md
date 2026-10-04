@@ -40,6 +40,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `ADR-108`, emendamento del 2026-10-04: precisato che il manager vede solo i valori `abilitato`, cioè quelli in carta oggi (12 Paesi su 13 e 15 regioni su 16); Libano e Sicilia esistono ma sono disabilitati perché usati solo da voci nascoste.
 - `ADR-108`, emendamento del 2026-10-04: l'import riguarda solo i dati elementari (piatti, vini, distillati, bevande, servizi, tassonomie e le 2 categorie dei menu fissi); gli 8 menu fissi si ricompongono a mano (varianti con `porzione`, collegamento ai Servizi). Business lunch confermato solo pranzo. `piano.yaml`: `fase-6.8` e `arco-39` aggiornati; `export-menu-vtn-backend.md`: i menu fissi si esportano solo come riferimento.
 - `ADR-108`, emendamento del 2026-10-04: anche le 2 categorie dei menu fissi (Degustazione, Business lunch) si ricreano a mano insieme ai menu, invece di essere importate. `piano.yaml` e `export-menu-vtn-backend.md` allineati.
+- `po-09` chiuso: secondo emendamento ad `ADR-108` (2026-10-04, proposta): menù bilingue italiano e inglese con traduzione manuale; campi testuali `localized` fin dalla 6.2, con la regola dei campi. `fase-8` §8.5: orari, chiusure e giorni speciali non vanno in `disponibilita.json` (decisione di `po-06`): una modifica richiede il rebuild del menù. `piano.yaml` e `00-piano-generale.md` allineati.
 
 ### Fixed
 

@@ -176,7 +176,7 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 - Campi adatti al telefono, messaggi di errore in italiano, conferma del salvataggio.
 - **Fuori perimetro**: le chiusure per data (Eccezioni giorno) restano in Prenotazioni (5.2, 5.5).
 
-**Punto aperto collegato**: dopo una modifica agli orari, il file `disponibilita.json` del menù deve riflettere i nuovi confini di servizio. Si decide con il contratto del menù (`ADR-112`) e la sottofase 6.4; questa sezione non ricompila il menù.
+**Pubblicazione sul menù** (decisione del 2026-10-04, `po-06`): orari, chiusure e giorni speciali non entrano in `disponibilita.json`; una loro modifica richiede il rebuild del menù, dal pulsante «Ricompila il menù pubblico» (sottofase 6.5). Questa sezione non ricompila il menù da sola.
 
 **Checklist di chiusura sottofase**:
 - [ ] Prova per ruolo: il manager modifica e salva; l'admin pure; un utente senza ruolo è rifiutato.
@@ -214,4 +214,4 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 - **Ordine interno** (8.1 → 8.3 → 8.2): proposto perché la navigazione dipende dalla guardia. Se si preferisce l'ordine per numero, la 8.2 si verifica con una guardia provvisoria.
 - **Placeholder Fase 1**: `app/(app)/app/page.tsx` e il testo «placeholder Fase 1» in `app/(app)/layout.tsx` vengono sostituiti dalla 8.2.
 - **Token di attivazione senza scadenza**: lato server non è controllata (commento in `lib/auth/localEmail/tokens.ts`); il reset dura un'ora. Non si cambia (proporzionalità).
-- **`disponibilita.json` dopo modifica orari**: da definire con `ADR-112` e la 6.4 (vedi 8.5).
+- **Orari sul menù pubblico**: risolto il 2026-10-04: le modifiche richiedono il rebuild del menù (vedi 8.5).

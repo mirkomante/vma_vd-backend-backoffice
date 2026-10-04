@@ -193,7 +193,7 @@ fasi:
       - id: fase-6.2
         nome: "Collection Piatti / Vini / Birra + menu_fisso_piatto (campo porzione) + Servizi (emendamento ad ADR-108)"
         stato: "da_fare"
-        note: "Prerequisiti: contratto ADR-112 e decisione po-09 (menù bilingue). po-05 chiuso: l'import dei dati esistenti è in fase-6.8. Scaffolda anche la Collection Servizi (emendamento ad ADR-108, 2026-10-04). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
+        note: "Prerequisiti: contratto ADR-112. po-09 chiuso: campi testuali localized (secondo emendamento ad ADR-108). po-05 chiuso: l'import dei dati esistenti è in fase-6.8. Scaffolda anche la Collection Servizi (emendamento ad ADR-108, 2026-10-04). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
       - id: fase-6.3
         nome: "Collection 'Giorni Speciali'"
         stato: "da_fare"
@@ -209,7 +209,7 @@ fasi:
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "da_fare"
-        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2."
+        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2. I form offrono la scelta della lingua per i campi localized (po-09)."
       - id: fase-6.7
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
         stato: "fuori_perimetro"
@@ -817,6 +817,7 @@ adr_da_scrivere:
     nota: >
       Emendamento del 2026-10-04 (proposta): Servizi, seed esteso e import dei
       dati esistenti (po-05).
+      Secondo emendamento del 2026-10-04 (proposta): menù bilingue (po-09).
 
   - titolo: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     archi: ["arco-21", "arco-22"]
@@ -928,4 +929,5 @@ punti_aperti:
     titolo: "Il menù è bilingue? Se sì, i campi testuali di piatti e vini vanno localized fin dallo scaffolding"
     scadenza: "prima di fase-6.2"
     registrazione: "ADR-112 o emendamento ad ADR-108"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "Emendamento (secondo) ad ADR-108 del 2026-10-04 (proposta): menù bilingue it/en con traduzione manuale; campi testuali localized fin dalla fase-6.2; le letture pubbliche accettano locale (ADR-112)."

@@ -211,3 +211,24 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
 - **`ADR-112`** deve includere i servizi nelle letture pubbliche.
 - **`po-09`**: se il menù è bilingue, l'import scrive in italiano e le traduzioni restano manuali.
 - Il file `fase-6-menu-digitale.md` riprende questi criteri.
+
+## Emendamento (secondo, 2026-10-04) — Menù bilingue (po-09)
+
+**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+
+### Decisione
+
+1. **Il menù è bilingue, italiano e inglese**, con **traduzione manuale**: nessuna traduzione automatica. L'italiano è la lingua di partenza; l'inglese si compila nel tempo.
+2. **Campi `localized` fin dallo scaffolding** (Fase 6.2), per evitare una migrazione dei dati dopo l'import (stessa ragione della Fase 4.0). La localizzazione è quella già attiva nel progetto (`ADR-103`): locale `it` come predefinita, con ripiego incrociato, quindi un testo inglese mancante mostra l'italiano.
+3. **Regola dei campi**:
+   - **`localized`**: i testi rivolti al cliente che si traducono: nome e descrizione di piatti, menu fissi e bevande; descrizione di vini e distillati; nomi di categorie, tipologie, Paesi e regioni, e degli allergeni (14, con denominazione italiana e inglese); nome dei servizi; `porzione`; contenuto dei Giorni Speciali; messaggio globale.
+   - **Non `localized`**: i nomi propri e i valori: nome di vini e distillati, cantina, denominazione, classificazione (sigle), anno, capacità, grado, invecchiamento, prezzi e flag.
+   - L'elenco campo per campo, con i nomi in inglese, va nel file di fase.
+
+### Conseguenze
+
+- **Fase 6.2** scaffolda i campi `localized` secondo la regola; **6.1** include i 14 allergeni con le due denominazioni.
+- **Fase 6.8**: l'import scrive solo in italiano; le traduzioni inglesi sono manuali, dopo l'import.
+- **Fase 6.6**: i form del backoffice offrono la scelta della lingua per i campi `localized`.
+- **`ADR-112`**: le letture pubbliche accettano `locale` (`it` o `en`) e il frontend lo passa in modo esplicito.
+- **`po-09` chiuso.**
