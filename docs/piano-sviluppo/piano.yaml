@@ -158,15 +158,15 @@ fasi:
       - id: fase-5.2
         nome: "Collection 'Eccezioni giorno' + UI custom slot-chiusi (condivisa col form pubblico)"
         stato: "da_fare"
-        note: "riepilogo-sessione-sistema-prenotazioni.md §5, riepilogo-sessione-bucket-c.md §1"
+        note: "riepilogo-sessione-sistema-prenotazioni.md §5, riepilogo-sessione-bucket-c.md §1. Da riportare nel file di fase (audit 2026-10-04): ADR-114 (CORS e abuso del form e della lettura slot) da scrivere prima di questa sottofase (F6); valori di servizio lunch e dinner (F14, nota di ADR-107)"
       - id: fase-5.3
         nome: "Collection 'Prenotazioni' (ciclo di vita a 5 stati, hook di controllo, anonimizzazione GDPR)"
         stato: "da_fare"
-        note: "riepilogo-sessione-sistema-prenotazioni.md §4/§5, riepilogo-sessione-gdpr-prenotazioni.md. Il job giornaliero usa l'ambiente predisposto in fase-6.0 (arco-25 rivisto)"
+        note: "riepilogo-sessione-sistema-prenotazioni.md §4/§5, riepilogo-sessione-gdpr-prenotazioni.md. Il job giornaliero usa l'ambiente predisposto in fase-6.0 (arco-25 rivisto). Da riportare nel file di fase (audit 2026-10-04): controllo di capienza e creazione nella stessa transazione, con blocco per slot e prova di concorrenza con due richieste simultanee (F20, ADR-114); voce nella checklist di chiusura sulla rivalutazione esplicita dell'HA di Cloud SQL (F13, ADR-110 §3, arco-26)"
       - id: fase-5.4
         nome: "Integrazione push Google Calendar"
         stato: "da_fare"
-        note: "Credenziali/service account deferite all'implementazione. Deviazione esplicita rispetto alla scelta iniziale di evitare OAuth. riepilogo-sessione-bucket-c.md §2"
+        note: "Credenziali/service account deferite all'implementazione. Deviazione esplicita rispetto alla scelta iniziale di evitare OAuth. riepilogo-sessione-bucket-c.md §2. Da riportare nel file di fase (audit 2026-10-04): l'anonimizzazione elimina prima l'evento Google Calendar collegato, poi svuota i dati (F8, nota di ADR-107); voce nella checklist di 5.4"
       - id: fase-5.5
         nome: "Backoffice (app) prenotazioni — shadcn/ui, mobile-first"
         stato: "da_fare"
@@ -174,7 +174,7 @@ fasi:
       - id: fase-5.6
         nome: "Form pubblico 'Prenota un tavolo' (innesto su fase-4.1)"
         stato: "da_fare"
-        note: "riepilogo-sessione-cms-siti-esterni.md §4.1"
+        note: "riepilogo-sessione-cms-siti-esterni.md §4.1. Da riportare nel file di fase (audit 2026-10-04): le richieste anonime non scrivono stato, canale, anonimizzata, token-cancellazione né google-calendar-event-id; rate limit e anti-spam (F6, F20, ADR-114)"
 
   - id: fase-6
     nome: "Menù digitale (menu.vietnamonamour.com)"
