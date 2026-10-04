@@ -29,6 +29,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `docs/audit/audit-verifica-2026-10-04.md`: verifica delle modifiche dopo l'audit (HEAD `1da6802`), con 15 nuovi rilievi (N1–N15).
 - `docs/audit/audit-verifica-2-2026-10-04.md`: terza verifica (HEAD `2471059`), con 14 nuovi rilievi (M1–M14); giudizio: Cursor può partire dalla 7.0 con riserve.
 - `docs/audit/audit-verifica-3-2026-10-04.md`: verifica finale (HEAD `7a5d537`) con le tabelle «Concordato» e «Rinviati e aperti» e 7 rilievi (R1–R7); giudizio: Cursor può partire dalla 7.0 con riserve, la 8.3 dopo R1.
+- `docs/audit/audit-verifica-4-2026-10-04.md`: chiusura (HEAD `116033b`): Cursor può partire dalla 7.0; unico rilievo P residuo S1 (8.3), poi versione condivisa.
 
 ### Changed
 
@@ -67,6 +68,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Correzioni dalla terza verifica: `fase-7` §7.0 (prerequisiti e ordine della prova dell'utente disattivato, riavvio del dev server, controllo positivo, azione umana sugli admin attuali), 7.1 (dipende da 7.0), 7.2 (importmap, checklist eseguibile), 7.4 (campi di sistema nella risposta, `access.update` del manager); `fase-8` (accesso derivato di admin e super-admin all'App in 8.3, isolamento della CLI di shadcn in 8.1, email 8.4, F1 non condizionato); `ADR-115` (precisazioni datate, `availability-write-failed`); `fase-6` (checklist 6.4); `piano.yaml` (`arco-48`, `arco-38` nell'ADR-113, convenzione su `responsabile`, `po-10`).
 - Completata la correzione M2 della terza verifica (la segnalazione F1 riporta che il difetto è stato riprodotto a runtime) e corretta in `fase-7` §7.0 l'attribuzione del controllo del 200 (fatto dalla chat di verifica, non dal pianificatore).
 - Correzioni dalla verifica finale: `fase-8` 8.3 (login locale dell'App solo per `adminRole: none`, con prova; un solo predicato di accesso; prerequisito `allowApp`; punto 9 senza frasi sovrapposte), 8.5 (prova dell'admin); `fase-7` 7.0 (`PAYLOAD_SECRET`, ordine di avvio del server, `--data-urlencode`, comando esatto dell'azione umana, pulizia dei cookie di prova) e 7.4 (la prova rilegge il valore); `ADR-115` (contesto allineato alla Precisazione 2); segnalazione F1 (osservazione R1); `00-piano-generale.md` (regola di avvio delle sottofasi e rimando allo stato condiviso).
+- Correzione S1 della verifica di chiusura: la prova di R1 in `fase-8` 8.3 richiede l'email verificata e un controllo positivo prima della promozione (senza, il login dell'App è rifiutato per qualunque regola e la prova non dimostra nulla). Note «da annotare» portate in 8.3 (matrice di `fase-2-login.md`, commento di `appLoginChecks.ts`) e 8.4 (`allowApp`); `00-piano-generale.md` rimanda allo stato condiviso aggiornato.
 
 ### Fixed
 
