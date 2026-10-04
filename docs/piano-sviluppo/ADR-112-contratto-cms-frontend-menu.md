@@ -8,7 +8,7 @@
 
 ## Contesto
 
-- Il menù pubblico è un'applicazione Next.js statica (SSG) su Firebase Hosting, in un altro progetto e **fuori dal perimetro di questo piano** (6.7). Questo piano ne fornisce le letture di contenuto e il file di disponibilità.
+- Il **menù digitale** (`menu.vietnamonamour.com`) è un'applicazione Next.js a **generazione statica pura** (SSG, `output: 'export'`, decisione del 2026-09-12) su Firebase Hosting, in un altro progetto e **fuori dal perimetro di questo piano** (6.7). Legge il CMS **solo quando viene compilata**; a runtime il browser del cliente non contatta il CMS e legge soltanto `disponibilita.json`. È distinto dai **due siti** (vietnamonamour.com e villadoree.com), che usano ISR on-demand (`ADR-105`) e hanno un proprio contratto (`ADR-111`): il menù si gestisce dal manager nel backoffice `(app)`, i siti nell'Admin. Questo piano fornisce al menù digitale le letture di contenuto e il file di disponibilità.
 - `ADR-105` ha già deciso: letture REST dirette senza token, `disponibilita.json` su GCS letto dal browser ogni circa cinque minuti, rebuild manuale con un pulsante nel backoffice. Non ha fissato **forma delle richieste, nomi dei campi, schema del file né variabili d'ambiente**.
 - Il prototipo `vtn-menu-ristorante-next` legge le collection con REST standard (100 per pagina), ha un suo schema di `disponibilita.json` con chiavi italiane e calcola apertura e festività dai dati del Global «generali». Il frontend attuale (`vietnamonamour-nodejs`, ramo `vtn-backend-api-data`) usa invece endpoint già raggruppati di `vtn-backend`.
 
@@ -47,11 +47,11 @@
 
 **5. Pubblicazione.** Per vedere sul menù pubblico una voce nuova, una modifica ai servizi, agli orari, alle chiusure o ai giorni speciali, serve il rebuild («Ricompila il menù pubblico», sottofase 6.5). Gli stati `disabled` e `soldOut` di voci esistenti passano dal file di disponibilità senza rebuild.
 
-**6. Variabili d'ambiente del frontend** (un nome per variabile, nessun alias):
+**6. Variabili d'ambiente del menù digitale** (un nome per variabile, nessun alias; i due siti hanno variabili proprie, fissate in `ADR-111`):
 
 | Variabile | Uso |
 |---|---|
-| `MENU_CMS_URL` | URL base del CMS, letto solo a build-time |
+| `MENU_CMS_URL` | URL base del CMS, letto dal menù digitale solo a build-time |
 | `NEXT_PUBLIC_MENU_AVAILABILITY_URL` | URL di `disponibilita.json`, letto dal browser |
 
 Le variabili lato CMS per bucket e Scheduler sono definite in 6.4.

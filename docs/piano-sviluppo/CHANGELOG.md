@@ -43,6 +43,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `ADR-108`, emendamento del 2026-10-04: anche le 2 categorie dei menu fissi (Degustazione, Business lunch) si ricreano a mano insieme ai menu, invece di essere importate. `piano.yaml` e `export-menu-vtn-backend.md` allineati.
 - `po-09` chiuso: secondo emendamento ad `ADR-108` (2026-10-04, proposta): menù bilingue italiano e inglese con traduzione manuale; campi testuali `localized` fin dalla 6.2, con la regola dei campi. `fase-8` §8.5: orari, chiusure e giorni speciali non vanno in `disponibilita.json` (decisione di `po-06`): una modifica richiede il rebuild del menù. `piano.yaml` e `00-piano-generale.md` allineati.
 - `fase-7` §7.4: la tab Orari e chiusure è leggibile anche da richieste anonime (le altre tab no), come richiede `ADR-112`. `piano.yaml`: `po-06` chiuso, voce ADR-112 `proposta`. `00-piano-generale.md` aggiornato.
+- `ADR-112` (proposta): precisata la distinzione tra menù digitale (`menu.vietnamonamour.com`, SSG puro, gestito nell'App, legge il CMS solo a build-time) e i due siti (ISR on-demand, gestiti nell'Admin). Confermati 5 minuti di polling e cache di 60 secondi, da rivalutare dopo l'uso in produzione.
 
 ### Fixed
 
