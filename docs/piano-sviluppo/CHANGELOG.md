@@ -38,6 +38,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `fase-7` e `fase-8` passano da `bozza` a `validato` (2026-10-04, su passaggio esplicito dell'umano). `fase-4` § 4.0: migrazione di `localization_enum` applicata su Cloud SQL prod (conferma dell'umano). `00-piano-generale.md`: «Prossimo passo» riscritto.
 - `ADR-108`: emendamento del 2026-10-04 (proposta): Collection «Servizi» (opzione A), seed esteso (13 Paesi, 16 regioni, 3 denominazioni) e criteri dell'import dei dati esistenti (script da snapshot, voci nascoste come `disabilitato`, birre, cocktail e San Valentino non importati). `piano.yaml`: `po-05` chiuso, nuova `fase-6.8`, `arco-39`, note di `fase-6.2` e `fase-6.3`.
 - `ADR-108`, emendamento del 2026-10-04: precisato che il manager vede solo i valori `abilitato`, cioè quelli in carta oggi (12 Paesi su 13 e 15 regioni su 16); Libano e Sicilia esistono ma sono disabilitati perché usati solo da voci nascoste.
+- `ADR-108`, emendamento del 2026-10-04: l'import riguarda solo i dati elementari (piatti, vini, distillati, bevande, servizi, tassonomie e le 2 categorie dei menu fissi); gli 8 menu fissi si ricompongono a mano (varianti con `porzione`, collegamento ai Servizi). Business lunch confermato solo pranzo. `piano.yaml`: `fase-6.8` e `arco-39` aggiornati; `export-menu-vtn-backend.md`: i menu fissi si esportano solo come riferimento.
 
 ### Fixed
 

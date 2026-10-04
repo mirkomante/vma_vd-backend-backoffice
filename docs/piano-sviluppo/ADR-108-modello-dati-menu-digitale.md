@@ -188,17 +188,19 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
 3. **Import dei dati esistenti.** Il nuovo menù è un'evoluzione del vecchio: l'import ne migliora i dati e non li copia alla lettera.
    - **Sorgente**: snapshot JSON dell'API v1, esportato il giorno dell'import con la procedura di `docs/operativo/export-menu-vtn-backend.md`. Non si legge l'API dal vivo.
    - **Voci nascoste** (`inLista` falso): importate come `disabilitato`.
-   - **Non importati**: Birre e Cocktail (non compaiono nel sito; i cocktail sono abbandonati) e i menu speciali, come San Valentino, che si ricreano in 6.3 con il meccanismo «Giorni Speciali».
-   - **Varianti**: «2 Nem di carne» e «2 Nem vegetariani» non diventano piatti. I due menu fissi che le usano puntano al piatto base con `porzione`.
-   - **Menu fissi**: la parte di nome che indica il servizio, «(pranzo e cena)», passa a `visibility` (Degustazione sempre; Business lunch solo pranzo, salvo diversa indicazione). Il resto del nome si mantiene.
+   - **Solo dati elementari** (decisione del 2026-10-04): si importano piatti, vini, distillati, bevande, servizi e tassonomie. I **menu fissi non si importano**: si ricompongono a mano nel nuovo sistema, perché sono pochi (8, con 17 relazioni ai piatti) e la ricomposizione è più sicura dell'import di relazioni, varianti e `visibility`.
+   - **Non importati**: i menu fissi (si ricompongono a mano), Birre e Cocktail (non compaiono nel sito; i cocktail sono abbandonati) e i menu speciali, come San Valentino, che si ricreano in 6.3 con il meccanismo «Giorni Speciali».
+   - **Varianti**: «2 Nem di carne» e «2 Nem vegetariani» esistono oggi solo dentro due menu fissi e non si importano: nella ricomposizione a mano i due menu useranno il piatto base con `porzione`.
+   - **Categorie dei menu fissi**: si creano le 2 categorie, Degustazione e Business lunch, con `visibility` (Degustazione sempre; Business lunch solo pranzo, confermato il 2026-10-04). Sono struttura, non composizione.
    - **Normalizzazioni**: spazi ai bordi, `capacita` («75cl» e «75 cl»), `certificazione` verso la Classificazione («D.O.C» e «A.O.P» diventano «D.O.C.» e «A.O.P.»).
    - **Correzioni a mano nella revisione**: una descrizione corrotta (`Brut••75cl••COTEAUX DU LAYON•LOIRA`) e una che ripete la regione.
    - **Scrittura**: Local API, locale `it`, idempotente per chiave naturale. Prima un report a secco, poi una prova in sviluppo, poi la produzione da locale, come il seed del super-admin (`fase-3-deploy.md` § 3.4).
-   - **Revisione nell'App prima del lancio**: campi nuovi (`visibility`, `porzione`), traduzioni se `po-09` le richiede, e i **9 piatti su 44 senza allergeni dichiarati**, da rileggere dal ristorante.
+   - **Revisione nell'App prima del lancio**: ricomposizione dei menu fissi (3 Degustazione e 5 Business lunch) con `porzione` e collegamento ai Servizi (oggi il «Coperto» è collegato a due business lunch), traduzioni se `po-09` le richiede, e i **9 piatti su 44 senza allergeni dichiarati**, da rileggere dal ristorante.
 
 ### Alternative considerate
 
 - **Reinserimento manuale** — scartata: circa 200 voci in buona forma; si ridigiterebbero gli allergeni (dato di legge) e i prezzi.
+- **Importare anche i menu fissi** — scartata (2026-10-04): sono 8 e la composizione a mano è più sicura, oltre a essere una prova del flusso di composizione nel nuovo sistema.
 - **Import dall'API dal vivo** — scartata: dipende dal vecchio sistema e non è ripetibile né rivedibile.
 - **Scraping del sito pubblico** — scartata: perde ID, campi e voci nascoste.
 - **Servizi come elenco nel Global «Generali» o fuori dal modello** — scartate: la prima perde il legame con i menu fissi, la seconda rende ogni cambio di prezzo una modifica di codice.
