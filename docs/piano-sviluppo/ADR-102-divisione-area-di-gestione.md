@@ -39,7 +39,7 @@ Il perimetro effettivo di `(frontend)` resta esplicitamente non risolto da quest
 
 ## Nota di chiarimento (2026-10-04)
 
-Non modifica la divisione tra Admin e App. Precisa due punti, definiti in `ADR-113-ruoli-permessi-admin-app.md` (proposta):
+Non modifica la divisione tra Admin e App. Precisa due punti, definiti in `ADR-113-ruoli-permessi-admin-app.md` (accettata):
 
 - Il «ruolo dedicato» del manager (§1) è il valore `manager` di `adminRole`: nell'Admin il manager gestisce solo il CMS dei siti.
 - La competenza del manager su orari e chiusure di `impostazioni-sistema` (§6) si esercita nell'App, sezione Orari, e non nell'Admin. Il criterio campo per campo di §6 non cambia.

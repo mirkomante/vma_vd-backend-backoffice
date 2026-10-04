@@ -159,6 +159,6 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Incoerenze note e punti aperti
 
-- **Accesso del manager all'Admin (risolto).** Definito da `ADR-113` (proposta): `adminRole` ottiene il valore `manager`, solo per il CMS dei siti; gli orari si modificano nell'App (Fase 8.5).
+- **Accesso del manager all'Admin (risolto).** Definito da `ADR-113` (accettata): `adminRole` ottiene il valore `manager`, solo per il CMS dei siti; gli orari si modificano nell'App (Fase 8.5).
 - **`servizi[].nome` in due Global.** ADR-109 §3 lascia `servizi[].nome` e `durata-slot` in «Impostazioni prenotazioni», mentre gli orari dei servizi stanno qui: il legame è solo il nome, con rischio di disallineamento. Da gestire in 5.1.
 - **Assenza di migrazione dati** (ADR-109 §2): assunta in base allo stato `da_fare` di 5.1 e 6.1, non verificata contro dati già presenti in Bookly o nel backend attuale del menù.

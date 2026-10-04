@@ -229,7 +229,7 @@ fasi:
       come le altre fasi di dominio: il file fase-7-impostazioni-sistema.md
       è scritto (bozza, 2026-10-04). 7.1-7.3 non sono bloccate da decisioni
       mancanti; neanche 7.4: il punto sull'accesso del manager all'Admin è
-      risolto da ADR-113 (proposta).
+      risolto da ADR-113 (accettata).
     sottofasi:
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
@@ -270,7 +270,7 @@ fasi:
       - id: fase-8.3
         nome: "Ruoli e guardia di accesso: valore manager in adminRole (migrazione), canAccessSection a tre sezioni, admin.hidden per il manager"
         stato: "da_fare"
-        note: "po-02 chiuso da ADR-113 (proposta): manager unico per menù, orari e prenotazioni; accesso all'App di admin e super-admin derivato da adminRole. Deroga a ADR-001 e ADR-004 di catalogo."
+        note: "po-02 chiuso da ADR-113 (accettata): manager unico per menù, orari e prenotazioni; accesso all'App di admin e super-admin derivato da adminRole. Deroga a ADR-001 e ADR-004 di catalogo."
       - id: fase-8.4
         nome: "Verifica in produzione di login locale App ed email di attivazione"
         stato: "da_fare"
@@ -677,7 +677,7 @@ archi:
     adr: null
     fonte: "riepilogo-sessione-bucket-c.md §3"
 
-  # --- Ruoli e permessi (ADR-113, proposta, 2026-10-04) --------------------
+  # --- Ruoli e permessi (ADR-113, accettata, 2026-10-04) --------------------
 
   - id: arco-33
     da: fase-8.3
@@ -768,9 +768,9 @@ adr_da_scrivere:
       esplicito ad ADR-107 §1 (rimozione di tre campi orario/chiusura,
       ora unificati su impostazioni-sistema). Emendamento a §1 del
       2026-10-04 (po-01, accettato): ridefinisce i mittenti email. Secondo
-      emendamento a §1 (2026-10-04, proposta): nomi dei campi in inglese
+      emendamento a §1 (2026-10-04, accettato): nomi dei campi in inglese
       camelCase e orari dei servizi come testo HH:mm. Terzo emendamento
-      (2026-10-04, proposta): orari del B&B e manager senza accesso agli orari
+      (2026-10-04, accettato): orari del B&B e manager senza accesso agli orari
       nell'Admin (ADR-113).
   - titolo: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     archi: ["arco-26", "arco-27"]
@@ -804,10 +804,10 @@ adr_da_scrivere:
 
   - titolo: "ADR — Ruoli e permessi di Admin e App"
     archi: ["arco-33", "arco-34"]
-    stato: "proposta"
+    stato: "accettata"
     file: "ADR-113-ruoli-permessi-admin-app.md"
     nota: >
-      Proposta del 2026-10-04. Deroga con citazione a ADR-001 (enum di
+      Accettata il 2026-10-04. Deroga con citazione a ADR-001 (enum di
       adminRole) e ADR-004 (riga manager) di catalogo. Chiude po-02, supera
       riepilogo-sessione-bucket-d.md §3 e sposta nell'App la modifica degli
       orari del manager (ADR-102 §6, ADR-109 §5).
@@ -830,7 +830,7 @@ punti_aperti:
     scadenza: "prima di fase-8.3"
     registrazione: "ADR di progetto (cita ADR-001 di catalogo)"
     stato: "chiuso"
-    riferimento: "ADR-113-ruoli-permessi-admin-app.md (proposta, 2026-10-04): manager unico per menù, orari e prenotazioni; adminRole ottiene il valore manager (solo CMS dei siti nell'Admin); accesso all'App di admin e super-admin derivato da adminRole."
+    riferimento: "ADR-113-ruoli-permessi-admin-app.md (accettata, 2026-10-04): manager unico per menù, orari e prenotazioni; adminRole ottiene il valore manager (solo CMS dei siti nell'Admin); accesso all'App di admin e super-admin derivato da adminRole."
   - id: po-03
     titolo: "Provare in produzione login locale App ed email di attivazione"
     scadenza: "criterio di accettazione di fase-8.4"

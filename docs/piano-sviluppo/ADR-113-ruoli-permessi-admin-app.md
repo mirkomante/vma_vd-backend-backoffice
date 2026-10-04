@@ -2,7 +2,7 @@
 
 > Template minimo. Uno per ogni **arco di decisione** del DAG di progetto (`docs/piano-sviluppo/piano.yaml`) — passo standard, non facoltativo (vedi `00-come-eseguire-il-piano.md`, Passo 0). Vale anche per una scelta che resta dentro gli invarianti standard (`auth/`, `email/`, `stack/`), purché condizioni comunque più fasi a valle.
 
-**Stato**: proposta
+**Stato**: accettata
 **Data**: 2026-10-04
 **Arco di decisione**: punto aperto `po-02` (schema dei ruoli) → Fase 8.3 e Fase 8.5 (`arco-34`: ruoli, guardia di accesso e sezione Orari dell'App) e Fase 4.1 (`arco-33`: permessi del manager sul CMS dei siti). **Deroga a catalogo con citazione**: `ADR-001-schema-ruoli-baseline.md` (l'enum di `adminRole` si estende) e `ADR-004-permessi-crud-utenti.md` (la matrice si estende con la riga manager), entrambi di catalogo, in `cursor-payload-template`. Supera `riepilogo-sessione-bucket-d.md` §3 (manager come `adminRole: admin` più `appRole: manager`); definisce il «ruolo dedicato» di `ADR-102-divisione-area-di-gestione.md` §1; sposta nell'App la modifica degli orari che `ADR-102` §6 e `ADR-109-global-impostazioni-sistema.md` §5 collocavano nell'Admin.
 

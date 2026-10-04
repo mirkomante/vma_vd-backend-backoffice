@@ -132,7 +132,7 @@ Rapporto con il catalogo: nessun ADR di catalogo derogato. Le variabili richiest
 
 ## Emendamento a §1 (secondo, 2026-10-04) — nomi dei campi e tipo degli orari
 
-**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+**Stato dell'emendamento**: accettata (2026-10-04, su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
 
 Modifica due dettagli dei campi di §1. Struttura a tab, riconciliazione (§2), amendment ad `ADR-107` (§3), permessi (§5) e il primo emendamento (mittenti email) restano invariati.
 
@@ -158,7 +158,7 @@ Modifica due dettagli dei campi di §1. Struttura a tab, riconciliazione (§2), 
 
 ## Emendamento a §1, §2 e §5 (terzo, 2026-10-04) — orari del B&B e accesso del manager
 
-**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+**Stato dell'emendamento**: accettata (2026-10-04, su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
 
 Modifica l'ambito della tab Orari e chiusure (§1, §2) e la prima riga della tabella dei permessi (§5). Gli altri emendamenti restano invariati.
 
