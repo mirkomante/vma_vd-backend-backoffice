@@ -17,6 +17,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `piano.yaml`: sottofase `fase-4.0`, `arco-28` (contratto CMS ↔ siti esterni) e voce ADR-111 (da scrivere).
 - Fase 8 (shell `(app)` + shadcn/ui) in `piano.yaml` con sottofasi 8.1–8.4; `meta.ordine_esecuzione` (4.0, 7, 8, 6, poi 4.x e 5); sezione `punti_aperti` con scadenza e punto di registrazione per ciascuna decisione aperta (po-01…po-08); `arco-29`…`arco-32`; voce ADR-112 (contratto CMS ↔ frontend menù, da scrivere); stato `fuori_perimetro`. «Ordine di esecuzione corrente» e righe Fase 5–8 in `00-piano-generale.md`.
 - `ADR-103`: nota di chiarimento su `defaultLocale` (locale dei contenuti, non lingua d'interfaccia) e sull'enum `_locales`.
+- Fase 7: `fase-7-impostazioni-sistema.md` (bozza) con sottofasi 7.1–7.4. Decisioni del 2026-10-04: nomi dei campi in inglese camelCase, tab non nominati, una migrazione per sottofase, nessun `activityLog`, orari come testo `HH:mm`, pulsante festività con le 12 festività nazionali. Segnalato come punto aperto che `adminRole` non prevede `manager` e `canAccessAdminPanel` ammette solo `admin` e `super-admin`, mentre ADR-102 e ADR-109 §5 assumono un manager nell'Admin (in trattazione con B1 esteso a ruoli e permessi). Nessuna modifica al codice.
+- `ADR-113` (proposta): ruoli e permessi di Admin e App. `adminRole` ottiene il valore `manager` (nell'Admin solo CMS dei siti); admin e super-admin hanno accesso derivato a tutte le sezioni dell'App; il manager (`appRole`) usa menù, orari e prenotazioni, e la cancellazione delle pagine resta agli admin. Deroga a `ADR-001` e `ADR-004` di catalogo. Chiude `po-02`. Nessuna modifica al codice.
 
 ### Changed
 
@@ -25,6 +27,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Allineati in `piano.yaml` gli stati di `fase-1` e `fase-2` a `fatto` (coerenza con `00-piano-generale.md`); unificato il blocco `### Added` duplicato nella sezione 0.3.0 del CHANGELOG.
 - `piano.yaml`: `arco-21`, `arco-22` e `arco-24` invertiti (la fonte unica degli orari su `impostazioni-sistema` precede lo scaffolding di fase-5.1 e fase-6.1, come prevede ADR-109); fase-6.7 `fuori_perimetro` (frontend del menù in un altro progetto); note di 6.1, 6.2, 6.4, 6.5, 6.6, 7.2, 7.3, 5.5; note di `arco-17` e `arco-25` (Cloud Scheduler e GCS non consegnati da fase-3).
 - `ADR-109`: emendamento a §1 sui mittenti email (`po-01`, accettato): mittente di sistema nelle variabili `RESEND_FROM_*`, mittenti verso i clienti nell'array `mittenti-resend`, un record per sito (`vietnamonamour`, `villadoree`), nessun fallback tra le due sorgenti. `piano.yaml`: `po-01` chiuso, note di `fase-7.3` e della voce ADR-109 aggiornate. Nessuna modifica al codice.
+- `ADR-109`: secondo emendamento a §1 (stato proposta): nomi dei campi in inglese camelCase (tabella in `fase-7` §7.1) e orari dei servizi come testo `HH:mm` al posto di `timeOnly`, perché in Payload 3.89.0 un campo `date` è `timestamp with time zone` e per il solo orario il selettore non normalizza data né fuso (lettura del codice di `@payloadcms/ui`, non provata a runtime).
+- `ADR-109`: terzo emendamento (proposta): la tab Orari e chiusure include gli orari del B&B di vietnamonamour.com (check-in, check-out, indicazione colazione) e il manager non accede a `impostazioni-sistema` nell'Admin. `ADR-102`: nota di chiarimento. `fase-4` §§ 4.1 e 4.2 e `fase-7` §§ 7.2 e 7.4 aggiornate. `piano.yaml`: `po-02` chiuso, sottofase `fase-8.5`, archi `arco-33`…`arco-35`, voce ADR-113.
 
 ### Fixed
 

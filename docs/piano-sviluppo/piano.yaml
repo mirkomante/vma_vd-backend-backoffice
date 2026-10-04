@@ -123,7 +123,7 @@ fasi:
       - id: fase-4.1
         nome: "Scaffolding Collection pages + Global sito (impostazioni-vma, impostazioni-villadoree)"
         stato: "da_fare"
-        note: "Dipende da fase-4.0. Non dipende dal design. riepilogo-sessione-cms-siti-esterni.md §1/§2/§6"
+        note: "Dipende da fase-4.0 e da fase-8.3 (valore manager di adminRole, ADR-113, arco-33). Non dipende dal design. riepilogo-sessione-cms-siti-esterni.md §1/§2/§6"
       - id: fase-4.2
         nome: "Plugin di supporto (SEO, Redirects)"
         stato: "da_fare"
@@ -218,7 +218,7 @@ fasi:
   - id: fase-7
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
     origine: dominio-applicativo
-    file: "fase-7-impostazioni-sistema.md (da scrivere)"
+    file: "fase-7-impostazioni-sistema.md"
     stato: "da_fare"
     note: >
       Sbloccata: la sessione dedicata alla struttura a tab si è tenuta
@@ -227,8 +227,9 @@ fasi:
       campi per tab, riconciliazione con Global 'Generali' menù e
       'Impostazioni prenotazioni', permessi granulari). Resta "da_fare"
       come le altre fasi di dominio: il file fase-7-impostazioni-sistema.md
-      è da scrivere, ma nessuna sottofase è più bloccata da una decisione
-      mancante.
+      è scritto (bozza, 2026-10-04). 7.1-7.3 non sono bloccate da decisioni
+      mancanti; neanche 7.4: il punto sull'accesso del manager all'Admin è
+      risolto da ADR-113 (proposta).
     sottofasi:
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
@@ -237,15 +238,15 @@ fasi:
       - id: fase-7.2
         nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
         stato: "da_fare"
-        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario."
+        note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario. Estesa dal terzo emendamento ad ADR-109 (2026-10-04): gruppo bnb (check-in, check-out, indicazione colazione) di vietnamonamour.com."
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
         stato: "da_fare"
         note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni'). po-01 chiuso: mittenti decisi nell'Emendamento a §1 di ADR-109 (env RESEND_FROM_* per le email di sistema; array 'mittenti-resend' per sito verso i clienti, senza fallback; sito vietnamonamour/villadoree, validazione per sito unico). Calendario e Comunicazioni restano senza consumatori fino a fase-5; nessun arco verso il consumatore delle email agli ospiti finché non è definito."
       - id: fase-7.4
-        nome: "Permessi granulari campo-per-campo (orari a manager, resto ad admin/super-admin)"
+        nome: "Permessi granulari campo-per-campo (admin e super-admin tutto; appRole manager solo Orari e chiusure)"
         stato: "da_fare"
-        note: "Tabella permessi decisa in ADR-109 §5."
+        note: "Permessi decisi in ADR-113, che supera ADR-109 §5 sul manager nell'Admin. Nascondere il Global al manager nell'Admin si verifica in fase-8.3."
 
   - id: fase-8
     nome: "Shell dell'Area App (app) + shadcn/ui (infrastruttura condivisa del backoffice)"
@@ -264,16 +265,20 @@ fasi:
         nome: "Installazione e verifica di shadcn/ui (compatibilità con le versioni di Tailwind e Next in uso)"
         stato: "da_fare"
       - id: fase-8.2
-        nome: "Layout (app) mobile-first e navigazione per sezione (menu, reservations)"
+        nome: "Layout (app) mobile-first e navigazione per sezione (menu, hours, reservations)"
         stato: "da_fare"
       - id: fase-8.3
-        nome: "Guardia di accesso per sezione (canAccessSection) e decisione sulla granularità dei ruoli"
+        nome: "Ruoli e guardia di accesso: valore manager in adminRole (migrazione), canAccessSection a tre sezioni, admin.hidden per il manager"
         stato: "da_fare"
-        note: "Chiudere prima po-02: oggi appRole è solo manager/none e le due sezioni non sono assegnabili separatamente."
+        note: "po-02 chiuso da ADR-113 (proposta): manager unico per menù, orari e prenotazioni; accesso all'App di admin e super-admin derivato da adminRole. Deroga a ADR-001 e ADR-004 di catalogo."
       - id: fase-8.4
         nome: "Verifica in produzione di login locale App ed email di attivazione"
         stato: "da_fare"
         note: "Debito di fase-3.3 (coperto solo in sviluppo, fase-2.10): criterio di accettazione prima del primo accesso dei manager (po-03)."
+      - id: fase-8.5
+        nome: "Sezione Orari dell'App (orari e chiusure del ristorante, orari del B&B)"
+        stato: "da_fare"
+        note: "Legge e scrive impostazioni-sistema (tab Orari e chiusure) con la sessione del manager (ADR-113). Dipende da fase-8.2, fase-8.3 e dai campi di fase-7.2."
 
 # ============================================================================
 # ARCHI
@@ -672,6 +677,42 @@ archi:
     adr: null
     fonte: "riepilogo-sessione-bucket-c.md §3"
 
+  # --- Ruoli e permessi (ADR-113, proposta, 2026-10-04) --------------------
+
+  - id: arco-33
+    da: fase-8.3
+    a: fase-4.1
+    tipo: decisione
+    descrizione: >
+      Il manager entra nell'Admin per il solo CMS dei siti con il nuovo
+      valore manager di adminRole, introdotto in fase-8.3. I permessi del
+      manager su pagine e impostazioni dei siti (4.1) dipendono da quel
+      ruolo. La cancellazione delle pagine è riservata agli admin.
+    adr: "ADR — Ruoli e permessi di Admin e App"
+    fonte: "ADR-113-ruoli-permessi-admin-app.md"
+
+  - id: arco-34
+    da: fase-8.3
+    a: fase-8.5
+    tipo: decisione
+    descrizione: >
+      La sezione Orari dell'App (hours) esiste con la guardia di accesso a
+      tre sezioni e il permesso del manager (appRole) sulla tab Orari e
+      chiusure di impostazioni-sistema.
+    adr: "ADR — Ruoli e permessi di Admin e App"
+    fonte: "ADR-113-ruoli-permessi-admin-app.md"
+
+  - id: arco-35
+    da: fase-7.2
+    a: fase-8.5
+    tipo: output
+    descrizione: >
+      I campi orari e chiusure del ristorante e il gruppo bnb (check-in,
+      check-out, indicazione colazione) nascono in fase-7.2; la sezione
+      Orari dell'App li legge e li scrive.
+    adr: null
+    fonte: "ADR-109-global-impostazioni-sistema.md (terzo emendamento), ADR-113"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -726,7 +767,11 @@ adr_da_scrivere:
       (riepilogo-sessione-impostazioni-sistema.md); include amendment
       esplicito ad ADR-107 §1 (rimozione di tre campi orario/chiusura,
       ora unificati su impostazioni-sistema). Emendamento a §1 del
-      2026-10-04 (po-01, accettato): ridefinisce i mittenti email.
+      2026-10-04 (po-01, accettato): ridefinisce i mittenti email. Secondo
+      emendamento a §1 (2026-10-04, proposta): nomi dei campi in inglese
+      camelCase e orari dei servizi come testo HH:mm. Terzo emendamento
+      (2026-10-04, proposta): orari del B&B e manager senza accesso agli orari
+      nell'Admin (ADR-113).
   - titolo: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     archi: ["arco-26", "arco-27"]
     stato: "accettata"
@@ -757,6 +802,16 @@ adr_da_scrivere:
       un altro progetto: serve un'interfaccia fissata lato CMS prima di
       6.2 e 6.4. Nessuna deviazione da un default di catalogo.
 
+  - titolo: "ADR — Ruoli e permessi di Admin e App"
+    archi: ["arco-33", "arco-34"]
+    stato: "proposta"
+    file: "ADR-113-ruoli-permessi-admin-app.md"
+    nota: >
+      Proposta del 2026-10-04. Deroga con citazione a ADR-001 (enum di
+      adminRole) e ADR-004 (riga manager) di catalogo. Chiude po-02, supera
+      riepilogo-sessione-bucket-d.md §3 e sposta nell'App la modifica degli
+      orari del manager (ADR-102 §6, ADR-109 §5).
+
 # ============================================================================
 # PUNTI APERTI CON SCADENZA (2026-10-03)
 # ============================================================================
@@ -774,7 +829,8 @@ punti_aperti:
     titolo: "Un manager può essere solo del menù o solo delle prenotazioni? Se sì, cambia lo schema dei ruoli"
     scadenza: "prima di fase-8.3"
     registrazione: "ADR di progetto (cita ADR-001 di catalogo)"
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "ADR-113-ruoli-permessi-admin-app.md (proposta, 2026-10-04): manager unico per menù, orari e prenotazioni; adminRole ottiene il valore manager (solo CMS dei siti nell'Admin); accesso all'App di admin e super-admin derivato da adminRole."
   - id: po-03
     titolo: "Provare in produzione login locale App ed email di attivazione"
     scadenza: "criterio di accettazione di fase-8.4"

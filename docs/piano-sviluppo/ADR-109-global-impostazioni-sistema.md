@@ -20,7 +20,7 @@ La struttura a tab e i campi per tab restavano però non progettati, bloccando l
 
 | Tab | Campi | Esigenza coperta (`riepilogo-sessione-bucket-c.md` §3) |
 |---|---|---|
-| **Orari e Chiusure** (`orari-chiusure`) | `servizi` (array, 2 voci fisse: `nome` select pranzo/cena, `orario-inizio` timeOnly, `orario-fine` timeOnly), `giorni-riposo-settimanale` (select `hasMany`), `chiusure-annuali` (array: `data` dayOnly, `etichetta` text) | Punto 1 — fonte unica orari/chiusure |
+| **Orari e Chiusure** (`orari-chiusure`; esteso al B&B dal terzo emendamento in coda) | `servizi` (array, 2 voci fisse: `nome` select pranzo/cena, `orario-inizio` timeOnly, `orario-fine` timeOnly), `giorni-riposo-settimanale` (select `hasMany`), `chiusure-annuali` (array: `data` dayOnly, `etichetta` text) | Punto 1 — fonte unica orari/chiusure |
 | **Calendario** (`calendario`) | `google-calendar-id` (text) — riferimento, non credenziale | Punto 2 |
 | **Comunicazioni** (`comunicazioni`) | `mittenti-resend` (array: `mittente`, `dominio-riferimento`/etichetta di scope — ridefinito dall'Emendamento a §1 in coda a questo ADR), `contatti-notifiche-staff` (array: `nome`, `email`) | Punti 3 e 4 |
 | **Integrazioni future** (`integrazioni-future`) | nessun campo per ora — solo lo spazio riservato nella struttura a tab | Punto 5 |
@@ -67,7 +67,7 @@ Applicazione diretta del criterio già vincolante (`ADR-102-divisione-area-di-ge
 
 | Tab | Manager | Admin/super-admin |
 |---|---|---|
-| Orari e Chiusure | **read + update** | read + update |
+| Orari e Chiusure | **read + update** (dall'App, vedi il terzo emendamento) | read + update |
 | Calendario | **nessun accesso** (nemmeno lettura) | read + update |
 | Comunicazioni | **nessun accesso** (nemmeno lettura) | read + update |
 | Integrazioni future | **nessun accesso** (nemmeno lettura) | read + update |
@@ -129,3 +129,52 @@ Rapporto con il catalogo: nessun ADR di catalogo derogato. Le variabili richiest
 - **Sviluppi futuri fuori perimetro.** Altri tipi di email o integrazioni dai due siti non sono previsti da questo progetto. La struttura li copre solo se usano un mittente per sito: aggiungere villadoree.com è un nuovo record, senza migrazione. Mittenti diversi per tipo di email sullo stesso sito richiederebbero un secondo campo (`tipo`) e una migrazione, e non sono coperti qui.
 - Rischio residuo: un record con dominio non verificato produce invii mancati visibili solo nel log. Non è previsto un test di invio al salvataggio, perché sarebbe complessità assente dalla documentazione (`core/01-proporzionalita.mdc`); da valutare in 7.3 solo se richiesto.
 - Il nome visibile delle email agli ospiti è contenuto del record, da decidere al popolamento.
+
+## Emendamento a §1 (secondo, 2026-10-04) — nomi dei campi e tipo degli orari
+
+**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+
+Modifica due dettagli dei campi di §1. Struttura a tab, riconciliazione (§2), amendment ad `ADR-107` (§3), permessi (§5) e il primo emendamento (mittenti email) restano invariati.
+
+### Decisione
+
+1. **Nomi nel codice in inglese camelCase, etichette dell'interfaccia in italiano** (`stack/01-stile-codice.mdc`). I nomi italiani con trattino usati in questo ADR (`orario-inizio`, `chiusure-annuali`, `mittenti-resend`, …) sono descrittivi: i `name` effettivi sono nella tabella di `fase-7-impostazioni-sistema.md` §7.1. Anche i valori dei select sono in inglese (`lunch`, `dinner`, `monday`, …), con etichette in italiano. Lo slug del Global resta `impostazioni-sistema`.
+2. **Orari come testo `HH:mm`.** `orario-inizio` e `orario-fine` di ogni servizio sono campi `text` con validazione a 24 ore (`^([01]\d|2[0-3]):[0-5]\d$`), al posto del campo `date` `timeOnly` di §1. Sono l'ora locale del ristorante, senza data né fuso: le 12:00 sono le 12:00.
+3. **Le date di chiusura non cambiano**: `chiusure-annuali[].data` resta un campo `date` solo giorno.
+
+### Verifiche su cui poggia
+
+- In Payload 3.89.0 un campo `date` è una colonna Postgres `timestamp with time zone` (`@payloadcms/drizzle`, schema delle colonne).
+- Nel selettore di `@payloadcms/ui` 3.89.0 (`DatePicker.js`) la data viene normalizzata a mezzogiorno per `dayOnly`, `default` e `monthOnly` per evitare slittamenti di giorno; per `timeOnly` non c'è nessuna normalizzazione, e il valore dipende dal fuso del browser di chi modifica. Letto dal codice, non provato a runtime.
+
+### Alternative considerate
+
+- **Restare su `timeOnly` con una regola di conversione per ogni consumatore** — scartata: aggiunge fuso e ora legale a tutti i consumatori e dipende dal browser di chi modifica, per un dato che è un'ora locale.
+
+### Conseguenze
+
+- **Fase 7.2** implementa `startTime` e `endTime` come testo con validazione `HH:mm`.
+- **Fase 5**: la deduzione di `servizio` (`ADR-107` §4, controllo #1) confronta l'ora di `data-ora`, che è un istante, con orari che ora sono ore locali. Dovrà convertire `data-ora` all'ora locale del ristorante (Europe/Rome) prima del confronto. Da gestire nella sottofase che la implementa; non coperto qui.
+
+## Emendamento a §1, §2 e §5 (terzo, 2026-10-04) — orari del B&B e accesso del manager
+
+**Stato dell'emendamento**: proposta — diventa `accettata` solo con il passaggio esplicito dell'umano. Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+
+Modifica l'ambito della tab Orari e chiusure (§1, §2) e la prima riga della tabella dei permessi (§5). Gli altri emendamenti restano invariati.
+
+### Decisione
+
+1. **Ambito della tab**: gli orari operativi di vietnamonamour.com, cioè ristorante **e B&B**. Il criterio di §2 resta: il dato è condiviso tra più consumatori e non è contenuto di un solo sito.
+2. **Gruppo `bnb`** nella tab, solo per vietnamonamour.com: orario di check-in e di check-out (testo `HH:mm`, come gli orari del ristorante) e un'indicazione sulla colazione, testo libero da mostrare sul sito. Il B&B non ha chiusure proprie. Villa Dorée non ha orari in questo Global. Nomi dei campi in `fase-7-impostazioni-sistema.md` §7.1.
+3. **`breakfastNote` non è localizzato** nella release 1, in cui ogni sito usa una sola lingua. Se vietnamonamour.com diventerà bilingue servirà una migrazione dei dati (classe B).
+4. **§5, riga Orari e Chiusure**: nell'Admin il manager non ha accesso a nessuna tab di `impostazioni-sistema`. La sua competenza su orari e chiusure si esercita solo nell'App, sezione Orari, con `appRole: manager` (`ADR-113-ruoli-permessi-admin-app.md`). Admin e super-admin restano invariati.
+
+### Alternative considerate
+
+- **Campi del B&B in `impostazioni-vma`, tab Generali** — scartata: gli orari resterebbero divisi in due Global e lo stesso campo avrebbe due vie di modifica (Admin e App).
+
+### Conseguenze
+
+- **Fase 7.2** aggiunge il gruppo `bnb`; **Fase 7.4** applica i permessi di `ADR-113`.
+- **Fase 8.5** costruisce nell'App la sezione che modifica orari, chiusure e dati del B&B.
+- **ADR-111**: gli orari pubblici dei siti (ristorante, check-in, check-out, colazione) hanno come fonte questo Global. Poiché il Global non è pubblico per default, la forma di esposizione si decide nel contratto con i siti.

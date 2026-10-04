@@ -105,7 +105,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Stato**: 🔲 da fare
 
-**Dipende da**: 4.0 completata. Non dipende dal design (`riepilogo-sessione-cms-siti-esterni.md` § 6).
+**Dipende da**: 4.0 completata e **Fase 8.3** (valore `manager` di `adminRole`, `ADR-113`, `arco-33`). Non dipende dal design (`riepilogo-sessione-cms-siti-esterni.md` § 6).
 
 **Obiettivo**: struttura dati dei due siti con permessi per ruolo, senza contenuti e senza il campo `layout` (che dipende dal design, 4.5).
 
@@ -135,11 +135,11 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 - **Campo Link riusabile** (ADR-101 § 3): interno (relationship alla collection `pages-*` del **proprio** sito) oppure esterno (URL libero), con «apri in nuova scheda». La factory del campo riceve lo slug della collection di destinazione. Copre le voci esterne di villadoree.com (Book Now → Amenitiz, WhatsApp).
 - Etichette delle voci di navigazione `localized`.
 
-**Permessi** (`ADR-102` §§ 1, 6): manager con read+update pieno su `impostazioni-*` e create/update sulle pagine del proprio sito, secondo lo schema `adminRole` esistente; `delete` ereditato da `update` salvo deroga. Funzione `access` nativa a livello di collection/global, non convenzione lato UI. Admin e super-admin accesso completo.
+**Permessi** (`ADR-102` §§ 1, 6): `adminRole: manager` (`ADR-113`) con read+update pieno su `impostazioni-vma` e `impostazioni-villadoree` e create/update, pubblicazione compresa, sulle pagine dei due siti; **`delete` sulle pagine riservato agli admin** (deroga esplicita al default «`delete` eredita da `update`», `ADR-113`). Funzione `access` nativa a livello di collection/global, non convenzione lato UI. Admin e super-admin accesso completo.
 
 **Checklist di chiusura sottofase**:
 - [ ] Le due collection e i due Global esistono con gli slug confermati e `localized` dove deciso.
-- [ ] Prova per ruolo: manager vede e modifica solo ciò che gli compete; admin e super-admin tutto.
+- [ ] Prova per ruolo: manager vede e modifica solo ciò che gli compete e non può cancellare una pagina; admin e super-admin tutto.
 - [ ] Verificato in Admin il comportamento del valore di fallback sui campi localizzati (punto aperto di ADR-103): campo vuoto o valore di fallback mostrato.
 - [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
 - [ ] **Nomi congelati**: elenco degli slug e dei `name` dei campi riportato nel CHANGELOG come base del contratto ADR-111.
@@ -168,7 +168,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Checklist di chiusura sottofase**:
 - [ ] Plugin installati alla versione allineata a Payload, configurati secondo i due punti aperti.
-- [ ] Campi meta SEO `localized`; permessi manager coerenti con 4.1.
+- [ ] Campi meta SEO `localized`, modificabili dal manager come parte della pagina; collection `redirects` accessibile solo agli admin (`ADR-113`).
 - [ ] Collection `redirects` presente e vuota; nessun redirect inserito.
 - [ ] Migrazione applicata su Cloud SQL prod prima del push; CHANGELOG aggiornato.
 
@@ -267,7 +267,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Condizione di sblocco**: 4.5 completata.
 
-**Contenuto**: popolamento reale in Admin da parte del manager; compilazione `from` → `to` dei Redirects, con gli URL sorgente raccolti da Google Search Console («Pagine») o, in mancanza, da ricerca `site:` (una tantum al lancio). La sola raccolta degli URL `from` è anticipabile senza rischio.
+**Contenuto**: popolamento reale in Admin da parte del manager; compilazione `from` → `to` dei Redirects (riservata agli admin, `ADR-113`), con gli URL sorgente raccolti da Google Search Console («Pagine») o, in mancanza, da ricerca `site:` (una tantum al lancio). La sola raccolta degli URL `from` è anticipabile senza rischio.
 
 ---
 

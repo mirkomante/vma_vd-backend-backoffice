@@ -31,8 +31,8 @@
 | Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔲 da fare (4.0–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
 | Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` (da scrivere) |
-| Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | 🔲 da fare | `fase-7-impostazioni-sistema.md` (da scrivere) |
-| Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dai backoffice di prenotazioni e menù | 🔲 da fare | `fase-8-shell-app.md` (da scrivere) |
+| Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | 🔲 da fare | `fase-7-impostazioni-sistema.md` |
+| Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔲 da fare | `fase-8-shell-app.md` (da scrivere) |
 
 ## Ordine di esecuzione corrente
 

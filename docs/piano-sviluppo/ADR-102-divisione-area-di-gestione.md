@@ -36,3 +36,10 @@ L'intero sviluppo di Fase 5 (prenotazioni) e Fase 6 (menù) eredita l'architettu
 La granularità campo-per-campo su `impostazioni-sistema` resta bloccata nel dettaglio (dipende da fase-7.1, struttura a tab ancora da progettare), ma il criterio — orari/chiusure a manager, resto ad admin/super-admin — è già vincolante e non sarà rimesso in discussione quando quella sessione si sbloccherà.
 
 Il perimetro effettivo di `(frontend)` resta esplicitamente non risolto da questo ADR — punto aperto, da chiarire quando si affronterà quel tema.
+
+## Nota di chiarimento (2026-10-04)
+
+Non modifica la divisione tra Admin e App. Precisa due punti, definiti in `ADR-113-ruoli-permessi-admin-app.md` (proposta):
+
+- Il «ruolo dedicato» del manager (§1) è il valore `manager` di `adminRole`: nell'Admin il manager gestisce solo il CMS dei siti.
+- La competenza del manager su orari e chiusure di `impostazioni-sistema` (§6) si esercita nell'App, sezione Orari, e non nell'Admin. Il criterio campo per campo di §6 non cambia.
