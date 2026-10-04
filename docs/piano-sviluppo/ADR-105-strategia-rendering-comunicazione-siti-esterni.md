@@ -69,3 +69,7 @@ Non modifica il meccanismo di rebuild; sostituisce il riferimento al repository 
 - Il trigger Cloud Build **non si collega al prototipo** `vtn-menu-ristorante-next`, ma al repository del **progetto menù**, cioè del nuovo frontend del menù digitale. Il nome del repository verrà definito più avanti e si scrive nel file di fase.
 - Il trigger sta nel progetto GCP del CMS (`VMA-VD`). Il deploy (`firebase deploy --project PROJECT_ID --only hosting`) va sul **progetto Firebase del menù**, nuovo e non ancora creato (non esiste ancora nemmeno quello dei due siti). Il menù attuale resta in produzione sul suo Firebase fino al passaggio al nuovo.
 - I permessi del service account della build sul progetto Firebase si scrivono per il caso in cui sia un progetto diverso da `VMA-VD` (permessi incrociati); valgono anche se i due progetti coincidessero.
+
+## Nota di chiarimento (2026-10-04, un secret per scopo)
+
+Non modifica la decisione. Il secret condiviso è **uno per scopo**: `SCHEDULER_SECRET_AVAILABILITY` per l'endpoint di reset e riscrittura della disponibilità del menù (6.4) e `SCHEDULER_SECRET_ANONYMIZATION` per l'anonimizzazione GDPR delle prenotazioni (5.3). Se uno dei due trapela, l'altro endpoint resta protetto. Il confronto avviene a tempo costante e un secret errato o assente è rifiutato senza dettagli. Nomi dei secret e delle variabili: `fase-6-menu-digitale.md` (6.0).

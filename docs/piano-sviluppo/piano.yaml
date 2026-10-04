@@ -802,6 +802,22 @@ archi:
     adr: null
     fonte: "fase-7-impostazioni-sistema.md §7.4, ADR-113 (audit 2026-10-04, F22)"
 
+  - id: arco-43
+    da: fase-6.4
+    a: fase-4.4
+    tipo: output
+    descrizione: "La migrazione di activity-log con le azioni di sistema (ADR-115) nasce in 6.4; 4.4 Parte A la riusa per l'esito della revalidation."
+    adr: "ADR — Azioni di sistema nel registro attività"
+    fonte: "ADR-115-azioni-di-sistema-registro-attivita.md"
+
+  - id: arco-44
+    da: fase-6.4
+    a: fase-5.3
+    tipo: output
+    descrizione: "La migrazione di activity-log con le azioni di sistema (ADR-115) nasce in 6.4; 5.3 la riusa per l'anonimizzazione."
+    adr: "ADR — Azioni di sistema nel registro attività"
+    fonte: "ADR-115-azioni-di-sistema-registro-attivita.md"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -903,7 +919,7 @@ adr_da_scrivere:
       google-calendar-event-id); rate limit e anti-spam; controllo di capienza
       senza condizioni di gara (blocco per slot) con prova di concorrenza.
   - titolo: "ADR — Azioni di sistema nel registro attività"
-    archi: []
+    archi: ["arco-43", "arco-44"]
     stato: "accettata"
     file: "ADR-115-azioni-di-sistema-registro-attivita.md"
     nota: >
