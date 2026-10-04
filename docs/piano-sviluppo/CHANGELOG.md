@@ -23,7 +23,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `docs/operativo/export-menu-vtn-backend.md` (bozza): procedura per esportare lo snapshot JSON del menù dall'API v1 di `vtn-backend`, con i controlli sull'esito. Snapshot di riferimento del 2026-10-04: 44 piatti, 8 menu fissi, 90 vini, 38 distillati, 13 bevande, 3 servizi, 14 allergeni.
 - `ADR-112` (proposta): contratto CMS ↔ frontend del menù. Letture REST standard senza token con `locale` esplicito, voci disabilitate incluse con flag; sezioni nel codice del frontend; schema di `disponibilita.json` (stato di piatti, vini, bevande, distillati, menu fissi e servizi; messaggio globale; chiavi in inglese); orari, chiusure e giorni speciali via rebuild; ora di riferimento Europe/Rome; variabili `MENU_CMS_URL` e `NEXT_PUBLIC_MENU_AVAILABILITY_URL`. Chiude `po-06`.
 - Fase 6: `fase-6-menu-digitale.md` (validato, 2026-10-04) con sottofasi 6.0–6.8 e ordine di esecuzione 6.0, 6.1, 6.2, 6.8, 6.3, 6.4, 6.6, 6.5. Nomi e campi delle collection proposti in inglese (slug e campi, con `winery` e `volume`), da congelare alla chiusura di 6.2; schemi derivati da `vtn-backend` e dal prototipo.
-- `ADR-108`: terzo emendamento del 2026-10-04 (proposta): tipologie di vino e di bevanda (`wine-types`, `drink-types`, gestite dall'admin, popolate dall'import) e birra tra le bevande, senza collection dedicata (sostituisce il §6).
+- `ADR-108`: terzo emendamento del 2026-10-04: tipologie di vino e di bevanda (`wine-types`, `drink-types`, gestite dall'admin, popolate dall'import) e birra tra le bevande, senza collection dedicata (sostituisce il §6).
 
 ### Changed
 
@@ -51,6 +51,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `po-07` chiuso: le prove del rebuild (`fase-6.5`) si fanno sul progetto Firebase nuovo che ospiterà il frontend del menù, con un'app Next minimale che mostra messaggi di conferma; nessun progetto di test separato, e il menù attuale resta in produzione sul suo Firebase. `piano.yaml`: note di `fase-6.5` e `fase-6.0` (CORS del bucket per gli indirizzi del Firebase nuovo).
 - `ADR-105`: seconda nota di chiarimento (2026-10-04): il trigger di rebuild si collega al repository del progetto menù (nome da definire), non al prototipo `vtn-menu-ristorante-next`; il deploy va su un progetto Firebase nuovo, non ancora creato, con permessi scritti per il caso incrociato rispetto a `VMA-VD`. `piano.yaml`: note di `fase-6.0` (il CORS del bucket dipende dall'ID del progetto Firebase del menù) e di `fase-6.5`; riferimento di `po-07` precisato.
 - `piano.yaml`: titoli e note di `fase-6.1` (tipologie di vino e bevanda; «Generali» con il solo `globalMessage`) e di `fase-6.2` (birra tra le bevande); `arco-40` (`fase-6.6` → `fase-6.5`); `fase-6` punta al file di fase. `00-piano-generale.md`: file di Fase 6 scritto e validato; prossimo passo Composer con la Fase 7.1.
+- Il terzo emendamento ad `ADR-108` passa da `proposta` ad `accettata` (2026-10-04, su passaggio esplicito dell'umano); aggiornata la nota in `piano.yaml`. `fase-7` (checklist di 7.2): il riferimento al file di Fase 6 ora scritto. `fase-4` (Incoerenze note): archi 17 e 25 risolti dalla nuova `fase-6.0`.
 
 ### Fixed
 

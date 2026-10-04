@@ -98,7 +98,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - [ ] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
 - [ ] Pulsante festività funzionante, risultato modificabile a mano.
 - [ ] Migrazione applicata su Cloud SQL prod prima del push.
-- [ ] Riportato nei file di fase 5 e 6 (da scrivere) che «Impostazioni prenotazioni» e «Generali» nascono senza questi campi.
+- [ ] Riportato nel file di fase 5 (da scrivere) che «Impostazioni prenotazioni» nasce senza questi campi; nel file di fase 6 (scritto) è già riportato per «Generali» (6.1).
 
 ---
 

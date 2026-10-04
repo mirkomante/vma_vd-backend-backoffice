@@ -235,7 +235,7 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
 
 ## Emendamento (terzo, 2026-10-04) — Tipologie di vino e di bevanda; la birra tra le bevande
 
-**Stato dell'emendamento**: proposta (contenuto confermato in chat il 2026-10-04; l'accettazione si registra su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
+**Stato dell'emendamento**: accettata (2026-10-04, su passaggio esplicito dell'umano). Lo stato `accettata` dell'ADR nel suo insieme non cambia.
 
 Aggiunge due tassonomie che il modello non prevedeva e **sostituisce il §6** (Collection «Birra»). Il resto resta invariato.
 

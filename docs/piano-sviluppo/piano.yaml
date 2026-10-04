@@ -832,6 +832,8 @@ adr_da_scrivere:
       Emendamento del 2026-10-04 (accettato): Servizi, seed esteso e import dei
       dati esistenti (po-05).
       Secondo emendamento del 2026-10-04 (accettato): menù bilingue (po-09).
+      Terzo emendamento del 2026-10-04 (accettato): tipologie di vino e di
+      bevanda; la birra tra le bevande (sostituisce il §6).
 
   - titolo: "ADR — Global di configurazione trasversale (impostazioni-sistema)"
     archi: ["arco-21", "arco-22"]
