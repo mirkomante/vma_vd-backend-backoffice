@@ -26,7 +26,6 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `ADR-108`: terzo emendamento del 2026-10-04: tipologie di vino e di bevanda (`wine-types`, `drink-types`, gestite dall'admin, popolate dall'import) e birra tra le bevande, senza collection dedicata (sostituisce il §6).
 - Audit di coerenza del 2026-10-04 (chat di controllo, HEAD `bb95fda`): `audit-repo-2026-10-04.md` (da archiviare in `docs/audit/`), 27 rilievi, nessuno bloccante per la 7.1.
 - `ADR-115` (accettata, 2026-10-04): azioni di sistema nel registro attività (`user` facoltativo, `eventType` `systemAction`, campo `detail`), dal rilievo F7 dell'audit. `segnalazione-catalogo-escalation-super-admin.md`: segnalazione al catalogo del rilievo F1 (un admin può promuoversi a super-admin).
-- Script `pnpm typecheck` (`next typegen && tsc --noEmit`): controllo dei tipi riproducibile su un clone pulito, perché `LayoutProps` è un tipo generato da Next e non è nei file versionati (audit del 2026-10-04, F26).
 
 ### Changed
 
@@ -59,20 +58,18 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Dalle decisioni sull'audit del 2026-10-04: un secret per scopo per gli endpoint dello Scheduler (`SCHEDULER_SECRET_AVAILABILITY`, `SCHEDULER_SECRET_ANONYMIZATION`) in `fase-6` e nota di `ADR-105`; `fase-6.4` ha come primo passo la migrazione di `activity-log` (`ADR-115`); `fase-4` §4.4 e `fase-6.5` registrano come `systemAction`; `fase-8` §8.3 rimanda la correzione di F1 al catalogo; `piano.yaml`: `ADR-115` accettata, `po-10` aperto.
 - Controllo del repository dopo il push `6ac96bf` (2026-10-04): aggiunti i file a cui i documenti già rimandavano (`ADR-115`, `segnalazione-catalogo-escalation-super-admin.md`, nota di chiarimento di `ADR-105` sul secret per scopo); `arco-43` (`fase-6.4` → `fase-4.4`) e `arco-44` (`fase-6.4` → `fase-5.3`) per la dipendenza da `ADR-115`; `audit-repo-2026-10-04.md` da archiviare in `docs/audit/`.
 - `piano.yaml`: le voci dell'audit del 2026-10-04 destinate alla Fase 5 (F6, F8, F13, F14, F20) sono riportate nelle note di `fase-5.2`, `5.3`, `5.4` e `5.6`, da trasferire nel file di fase quando sarà scritto. `docs/audit/audit-repo-2026-10-04.md` archiviato.
+- Registrata la sottofase `fase-7.0` (manutenzione dopo l'audit del 2026-10-04: F2, F9, F10, F26) in `fase-7-impostazioni-sistema.md`, `piano.yaml` (`arco-45`, `arco-46`, ordine di esecuzione) e `00-piano-generale.md`: da eseguire con Cursor prima della 7.1.
 
 ### Fixed
 
 - Cancellazione utente in Admin: hook `users.beforeDelete` elimina prima le voci `activity-log` collegate (FK Postgres `ON DELETE SET NULL` incompatibile con `user_id` NOT NULL); bug emerso in verifica 4.0, non introdotto dalla localizzazione.
 - `fase-4-cms-siti-esterni.md` § 4.0: la migrazione non è vuota (con `localization` attiva l'adapter Postgres crea l'enum `_locales`); aggiunta la configurazione `i18n` mancante per l'interfaccia in italiano e corretta la semantica di `defaultLocale`.
 - `piano.yaml`: rimosso `arco-06` (errore di scrittura): attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» che appartiene ai due siti esterni (altro progetto, un progetto Firebase distinto per ciascun sito).
-- Utenti disattivati (audit del 2026-10-04, F2): `lib/auth/userAccess.ts` ha un helper unico `isActiveUser`; `isStaffAdminRequest`, `isSuperAdminRequest` e `usersDeleteAccess` escludono gli utenti con `active: false`, che prima conservavano i permessi via REST con il cookie ancora valido (fino a 7200 secondi).
-- Pool del database (F9): `pool.max: 3` in `payload.config.ts`, come dichiarava `ADR-110`; nota sul limite di connessioni in `docs/operativo/cloud-run-produzione.md`.
-- GraphQL (F10): `graphql` riportato a `^16.8.1` (peer di Payload 3.89.0: la 17 non lo soddisfaceva) e `graphQL: { disable: true }`, quindi `/api/graphql` risponde 404; nessun consumatore GraphQL è pianificato. Il lockfile cambia solo per `graphql`.
+- CHANGELOG: rimosse le cinque voci su F2, F9, F10 e F26 inserite per errore nel commit `bc3c9d8`, quando il codice non era ancora stato modificato; le scrive l'esecuzione di `fase-7.0`.
 
 ### Tests
 
 - Fase 4.0: verifiche runtime OK (Admin italiano, login Google SSO, login locale `/admin/login/local`, Global `settings` salvabile). Selettore lingua contenuti non verificabile in 4.0 (nessun campo `localized`; da verificare in 4.1). `pnpm migrate:status` su DB locale (5432): schema allineato con `push` — non eseguire `pnpm migrate` su 5432. Delete utente: 500 pre-fix per FK `activity_log`; dopo fix hook, delete verificato OK in dev.
-- Audit F2, F9, F10, F26 (copia di lavoro, Node 22 nel sandbox): `pnpm lint` 0 errori (8 avvisi, nelle due migrazioni), `pnpm typecheck` e `pnpm peers check` senza problemi, `pnpm build` riuscito (con i font di Google sostituiti, perché il sandbox non li raggiunge). **Da provare a runtime in sviluppo prima del push**: un utente con `active: false` e cookie valido riceve 403 su `/api/users`, `/api/activity-log` e `/api/globals/settings`; `/api/graphql` risponde 404; login Google e login locale funzionano ancora.
 
 ## [0.3.0] — 2026-10-03
 

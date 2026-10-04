@@ -100,7 +100,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 ## Prossimi passi
 
-- **Prossimo passo**: passare a Composer, con la Fase 7.1 come prima sottofase (file di Fase 6, 7 e 8 validati il 2026-10-04). Punti aperti: nessuno (`po-04`, `po-05`, `po-06`, `po-07` e `po-09` chiusi il 2026-10-04). Il file di Fase 5 si scrive più avanti, secondo l'ordine di esecuzione. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App ed email di attivazione non rieseguiti in produzione, ora tracciata in `fase-8.6` (bloccata).
+- **Prossimo passo**: passare a Composer, con la Fase 7.0 (manutenzione dopo audit: F2, F9, F10, F26) e poi la 7.1 (file di Fase 6, 7 e 8 validati il 2026-10-04). Punti aperti: nessuno (`po-04`, `po-05`, `po-06`, `po-07` e `po-09` chiusi il 2026-10-04). Il file di Fase 5 si scrive più avanti, secondo l'ordine di esecuzione. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App ed email di attivazione non rieseguiti in produzione, ora tracciata in `fase-8.6` (bloccata).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
 - Fase 2.3 chiusa: credenziali Google OAuth di sviluppo in `.env`, redirect URI locali registrati, nota operativa `docs/operativo/credenziali-google-oauth.md`.

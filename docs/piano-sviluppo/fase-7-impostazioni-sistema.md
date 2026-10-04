@@ -22,7 +22,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Ordine di dipendenza reale
 
-**7.1 → 7.2 → 7.3 → 7.4.** 7.2 e 7.3 sono indipendenti nei contenuti ma modificano lo stesso file di Global: si eseguono in sequenza, una chat Composer per sottofase. 7.4 viene per ultima perché i permessi agiscono sui campi già esistenti. La fase si esegue prima di Fase 8 e Fase 6 (`00-piano-generale.md`, «Ordine di esecuzione corrente»).
+**7.0 → 7.1 → 7.2 → 7.3 → 7.4.** La 7.0 è una manutenzione del codice esistente (nessun campo del Global). 7.2 e 7.3 sono indipendenti nei contenuti ma modificano lo stesso file di Global: si eseguono in sequenza, una chat Composer per sottofase. 7.4 viene per ultima perché i permessi agiscono sui campi già esistenti. La fase si esegue prima di Fase 8 e Fase 6 (`00-piano-generale.md`, «Ordine di esecuzione corrente»).
 
 ## Principi trasversali per questa fase
 
@@ -30,6 +30,58 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 2. **Convenzione lingua**: nomi di campi, funzioni e file in **inglese**; etichette dell'interfaccia in **italiano** (`stack/01-stile-codice.mdc`). Lo scostamento da ADR-109 è chiuso dal secondo Emendamento a §1 (2026-10-04).
 3. **Nessun deploy prima della migrazione.** `main` fa deploy automatico su Cloud Run: per ogni sottofase che cambia lo schema, la migrazione va **applicata su Cloud SQL prod prima del push** (`pnpm payload migrate` via Auth Proxy, `docs/operativo/cloud-sql-produzione.md`).
 4. **Commit solo dopo verifica runtime** (non solo TypeScript), push manuale. Voce di CHANGELOG per ogni commit.
+
+---
+
+## 7.0 — Manutenzione: correzioni dall'audit (F2, F9, F10, F26)
+
+**Stato**: 🔲 da fare
+
+**Dipende da**: Fase 3 chiusa e 4.0 completata. Nessuna migrazione, nessuna nuova risorsa GCP, nessun campo nuovo.
+
+**Obiettivo**: quattro correzioni piccole al codice già in produzione, emerse dall'audit di coerenza del 2026-10-04 (`docs/audit/audit-repo-2026-10-04.md`), prima che le Fasi 7, 8 e 6 aggiungano codice sopra. Il rilievo F1 (un `admin` può promuoversi a `super-admin`) **non è in questa sottofase**: è affidato al template (`po-10`). L'aggiornamento di Payload **non è** in questa sottofase.
+
+**Riferimenti**: audit F2, F9, F10, F26; `ADR-110` (pool di connessioni); §7.4 di questo file e `fase-8-shell-app.md` §8.3 (regola dell'utente disattivato); `core/04-changelog-commit.mdc`.
+
+**Verificato dal pianificatore** (2026-10-04, copia di lavoro del repo a `f9d8544`, Node 22 e senza database): con `graphql` a `^16.8.1` il lockfile cambia solo per `graphql` (da 17.0.2 a 16.14.2); `pnpm lint` dà 0 errori e 8 avvisi (nelle due migrazioni); `next typegen` e `tsc --noEmit` senza errori; `pnpm peers check` pulito; `pnpm build` riuscito (con i font di Google sostituiti, solo nel sandbox); nel codice di `@payloadcms/next` il gestore GraphQL risponde 404 quando `graphQL.disable` è attivo. Se l'esecuzione dà un esito diverso, **fermarsi** e riferire.
+
+**Passi** (in quest'ordine, un solo commit):
+
+1. **F2 — utente disattivato**, in `lib/auth/userAccess.ts`:
+   - nuova funzione esportata `isActiveUser(user)`: vera se l'utente esiste e `user.active !== false` (la stessa regola che `canAccessAdminPanel` già usa);
+   - `canAccessAdminPanel` e `canAccessAppArea` la usano al posto del controllo diretto di `active`;
+   - `isSuperAdminRequest` e `isStaffAdminRequest` restituiscono falso se l'utente non è attivo;
+   - `usersDeleteAccess` inizia con `if (!isStaffAdminRequest(req) || !req.user) return false`;
+   - **non toccare** `getAdminRole`, `canCreateUser` e `usersUpdateAccess` (passano già da `isStaffAdminRequest`), le strategie JWT, gli hook, `collections/ActivityLog.ts` e `globals/Settings.ts` (usano già gli helper).
+   - Perché: oggi solo `canAccessAdminPanel` e `canAccessAppArea` guardano `active`. Un utente disattivato con il cookie ancora valido (fino a 7200 secondi) conserva i permessi via REST su `users`, `activity-log` e `settings`. L'helper è il punto unico che 7.4 e 8.3 riusano (`arco-45`, `arco-46`).
+2. **F9 — pool di connessioni**:
+   - in `payload.config.ts`: `pool: { connectionString: ..., max: 3 }`, con un commento che rimanda a `ADR-110` e al vincolo `--max-instances` × 3;
+   - in `docs/operativo/cloud-run-produzione.md`, prima della sezione «OAuth — redirect_uri localhost in produzione», nuova sezione «Connessioni al database»: l'adapter apre al massimo 3 connessioni per istanza; le connessioni di Cloud Run sono `--max-instances` × 3 e devono restare sotto il `max_connections` dell'istanza Cloud SQL, lasciando spazio a `scripts/prod-db.sh` e alle migrazioni da locale; **da verificare**: il `max_connections` dell'istanza e il `--max-instances` impostato oggi. **Non scrivere questi due valori**: non sono noti.
+3. **F10 — graphql**:
+   - in `package.json`: `"graphql": "^16.8.1"` (peer di Payload 3.89.0; la 17 non lo soddisfaceva); poi `pnpm install`;
+   - `git diff pnpm-lock.yaml` deve mostrare modifiche solo per `graphql`: se cambiano altri pacchetti, **fermarsi**;
+   - in `payload.config.ts`: `graphQL: { disable: true }` subito dopo `secret`, con un commento (nessun consumatore GraphQL pianificato);
+   - **non eliminare** le route `app/(payload)/api/graphql` e `app/(payload)/api/graphql-playground`: con la disattivazione l'endpoint risponde 404.
+4. **F26 — controllo dei tipi riproducibile**: in `package.json`, script `"typecheck": "next typegen && tsc --noEmit"` subito dopo `lint`. `LayoutProps` è un tipo generato da Next e non è nei file versionati, quindi `tsc` da solo fallisce su un clone pulito. Non modificare le regole di catalogo.
+
+**Verifiche tecniche** (prima del commit):
+
+- `pnpm lint`, `pnpm typecheck` e `pnpm build` senza errori (la build usa i segnaposto del `Dockerfile`).
+- `pnpm peers check` senza problemi.
+- **Prova a runtime in sviluppo**, con Postgres locale: un utente con `active: false` e cookie ancora valido riceve 403 su `/api/users`, `/api/activity-log` e `/api/globals/settings`; un super-admin attivo continua ad avere accesso.
+- `/api/graphql` risponde 404.
+- Login Google (Admin e App) e login locale funzionano ancora.
+- Se una prova fallisce, **non fare push**: `main` fa deploy automatico su Cloud Run.
+
+**Checklist di chiusura sottofase**:
+- [ ] `isActiveUser` esportata e usata dalle cinque funzioni indicate; nessun altro file modificato in `lib/auth`.
+- [ ] `pool.max: 3` e sezione «Connessioni al database» in `cloud-run-produzione.md`, senza valori inventati.
+- [ ] `graphql ^16.8.1`, lockfile cambiato solo per `graphql`, `graphQL.disable: true`, route GraphQL non eliminate.
+- [ ] Script `typecheck` presente e funzionante su un clone pulito.
+- [ ] Verifiche tecniche eseguite; quelle non eseguite sono dichiarate come tali nel CHANGELOG.
+- [ ] CHANGELOG: voci in `Added` (script), `Fixed` (F2, F9, F10) e `Tests`, **solo per ciò che è stato eseguito**.
+- [ ] Messaggio di commit suggerito: `fix(auth,db): utenti disattivati senza permessi, pool a 3, GraphQL spento`.
+- [ ] Aggiornare lo stato di 7.0 in questo file, in `piano.yaml` e in `00-piano-generale.md`.
 
 ---
 

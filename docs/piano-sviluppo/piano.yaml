@@ -41,6 +41,7 @@ meta:
   # (parte CMS, API e backoffice; il frontend pubblico è fuori perimetro).
   ordine_esecuzione:
     - "fase-4.0 (localizzazione e lingua d'interfaccia)"
+    - "fase-7.0 (manutenzione dopo audit del 2026-10-04: F2, F9, F10, F26), prima di fase-7.1"
     - "fase-7 (impostazioni-sistema: orari e chiusure sono fonte unica per menù e prenotazioni)"
     - "fase-8 (shell (app) + shadcn/ui)"
     - "fase-6 (menù digitale; 6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)"
@@ -239,6 +240,10 @@ fasi:
       mancanti; neanche 7.4: il punto sull'accesso del manager all'Admin è
       risolto da ADR-113 (accettata).
     sottofasi:
+      - id: fase-7.0
+        nome: "Manutenzione prima della Fase 7: correzioni dall'audit (F2, F9, F10, F26)"
+        stato: "da_fare"
+        note: "Dall'audit di coerenza del 2026-10-04 (docs/audit/audit-repo-2026-10-04.md). Quattro correzioni piccole al codice esistente, senza migrazione: utenti disattivati senza permessi (F2), pool a 3 connessioni (F9), graphql ^16.8.1 con GraphQL spento (F10), script typecheck (F26). F1 non è qui: è affidato al template (po-10). L'aggiornamento di Payload non è qui. Dettaglio in fase-7-impostazioni-sistema.md §7.0."
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
         stato: "da_fare"
@@ -817,6 +822,22 @@ archi:
     descrizione: "La migrazione di activity-log con le azioni di sistema (ADR-115) nasce in 6.4; 5.3 la riusa per l'anonimizzazione."
     adr: "ADR — Azioni di sistema nel registro attività"
     fonte: "ADR-115-azioni-di-sistema-registro-attivita.md"
+
+  - id: arco-45
+    da: fase-7.0
+    a: fase-7.4
+    tipo: output
+    descrizione: "L'helper isActiveUser (F2) è il punto unico per la regola dell'utente disattivato, che 7.4 applica alle nuove funzioni access."
+    adr: null
+    fonte: "fase-7-impostazioni-sistema.md §7.0 (audit 2026-10-04, F2)"
+
+  - id: arco-46
+    da: fase-7.0
+    a: fase-8.3
+    tipo: output
+    descrizione: "L'helper isActiveUser (F2) è il punto unico per la regola dell'utente disattivato, che 8.3 applica alle funzioni per adminRole manager e a canAccessSection."
+    adr: null
+    fonte: "fase-7-impostazioni-sistema.md §7.0 (audit 2026-10-04, F2)"
 
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
