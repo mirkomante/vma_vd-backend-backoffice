@@ -33,7 +33,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 3. **Nessun deploy prima della migrazione**: le sottofasi 8.3 e 8.4 cambiano lo schema; ogni migrazione va applicata su Cloud SQL prod **prima del push** su `main` (`docs/operativo/cloud-sql-produzione.md`).
 4. **Commit solo dopo verifica runtime**, push manuale. Voce di CHANGELOG per ogni commit.
 5. **Isolamento**: lo stile di `(app)` non tocca l'Admin (`(payload)`) né `(frontend)`.
-6. **Convenzioni per la Payload 4** (`ADR-116`, proposta): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 rimuove o cambia (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
+6. **Convenzioni per la Payload 4** (`ADR-116`, accettata): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 rimuove o cambia (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
 
 ---
 

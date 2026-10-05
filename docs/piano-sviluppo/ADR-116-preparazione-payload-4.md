@@ -2,7 +2,7 @@
 
 > Template minimo. Uno per ogni **arco di decisione** del DAG di progetto (`docs/piano-sviluppo/piano.yaml`) — passo standard, non facoltativo (vedi `00-come-eseguire-il-piano.md`, Passo 0).
 
-**Stato**: proposta
+**Stato**: accettata (2026-10-05, dall'umano)
 **Data**: 2026-10-04
 **Arco di decisione**: `arco-50` (`fase-7.0b` → `fase-7.1`) e punto aperto `po-11`. Le convenzioni valgono per tutto il codice nuovo dalla 7.1 in poi (Fasi 7, 8, 6, poi 4 e 5). Fonte: `docs/audit/payload-upgrade-2026-10-04.md` § 2.
 

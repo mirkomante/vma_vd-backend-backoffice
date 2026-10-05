@@ -33,7 +33,7 @@ L'adapter Postgres (`payload.config.ts`, `pool.max: 3`) apre al massimo **3 conn
 
 Il servizio è configurato con **`--max-instances` = 4** (conferma dell'umano del 2026-10-04): al picco, le connessioni dall'applicazione sono al massimo **4 × 3 = 12**. Devono restare sotto il `max_connections` dell'istanza Cloud SQL, lasciando margine per `scripts/prod-db.sh` e per le migrazioni eseguite da locale.
 
-Sull'istanza **`db-f1-micro`** il `max_connections` predefinito è **25** (conferma dell'umano del 2026-10-04; verificabile in produzione con `./scripts/prod-db.sh -- psql "postgresql://vma-vd-user@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable" -c "SHOW max_connections;"`). Margine indicativo: 25 − 12 = **13** slot; di solito **3** sono riservati al superuser di PostgreSQL, quindi restano circa **10** per sessioni dal proxy Auth e migrazioni da locale.
+Sull'istanza **`db-f1-micro`** il `max_connections` predefinito è **25** (confermato in produzione con `SHOW max_connections;` dall'umano il 2026-10-05: **25**). Margine indicativo: 25 − 12 = **13** slot; di solito **3** sono riservati al superuser di PostgreSQL, quindi restano circa **10** per sessioni dal proxy Auth e migrazioni da locale.
 
 Vedi **`ADR-110`** (pool di connessioni) nel piano di sviluppo.
 

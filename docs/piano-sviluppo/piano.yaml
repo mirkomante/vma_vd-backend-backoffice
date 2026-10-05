@@ -992,7 +992,7 @@ adr_da_scrivere:
       gli endpoint che non passano da un'operazione di collection.
   - titolo: "ADR — Preparazione a Payload 4: convenzioni in 3.x e criterio di migrazione"
     archi: ["arco-50"]
-    stato: "proposta"
+    stato: "accettata"
     file: "ADR-116-preparazione-payload-4.md"
     nota: >
       Dal report della chat 2 sull'aggiornamento (2026-10-04). Convenzioni nel
@@ -1084,8 +1084,8 @@ punti_aperti:
   - id: po-10
     titolo: "F1 dell'audit: un admin può promuoversi a super-admin (difetto del pattern di catalogo per update su users)"
     scadenza: "prima di fase-8.3"
-    responsabile: "umano (verifica degli admin attuali)"
-    registrazione: "segnalazione scritta per il template, ora fuori da questo repo (recuperabile con git show 0e82351^:docs/piano-sviluppo/segnalazione-catalogo-escalation-super-admin.md); l'invio è indipendente da questo progetto: il template si aggiorna nel suo progetto per le applicazioni future (decisione dell'umano del 2026-10-04); correzione nel progetto in fase-8.3 con il controllo descritto in fase-8 §8.3 (blocco Controllo di F1), senza attendere il template. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Prima della 7.0: l'umano controlla l'elenco degli utenti con adminRole admin e conferma che sono tutti fidati."
+    responsabile: "Cursor (correzione in fase-8.3); verifica degli admin attuali già fatta dall'umano il 2026-10-05"
+    registrazione: "segnalazione scritta per il template, ora fuori da questo repo (recuperabile con git show 0e82351^:docs/piano-sviluppo/segnalazione-catalogo-escalation-super-admin.md); l'invio è indipendente da questo progetto: il template si aggiorna nel suo progetto per le applicazioni future (decisione dell'umano del 2026-10-04); correzione nel progetto in fase-8.3 con il controllo descritto in fase-8 §8.3 (blocco Controllo di F1), senza attendere il template. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Controllo degli admin attuali eseguito dall'umano il 2026-10-05, esito OK."
     stato: "aperto"
   - id: po-11
     titolo: "Migrazione a Payload 4: quando e con quali prove"
@@ -1093,4 +1093,4 @@ punti_aperti:
     responsabile: "umano e pianificatore"
     registrazione: "ADR-116"
     stato: "aperto"
-    riferimento: "Criterio (ADR-116, proposta): solo con una RC o una stabile della 4, dopo le Fasi 7, 8 e 6; prima, una prova su ramo con la canary per chiudere due incognite (JWT con disableLocalStrategy: { enableFields: true }; compatibilita di payload-oauth2). Report: docs/audit/payload-upgrade-2026-10-04.md, sezione 2."
+    riferimento: "Criterio (ADR-116, accettata il 2026-10-05): solo con una RC o una stabile della 4, dopo le Fasi 7, 8 e 6; prima, una prova su ramo con la canary per chiudere due incognite (JWT con disableLocalStrategy: { enableFields: true }; compatibilita di payload-oauth2). Report: docs/audit/payload-upgrade-2026-10-04.md, sezione 2."
