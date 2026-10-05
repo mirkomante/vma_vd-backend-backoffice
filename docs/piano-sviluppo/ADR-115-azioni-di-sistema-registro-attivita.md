@@ -35,7 +35,7 @@
 - Non verificato: la migrazione che Payload genererà per rendere `user` facoltativo (attesa: la sola rimozione del NOT NULL, non provata).
 - Se il catalogo volesse la stessa possibilità, la segnalazione è un passo a parte: non è stata inviata.
 
-## Precisazioni (2026-10-04) — accettate su passaggio esplicito dell'umano **[da registrare]**
+## Precisazioni (2026-10-04) — accettate dall'umano il 2026-10-04
 
 1. `users.beforeDelete` e `purgeActivityLogForUserBeforeDelete` restano invariati: la cancellazione di un utente elimina le sue voci; le voci di sistema (`user` vuoto) non sono toccate.
 2. `detail` comincia con una chiave di azione da un elenco chiuso (`availability-reset`, `availability-write-failed`, `rebuild-started`, `revalidation`, `anonymization`), seguita da esito e dettagli. `availability-write-failed` registra solo gli errori di scrittura del file: le riscritture riuscite non si registrano (ce n'è una per ogni cambio di stato del manager).
