@@ -132,7 +132,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - [x] `pnpm typecheck`, `pnpm lint` e `pnpm build` senza errori.
 - [x] Verifica a runtime eseguita (login locale App, attivazione via verify, forgot e reset); ciò che non è stato eseguito è dichiarato nel CHANGELOG.
 - [x] Vincolo hard alzato a `>= 3.90.0` in `piano.yaml` (`meta.vincoli_hard`); regola di catalogo e voci storiche non toccate.
-- [ ] Migrazione applicata su Cloud SQL prod **prima** del push; login reali dopo il deploy (umano).
+- [x] Migrazione applicata su Cloud SQL prod **prima** del push; login reali dopo il deploy (umano, 2026-10-05: migrate, push e smoke test OK).
 - [x] CHANGELOG, stato di 7.0b aggiornato in questo file, in `piano.yaml` e in `00-piano-generale.md`.
 - [x] Messaggio di commit suggerito: `chore(deps): aggiorna Payload a 3.90.2 (correzioni di sicurezza)`.
 
