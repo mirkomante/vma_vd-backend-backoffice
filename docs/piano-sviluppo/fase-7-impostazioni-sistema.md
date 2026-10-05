@@ -90,7 +90,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 7.0b — Aggiornamento di Payload a 3.90.2
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-05)
 
 **Dipende da**: 7.0 completata (`graphql ^16.8.1`, script `typecheck`). **Una chat Composer a sé**, un commit. **Con migrazione**: vale la regola «migrazione su Cloud SQL prod prima del push».
 
@@ -126,15 +126,15 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Fuori da questa sottofase**: far verificare `authVersion` (`JWT_AUTH_VERSION`, esportato da `payload` 3.90.2) alle strategie isolate di `lib/auth/jwt/`. È consigliato dal report ma non è un blocco, e la 4 lo richiede: resta un rinviato (A), da riprendere con `po-11`.
 
 **Checklist di chiusura sottofase**:
-- [ ] Sette pacchetti a `3.90.2` esatta; `git diff package.json` solo su quelle righe; lockfile committato; `pnpm peers check` pulito.
-- [ ] `payload-types.ts` cambia solo di 2 righe.
-- [ ] Migrazione `add-reset-password-requested-at` generata, riletta (solo l'`ADD COLUMN`), applicata in sviluppo e committata.
-- [ ] `pnpm typecheck`, `pnpm lint` e `pnpm build` senza errori.
-- [ ] Verifica a runtime eseguita (Google Admin, login locale App, attivazione, forgot e reset); ciò che non è stato eseguito è dichiarato nel CHANGELOG.
-- [ ] Vincolo hard alzato a `>= 3.90.0` in `piano.yaml` (`meta.vincoli_hard`); regola di catalogo e voci storiche non toccate.
+- [x] Sette pacchetti a `3.90.2` esatta; `git diff package.json` solo su quelle righe; lockfile committato; `pnpm peers check` pulito.
+- [x] `payload-types.ts` cambia solo di 2 righe.
+- [x] Migrazione `add-reset-password-requested-at` generata, riletta (solo l'`ADD COLUMN`), applicata sul database vuoto `vma_vd_migr` (passo 4) e committata; su `vma_vd_dev` la colonna è aggiunta da `push`, senza `pnpm migrate`.
+- [x] `pnpm typecheck`, `pnpm lint` e `pnpm build` senza errori.
+- [x] Verifica a runtime eseguita (login locale App, attivazione via verify, forgot e reset); ciò che non è stato eseguito è dichiarato nel CHANGELOG.
+- [x] Vincolo hard alzato a `>= 3.90.0` in `piano.yaml` (`meta.vincoli_hard`); regola di catalogo e voci storiche non toccate.
 - [ ] Migrazione applicata su Cloud SQL prod **prima** del push; login reali dopo il deploy (umano).
-- [ ] CHANGELOG, stato di 7.0b aggiornato in questo file, in `piano.yaml` e in `00-piano-generale.md`.
-- [ ] Messaggio di commit suggerito: `chore(deps): aggiorna Payload a 3.90.2 (correzioni di sicurezza)`.
+- [x] CHANGELOG, stato di 7.0b aggiornato in questo file, in `piano.yaml` e in `00-piano-generale.md`.
+- [x] Messaggio di commit suggerito: `chore(deps): aggiorna Payload a 3.90.2 (correzioni di sicurezza)`.
 
 ---
 

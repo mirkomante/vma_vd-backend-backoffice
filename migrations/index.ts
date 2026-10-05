@@ -1,5 +1,6 @@
 import * as migration_20260929_141010_initial_schema from './20260929_141010_initial_schema';
 import * as migration_20261003_155849_localization_enum from './20261003_155849_localization_enum';
+import * as migration_20261005_134746_add_reset_password_requested_at from './20261005_134746_add_reset_password_requested_at';
 
 export const migrations = [
   {
@@ -10,6 +11,11 @@ export const migrations = [
   {
     up: migration_20261003_155849_localization_enum.up,
     down: migration_20261003_155849_localization_enum.down,
-    name: '20261003_155849_localization_enum'
+    name: '20261003_155849_localization_enum',
+  },
+  {
+    up: migration_20261005_134746_add_reset_password_requested_at.up,
+    down: migration_20261005_134746_add_reset_password_requested_at.down,
+    name: '20261005_134746_add_reset_password_requested_at'
   },
 ];

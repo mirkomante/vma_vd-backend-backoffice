@@ -30,7 +30,7 @@
 | Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔶 in corso (4.0 ✅; 4.1–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
 | Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` |
-| Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | 🔶 in corso (7.0 ✅) | `fase-7-impostazioni-sistema.md` |
+| Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | 🔶 in corso (7.0 ✅, 7.0b ✅) | `fase-7-impostazioni-sistema.md` |
 | Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔲 da fare | `fase-8-shell-app.md` |
 
 ## Ordine di esecuzione corrente
@@ -39,7 +39,7 @@ Il numero di fase non indica l'ordine di esecuzione. Priorità decisa il 2026-10
 
 1. **Fase 4.0** — localizzazione e lingua d'interfaccia ✅ (2026-10-03)
 2. **Fase 7.0** — manutenzione dopo l'audit (F2, F9, F10, F26), prima della 7.1 ✅ (2026-10-05)
-3. **Fase 7.0b** — aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche; una migrazione), prima della 7.1
+3. ~~**Fase 7.0b** — aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche; una migrazione), prima della 7.1~~ ✅ (2026-10-05)
 4. **Fase 7** — `impostazioni-sistema` (gli orari sono fonte unica per menù e prenotazioni: vanno prima di 6.1 e 5.1)
 5. **Fase 8** — shell `(app)` + shadcn/ui
 6. **Fase 6** — menù digitale (6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)
@@ -102,7 +102,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 7.0b (aggiornamento di Payload a 3.90.2), poi la 7.1 (file di Fase 6, 7 e 8 validati il 2026-10-04). Punti aperti: `po-10` (F1, escalation a super-admin; scadenza prima della 8.3) e `po-11` (migrazione a Payload 4, prima di avviarla); `po-04`, `po-05`, `po-06`, `po-07` e `po-09` chiusi il 2026-10-04. Il file di Fase 5 si scrive più avanti, secondo l'ordine di esecuzione. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App ed email di attivazione non rieseguiti in produzione, ora tracciata in `fase-8.6` (bloccata).
+- **Prossimo passo**: Fase 7.1 (Global `impostazioni-sistema`, scheletro e nomi); migrazione 7.0b su Cloud SQL prod **prima** del push di questo commit (file di Fase 6, 7 e 8 validati il 2026-10-04). Punti aperti: `po-10` (F1, escalation a super-admin; scadenza prima della 8.3) e `po-11` (migrazione a Payload 4, prima di avviarla); `po-04`, `po-05`, `po-06`, `po-07` e `po-09` chiusi il 2026-10-04. Il file di Fase 5 si scrive più avanti, secondo l'ordine di esecuzione. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod documentata: login locale App ed email di attivazione non rieseguiti in produzione, ora tracciata in `fase-8.6` (bloccata).
 - **Regola di avvio delle sottofasi** (proposta dalla chat di verifica, condivisa dal pianificatore e **confermata dall'umano il 2026-10-04**): Cursor parte da una sottofase quando non restano rilievi B né P che riguardano quella sottofase o quelle che la precedono nell'ordine di esecuzione; i P su sottofasi successive si correggono prima di avviarle; i rilievi A si raccolgono nella tabella «Rinviati e aperti». **Stato condiviso**: `docs/audit/audit-verifica-3-2026-10-04.md` §7, aggiornato da `docs/audit/audit-verifica-4-2026-10-04.md` §5 (tabelle «Concordato» e «Rinviati e aperti»).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.

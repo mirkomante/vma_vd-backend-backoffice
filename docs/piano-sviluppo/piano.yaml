@@ -52,7 +52,7 @@ meta:
     - "fase-6 (menù digitale; 6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)"
     - "poi fase-4.1/4.2/4.3-A/4.4-A, quindi fase-5"
   vincoli_hard:
-    - "Payload >= 3.73.0 — CVE-2026-25544 (SQL injection su adapter Drizzle-based: Postgres/SQLite)"
+    - "Payload >= 3.90.0 — correzioni di sicurezza critiche della 3.90.0; CVE-2026-25544 già coperta da 3.73.0"
     - "defaultLocale del progetto Payload è unico per l'intero progetto ('it') — riguarda solo l'interfaccia admin/app, non la lingua dei contenuti dei siti: quella è determinata dal parametro locale esplicito in ogni richiesta REST (vedi arco-01)"
   principio_trasversale:
     - "CI/CD sempre su Cloud Build — GitHub Actions escluso in ogni scenario. GitHub resta solo hosting del codice sorgente (Cloud Source Repositories non disponibile per nuovi clienti dal giugno 2024)."
@@ -251,7 +251,7 @@ fasi:
         note: "Dall'audit di coerenza del 2026-10-04 (docs/audit/audit-repo-2026-10-04.md). Quattro correzioni piccole al codice esistente, senza migrazione: utenti disattivati senza permessi (F2), pool a 3 connessioni (F9), graphql ^16.8.1 con GraphQL spento (F10), script typecheck (F26). F1 non è qui: è affidato al template (po-10). L'aggiornamento di Payload non è qui. Dettaglio in fase-7-impostazioni-sistema.md §7.0."
       - id: fase-7.0b
         nome: "Aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche della 3.90.0)"
-        stato: "da_fare"
+        stato: "fatto"
         note: "Aggiorna payload e i @payloadcms/* da 3.89.0 a 3.90.2 (ultima stabile, 2026-09-23). Una migrazione: colonna reset_password_requested_at in users. Dopo fase-7.0 e prima di fase-7.1, perche la migrazione precede quelle delle fasi successive. Report: docs/audit/payload-upgrade-2026-10-04.md. Dettaglio in fase-7-impostazioni-sistema.md §7.0b. Il vincolo hard sale a >= 3.90.0 alla chiusura. Rinviato (A): authVersion nelle strategie isolate."
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
