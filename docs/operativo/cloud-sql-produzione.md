@@ -1,6 +1,7 @@
 # Cloud SQL di produzione — connessione locale e migrate
 
-> Riferimento operativo per Fase 3.1 (chiusa 2026-09-29: istanza + migrate `20260929_141010_initial_schema` su `vma-vd-backoffice`). Decisioni di sizing/regione: `ADR-110-istanza-cloud-sql-produzione.md`. Nessuna password in questo file.
+> Riferimento operativo per Fase 3.1 (chiusa 2026-09-29: istanza + migrate `20260929_141010_initial_schema` su `vma-vd-backoffice`). Decisioni di sizing/regione: `ADR-110-istanza-cloud-sql-produzione.md`. Nessuna password in questo file.  
+> **Procedura completa** (dev, DB vuoto, create, prod prima del push): [`docs/procedure/migrazioni-payload-postgres.md`](../procedure/migrazioni-payload-postgres.md).
 
 ## Istanza
 
