@@ -22,7 +22,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Ordine di dipendenza reale
 
-**7.0 → 7.1 → 7.2 → 7.3 → 7.4.** La 7.0 è una manutenzione del codice esistente (nessun campo del Global). 7.2 e 7.3 sono indipendenti nei contenuti ma modificano lo stesso file di Global: si eseguono in sequenza, una chat Composer per sottofase. 7.4 viene per ultima perché i permessi agiscono sui campi già esistenti. La fase si esegue prima di Fase 8 e Fase 6 (`00-piano-generale.md`, «Ordine di esecuzione corrente»).
+**7.0 → 7.0b → 7.1 → 7.2 → 7.3 → 7.4.** La 7.0 è una manutenzione del codice esistente (nessun campo del Global); la 7.0b aggiorna Payload e precede ogni sottofase che genera migrazioni. 7.2 e 7.3 sono indipendenti nei contenuti ma modificano lo stesso file di Global: si eseguono in sequenza, una chat Composer per sottofase. 7.4 viene per ultima perché i permessi agiscono sui campi già esistenti. La fase si esegue prima di Fase 8 e Fase 6 (`00-piano-generale.md`, «Ordine di esecuzione corrente»).
 
 ## Principi trasversali per questa fase
 
@@ -30,6 +30,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 2. **Convenzione lingua**: nomi di campi, funzioni e file in **inglese**; etichette dell'interfaccia in **italiano** (`stack/01-stile-codice.mdc`). Lo scostamento da ADR-109 è chiuso dal secondo Emendamento a §1 (2026-10-04).
 3. **Nessun deploy prima della migrazione.** `main` fa deploy automatico su Cloud Run: per ogni sottofase che cambia lo schema, la migrazione va **applicata su Cloud SQL prod prima del push** (`pnpm payload migrate` via Auth Proxy, `docs/operativo/cloud-sql-produzione.md`).
 4. **Commit solo dopo verifica runtime** (non solo TypeScript), push manuale. Voce di CHANGELOG per ogni commit.
+5. **Convenzioni per la Payload 4** (`ADR-116`, proposta): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 dichiara rimossa (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
 
 ---
 
@@ -39,7 +40,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Dipende da**: Fase 3 chiusa e 4.0 completata. Nessuna migrazione, nessuna nuova risorsa GCP, nessun campo nuovo.
 
-**Obiettivo**: quattro correzioni piccole al codice già in produzione, emerse dall'audit di coerenza del 2026-10-04 (`docs/audit/audit-repo-2026-10-04.md`), prima che le Fasi 7, 8 e 6 aggiungano codice sopra. Il rilievo F1 (un `admin` può promuoversi a `super-admin`) **non è in questa sottofase**: è affidato al template (`po-10`). L'aggiornamento di Payload **non è** in questa sottofase.
+**Obiettivo**: quattro correzioni piccole al codice già in produzione, emerse dall'audit di coerenza del 2026-10-04 (`docs/audit/audit-repo-2026-10-04.md`), prima che le Fasi 7, 8 e 6 aggiungano codice sopra. Il rilievo F1 (un `admin` può promuoversi a `super-admin`) **non è in questa sottofase**: è affidato al template (`po-10`). L'aggiornamento di Payload **non è** in questa sottofase: è la 7.0b, subito dopo.
 
 **Riferimenti**: audit F2, F9, F10, F26; `ADR-110` (pool di connessioni); §7.4 di questo file e `fase-8-shell-app.md` §8.3 (regola dell'utente disattivato); `core/04-changelog-commit.mdc`.
 
@@ -87,11 +88,61 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ---
 
+## 7.0b — Aggiornamento di Payload a 3.90.2
+
+**Stato**: 🔲 da fare
+
+**Dipende da**: 7.0 completata (`graphql ^16.8.1`, script `typecheck`). **Una chat Composer a sé**, un commit. **Con migrazione**: vale la regola «migrazione su Cloud SQL prod prima del push».
+
+**Obiettivo**: portare `payload` e i `@payloadcms/*` da 3.89.0 a **3.90.2**, l'ultima stabile (2026-09-23). La 3.90.0 contiene «critical security fixes» (identificativi degli avvisi non recuperati dal report). Resta nella linea 3.x: nessun ADR, nessun arco di decisione.
+
+**Riferimenti**: `docs/audit/payload-upgrade-2026-10-04.md` (§ 1, in particolare § 1.7); `ADR-116` per le convenzioni verso la 4; `core/04-changelog-commit.mdc`.
+
+**Verificato dalla chat 2** (2026-10-04, baseline `bb95fda`, PostgreSQL 16, variabili fittizie; **la combinazione con le correzioni della 7.0 non è ancora stata provata**): `pnpm install` OK; `pnpm peers check` identico alla baseline; `next typegen` e `tsc --noEmit` senza errori; `generate:types` +2 righe (`resetPasswordRequestedAt`); migrazioni esistenti applicabili; `migrate:create` genera una sola colonna; `migrate`, `migrate:down`, `migrate` riusciti; `next build` OK (con i font di Google sostituiti nel sandbox); risposte HTTP identiche sulle route provate; `payload run` (`seed:super-admin`) OK. **Se l'esecuzione dà un esito diverso, fermarsi** e riferire.
+
+**Non provato**: flussi Google OAuth (due istanze), invio email con Resend (attivazione, reset), login locale con un cookie reale, PostgreSQL 18 e Cloud SQL, Cloud Build e Cloud Run, il throttling dei nostri endpoint `forgot-password` e `reset-password`.
+
+**Azioni umane prima di iniziare**: credenziali Google di sviluppo e una chiave Resend di sviluppo nel `.env` (`docs/operativo/credenziali-resend.md`); Cloud SQL Auth Proxy per la migrazione in produzione.
+
+**Passi** (in quest'ordine, un solo commit, dopo la verifica a runtime):
+
+1. In `package.json`: `payload`, `@payloadcms/db-postgres`, `@payloadcms/email-resend`, `@payloadcms/next`, `@payloadcms/richtext-lexical`, `@payloadcms/translations` e `@payloadcms/ui` a `3.90.2`, **versioni esatte**. Nessun altro pacchetto cambia direttamente.
+2. `pnpm install` e commit di `pnpm-lock.yaml` (Cloud Build usa `--frozen-lockfile`). Controlli: `git diff package.json` mostra solo le sette righe; il lockfile cambia di circa 700 righe (nel clone di prova +464/−265), perché cambiano anche le dipendenze transitive (per esempio Lexical da 0.41 a 0.50); `pnpm peers check` pulito (dopo la 7.0 non segnala più `graphql`). Se cambia un pacchetto diretto non elencato, **fermarsi**.
+3. `pnpm generate:types` con `APP_PUBLIC_URL`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` impostati (senza, i plugin OAuth non si registrano e il file cambia in modo diverso). Atteso: **solo 2 righe** in `payload-types.ts` (`resetPasswordRequestedAt` in `User` e in `UsersSelect`).
+4. Su un database locale con le migrazioni già applicate: `pnpm migrate:create add-reset-password-requested-at`, poi `pnpm migrate`. Atteso: **un solo** `ALTER TABLE "users" ADD COLUMN "reset_password_requested_at" timestamp(3) with time zone;` (la `down` fa `DROP COLUMN`). Se compare altro, **fermarsi**.
+5. `pnpm typecheck`, `pnpm lint` e `pnpm build` con i segnaposto del `Dockerfile`, senza errori.
+6. **Verifica a runtime in sviluppo** (Postgres locale, credenziali di prova): login Admin con Google; login locale dell'App; attivazione di un utente; `forgot-password` e `reset-password`. Per gli ultimi due, annotare se il nuovo throttling della 3.90.0 interferisce con i nostri endpoint (deduzione del report, non provata).
+7. In `piano.yaml` (`meta.vincoli_hard`) e in `00-piano-generale.md`: il vincolo diventa «Payload >= 3.90.0 — correzioni di sicurezza critiche della 3.90.0; CVE-2026-25544 già coperta da 3.73.0». **Non** modificare la regola di catalogo `stack/01a-db-postgres.mdc`: annotare lo scostamento in CHANGELOG.
+8. Voci di CHANGELOG (`Changed`, `Tests`) **solo per ciò che è stato eseguito**.
+
+**Produzione**:
+
+1. `pnpm payload migrate` da locale su Cloud SQL, tramite il proxy (`scripts/prod-db.sh`), **prima** del push.
+2. Push (`main` fa il deploy con Cloud Build).
+3. Dopo il deploy, un login Google e un login locale reali (azione umana).
+
+**Ripristino**: applicativo, ridistribuire la revisione precedente di Cloud Run (la 3.89.0 funziona con la colonna presente: additiva e nullable); schema, lasciare la colonna oppure `pnpm payload migrate:down` (provato nel clone); sessioni, i token emessi dalla 3.90.2 portano l'header `authVersion` e con la 3.89.0 il campo non è usato (da provare).
+
+**Fuori da questa sottofase**: far verificare `authVersion` (`JWT_AUTH_VERSION`, esportato da `payload` 3.90.2) alle strategie isolate di `lib/auth/jwt/`. È consigliato dal report ma non è un blocco, e la 4 lo richiede: resta un rinviato (A), da riprendere con `po-11`.
+
+**Checklist di chiusura sottofase**:
+- [ ] Sette pacchetti a `3.90.2` esatta; `git diff package.json` solo su quelle righe; lockfile committato; `pnpm peers check` pulito.
+- [ ] `payload-types.ts` cambia solo di 2 righe.
+- [ ] Migrazione `add-reset-password-requested-at` generata, riletta (solo l'`ADD COLUMN`), applicata in sviluppo e committata.
+- [ ] `pnpm typecheck`, `pnpm lint` e `pnpm build` senza errori.
+- [ ] Verifica a runtime eseguita (Google Admin, login locale App, attivazione, forgot e reset); ciò che non è stato eseguito è dichiarato nel CHANGELOG.
+- [ ] Vincolo hard alzato a `>= 3.90.0` in `piano.yaml` e `00-piano-generale.md`.
+- [ ] Migrazione applicata su Cloud SQL prod **prima** del push; login reali dopo il deploy (umano).
+- [ ] CHANGELOG, stato di 7.0b aggiornato in questo file, in `piano.yaml` e in `00-piano-generale.md`.
+- [ ] Messaggio di commit suggerito: `chore(deps): aggiorna Payload a 3.90.2 (correzioni di sicurezza)`.
+
+---
+
 ## 7.1 — Scheletro del Global e nomi
 
 **Stato**: 🔲 da fare
 
-**Dipende da**: 4.0 completata e 7.0 (utenti disattivati senza permessi: le funzioni `access` del Global usano gli helper aggiornati).
+**Dipende da**: 4.0 completata, 7.0 (utenti disattivati senza permessi: le funzioni `access` del Global usano gli helper aggiornati) e 7.0b (Payload 3.90.2 e la sua migrazione).
 
 **Obiettivo**: registrare il Global `impostazioni-sistema` con le 4 tab e il default di accesso più restrittivo (solo admin e super-admin), senza ancora i campi di 7.2 e 7.3.
 

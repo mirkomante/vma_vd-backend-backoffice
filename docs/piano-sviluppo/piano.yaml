@@ -46,6 +46,7 @@ meta:
   ordine_esecuzione:
     - "fase-4.0 (localizzazione e lingua d'interfaccia)"
     - "fase-7.0 (manutenzione dopo audit del 2026-10-04: F2, F9, F10, F26), prima di fase-7.1"
+    - "fase-7.0b (aggiornamento di Payload a 3.90.2; una migrazione), prima di fase-7.1"
     - "fase-7 (impostazioni-sistema: orari e chiusure sono fonte unica per menù e prenotazioni)"
     - "fase-8 (shell (app) + shadcn/ui)"
     - "fase-6 (menù digitale; 6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)"
@@ -248,6 +249,10 @@ fasi:
         nome: "Manutenzione prima della Fase 7: correzioni dall'audit (F2, F9, F10, F26)"
         stato: "da_fare"
         note: "Dall'audit di coerenza del 2026-10-04 (docs/audit/audit-repo-2026-10-04.md). Quattro correzioni piccole al codice esistente, senza migrazione: utenti disattivati senza permessi (F2), pool a 3 connessioni (F9), graphql ^16.8.1 con GraphQL spento (F10), script typecheck (F26). F1 non è qui: è affidato al template (po-10). L'aggiornamento di Payload non è qui. Dettaglio in fase-7-impostazioni-sistema.md §7.0."
+      - id: fase-7.0b
+        nome: "Aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche della 3.90.0)"
+        stato: "da_fare"
+        note: "Aggiorna payload e i @payloadcms/* da 3.89.0 a 3.90.2 (ultima stabile, 2026-09-23). Una migrazione: colonna reset_password_requested_at in users. Dopo fase-7.0 e prima di fase-7.1, perche la migrazione precede quelle delle fasi successive. Report: docs/audit/payload-upgrade-2026-10-04.md. Dettaglio in fase-7-impostazioni-sistema.md §7.0b. Il vincolo hard sale a >= 3.90.0 alla chiusura. Rinviato (A): authVersion nelle strategie isolate."
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
         stato: "da_fare"
@@ -859,6 +864,22 @@ archi:
     adr: null
     fonte: "fase-4-cms-siti-esterni.md §4.1 (Bozze via REST)"
 
+  - id: arco-49
+    da: fase-7.0
+    a: fase-7.0b
+    tipo: output
+    descrizione: "graphql ^16.8.1 e lo script typecheck (7.0) sono la base su cui 7.0b prova l'aggiornamento: il report della chat 2 è stato provato prima di queste correzioni."
+    adr: null
+    fonte: "fase-7-impostazioni-sistema.md §7.0b"
+
+  - id: arco-50
+    da: fase-7.0b
+    a: fase-7.1
+    tipo: decisione
+    descrizione: "Payload 3.90.2 e la sua migrazione (colonna in users) precedono le migrazioni delle fasi successive; le convenzioni per la Payload 4 (ADR-116) valgono per tutto il codice nuovo da 7.1 in poi."
+    adr: "ADR — Preparazione a Payload 4: convenzioni in 3.x e criterio di migrazione"
+    fonte: "ADR-116-preparazione-payload-4.md"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -969,6 +990,16 @@ adr_da_scrivere:
       additiva come primo passo di fase-6.4; usata da 6.5, 4.4A e 5.3.
       Precisa l'eccezione prevista da payload-pattern/03-log-azioni.mdc per
       gli endpoint che non passano da un'operazione di collection.
+  - titolo: "ADR — Preparazione a Payload 4: convenzioni in 3.x e criterio di migrazione"
+    archi: ["arco-50"]
+    stato: "proposta"
+    file: "ADR-116-preparazione-payload-4.md"
+    nota: >
+      Dal report della chat 2 sull'aggiornamento (2026-10-04). Convenzioni nel
+      codice nuovo (overrideAccess e depth espliciti, versions esplicito, nessun
+      nuovo TypedUser, nessuna API rimossa nella 4, script con payload run) e
+      criterio di migrazione alla 4 (solo con una RC o una stabile, dopo le
+      Fasi 7, 8 e 6, con una prova su ramo con la canary).
   - titolo: "ADR — Contratto CMS <-> frontend menù digitale (letture REST e disponibilita.json)"
     archi: ["arco-32"]
     stato: "accettata"
@@ -1056,3 +1087,10 @@ punti_aperti:
     responsabile: "umano (verifica degli admin attuali)"
     registrazione: "segnalazione-catalogo-escalation-super-admin.md (scritta per il template; l'invio è indipendente da questo progetto: il template si aggiorna nel suo progetto per le applicazioni future, decisione dell'umano del 2026-10-04); correzione nel progetto in fase-8.3, senza attendere il template. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Prima della 7.0: l'umano controlla l'elenco degli utenti con adminRole admin e conferma che sono tutti fidati."
     stato: "aperto"
+  - id: po-11
+    titolo: "Migrazione a Payload 4: quando e con quali prove"
+    scadenza: "prima di avviare la migrazione alla 4"
+    responsabile: "umano e pianificatore"
+    registrazione: "ADR-116"
+    stato: "aperto"
+    riferimento: "Criterio (ADR-116, proposta): solo con una RC o una stabile della 4, dopo le Fasi 7, 8 e 6; prima, una prova su ramo con la canary per chiudere due incognite (JWT con disableLocalStrategy: { enableFields: true }; compatibilita di payload-oauth2). Report: docs/audit/payload-upgrade-2026-10-04.md, sezione 2."

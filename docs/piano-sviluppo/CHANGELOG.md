@@ -30,6 +30,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `docs/audit/audit-verifica-2-2026-10-04.md`: terza verifica (HEAD `2471059`), con 14 nuovi rilievi (M1–M14); giudizio: Cursor può partire dalla 7.0 con riserve.
 - `docs/audit/audit-verifica-3-2026-10-04.md`: verifica finale (HEAD `7a5d537`) con le tabelle «Concordato» e «Rinviati e aperti» e 7 rilievi (R1–R7); giudizio: Cursor può partire dalla 7.0 con riserve, la 8.3 dopo R1.
 - `docs/audit/audit-verifica-4-2026-10-04.md`: chiusura (HEAD `116033b`): Cursor può partire dalla 7.0; unico rilievo P residuo S1 (8.3), poi versione condivisa.
+- `ADR-116` (proposta, 2026-10-04): preparazione a Payload 4, con le convenzioni per il codice nuovo in 3.x e il criterio di migrazione; punto aperto `po-11`. `docs/audit/payload-upgrade-2026-10-04.md`: report della chat 2 sull'aggiornamento a 3.90.2 e sulla 4.
 
 ### Changed
 
@@ -72,6 +73,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Confermata dall'umano la regola di avvio delle sottofasi (`00-piano-generale.md`). `fase-7` 7.0: valori delle connessioni indicati dall'umano (4 istanze di Cloud Run, `max_connections` 25 per `db-f1-micro`, da confermare con `SHOW max_connections;`) al posto del «non scrivere i valori»; `fase-8` 8.3: chi esegue il `PATCH` nella prova di S1.
 - `ADR-115`: le due Precisazioni (hook di cancellazione utente invariato; `detail` con chiave di azione da un elenco chiuso, `availability-write-failed` solo per gli errori) sono accettate dall'umano il 2026-10-04.
 - Decisione dell'umano (2026-10-04): l'invio della segnalazione F1/R1 al template è indipendente da questo progetto, che corregge in 8.3 senza attendere. Aggiornati `po-10` (senza scadenza di invio), `fase-8` 8.3 punto 9 e la segnalazione.
+- Registrata la sottofase `fase-7.0b` (aggiornamento di Payload a 3.90.2) in `fase-7-impostazioni-sistema.md`, `piano.yaml` (`arco-49`, `arco-50`, ordine di esecuzione) e `00-piano-generale.md`; le convenzioni per la Payload 4 entrano nei principi trasversali di `fase-6`, `fase-7` e `fase-8`; `fase-4` §4.3: `useAPIKey` non va usata.
 
 ### Fixed
 

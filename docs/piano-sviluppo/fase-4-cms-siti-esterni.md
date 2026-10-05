@@ -193,7 +193,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Primo passo: scrivere `ADR-111-contratto-cms-siti-esterni.md`** (decisione, namespace `ADR-1NN`; aggiungere l'entry in `piano.yaml` `adr_da_scrivere`). Contenuto minimo del contratto, valido per i due siti:
 - **Link di preview firmato**: parametri (sito, collection, slug, locale, scadenza), algoritmo di firma, durata del token, route di destinazione `/api/preview` sul sito.
-- **Letture in `draft: true`**: come si emette il token API per la lettura delle bozze (ADR-104 lo prevede; modalità da decidere, ad es. utente tecnico a sola lettura per sito), con quali permessi. **Vincolo emerso dall'audit (2026-10-04)**: `users` non ha `useAPIKey` e la creazione di un utente rifiuta chi ha entrambi i ruoli `none`, quindi un «utente tecnico» non è realizzabile senza una decisione di schema; inoltre la strategia API-key di Payload non controlla `active` né i ruoli. Opzione da valutare in ADR-111: una collection dedicata `api-clients` (`auth: { useAPIKey: true, disableLocalStrategy: true }`, un record per sito, sola lettura su `pages-*` e `impostazioni-*`), separata da `users`.
+- **Letture in `draft: true`**: come si emette il token API per la lettura delle bozze (ADR-104 lo prevede; modalità da decidere, ad es. utente tecnico a sola lettura per sito), con quali permessi. **Vincolo emerso dall'audit (2026-10-04)**: `users` non ha `useAPIKey` e la creazione di un utente rifiuta chi ha entrambi i ruoli `none`, quindi un «utente tecnico» non è realizzabile senza una decisione di schema; inoltre la strategia API-key di Payload non controlla `active` né i ruoli. Opzioni da valutare in ADR-111: (a) un token firmato a sola lettura, per sito, verificato da una strategia di autenticazione dedicata, senza nuova collection; (b) una collection dedicata `api-clients`, un record per sito, sola lettura su `pages-*` e `impostazioni-*`, separata da `users`. **Non usare `useAPIKey`**: la 4 lo cambia (SHA1 rimosso, `enableAPIKey`), vedi `ADR-116`.
 - **Letture del contenuto pubblicato**: REST senza token (ADR-105), `locale` esplicito obbligatorio.
 - **Nomi dei campi e degli slug**: quelli congelati in 4.1.
 - **Variabili d'ambiente** (tabella sotto).
@@ -202,7 +202,7 @@ Con pnpm `@payloadcms/translations` va aggiunto come **dipendenza diretta**, ver
 
 **Checklist di chiusura sottofase**:
 - [ ] ADR-111 scritto (parte preview), stato `proposta` finché i siti non lo confermano.
-- [ ] ADR-111: meccanismo del token per la lettura delle bozze deciso, tenendo conto del vincolo emerso dall'audit (`users` non ha `useAPIKey`; opzione: collection dedicata `api-clients`; audit F4).
+- [ ] ADR-111: meccanismo del token per la lettura delle bozze deciso, tenendo conto del vincolo emerso dall'audit (`users` non ha `useAPIKey` e `useAPIKey` non va usata, `ADR-116`; opzioni: token firmato per sito o collection `api-clients`; audit F4).
 - [ ] Test automatico di firma e verifica del token (valido, scaduto, manomesso, sito/locale sbagliato).
 - [ ] Il pulsante di anteprima dell'Admin genera un link coerente col contratto, verificato a mano su una bozza.
 - [ ] Segreti in Secret Manager (accessor per singolo secret sul runtime SA), non in file né in Payload.
