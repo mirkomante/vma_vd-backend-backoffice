@@ -67,7 +67,7 @@ if (
 Il difetto è nel codice già in produzione (`lib/auth/userAccess.ts:73-82`, `collections/Users.ts:63-74` e hook `beforeValidate`, righe 186-230). Il rischio riguarda solo gli utenti con `adminRole: admin`. Finché la correzione non è applicata conviene non assegnare `adminRole: admin` a nuovi utenti e controllare chi lo ha oggi.
 
 Il progetto traccia la correzione come `po-10`: la applica appena arriva dal catalogo, al più tardi nella sua Fase 8.3.
-La segnalazione è scritta nel repo del progetto ma non risulta inviata al repo del template: l'invio è dell'umano (`po-10`). Finché la correzione non è applicata: elenco degli utenti con `adminRole: admin` verificato dall'umano e nessuna nuova assegnazione di `admin`.
+La segnalazione è scritta nel repo del progetto per il template. L'invio è indipendente da questo progetto (il template si aggiorna nel suo progetto per le applicazioni future) e non blocca nessuna fase: nel progetto la correzione si applica in 8.3, senza attendere il template. Finché la correzione non è applicata: elenco degli utenti con `adminRole: admin` verificato dall'umano e nessuna nuova assegnazione di `admin`.
 
 ---
 

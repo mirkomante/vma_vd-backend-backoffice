@@ -71,6 +71,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Correzione S1 della verifica di chiusura: la prova di R1 in `fase-8` 8.3 richiede l'email verificata e un controllo positivo prima della promozione (senza, il login dell'App è rifiutato per qualunque regola e la prova non dimostra nulla). Note «da annotare» portate in 8.3 (matrice di `fase-2-login.md`, commento di `appLoginChecks.ts`) e 8.4 (`allowApp`); `00-piano-generale.md` rimanda allo stato condiviso aggiornato.
 - Confermata dall'umano la regola di avvio delle sottofasi (`00-piano-generale.md`). `fase-7` 7.0: valori delle connessioni indicati dall'umano (4 istanze di Cloud Run, `max_connections` 25 per `db-f1-micro`, da confermare con `SHOW max_connections;`) al posto del «non scrivere i valori»; `fase-8` 8.3: chi esegue il `PATCH` nella prova di S1.
 - `ADR-115`: le due Precisazioni (hook di cancellazione utente invariato; `detail` con chiave di azione da un elenco chiuso, `availability-write-failed` solo per gli errori) sono accettate dall'umano il 2026-10-04.
+- Decisione dell'umano (2026-10-04): l'invio della segnalazione F1/R1 al template è indipendente da questo progetto, che corregge in 8.3 senza attendere. Aggiornati `po-10` (senza scadenza di invio), `fase-8` 8.3 punto 9 e la segnalazione.
 
 ### Fixed
 

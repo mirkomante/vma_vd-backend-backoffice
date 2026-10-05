@@ -1053,6 +1053,6 @@ punti_aperti:
   - id: po-10
     titolo: "F1 dell'audit: un admin può promuoversi a super-admin (difetto del pattern di catalogo per update su users)"
     scadenza: "prima di fase-8.3"
-    responsabile: "umano (invio della segnalazione al template e verifica degli admin attuali)"
-    registrazione: "segnalazione-catalogo-escalation-super-admin.md (scritta, da inviare al template); correzione nel progetto appena arriva dal catalogo, al più tardi in fase-8.3. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Prima della 7.0: l'umano controlla l'elenco degli utenti con adminRole admin e conferma che sono tutti fidati. Invio della segnalazione al template entro la fine della Fase 7."
+    responsabile: "umano (verifica degli admin attuali)"
+    registrazione: "segnalazione-catalogo-escalation-super-admin.md (scritta per il template; l'invio è indipendente da questo progetto: il template si aggiorna nel suo progetto per le applicazioni future, decisione dell'umano del 2026-10-04); correzione nel progetto in fase-8.3, senza attendere il template. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Prima della 7.0: l'umano controlla l'elenco degli utenti con adminRole admin e conferma che sono tutti fidati."
     stato: "aperto"
