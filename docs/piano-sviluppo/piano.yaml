@@ -247,7 +247,7 @@ fasi:
     sottofasi:
       - id: fase-7.0
         nome: "Manutenzione prima della Fase 7: correzioni dall'audit (F2, F9, F10, F26)"
-        stato: "da_fare"
+        stato: "fatto"
         note: "Dall'audit di coerenza del 2026-10-04 (docs/audit/audit-repo-2026-10-04.md). Quattro correzioni piccole al codice esistente, senza migrazione: utenti disattivati senza permessi (F2), pool a 3 connessioni (F9), graphql ^16.8.1 con GraphQL spento (F10), script typecheck (F26). F1 non è qui: è affidato al template (po-10). L'aggiornamento di Payload non è qui. Dettaglio in fase-7-impostazioni-sistema.md §7.0."
       - id: fase-7.0b
         nome: "Aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche della 3.90.0)"

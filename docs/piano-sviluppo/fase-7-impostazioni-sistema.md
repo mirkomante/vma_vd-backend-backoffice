@@ -36,7 +36,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 7.0 — Manutenzione: correzioni dall'audit (F2, F9, F10, F26)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-05)
 
 **Dipende da**: Fase 3 chiusa e 4.0 completata. Nessuna migrazione, nessuna nuova risorsa GCP, nessun campo nuovo.
 
@@ -77,14 +77,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - Se una prova fallisce, **non fare push**: `main` fa deploy automatico su Cloud Run.
 
 **Checklist di chiusura sottofase**:
-- [ ] `isActiveUser` esportata e usata dalle cinque funzioni indicate; nessun altro file modificato in `lib/auth`.
-- [ ] `pool.max: 3` e sezione «Connessioni al database» in `cloud-run-produzione.md`, con i valori indicati dall'umano (4 istanze, `max_connections` 25 da confermare con `SHOW max_connections;`) e la loro attribuzione.
-- [ ] `graphql ^16.8.1`, lockfile cambiato solo per `graphql`, `graphQL.disable: true`, route GraphQL non eliminate.
-- [ ] Script `typecheck` presente e funzionante su un clone pulito.
-- [ ] Verifiche tecniche eseguite; quelle non eseguite sono dichiarate come tali nel CHANGELOG.
-- [ ] CHANGELOG: voci in `Added` (script), `Fixed` (F2, F9, F10) e `Tests`, **solo per ciò che è stato eseguito**.
-- [ ] Messaggio di commit suggerito: `fix(auth,db): utenti disattivati senza permessi, pool a 3, GraphQL spento`.
-- [ ] Aggiornare lo stato di 7.0 in questo file, in `piano.yaml` e in `00-piano-generale.md`.
+- [x] `isActiveUser` esportata e usata dalle cinque funzioni indicate; nessun altro file modificato in `lib/auth`.
+- [x] `pool.max: 3` e sezione «Connessioni al database» in `cloud-run-produzione.md`, con i valori indicati dall'umano (4 istanze, `max_connections` 25 da confermare con `SHOW max_connections;`) e la loro attribuzione.
+- [x] `graphql ^16.8.1`, lockfile cambiato solo per `graphql`, `graphQL.disable: true`, route GraphQL non eliminate.
+- [x] Script `typecheck` presente e funzionante su un clone pulito.
+- [x] Verifiche tecniche eseguite; quelle non eseguite sono dichiarate come tali nel CHANGELOG.
+- [x] CHANGELOG: voci in `Added` (script), `Fixed` (F2, F9, F10) e `Tests`, **solo per ciò che è stato eseguito**.
+- [x] Messaggio di commit suggerito: `fix(auth,db): utenti disattivati senza permessi, pool a 3, GraphQL spento`.
+- [x] Aggiornare lo stato di 7.0 in questo file, in `piano.yaml` e in `00-piano-generale.md`.
 
 ---
 

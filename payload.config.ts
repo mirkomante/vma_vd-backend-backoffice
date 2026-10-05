@@ -38,12 +38,16 @@ export default buildConfig({
     fallback: true,
   },
   secret: process.env.PAYLOAD_SECRET || '',
+  // Nessun consumatore GraphQL pianificato; POST /api/graphql risponde 404.
+  graphQL: { disable: true },
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
+      // ADR-110: max 3 connessioni per istanza; Cloud Run --max-instances × 3 ≤ max_connections Cloud SQL.
+      max: 3,
     },
     // push consentito solo in sviluppo locale (migrazioni obbligatorie altrove — vedi stack/01a-db-postgres.mdc)
     push: process.env.NODE_ENV !== 'production',

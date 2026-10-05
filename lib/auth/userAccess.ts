@@ -14,8 +14,13 @@ export function getAdminRole(user: UserAccessFields | null | undefined): AdminRo
   return user?.adminRole ?? undefined
 }
 
+/** Utente presente e non disattivato (`active !== false`). */
+export function isActiveUser(user: UserAccessFields | null | undefined): boolean {
+  return user != null && user.active !== false
+}
+
 export function canAccessAdminPanel(user: UserAccessFields | null | undefined): boolean {
-  if (user?.active === false) {
+  if (!isActiveUser(user)) {
     return false
   }
   const role = user?.adminRole
@@ -24,7 +29,7 @@ export function canAccessAdminPanel(user: UserAccessFields | null | undefined): 
 
 /** Accesso all’Area App: utente attivo con un `appRole` diverso da `none`. */
 export function canAccessAppArea(user: UserAccessFields | null | undefined): boolean {
-  if (user?.active === false) {
+  if (!isActiveUser(user)) {
     return false
   }
   const role = user?.appRole
@@ -32,11 +37,19 @@ export function canAccessAppArea(user: UserAccessFields | null | undefined): boo
 }
 
 export function isSuperAdminRequest(req: PayloadRequest): boolean {
-  return getAdminRole(asUserAccessFields(req.user)) === 'super-admin'
+  const user = asUserAccessFields(req.user)
+  if (!isActiveUser(user)) {
+    return false
+  }
+  return getAdminRole(user) === 'super-admin'
 }
 
 export function isStaffAdminRequest(req: PayloadRequest): boolean {
-  const role = getAdminRole(asUserAccessFields(req.user))
+  const user = asUserAccessFields(req.user)
+  if (!isActiveUser(user)) {
+    return false
+  }
+  const role = getAdminRole(user)
   return role === 'admin' || role === 'super-admin'
 }
 
@@ -82,7 +95,7 @@ export function usersUpdateAccess({ req }: { req: PayloadRequest }) {
 }
 
 export function usersDeleteAccess({ req }: { req: PayloadRequest }) {
-  if (!req.user) {
+  if (!isStaffAdminRequest(req) || !req.user) {
     return false
   }
   const notSelf = { id: { not_equals: req.user.id } }

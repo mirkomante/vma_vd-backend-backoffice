@@ -10,8 +10,22 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Fixed
+
+- Fase 7.0 (F2): helper `isActiveUser` in `lib/auth/userAccess.ts`; `canAccessAdminPanel`, `canAccessAppArea`, `isSuperAdminRequest`, `isStaffAdminRequest` e `usersDeleteAccess` escludono gli utenti con `active: false` anche con cookie JWT ancora valido.
+- Fase 7.0 (F9): `pool.max: 3` in `payload.config.ts` (ADR-110); sezione «Connessioni al database» in `docs/operativo/cloud-run-produzione.md` (4 istanze × 3 connessioni; `max_connections` 25 su `db-f1-micro` con attribuzione dell'umano del 2026-10-04, non riconfermato con `SHOW max_connections` in questa sessione).
+- Fase 7.0 (F10): dipendenza diretta `graphql` a `^16.8.1` (risolto `16.14.2`); `graphQL.disable: true` in `payload.config.ts`; route GraphQL in `(payload)` lasciate invariate.
+
+### Tests
+
+- Fase 7.0: `pnpm peers check` segnalava peer `graphql` non soddisfatto prima della modifica; dopo `pnpm install`, nessun problema. Diff del lockfile normalizzato (`graphql@…` → `graphql@X`): solo blocco `graphql` e riferimenti di versione, come atteso.
+- Fase 7.0: `pnpm lint` 0 errori e 8 avvisi (migrazioni); `pnpm typecheck` e `pnpm build` OK.
+- Fase 7.0: prova F2 in dev (Postgres locale `127.0.0.1:5432`): login locale di due super-admin; con cookie del secondo utente, `GET /api/users`, `/api/activity-log` e `/api/globals/settings` rispondono 200; dopo `active: false` via PATCH dal primo utente, gli stessi endpoint con il cookie del secondo rispondono 403 e il primo resta 200; `POST /api/graphql` risponde 404. **`APP_PUBLIC_URL` assente nel `.env`**: le prove di runtime hanno usato `APP_PUBLIC_URL=http://localhost:3000` solo nel processo `pnpm dev` (valore documentato in `.env.example`), non persistito nel file.
+- Fase 7.0: **non eseguiti** login Google (Admin e App), riconferma `SHOW max_connections` su Cloud SQL prod, controllo po-10 (elenco utenti con `adminRole: admin` fidati).
+
 ### Added
 
+- Fase 7.0: script npm `typecheck` (`next typegen && tsc --noEmit`) in `package.json` (F26).
 - Fase 4.0 completata: `localization` it/en con fallback incrociato (`defaultLocale: 'it'`) e `i18n` Admin solo italiano in `payload.config.ts`; migrazione `20261003_155849_localization_enum` (enum Postgres `_locales`).
 - Fase 4 definita: `fase-4-cms-siti-esterni.md` (stato `validato`, 2026-10-03) con sottofasi 4.0 (localizzazione: recupero della deviazione da Fase 1 richiesta da ADR-103/arco-01), 4.1, 4.2, parte CMS di 4.3 e 4.4 (contratto ADR-111 da scrivere) e 4.5/4.6 rimandate; riga e panoramica sottofasi in `00-piano-generale.md`.
 - `piano.yaml`: sottofase `fase-4.0`, `arco-28` (contratto CMS ↔ siti esterni) e voce ADR-111 (da scrivere).

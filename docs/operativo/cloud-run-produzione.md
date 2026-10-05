@@ -27,6 +27,16 @@ Service agent (Google-managed): `service-437074136999@gcp-sa-cloudbuild.iam.gser
 - Secret montati a runtime: `DATABASE_URL`, `PAYLOAD_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `RESEND_API_KEY` (montato sul servizio, come le altre chiavi: conferma dell'umano del 2026-10-04, non verificata sul servizio).
 - Env plain: `RESEND_FROM_ADDRESS`, `RESEND_FROM_NAME`, **`APP_PUBLIC_URL`** (URL HTTPS Cloud Run, senza slash finale). Dettaglio tecnico, cambio dominio e anti-pattern: **`docs/operativo/app-public-url.md`**.
 
+## Connessioni al database
+
+L'adapter Postgres (`payload.config.ts`, `pool.max: 3`) apre al massimo **3 connessioni per istanza** del container Cloud Run.
+
+Il servizio è configurato con **`--max-instances` = 4** (conferma dell'umano del 2026-10-04): al picco, le connessioni dall'applicazione sono al massimo **4 × 3 = 12**. Devono restare sotto il `max_connections` dell'istanza Cloud SQL, lasciando margine per `scripts/prod-db.sh` e per le migrazioni eseguite da locale.
+
+Sull'istanza **`db-f1-micro`** il `max_connections` predefinito è **25** (conferma dell'umano del 2026-10-04; verificabile in produzione con `./scripts/prod-db.sh -- psql "postgresql://vma-vd-user@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable" -c "SHOW max_connections;"`). Margine indicativo: 25 − 12 = **13** slot; di solito **3** sono riservati al superuser di PostgreSQL, quindi restano circa **10** per sessioni dal proxy Auth e migrazioni da locale.
+
+Vedi **`ADR-110`** (pool di connessioni) nel piano di sviluppo.
+
 ## OAuth — redirect_uri localhost in produzione
 
 Se Google segnala `redirect_uri=http://localhost:3000/...` da Cloud Run: vedi **`docs/operativo/app-public-url.md`** (immagine pre-fix con `NEXT_PUBLIC_*` al build, oppure manca `APP_PUBLIC_URL` sul servizio).
