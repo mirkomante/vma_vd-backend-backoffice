@@ -233,7 +233,7 @@ fasi:
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
     origine: dominio-applicativo
     file: "fase-7-impostazioni-sistema.md"
-    stato: "da_fare"
+    stato: "in_corso"
     note: >
       Sbloccata: la sessione dedicata alla struttura a tab si è tenuta
       (riepilogo-sessione-impostazioni-sistema.md) e le decisioni sono

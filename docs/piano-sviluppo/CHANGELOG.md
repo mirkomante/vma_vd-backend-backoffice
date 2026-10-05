@@ -10,19 +10,6 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
-### Fixed
-
-- Fase 7.0 (F2): helper `isActiveUser` in `lib/auth/userAccess.ts`; `canAccessAdminPanel`, `canAccessAppArea`, `isSuperAdminRequest`, `isStaffAdminRequest` e `usersDeleteAccess` escludono gli utenti con `active: false` anche con cookie JWT ancora valido.
-- Fase 7.0 (F9): `pool.max: 3` in `payload.config.ts` (ADR-110); sezione «Connessioni al database» in `docs/operativo/cloud-run-produzione.md` (4 istanze × 3 connessioni; `max_connections` 25 su `db-f1-micro` con attribuzione dell'umano del 2026-10-04, non riconfermato con `SHOW max_connections` in questa sessione).
-- Fase 7.0 (F10): dipendenza diretta `graphql` a `^16.8.1` (risolto `16.14.2`); `graphQL.disable: true` in `payload.config.ts`; route GraphQL in `(payload)` lasciate invariate.
-
-### Tests
-
-- Fase 7.0: `pnpm peers check` segnalava peer `graphql` non soddisfatto prima della modifica; dopo `pnpm install`, nessun problema. Diff del lockfile normalizzato (`graphql@…` → `graphql@X`): solo blocco `graphql` e riferimenti di versione, come atteso.
-- Fase 7.0: `pnpm lint` 0 errori e 8 avvisi (migrazioni); `pnpm typecheck` e `pnpm build` OK.
-- Fase 7.0: prova F2 in dev (Postgres locale `127.0.0.1:5432`): login locale di due super-admin; con cookie del secondo utente, `GET /api/users`, `/api/activity-log` e `/api/globals/settings` rispondono 200; dopo `active: false` via PATCH dal primo utente, gli stessi endpoint con il cookie del secondo rispondono 403 e il primo resta 200; `POST /api/graphql` risponde 404. **`APP_PUBLIC_URL` assente nel `.env`**: le prove di runtime hanno usato `APP_PUBLIC_URL=http://localhost:3000` solo nel processo `pnpm dev` (valore documentato in `.env.example`), non persistito nel file.
-- Fase 7.0: **non eseguiti** login Google (Admin e App), riconferma `SHOW max_connections` su Cloud SQL prod, controllo po-10 (elenco utenti con `adminRole: admin` fidati).
-
 ### Added
 
 - Fase 7.0: script npm `typecheck` (`next typegen && tsc --noEmit`) in `package.json` (F26).
@@ -45,6 +32,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `docs/audit/audit-verifica-3-2026-10-04.md`: verifica finale (HEAD `7a5d537`) con le tabelle «Concordato» e «Rinviati e aperti» e 7 rilievi (R1–R7); giudizio: Cursor può partire dalla 7.0 con riserve, la 8.3 dopo R1.
 - `docs/audit/audit-verifica-4-2026-10-04.md`: chiusura (HEAD `116033b`): Cursor può partire dalla 7.0; unico rilievo P residuo S1 (8.3), poi versione condivisa.
 - `ADR-116` (proposta, 2026-10-04): preparazione a Payload 4, con le convenzioni per il codice nuovo in 3.x e il criterio di migrazione; punto aperto `po-11`. `docs/audit/payload-upgrade-2026-10-04.md`: report della chat 2 sull'aggiornamento a 3.90.2 e sulla 4.
+- `docs/audit/audit-verifica-6-2026-10-05.md`: verifica mirata della 7.0b e di ADR-116 (HEAD `4e736b0`), con tre rilievi P (T1–T3); giudizio: la 7.0b si può eseguire con riserve, ADR-116 coerente tranne una frase.
 
 ### Changed
 
@@ -88,6 +76,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `ADR-115`: le due Precisazioni (hook di cancellazione utente invariato; `detail` con chiave di azione da un elenco chiuso, `availability-write-failed` solo per gli errori) sono accettate dall'umano il 2026-10-04.
 - Decisione dell'umano (2026-10-04): l'invio della segnalazione F1/R1 al template è indipendente da questo progetto, che corregge in 8.3 senza attendere. Aggiornati `po-10` (senza scadenza di invio), `fase-8` 8.3 punto 9 e la segnalazione.
 - Registrata la sottofase `fase-7.0b` (aggiornamento di Payload a 3.90.2) in `fase-7-impostazioni-sistema.md`, `piano.yaml` (`arco-49`, `arco-50`, ordine di esecuzione) e `00-piano-generale.md`; le convenzioni per la Payload 4 entrano nei principi trasversali di `fase-6`, `fase-7` e `fase-8`; `fase-4` §4.3: `useAPIKey` non va usata.
+- Correzioni dalla verifica della 7.0b: `fase-7` §7.0b (il passo 4 usa un database locale vuoto e non quello di sviluppo, dove `migrate` chiede la conferma «dev mode»; il vincolo hard si alza solo in `piano.yaml`; azioni umane: database vuoto e `APP_PUBLIC_URL` nel `.env`); `ADR-116` (i 15 usi di `TypedUser` sono in 4 file di `lib`; `authorship` non è nei tipi di 3.90.2); principi di `fase-6`, `fase-7` e `fase-8` («rimuove o cambia»); `fase-4` §4.3 (`api-clients` con strategia custom); `00-piano-generale.md` (`po-11`). Controllo della 7.0 eseguita da Cursor: sezioni `Fixed` e `Tests` del CHANGELOG duplicate in `[Unreleased]` e ora unite; `fase-7` in `piano.yaml` passa a `in_corso`.
 
 ### Fixed
 
@@ -95,10 +84,17 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - `fase-4-cms-siti-esterni.md` § 4.0: la migrazione non è vuota (con `localization` attiva l'adapter Postgres crea l'enum `_locales`); aggiunta la configurazione `i18n` mancante per l'interfaccia in italiano e corretta la semantica di `defaultLocale`.
 - `piano.yaml`: rimosso `arco-06` (errore di scrittura): attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» che appartiene ai due siti esterni (altro progetto, un progetto Firebase distinto per ciascun sito).
 - CHANGELOG: rimosse le cinque voci su F2, F9, F10 e F26 inserite per errore nel commit `bc3c9d8`, quando il codice non era ancora stato modificato; le scrive l'esecuzione di `fase-7.0`.
+- Fase 7.0 (F2): helper `isActiveUser` in `lib/auth/userAccess.ts`; `canAccessAdminPanel`, `canAccessAppArea`, `isSuperAdminRequest`, `isStaffAdminRequest` e `usersDeleteAccess` escludono gli utenti con `active: false` anche con cookie JWT ancora valido.
+- Fase 7.0 (F9): `pool.max: 3` in `payload.config.ts` (ADR-110); sezione «Connessioni al database» in `docs/operativo/cloud-run-produzione.md` (4 istanze × 3 connessioni; `max_connections` 25 su `db-f1-micro` con attribuzione dell'umano del 2026-10-04, non riconfermato con `SHOW max_connections` in questa sessione).
+- Fase 7.0 (F10): dipendenza diretta `graphql` a `^16.8.1` (risolto `16.14.2`); `graphQL.disable: true` in `payload.config.ts`; route GraphQL in `(payload)` lasciate invariate.
 
 ### Tests
 
 - Fase 4.0: verifiche runtime OK (Admin italiano, login Google SSO, login locale `/admin/login/local`, Global `settings` salvabile). Selettore lingua contenuti non verificabile in 4.0 (nessun campo `localized`; da verificare in 4.1). `pnpm migrate:status` su DB locale (5432): schema allineato con `push` — non eseguire `pnpm migrate` su 5432. Delete utente: 500 pre-fix per FK `activity_log`; dopo fix hook, delete verificato OK in dev.
+- Fase 7.0: `pnpm peers check` segnalava peer `graphql` non soddisfatto prima della modifica; dopo `pnpm install`, nessun problema. Diff del lockfile normalizzato (`graphql@…` → `graphql@X`): solo blocco `graphql` e riferimenti di versione, come atteso.
+- Fase 7.0: `pnpm lint` 0 errori e 8 avvisi (migrazioni); `pnpm typecheck` e `pnpm build` OK.
+- Fase 7.0: prova F2 in dev (Postgres locale `127.0.0.1:5432`): login locale di due super-admin; con cookie del secondo utente, `GET /api/users`, `/api/activity-log` e `/api/globals/settings` rispondono 200; dopo `active: false` via PATCH dal primo utente, gli stessi endpoint con il cookie del secondo rispondono 403 e il primo resta 200; `POST /api/graphql` risponde 404. **`APP_PUBLIC_URL` assente nel `.env`**: le prove di runtime hanno usato `APP_PUBLIC_URL=http://localhost:3000` solo nel processo `pnpm dev` (valore documentato in `.env.example`), non persistito nel file.
+- Fase 7.0: **non eseguiti** login Google (Admin e App), riconferma `SHOW max_connections` su Cloud SQL prod, controllo po-10 (elenco utenti con `adminRole: admin` fidati).
 
 ## [0.3.0] — 2026-10-03
 

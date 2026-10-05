@@ -44,7 +44,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 4. **Commit solo dopo verifica runtime** (non solo TypeScript), push manuale, voce di CHANGELOG per ogni commit.
 5. **Permessi con la sessione dell'utente**: l'App legge e scrive con la Local API e `overrideAccess: false`. L'accesso per sezione passa da `canAccessSection(user, 'menu')` (Fase 8.3), non da controlli duplicati.
 6. **Locale sempre esplicita** nelle letture interne e nei test, come nel contratto.
-7. **Convenzioni per la Payload 4** (`ADR-116`, proposta): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 dichiara rimossa (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
+7. **Convenzioni per la Payload 4** (`ADR-116`, proposta): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 rimuove o cambia (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
 
 ---
 

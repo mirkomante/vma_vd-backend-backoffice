@@ -19,7 +19,7 @@
    - `overrideAccess` sempre esplicito in ogni chiamata della Local API: `true` per script e seed, `false` con `user` quando si agisce per conto di un utente;
    - `depth` sempre esplicito nelle query;
    - `versions` esplicito (`false` o la configurazione voluta) su ogni collection e Global nuovi;
-   - nessun nuovo import di `TypedUser`: il cast dei campi custom dell'utente passa da `asUserAccessFields` (`lib/auth/userAccess.ts`), l'unico punto da cambiare alla migrazione. I 15 usi esistenti (in `lib`, `collections`, `globals`) si portano su quel punto quando si toccano, e comunque alla migrazione;
+   - nessun nuovo import di `TypedUser`: per leggere i campi custom di `req.user` il codice nuovo usa `asUserAccessFields(req.user)` (`lib/auth/userAccess.ts`). Gli usi esistenti di `TypedUser` sono 15 righe in 4 file, tutti in `lib/` (`activityLog/resolveAuthContext.ts`, `auth/googleOAuth/callbackEndpoint.ts`, `auth/jwt/isolatedJwtAuthStrategies.ts`, `auth/localLogin/completeLocalLoginSession.ts`) e si cambiano alla migrazione; esistono inoltre 8 cast diretti `as UserAccessFields` (6 in `collections/Users.ts`, 1 in `callbackEndpoint.ts`, 1 in `lastLocalSuperAdmin.ts`), di cui solo `Users.ts:57` riguarda `req.user`;
    - nessuna delle API che la guida della 4 segnala come rimosse o cambiate: `useAPIKey`, `lexicalHTML` e `HTMLConverterFeature`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`;
    - script come file separati eseguiti con `payload run`; nessun `config.bin`.
 2. **Criterio di migrazione alla 4**: solo quando esiste una **RC o una stabile**, dopo la chiusura delle Fasi 7, 8 e 6. Prima, una prova su ramo con la canary per chiudere due incognite: (a) i JWT con `disableLocalStrategy: { enableFields: true }`; (b) la compatibilità di `payload-oauth2`. Requisiti della 4: Node ≥ 24.15.0, Next ≥ 16.2.6, TypeScript ≥ 6.0.3 (oggi `^5`).
@@ -35,4 +35,4 @@
 - `fase-6`, `fase-7` e `fase-8` riportano le convenzioni nei «Principi trasversali»; `fase-4` e `fase-5` le riceveranno quando arrivano.
 - In `fase-4` §4.3 l'opzione `api-clients` con `useAPIKey` non è più proponibile: `ADR-111` sceglie un meccanismo che non la usa.
 - Nessuna regola di catalogo viene modificata.
-- **Non verificato** (dal report): `payload run` nella 4; `authorship` già presente in 3.x; il comportamento di `disableLocalStrategy` con `enableFields` nella 4; le sezioni della guida lette solo nei titoli (storage, `useLocale`, adapter del router, `lexicalHTML`).
+- **Non verificato** (dal report): `payload run` nella 4; il comportamento di `disableLocalStrategy` con `enableFields` nella 4; `authorship` non è nei tipi di configurazione di 3.90.2 (verificato dalla chat di verifica il 2026-10-05: la convenzione non lo richiede); le sezioni della guida lette solo nei titoli (storage, `useLocale`, adapter del router, `lexicalHTML`).

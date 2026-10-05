@@ -30,7 +30,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 2. **Convenzione lingua**: nomi di campi, funzioni e file in **inglese**; etichette dell'interfaccia in **italiano** (`stack/01-stile-codice.mdc`). Lo scostamento da ADR-109 è chiuso dal secondo Emendamento a §1 (2026-10-04).
 3. **Nessun deploy prima della migrazione.** `main` fa deploy automatico su Cloud Run: per ogni sottofase che cambia lo schema, la migrazione va **applicata su Cloud SQL prod prima del push** (`pnpm payload migrate` via Auth Proxy, `docs/operativo/cloud-sql-produzione.md`).
 4. **Commit solo dopo verifica runtime** (non solo TypeScript), push manuale. Voce di CHANGELOG per ogni commit.
-5. **Convenzioni per la Payload 4** (`ADR-116`, proposta): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 dichiara rimossa (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
+5. **Convenzioni per la Payload 4** (`ADR-116`, proposta): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 rimuove o cambia (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
 
 ---
 
@@ -102,17 +102,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Non provato**: flussi Google OAuth (due istanze), invio email con Resend (attivazione, reset), login locale con un cookie reale, PostgreSQL 18 e Cloud SQL, Cloud Build e Cloud Run, il throttling dei nostri endpoint `forgot-password` e `reset-password`.
 
-**Azioni umane prima di iniziare**: credenziali Google di sviluppo e una chiave Resend di sviluppo nel `.env` (`docs/operativo/credenziali-resend.md`); Cloud SQL Auth Proxy per la migrazione in produzione.
+**Azioni umane prima di iniziare**: credenziali Google di sviluppo e una chiave Resend di sviluppo nel `.env` (`docs/operativo/credenziali-resend.md`); Cloud SQL Auth Proxy per la migrazione in produzione. Un database locale **vuoto** per il passo 4 e per la prova del ripristino; `APP_PUBLIC_URL=http://localhost:3000` nel `.env` di sviluppo (oggi manca: nella 7.0 è stato passato solo al processo `pnpm dev`).
 
 **Passi** (in quest'ordine, un solo commit, dopo la verifica a runtime):
 
 1. In `package.json`: `payload`, `@payloadcms/db-postgres`, `@payloadcms/email-resend`, `@payloadcms/next`, `@payloadcms/richtext-lexical`, `@payloadcms/translations` e `@payloadcms/ui` a `3.90.2`, **versioni esatte**. Nessun altro pacchetto cambia direttamente.
 2. `pnpm install` e commit di `pnpm-lock.yaml` (Cloud Build usa `--frozen-lockfile`). Controlli: `git diff package.json` mostra solo le sette righe; il lockfile cambia di circa 700 righe (nel clone di prova +464/−265), perché cambiano anche le dipendenze transitive (per esempio Lexical da 0.41 a 0.50); `pnpm peers check` pulito (dopo la 7.0 non segnala più `graphql`). Se cambia un pacchetto diretto non elencato, **fermarsi**.
 3. `pnpm generate:types` con `APP_PUBLIC_URL`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` impostati (senza, i plugin OAuth non si registrano e il file cambia in modo diverso). Atteso: **solo 2 righe** in `payload-types.ts` (`resetPasswordRequestedAt` in `User` e in `UsersSelect`).
-4. Su un database locale con le migrazioni già applicate: `pnpm migrate:create add-reset-password-requested-at`, poi `pnpm migrate`. Atteso: **un solo** `ALTER TABLE "users" ADD COLUMN "reset_password_requested_at" timestamp(3) with time zone;` (la `down` fa `DROP COLUMN`). Se compare altro, **fermarsi**.
+4. Su un **database locale vuoto**, creato apposta (per esempio `vma_vd_migr`; mai quello di sviluppo e mai Cloud SQL) con `DATABASE_URL` puntato lì: `pnpm migrate` per applicare le migrazioni esistenti, poi `pnpm migrate:create add-reset-password-requested-at` e `pnpm migrate`. Sul database di sviluppo (`vma_vd_dev`, allineato con `push`) `pnpm migrate` si ferma con «dev mode … data loss» e chiede conferma (`docs/operativo/cloud-sql-produzione.md`): non usarlo per questo passo. Atteso: **un solo** `ALTER TABLE "users" ADD COLUMN "reset_password_requested_at" timestamp(3) with time zone;` (la `down` fa `DROP COLUMN`). Se compare altro, **fermarsi**. La prova del ripristino (`pnpm payload migrate:down`, poi di nuovo `pnpm migrate`) si fa sullo stesso database vuoto.
 5. `pnpm typecheck`, `pnpm lint` e `pnpm build` con i segnaposto del `Dockerfile`, senza errori.
-6. **Verifica a runtime in sviluppo** (Postgres locale, credenziali di prova): login Admin con Google; login locale dell'App; attivazione di un utente; `forgot-password` e `reset-password`. Per gli ultimi due, annotare se il nuovo throttling della 3.90.0 interferisce con i nostri endpoint (deduzione del report, non provata).
-7. In `piano.yaml` (`meta.vincoli_hard`) e in `00-piano-generale.md`: il vincolo diventa «Payload >= 3.90.0 — correzioni di sicurezza critiche della 3.90.0; CVE-2026-25544 già coperta da 3.73.0». **Non** modificare la regola di catalogo `stack/01a-db-postgres.mdc`: annotare lo scostamento in CHANGELOG.
+6. **Verifica a runtime in sviluppo** (Postgres locale, credenziali di prova): login Admin con Google; login locale dell'App; attivazione di un utente; `forgot-password` e `reset-password`. Per gli ultimi due, annotare se il nuovo throttling della 3.90.0 interferisce con i nostri endpoint (deduzione del report, non provata). Nel database di sviluppo `push` aggiunge la colonna da solo: la migrazione **non** va lanciata lì.
+7. In `piano.yaml` (`meta.vincoli_hard`): il vincolo diventa «Payload >= 3.90.0 — correzioni di sicurezza critiche della 3.90.0; CVE-2026-25544 già coperta da 3.73.0». `00-piano-generale.md` non riporta il vincolo: non toccarlo per questo. **Non** modificare la regola di catalogo `stack/01a-db-postgres.mdc` né la voce storica già spuntata di `fase-1-db-postgres.md`: annotare lo scostamento in CHANGELOG.
 8. Voci di CHANGELOG (`Changed`, `Tests`) **solo per ciò che è stato eseguito**.
 
 **Produzione**:
@@ -131,7 +131,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - [ ] Migrazione `add-reset-password-requested-at` generata, riletta (solo l'`ADD COLUMN`), applicata in sviluppo e committata.
 - [ ] `pnpm typecheck`, `pnpm lint` e `pnpm build` senza errori.
 - [ ] Verifica a runtime eseguita (Google Admin, login locale App, attivazione, forgot e reset); ciò che non è stato eseguito è dichiarato nel CHANGELOG.
-- [ ] Vincolo hard alzato a `>= 3.90.0` in `piano.yaml` e `00-piano-generale.md`.
+- [ ] Vincolo hard alzato a `>= 3.90.0` in `piano.yaml` (`meta.vincoli_hard`); regola di catalogo e voci storiche non toccate.
 - [ ] Migrazione applicata su Cloud SQL prod **prima** del push; login reali dopo il deploy (umano).
 - [ ] CHANGELOG, stato di 7.0b aggiornato in questo file, in `piano.yaml` e in `00-piano-generale.md`.
 - [ ] Messaggio di commit suggerito: `chore(deps): aggiorna Payload a 3.90.2 (correzioni di sicurezza)`.
