@@ -116,7 +116,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 7.2 (Admin prod, umano, 2026-10-06, dopo deploy `41851b8`): RowLabel servizi (es. «Pranzo 12:30 – 14:30»), RowLabel chiusure, ordinamento chiusure per data dopo ricaricamento pagina OK; login Google dell’App OK.
 - Fase 7.2 (correzioni post-smoke): `runSystemSettingsPureTests` include `formatServiceRowLabel`; `pnpm generate:importmap`; `pnpm payload run scripts/verify-system-settings-7_2.ts` e `pnpm typecheck` OK.
 - Fase 7.3: `runSystemSettingsPureTests` (email, unicità `site`); `pnpm payload run scripts/verify-system-settings-7_3.ts` su `vma_vd_migr` (Payload 3.90.2) — normalizzazione `Info@Dominio.IT ` → `info@dominio.it`, email non valida e doppio `site` rifiutati, due siti distinti OK, `googleCalendarId` e array vuoti OK. Migrazione generata su DB vuoto; apply su `vma_vd_migr` con riga preesistente (orari, B&B, chiusure), `migrate:down` e re-apply OK; nessun `ADD COLUMN … NOT NULL` su `impostazioni_sistema`. `pnpm typecheck`, `pnpm lint` (solo avvisi migrazioni), `pnpm build` OK. **Admin (aspetto campi e messaggi sul campo): non verificato dall’agente** — da provare dall’umano dopo deploy.
-- Fase 7.3 produzione: migrate Cloud SQL **non eseguita** in questa sessione (umano, prima del push).
+- Fase 7.3 produzione (umano, 2026-10-06): `pnpm payload migrate` su Cloud SQL via proxy **prima** del push; controllo `SELECT id, google_calendar_id, bnb_check_in_time, bnb_check_out_time FROM impostazioni_sistema` → 1 riga, `google_calendar_id` NULL, orari B&B invariati (`15:00` / `11:00`).
 
 ## [0.3.0] — 2026-10-03
 

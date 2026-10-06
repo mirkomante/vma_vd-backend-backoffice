@@ -249,7 +249,7 @@ Il punto 2 non è più solo una nota interna: è una **richiesta dell’umano** 
 **Checklist di chiusura sottofase**:
 - [x] Campi, normalizzazione e unicità per `site`; nessun consumatore collegato. Validazione sui campi (`validate` + `beforeValidate` email); messaggi in `lib/systemSettings/`; prove Local API in `scripts/verify-system-settings-7_3.ts`.
 - [x] **Nomi congelati**: elenco completo slug/`name` in CHANGELOG (7.1 + 7.2 + 7.3).
-- [ ] Migrazione applicata su Cloud SQL prod **prima** del push (azione umana).
+- [x] Migrazione applicata su Cloud SQL prod **prima** del push (umano, 2026-10-06: `20261006_114919_add_impostazioni_sistema_calendario_comunicazioni`; `SELECT id, google_calendar_id, bnb_check_in_time, bnb_check_out_time FROM impostazioni_sistema` → 1 riga, `google_calendar_id` NULL, B&B `15:00` / `11:00` invariati).
 
 ---
 
