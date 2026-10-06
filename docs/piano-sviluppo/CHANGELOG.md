@@ -12,6 +12,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 7.2 (affinamento Admin dev): 13 festività (`ITALIAN_NATIONAL_PUBLIC_HOLIDAY_DEFINITIONS` + `MILAN_LOCAL_PUBLIC_HOLIDAY_DEFINITIONS`, Sant’Ambrogio 7/12); UI `ItalianPublicHolidaysUi` (toast add, `ConfirmationModal` remove per anno); `AnnualClosureRowLabel` + `formatAnnualClosureRowLabel`; hook `beforeValidate` su `annualClosures` (ordine data, `isSortable: false`); `lib/systemSettings/runPureTests.ts`; sezione «Colonne NOT NULL» in `docs/procedure/migrazioni-payload-postgres.md`.
 - Fase 7.2: tab Orari e chiusure su `impostazioni-sistema` — campi `services` (2 righe, `lunch`/`dinner`, `startTime`/`endTime`), `weeklyClosedDays`, `annualClosures` (`date` dayOnly, `label`), gruppo `bnb` (`checkInTime`, `checkOutTime`); validazione hook + campo `HH:mm` in `lib/systemSettings/`; pulsante Admin «Aggiungi festività» (`components/payload/AddItalianPublicHolidaysButton.tsx`, import map); migrazione `20261006_091528_add_impostazioni_sistema_orari_chiusure`. Nessun default precompilato per `services` (decisione in `fase-7` §7.2). Script `scripts/verify-system-settings-7_2.ts` per prove ripetibili.
 - Fase 7.1: Global `impostazioni-sistema` in `globals/SystemSettings.ts` (slug `impostazioni-sistema`, etichetta Admin «Impostazioni di sistema», distinta da `settings`); quattro tab solo con `label` (Orari e chiusure, Calendario, Comunicazioni, Integrazioni future), senza campi; `access.read`/`access.update` riservati a staff Admin (`isStaffAdminRequest`); `versions: false` (ADR-116); registrato in `payload.config.ts`. Migrazione `20261006_083421_add_impostazioni_sistema_global` (tabella `impostazioni_sistema`). Tabella nomi campo ↔ ADR-109 in `fase-7-impostazioni-sistema.md` §7.1 (campi in 7.2/7.3).
 - Fase 7.0: script npm `typecheck` (`next typegen && tsc --noEmit`) in `package.json` (F26).
@@ -38,6 +39,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
+- Fase 7.2 (affinamento): `runSystemSettingsPureTests` + `pnpm payload run scripts/verify-system-settings-7_2.ts` — 13 festività e remove; hook `annualClosures` ordine via Local API; funzioni pure sort/remove/RowLabel. Click pulsanti Admin e RowLabel a runtime: **non** verificati dall’agente (umano). `pnpm typecheck`, `pnpm lint`, `pnpm build` OK.
 - Fase 7.2: `pnpm payload run scripts/verify-system-settings-7_2.ts` su Postgres locale (Payload 3.90.2) — rifiuto di `services` con ≠2 righe, nomi duplicati, `24:00` e `9:30`; date in DB a mezzogiorno UTC (`2026-01-06T12:00:00.000Z` / helper); 12 festività, Pasqua e Lunedì dell’Angelo 2024 e 2026, deduplica al secondo merge. Prova click del pulsante festività in Admin UI non eseguita. `pnpm typecheck`, `pnpm lint` (solo avvisi preesistenti sulle migrazioni), `pnpm build` OK. Migrazione provata su `vma_vd_migr` (apply, `migrate:down`, re-apply).
 
 ### Changed

@@ -217,6 +217,24 @@ DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice
 
 ---
 
+## Colonne NOT NULL su tabelle con righe
+
+Una `ADD COLUMN ... NOT NULL` **senza** `DEFAULT` fallisce in PostgreSQL se la tabella contiene **almeno una riga**: non esiste un valore da assegnare alle righe già presenti.
+
+**Prima di `pnpm payload migrate` in produzione**, se la migrazione aggiunge colonne `NOT NULL` (tipico dei campi `required` su un Global già istanziato), controllare se il documento esiste già:
+
+```bash
+# Esempio: Global impostazioni-sistema (sostituire DATABASE_URL prod via proxy, C.3)
+psql "$DATABASE_URL" -t -c "SELECT count(*) FROM impostazioni_sistema;"
+```
+
+- **`0`**: la migrazione è applicabile così com’è generata da Payload.
+- **`≥ 1`**: valutare backfill, rendere nullable i campi in schema (nuova migrazione) o rimuovere il documento vuoto **solo** se accettabile operativamente — non assumere che Payload risolva da solo.
+
+Esempio di riferimento: migrazione `20261006_091528_add_impostazioni_sistema_orari_chiusure` (7.2) aggiunge `bnb_check_in_time` e `bnb_check_out_time` come `NOT NULL` sulla tabella `impostazioni_sistema`.
+
+---
+
 ## Problemi frequenti
 
 | Sintomo | Causa probabile | Cosa fare |

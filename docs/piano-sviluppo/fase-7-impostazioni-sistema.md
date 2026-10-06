@@ -189,7 +189,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Dipende da**: 7.1.
 
-**Obiettivo**: tab «Orari e chiusure» con `services`, `weeklyClosedDays`, `annualClosures` e il gruppo `bnb` (ADR-109 §1 e terzo emendamento), più il pulsante che precompila `annualClosures` con le festività italiane (ADR-107 §1, spostato da ADR-109 §3). L'indicazione sulla colazione del B&B **non** è un campo di questo Global: è testo della pagina del sito, nel CMS.
+**Obiettivo**: tab «Orari e chiusure» con `services`, `weeklyClosedDays`, `annualClosures` e il gruppo `bnb` (ADR-109 §1 e terzo emendamento), più i controlli Admin che precompilano o ripuliscono `annualClosures` con le **13 festività predefinite** (12 nazionali + Sant’Ambrogio, patrono di Milano; ADR-107 §1, spostato da ADR-109 §3). L'indicazione sulla colazione del B&B **non** è un campo di questo Global: è testo della pagina del sito, nel CMS.
 
 **Riferimenti**: `ADR-109` §§1–3.
 
@@ -199,16 +199,23 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Forma delle date di chiusura** (audit 2026-10-04): `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, la forma che produce il selettore `dayOnly` di Payload (che normalizza a mezzogiorno solo `dayOnly`, `default` e `monthOnly`, non `timeOnly`). Lo stesso helper in `lib/` lo usano il pulsante festività, la sezione Orari dell'App, le Eccezioni giorno (Fase 5) e l'import; altrimenti il controllo duplicati (un solo record per data e servizio) e il confronto con le chiusure annuali falliscono.
 
-**Pulsante festività** (funzione di supporto già prevista, componente custom dell'Admin, classe A): chiede l'anno e aggiunge a `annualClosures` le 12 festività nazionali di quell'anno (1 gennaio, 6 gennaio, Pasqua, Lunedì dell'Angelo, 25 aprile, 1 maggio, 2 giugno, 15 agosto, 1 novembre, 8 dicembre, 25 dicembre, 26 dicembre), con etichette in italiano. Pasqua si calcola con una funzione senza nuove dipendenze (algoritmo gregoriano). Le date già presenti non vengono duplicate. Le righe restano modificabili e cancellabili a mano. La funzione che calcola le festività e la validazione `HH:mm` stanno in `lib/` come funzioni pure, perché le riusa la sezione Orari dell'App (Fase 8.5). Dopo il componente custom: `pnpm generate:importmap` e commit di `app/(payload)/admin/importMap.js`.
+**Festività predefinite** (componente UI Admin + `lib/systemSettings/`): due costanti (`ITALIAN_NATIONAL_PUBLIC_HOLIDAY_DEFINITIONS`, `MILAN_LOCAL_PUBLIC_HOLIDAY_DEFINITIONS`) e funzioni pure; Pasqua con algoritmo gregoriano. **Aggiungi festività**: chiede l’anno, aggiunge al form le righe mancanti (toast con N aggiunte / M già presenti; salvataggio esplicito). **Rimuovi festività di un anno**: chiede l’anno, `ConfirmationModal` con conteggio righe, rimuove dal form solo le date che coincidono con le 13 predefinite di quell’anno (le chiusure personalizzate restano). Dopo add/remove il form viene riordinato per data.
+
+**`annualClosures` in Admin**: `RowLabel` (`Chiusura gg/mm/aaaa · etichetta` o `Chiusura (nuova)`); `initCollapsed: true`; `isSortable: false`. **Ordinamento persistito**: hook `beforeValidate` sul campo array ordina per data crescente (UTC, helper di normalizzazione; righe senza data in fondo). **Payload 3.90.2 — ordinamento nativo array**: esiste solo `admin.isSortable` per il **riordino manuale** (drag) in UI; **non** c’è ordinamento automatico per sottocampo → l’hook è necessario.
+
+**Consumo di `services`**: l’array **non** è precompilato in Admin. Se `services` è assente o non valido sul Global, i consumatori (Fasi 5, 6, 8.5) devono trattare la configurazione orari come **non configurata**, non inventare default.
 
 **Checklist di chiusura sottofase**:
 - [x] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
-- [x] Pulsante festività funzionante, risultato modificabile a mano (logica merge e deduplica verificata con `scripts/verify-system-settings-7_2.ts`; prova click in Admin non eseguita in questa sessione).
-- [x] `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, con un helper unico in `lib/` (pulsante festività e, in seguito, App, Eccezioni giorno e import lo riusano): verificato su Payload **3.90.2** (DB `impostazioni_sistema_annual_closures`, script di verifica).
-- [ ] Migrazione applicata su Cloud SQL prod prima del push.
+- [x] Festività (13, Sant’Ambrogio incluso): logica add/remove/deduplica in `lib/` e script; toast e modal in UI (click pulsanti e aspetto RowLabel: prova umana in Admin dev).
+- [x] `annualClosures[].date` a mezzogiorno UTC (`lib/`); hook ordine verificato via Local API (`scripts/verify-system-settings-7_2.ts`).
+- [x] RowLabel, rimozione per anno, ordinamento (hook + `isSortable: false`); esito verifica `isSortable` su Payload 3.90.2 documentato sopra.
+- [ ] Migrazione applicata su Cloud SQL prod prima del push (vedi `docs/procedure/migrazioni-payload-postgres.md` — colonne NOT NULL se esistono righe in `impostazioni_sistema`).
 - [x] La nota di `fase-5.1` in `piano.yaml` dice già che «Impostazioni prenotazioni» nasce senza questi campi (ADR-109 §3): verificata, nessuna modifica.
 
-**Decisione operativa (2026-10-06)**: l’array `services` **non** è precompilato con righe `lunch`/`dinner` (il file di fase non lo richiede). Soluzione minima: `minRows`/`maxRows` = 2 e validazione in hook; l’Admin deve aggiungere manualmente le due righe al primo salvataggio. Se si preferisce un default precompilato, serve una decisione esplicita.
+**Decisioni operative (2026-10-06)**:
+- `services` **senza** precompilazione `lunch`/`dinner`: `minRows`/`maxRows` = 2 + validazione; primo salvataggio manuale in Admin.
+- **`services` assente** sul documento Global = orari **non configurati** per i consumatori downstream (nessun fallback silenzioso).
 
 ---
 

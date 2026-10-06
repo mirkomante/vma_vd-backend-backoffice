@@ -1,4 +1,9 @@
 import { annualClosureDateKey, dayOnlyDateUtcNoon } from '@/lib/systemSettings/dayOnlyDate'
+import {
+  ITALIAN_NATIONAL_PUBLIC_HOLIDAY_DEFINITIONS,
+  MILAN_LOCAL_PUBLIC_HOLIDAY_DEFINITIONS,
+  type PublicHolidayDefinition,
+} from '@/lib/systemSettings/holidayDefinitions'
 
 export type PublicHolidayRow = {
   date: string
@@ -24,44 +29,57 @@ export function gregorianEasterSunday(year: number): { month: number; day: numbe
   return { month, day }
 }
 
-function fixedHoliday(year: number, month: number, day: number, label: string): PublicHolidayRow {
+function resolveHolidayDefinition(
+  definition: PublicHolidayDefinition,
+  year: number,
+): PublicHolidayRow {
+  if (definition.kind === 'fixed') {
+    return {
+      date: dayOnlyDateUtcNoon(year, definition.month, definition.day),
+      label: definition.label,
+    }
+  }
+
+  const easter = gregorianEasterSunday(year)
+  const easterDate = dayOnlyDateUtcNoon(year, easter.month, easter.day)
+  if (definition.offsetDays === 0) {
+    return { date: easterDate, label: definition.label }
+  }
+
+  const shifted = new Date(easterDate)
+  shifted.setUTCDate(shifted.getUTCDate() + definition.offsetDays)
   return {
-    date: dayOnlyDateUtcNoon(year, month, day),
-    label,
+    date: dayOnlyDateUtcNoon(
+      shifted.getUTCFullYear(),
+      shifted.getUTCMonth() + 1,
+      shifted.getUTCDate(),
+    ),
+    label: definition.label,
   }
 }
 
-/** Le 12 festività nazionali italiane per l'anno indicato (ADR-107 §1 / fase-7.2). */
-export function getItalianPublicHolidaysForYear(year: number): PublicHolidayRow[] {
-  const easter = gregorianEasterSunday(year)
-  const easterDate = dayOnlyDateUtcNoon(year, easter.month, easter.day)
-  const easterSunday = new Date(easterDate)
-  const easterMonday = new Date(easterSunday)
-  easterMonday.setUTCDate(easterMonday.getUTCDate() + 1)
+function holidaysFromDefinitions(
+  definitions: readonly PublicHolidayDefinition[],
+  year: number,
+): PublicHolidayRow[] {
+  return definitions.map((definition) => resolveHolidayDefinition(definition, year))
+}
 
+/** 12 festività nazionali per l'anno indicato. */
+export function getItalianNationalPublicHolidaysForYear(year: number): PublicHolidayRow[] {
+  return holidaysFromDefinitions(ITALIAN_NATIONAL_PUBLIC_HOLIDAY_DEFINITIONS, year)
+}
+
+/** Festività locali di Milano (patrono). */
+export function getMilanLocalPublicHolidaysForYear(year: number): PublicHolidayRow[] {
+  return holidaysFromDefinitions(MILAN_LOCAL_PUBLIC_HOLIDAY_DEFINITIONS, year)
+}
+
+/** 13 festività precompilabili (nazionali + Milano). */
+export function getItalianPublicHolidaysForYear(year: number): PublicHolidayRow[] {
   return [
-    fixedHoliday(year, 1, 1, 'Capodanno'),
-    fixedHoliday(year, 1, 6, 'Epifania'),
-    {
-      date: easterDate,
-      label: 'Pasqua',
-    },
-    {
-      date: dayOnlyDateUtcNoon(
-        easterMonday.getUTCFullYear(),
-        easterMonday.getUTCMonth() + 1,
-        easterMonday.getUTCDate(),
-      ),
-      label: 'Lunedì dell’Angelo',
-    },
-    fixedHoliday(year, 4, 25, 'Festa della Liberazione'),
-    fixedHoliday(year, 5, 1, 'Festa del Lavoro'),
-    fixedHoliday(year, 6, 2, 'Festa della Repubblica'),
-    fixedHoliday(year, 8, 15, 'Ferragosto'),
-    fixedHoliday(year, 11, 1, 'Ognissanti'),
-    fixedHoliday(year, 12, 8, 'Immacolata Concezione'),
-    fixedHoliday(year, 12, 25, 'Natale'),
-    fixedHoliday(year, 12, 26, 'Santo Stefano'),
+    ...getItalianNationalPublicHolidaysForYear(year),
+    ...getMilanLocalPublicHolidaysForYear(year),
   ]
 }
 
@@ -71,24 +89,89 @@ export type AnnualClosureLike = {
   id?: string | null
 }
 
+export type MergeItalianPublicHolidaysResult = {
+  rows: AnnualClosureLike[]
+  addedCount: number
+  alreadyPresentCount: number
+  totalForYear: number
+}
+
+/** Chiavi UTC delle festività predefinite per un anno. */
+export function publicHolidayDateKeysForYear(year: number): Set<string> {
+  const keys = new Set<string>()
+  for (const holiday of getItalianPublicHolidaysForYear(year)) {
+    keys.add(annualClosureDateKey(holiday.date))
+  }
+  return keys
+}
+
+function dateKeyForRow(date: string | null | undefined): string | null {
+  if (!date) {
+    return null
+  }
+  try {
+    return annualClosureDateKey(date)
+  } catch {
+    return null
+  }
+}
+
 /** Aggiunge le festività mancanti; non duplica date già presenti (stessa chiave UTC). */
 export function mergeItalianPublicHolidays(
   existing: AnnualClosureLike[] | null | undefined,
   year: number,
-): AnnualClosureLike[] {
+): MergeItalianPublicHolidaysResult {
   const rows = [...(existing ?? [])]
-  const keys = new Set(
-    rows.map((row) => (row.date ? annualClosureDateKey(row.date) : null)).filter(Boolean) as string[],
+  const existingKeys = new Set(
+    rows.map((row) => dateKeyForRow(row.date)).filter(Boolean) as string[],
   )
 
-  for (const holiday of getItalianPublicHolidaysForYear(year)) {
+  const holidays = getItalianPublicHolidaysForYear(year)
+  let addedCount = 0
+  let alreadyPresentCount = 0
+
+  for (const holiday of holidays) {
     const key = annualClosureDateKey(holiday.date)
-    if (keys.has(key)) {
+    if (existingKeys.has(key)) {
+      alreadyPresentCount += 1
       continue
     }
-    keys.add(key)
+    existingKeys.add(key)
+    addedCount += 1
     rows.push({ date: holiday.date, label: holiday.label })
   }
 
-  return rows
+  return {
+    rows,
+    addedCount,
+    alreadyPresentCount,
+    totalForYear: holidays.length,
+  }
+}
+
+export type RemoveItalianPublicHolidaysResult = {
+  rows: AnnualClosureLike[]
+  removedCount: number
+}
+
+/** Rimuove solo le righe la cui data coincide con una festività predefinita dell'anno. */
+export function removeItalianPublicHolidaysForYear(
+  existing: AnnualClosureLike[] | null | undefined,
+  year: number,
+): RemoveItalianPublicHolidaysResult {
+  const holidayKeys = publicHolidayDateKeysForYear(year)
+  const rows = existing ?? []
+  const kept: AnnualClosureLike[] = []
+  let removedCount = 0
+
+  for (const row of rows) {
+    const key = dateKeyForRow(row.date)
+    if (key && holidayKeys.has(key)) {
+      removedCount += 1
+    } else {
+      kept.push(row)
+    }
+  }
+
+  return { rows: kept, removedCount }
 }

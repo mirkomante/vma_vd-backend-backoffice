@@ -5,6 +5,7 @@ import {
   prepareSystemSettingsOrariChiusure,
   type SystemSettingsWriteData,
 } from '@/lib/systemSettings/validateSystemSettings'
+import { sortAnnualClosuresByDate } from '@/lib/systemSettings/annualClosures'
 import { validateTimeOfDayField } from '@/lib/systemSettings/timeOfDay'
 
 /** Slug Payload del Global di configurazione tecnica trasversale (ADR-109). */
@@ -111,11 +112,10 @@ export const SystemSettings: GlobalConfig = {
             },
             {
               type: 'ui',
-              name: 'addItalianPublicHolidays',
+              name: 'italianPublicHolidaysUi',
               admin: {
                 components: {
-                  Field:
-                    '@/components/payload/AddItalianPublicHolidaysButton#AddItalianPublicHolidaysButton',
+                  Field: '@/components/payload/ItalianPublicHolidaysUi#ItalianPublicHolidaysUi',
                 },
               },
             },
@@ -129,6 +129,21 @@ export const SystemSettings: GlobalConfig = {
               },
               admin: {
                 description: 'Giorni di chiusura eccezionali (festività, ferie, ecc.).',
+                initCollapsed: true,
+                isSortable: false,
+                components: {
+                  RowLabel: '@/components/payload/AnnualClosureRowLabel#AnnualClosureRowLabel',
+                },
+              },
+              hooks: {
+                beforeValidate: [
+                  ({ value }) => {
+                    if (!Array.isArray(value)) {
+                      return value
+                    }
+                    return sortAnnualClosuresByDate(value)
+                  },
+                ],
               },
               fields: [
                 {

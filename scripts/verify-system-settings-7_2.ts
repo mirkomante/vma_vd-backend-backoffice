@@ -3,12 +3,14 @@ import { execSync } from 'node:child_process'
 import config from '@payload-config'
 import { getPayload } from 'payload'
 
+import { sortAnnualClosuresByDate } from '@/lib/systemSettings/annualClosures'
 import { dayOnlyDateUtcNoon, normalizeAnnualClosureDate } from '@/lib/systemSettings/dayOnlyDate'
 import {
   getItalianPublicHolidaysForYear,
   gregorianEasterSunday,
   mergeItalianPublicHolidays,
 } from '@/lib/systemSettings/italianPublicHolidays'
+import { runSystemSettingsPureTests } from '@/lib/systemSettings/runPureTests'
 import { SYSTEM_SETTINGS_SLUG } from '@/globals/SystemSettings'
 
 const validServices = [
@@ -31,6 +33,8 @@ async function expectReject(label: string, fn: () => Promise<unknown>): Promise<
 }
 
 async function main(): Promise<void> {
+  runSystemSettingsPureTests()
+
   const payload = await getPayload({ config })
 
   // (a) Validazione servizi e HH:mm
@@ -164,12 +168,47 @@ async function main(): Promise<void> {
   }
   console.log('OK (b) dayOnly e helper coincidono (mezzogiorno UTC) su 3.90.2')
 
-  // (c) Festività — lib pura (Pasqua e Lunedì dell’Angelo)
+  // Hook ordinamento annualClosures (Local API)
+  const disorderedClosures = [
+    { date: dayOnlyDateUtcNoon(2026, 12, 26), label: 'Santo Stefano' },
+    { date: dayOnlyDateUtcNoon(2026, 1, 1), label: 'Capodanno' },
+    { date: dayOnlyDateUtcNoon(2026, 1, 1), label: 'Capodanno bis' },
+  ]
+  await payload.updateGlobal({
+    slug: SYSTEM_SETTINGS_SLUG,
+    data: {
+      services: validServices,
+      bnb: validBnb,
+      annualClosures: disorderedClosures,
+    },
+    depth: 0,
+    overrideAccess: true,
+  })
+  const afterSort = await payload.findGlobal({
+    slug: SYSTEM_SETTINGS_SLUG,
+    depth: 0,
+    overrideAccess: true,
+  })
+  const stored = afterSort.annualClosures ?? []
+  const expectedOrder = sortAnnualClosuresByDate(disorderedClosures)
+  if (stored.length !== expectedOrder.length) {
+    throw new Error('annualClosures: conteggio righe dopo salvataggio inatteso')
+  }
+  for (let i = 0; i < stored.length; i++) {
+    const a = stored[i]?.date
+    const b = expectedOrder[i]?.date
+    if (a !== b || stored[i]?.label !== expectedOrder[i]?.label) {
+      throw new Error(`annualClosures: ordine hook errato alla posizione ${i}`)
+    }
+  }
+  console.log('OK hook annualClosures: ordine per data crescente (Local API)')
+
+  // (c) Festività — Pasqua e Lunedì dell’Angelo
   for (const year of [2024, 2026]) {
     const easter = gregorianEasterSunday(year)
     const holidays = getItalianPublicHolidaysForYear(year)
-    if (holidays.length !== 12) {
-      throw new Error(`Anno ${year}: attese 12 festività, trovate ${holidays.length}`)
+    if (holidays.length !== 13) {
+      throw new Error(`Anno ${year}: attese 13 festività, trovate ${holidays.length}`)
     }
     const pasqua = holidays.find((h) => h.label === 'Pasqua')
     const lunedi = holidays.find((h) => h.label === 'Lunedì dell’Angelo')
@@ -193,14 +232,14 @@ async function main(): Promise<void> {
   }
 
   const mergedOnce = mergeItalianPublicHolidays([], 2026)
-  if (mergedOnce.length !== 12) {
-    throw new Error('mergeItalianPublicHolidays: attese 12 righe su array vuoto')
+  if (mergedOnce.addedCount !== 13 || mergedOnce.rows.length !== 13) {
+    throw new Error('mergeItalianPublicHolidays: attese 13 righe su array vuoto')
   }
-  const mergedTwice = mergeItalianPublicHolidays(mergedOnce, 2026)
-  if (mergedTwice.length !== 12) {
-    throw new Error('mergeItalianPublicHolidays: duplicati al secondo click')
+  const mergedTwice = mergeItalianPublicHolidays(mergedOnce.rows, 2026)
+  if (mergedTwice.addedCount !== 0 || mergedTwice.rows.length !== 13) {
+    throw new Error('mergeItalianPublicHolidays: duplicati al secondo merge')
   }
-  console.log('OK (c) 12 festività, Pasqua verificata, nessun duplicato al secondo merge')
+  console.log('OK (c) 13 festività, Pasqua verificata, nessun duplicato al secondo merge')
 
   console.log('\nVerifica 7.2 completata.')
 }
