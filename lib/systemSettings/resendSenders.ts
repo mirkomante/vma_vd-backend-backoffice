@@ -1,4 +1,4 @@
-import { ValidationError } from 'payload'
+import { ValidationError, type FieldHook } from 'payload'
 
 import { validateRequiredTextField } from '@/lib/systemSettings/requiredTextField'
 
@@ -104,7 +104,7 @@ export function validateResendSenderNameField(value: unknown): true | string {
  * Garantisce unicità `site` anche quando `validate` sul sottocampo non riceve `path`
  * (es. Local API). In Admin, con `path` presente, la stessa regola vale sul campo `site`.
  */
-export function resendSendersBeforeValidateHook({ value }: { value: unknown }): unknown {
+export const resendSendersBeforeValidateHook: FieldHook = ({ value }) => {
   if (!Array.isArray(value)) {
     return value
   }

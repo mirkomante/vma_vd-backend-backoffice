@@ -1,3 +1,5 @@
+import type { FieldHook } from 'payload'
+
 /** Indirizzo email normalizzato (trim, minuscolo) per mittenti e contatti staff (fase-7.3). */
 export const EMAIL_ADDRESS_FORMAT_REGEX =
   /^[a-z0-9](?:[a-z0-9._+-]*[a-z0-9])?@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/
@@ -33,8 +35,7 @@ export function validateEmailAddressField(value: unknown): true | string {
   return true
 }
 
-/** Hook `beforeValidate` su campi email: persiste la forma normalizzata. */
-export function normalizeEmailAddressFieldHook(value: unknown): unknown {
+function normalizeEmailAddressFieldValue(value: unknown): unknown {
   if (value == null || value === '') {
     return value
   }
@@ -43,3 +44,7 @@ export function normalizeEmailAddressFieldHook(value: unknown): unknown {
   }
   return normalizeEmailAddress(value)
 }
+
+/** Hook `beforeValidate` su campi email: persiste la forma normalizzata. */
+export const normalizeEmailAddressBeforeValidate: FieldHook = ({ value }) =>
+  normalizeEmailAddressFieldValue(value)

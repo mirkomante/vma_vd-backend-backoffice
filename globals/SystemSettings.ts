@@ -2,7 +2,7 @@ import type { GlobalConfig } from 'payload'
 
 import { isStaffAdminRequest } from '@/lib/auth/userAccess'
 import {
-  normalizeEmailAddressFieldHook,
+  normalizeEmailAddressBeforeValidate,
   validateEmailAddressField,
 } from '@/lib/systemSettings/emailAddress'
 import {
@@ -268,7 +268,7 @@ export const SystemSettings: GlobalConfig = {
                   required: true,
                   label: 'Indirizzo email',
                   hooks: {
-                    beforeValidate: [({ value }) => normalizeEmailAddressFieldHook(value)],
+                    beforeValidate: [normalizeEmailAddressBeforeValidate],
                   },
                   validate: validateEmailAddressField,
                 },
@@ -304,7 +304,7 @@ export const SystemSettings: GlobalConfig = {
                   required: true,
                   label: 'Email',
                   hooks: {
-                    beforeValidate: [({ value }) => normalizeEmailAddressFieldHook(value)],
+                    beforeValidate: [normalizeEmailAddressBeforeValidate],
                   },
                   validate: validateEmailAddressField,
                 },

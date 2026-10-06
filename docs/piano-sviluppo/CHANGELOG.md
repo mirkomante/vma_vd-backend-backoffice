@@ -92,6 +92,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Fase 7.3 UX: hook `beforeValidate` email e `resendSenders` tipizzati come `FieldHook` Payload (build Docker/Cloud Build: `value` opzionale in `FieldHookArgs`).
 - Cancellazione utente in Admin: hook `users.beforeDelete` elimina prima le voci `activity-log` collegate (FK Postgres `ON DELETE SET NULL` incompatibile con `user_id` NOT NULL); bug emerso in verifica 4.0, non introdotto dalla localizzazione.
 - `fase-4-cms-siti-esterni.md` § 4.0: la migrazione non è vuota (con `localization` attiva l'adapter Postgres crea l'enum `_locales`); aggiunta la configurazione `i18n` mancante per l'interfaccia in italiano e corretta la semantica di `defaultLocale`.
 - `piano.yaml`: rimosso `arco-06` (errore di scrittura): attribuiva alla Fase 3 un ambiente «Firebase Hosting, Cloud Functions» che appartiene ai due siti esterni (altro progetto, un progetto Firebase distinto per ciascun sito).
@@ -118,7 +119,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 7.2 (correzioni post-smoke): `runSystemSettingsPureTests` include `formatServiceRowLabel`; `pnpm generate:importmap`; `pnpm payload run scripts/verify-system-settings-7_2.ts` e `pnpm typecheck` OK.
 - Fase 7.3: `runSystemSettingsPureTests` (email, unicità `site`); `pnpm payload run scripts/verify-system-settings-7_3.ts` su `vma_vd_migr` (Payload 3.90.2) — normalizzazione `Info@Dominio.IT ` → `info@dominio.it`, email non valida e doppio `site` rifiutati, due siti distinti OK, `googleCalendarId` e array vuoti OK. Migrazione generata su DB vuoto; apply su `vma_vd_migr` con riga preesistente (orari, B&B, chiusure), `migrate:down` e re-apply OK; nessun `ADD COLUMN … NOT NULL` su `impostazioni_sistema`. `pnpm typecheck`, `pnpm lint` (solo avvisi migrazioni), `pnpm build` OK. **Admin (aspetto campi e messaggi sul campo): non verificato dall’agente** — da provare dall’umano dopo deploy.
 - Fase 7.3 produzione (umano, 2026-10-06): `pnpm payload migrate` su Cloud SQL via proxy **prima** del push; controllo `SELECT id, google_calendar_id, bnb_check_in_time, bnb_check_out_time FROM impostazioni_sistema` → 1 riga, `google_calendar_id` NULL, orari B&B invariati (`15:00` / `11:00`).
-- Fase 7.3 UX (script, Payload 3.90.2): `verify-system-settings-7_3.ts` — doppio `site` → esattamente 1 errore su `resendSenders.1.site`; `runSystemSettingsPureTests` (RowLabel, path/indice riga). **Admin prod (umano, smoke 2026-10-06):** normalizzazione email **non** provata in UI; stesso indirizzo su due siti accettato (ADR-109). RowLabel e messaggi sul campo: da rivedere in Admin dopo deploy UX.
+- Fase 7.3 UX (script, Payload 3.90.2): `verify-system-settings-7_3.ts` — doppio `site` → esattamente 1 errore su `resendSenders.1.site`; `runSystemSettingsPureTests` (RowLabel, path/indice riga). **Admin prod (umano, smoke 2026-10-06):** stesso indirizzo su due siti accettato (ADR-109). RowLabel e messaggi sul campo: da rivedere in Admin dopo deploy UX.
+- Fase 7.3 UX (Admin prod, umano, 2026-10-06): normalizzazione email su `resendSenders[].address` / contatti staff verificata in UI (trim e minuscolo al salvataggio).
 
 ## [0.3.0] — 2026-10-03
 
