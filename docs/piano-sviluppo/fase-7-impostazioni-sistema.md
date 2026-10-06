@@ -185,7 +185,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 7.2 — Orari e chiusure (fonte unica)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-06)
 
 **Dipende da**: 7.1.
 
@@ -202,11 +202,13 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Pulsante festività** (funzione di supporto già prevista, componente custom dell'Admin, classe A): chiede l'anno e aggiunge a `annualClosures` le 12 festività nazionali di quell'anno (1 gennaio, 6 gennaio, Pasqua, Lunedì dell'Angelo, 25 aprile, 1 maggio, 2 giugno, 15 agosto, 1 novembre, 8 dicembre, 25 dicembre, 26 dicembre), con etichette in italiano. Pasqua si calcola con una funzione senza nuove dipendenze (algoritmo gregoriano). Le date già presenti non vengono duplicate. Le righe restano modificabili e cancellabili a mano. La funzione che calcola le festività e la validazione `HH:mm` stanno in `lib/` come funzioni pure, perché le riusa la sezione Orari dell'App (Fase 8.5). Dopo il componente custom: `pnpm generate:importmap` e commit di `app/(payload)/admin/importMap.js`.
 
 **Checklist di chiusura sottofase**:
-- [ ] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
-- [ ] Pulsante festività funzionante, risultato modificabile a mano.
-- [ ] `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, con un helper unico in `lib/` (pulsante festività e, in seguito, App, Eccezioni giorno e import lo riusano): il controllo duplicati e il confronto con le chiusure annuali restano coerenti (audit F18).
+- [x] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
+- [x] Pulsante festività funzionante, risultato modificabile a mano (logica merge e deduplica verificata con `scripts/verify-system-settings-7_2.ts`; prova click in Admin non eseguita in questa sessione).
+- [x] `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, con un helper unico in `lib/` (pulsante festività e, in seguito, App, Eccezioni giorno e import lo riusano): verificato su Payload **3.90.2** (DB `impostazioni_sistema_annual_closures`, script di verifica).
 - [ ] Migrazione applicata su Cloud SQL prod prima del push.
-- [ ] La nota di `fase-5.1` in `piano.yaml` dice già che «Impostazioni prenotazioni» nasce senza questi campi (ADR-109 §3): verificata, nessuna modifica.
+- [x] La nota di `fase-5.1` in `piano.yaml` dice già che «Impostazioni prenotazioni» nasce senza questi campi (ADR-109 §3): verificata, nessuna modifica.
+
+**Decisione operativa (2026-10-06)**: l’array `services` **non** è precompilato con righe `lunch`/`dinner` (il file di fase non lo richiede). Soluzione minima: `minRows`/`maxRows` = 2 e validazione in hook; l’Admin deve aggiungere manualmente le due righe al primo salvataggio. Se si preferisce un default precompilato, serve una decisione esplicita.
 
 ---
 

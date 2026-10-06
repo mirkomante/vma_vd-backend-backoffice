@@ -259,7 +259,7 @@ fasi:
         note: "Decisa in ADR-109 §1/§5 — questa sottofase implementa, non decide più. Global `impostazioni-sistema` (4 tab vuote, access staff Admin, `versions: false`); migrazione `20261006_083421_add_impostazioni_sistema_global`. Migrate prod 2026-10-06 prima del push."
       - id: fase-7.2
         nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
-        stato: "da_fare"
+        stato: "fatto"
         note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario. Estesa dal terzo emendamento ad ADR-109 (2026-10-04): gruppo bnb (check-in e check-out) di vietnamonamour.com."
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"

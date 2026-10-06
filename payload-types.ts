@@ -378,13 +378,45 @@ export interface Setting {
   createdAt?: string | null;
 }
 /**
- * Orari e chiusure, calendario, mittenti email verso i clienti e riferimenti per integrazioni future. I campi si aggiungono nelle sottofasi 7.2 e 7.3.
+ * Orari e chiusure, calendario, mittenti email verso i clienti e riferimenti per integrazioni future.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "impostazioni-sistema".
  */
 export interface ImpostazioniSistema {
   id: number;
+  /**
+   * Due righe fisse: Pranzo e Cena, ciascuna con orario di inizio e fine (HH:mm, ora locale).
+   */
+  services?:
+    | {
+        name: 'lunch' | 'dinner';
+        startTime: string;
+        endTime: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Giorni della settimana in cui il ristorante è chiuso.
+   */
+  weeklyClosedDays?: ('monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday')[] | null;
+  /**
+   * Giorni di chiusura eccezionali (festività, ferie, ecc.).
+   */
+  annualClosures?:
+    | {
+        date: string;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Orari di check-in e check-out del B&B. L’indicazione sulla colazione è contenuto del sito, non di questo Global.
+   */
+  bnb: {
+    checkInTime: string;
+    checkOutTime: string;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -410,6 +442,28 @@ export interface SettingsSelect<T extends boolean = true> {
  * via the `definition` "impostazioni-sistema_select".
  */
 export interface ImpostazioniSistemaSelect<T extends boolean = true> {
+  services?:
+    | T
+    | {
+        name?: T;
+        startTime?: T;
+        endTime?: T;
+        id?: T;
+      };
+  weeklyClosedDays?: T;
+  annualClosures?:
+    | T
+    | {
+        date?: T;
+        label?: T;
+        id?: T;
+      };
+  bnb?:
+    | T
+    | {
+        checkInTime?: T;
+        checkOutTime?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
