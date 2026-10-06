@@ -224,6 +224,10 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 
 **Perché**: login locale dell'App ed email di attivazione sono coperti solo in sviluppo (Fase 2.10). In Fase 3.3 non sono stati rieseguiti in produzione; la chiave Resend risulta montata su Cloud Run (conferma dell'umano, non verificata sul servizio).
 
+**Debito tecnico (documentato, fuori perimetro 7.4 — da affrontare in questa sottofase o prima del primo manager reale)**:
+1. **`hashLocalPassword`** (`lib/auth/localCredentials/hash.ts`): oggi scrive ancora hash **legacy** (PBKDF2 25.000 iter, 512 byte hex), mentre Payload 3.90.2 su `update` con `enableFields` usa **`pbkdf2-sha256-v1:`** (600.000 iter, 32 byte). Allineare la creazione/hash dell’hook al formato v1 così create e update non divergono. **`verifyLocalPassword`** accetta già entrambi i formati (commit `efc9f30`, CHANGELOG Fixed).
+2. **Commento in `hashLocalCredentialsBeforeChange.ts`**: descrive Payload che hash in update con `enableFields`, ma l’hook sovrascrive con legacy in create; il testo non riflette più il comportamento reale su `update` (Payload v1 vs hook legacy). Aggiornare commento quando si allinea `hashLocalPassword`.
+
 **Piano di prova proposto** (da confermare allo sblocco; lo esegue l'umano):
 1. Controllo di configurazione: `RESEND_API_KEY` montato, `RESEND_FROM_*` presenti, `APP_PUBLIC_URL` con HTTPS e senza slash finale.
 2. Creazione di un utente App di prova dall'Admin di produzione, con un'email diversa da quella del super-admin (un `adminRole ≠ none` non può avere login locale).

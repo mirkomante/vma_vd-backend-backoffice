@@ -42,6 +42,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- `piano.yaml` nota fase-7.4: nessun hook maschera/`afterRead`/`beforeChange`; solo `access` di campo; array riservati REST `[]` in 3.90.2 (po-11).
+- Fase 8.6: debito documentato su `hashLocalPassword` (legacy vs Payload v1) e commento obsoleto in `hashLocalCredentialsBeforeChange.ts` (rimando a fix `efc9f30` su `verifyLocalPassword`).
 - Fase 7.2 §7.2 debito UI/UX punto 3 (Comunicazioni): esito smoke prod 2026-10-06 (RowLabel OK; email invalida; duplicato `site` senza highlight immediato — debito; nota diagnosi `validate`/`path`).
 - Fase 7.4: chiusura sottofase e Fase 7 in dev in `fase-7-impostazioni-sistema.md`, `piano.yaml`, `00-piano-generale.md`.
 - Fase 7.4: rimosso script temporaneo `verify-system-settings-7_4-root-cause.ts`; esito prova radice (REST/`afterRead`) resta in §7.4 e voce Tests sotto.
