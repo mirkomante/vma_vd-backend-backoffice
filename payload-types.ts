@@ -89,9 +89,11 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('it' | 'en') | ('it' | 'en')[];
   globals: {
     settings: Setting;
+    'impostazioni-sistema': ImpostazioniSistema;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    'impostazioni-sistema': ImpostazioniSistemaSelect<false> | ImpostazioniSistemaSelect<true>;
   };
   locale: 'it' | 'en';
   widgets: {
@@ -376,6 +378,17 @@ export interface Setting {
   createdAt?: string | null;
 }
 /**
+ * Orari e chiusure, calendario, mittenti email verso i clienti e riferimenti per integrazioni future. I campi si aggiungono nelle sottofasi 7.2 e 7.3.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "impostazioni-sistema".
+ */
+export interface ImpostazioniSistema {
+  id: number;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "settings_select".
  */
@@ -388,6 +401,15 @@ export interface SettingsSelect<T extends boolean = true> {
         allowApp?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "impostazioni-sistema_select".
+ */
+export interface ImpostazioniSistemaSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

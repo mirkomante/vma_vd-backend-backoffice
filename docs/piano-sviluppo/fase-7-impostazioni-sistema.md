@@ -140,7 +140,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 7.1 — Scheletro del Global e nomi
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-06)
 
 **Dipende da**: 4.0 completata, 7.0 (utenti disattivati senza permessi: le funzioni `access` del Global usano gli helper aggiornati) e 7.0b (Payload 3.90.2 e la sua migrazione).
 
@@ -173,13 +173,13 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 3. **Una migrazione per sottofase** (7.1–7.3), come in Fase 4.
 4. **Nessun `activityLog`** su questo Global: nessun requisito documentato (`payload-pattern/03-log-azioni.mdc`: collegarlo solo quando un requisito reale lo richiede).
 
-**Verifica tecnica**: la tab «Integrazioni future» non ha campi (ADR-109 §1). Verificare che Payload 3.89 accetti una tab senza campi; in caso contrario, segnalarlo prima di scegliere una soluzione.
+**Verifica tecnica**: la tab «Integrazioni future» non ha campi (ADR-109 §1). Verificato su Payload **3.90.2** (2026-10-06): `buildConfig`, `migrate:create` e Admin accettano tab con `fields: []`; la tab «Integrazioni future» si apre senza errori.
 
 **Checklist di chiusura sottofase**:
-- [ ] Global registrato con slug `impostazioni-sistema` e le 4 tab; nomi confermati dall'umano.
-- [ ] Prova per ruolo: admin e super-admin lo vedono; un utente con solo `appRole` non entra nell'Admin.
-- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
-- [ ] Voce di CHANGELOG.
+- [x] Global registrato con slug `impostazioni-sistema` e le 4 tab; nomi confermati dall'umano.
+- [x] Prova per ruolo: admin e super-admin lo vedono; un utente con solo `appRole` non entra nell'Admin.
+- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (migrate prod: azione umana prima del push).
+- [x] Voce di CHANGELOG.
 
 ---
 
