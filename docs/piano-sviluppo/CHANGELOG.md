@@ -92,6 +92,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Login App: `verifyLocalPassword` accetta hash Payload 3.90.2 (`pbkdf2-sha256-v1:` + 600k iter) oltre al legacy 25k/512 — emerso in script di verifica 7.4 (`login/app` dopo `update` con password standard).
 - Fase 7.3 UX: hook `beforeValidate` email e `resendSenders` tipizzati come `FieldHook` Payload (build Docker/Cloud Build: `value` opzionale in `FieldHookArgs`).
 - Cancellazione utente in Admin: hook `users.beforeDelete` elimina prima le voci `activity-log` collegate (FK Postgres `ON DELETE SET NULL` incompatibile con `user_id` NOT NULL); bug emerso in verifica 4.0, non introdotto dalla localizzazione.
 - `fase-4-cms-siti-esterni.md` § 4.0: la migrazione non è vuota (con `localization` attiva l'adapter Postgres crea l'enum `_locales`); aggiunta la configurazione `i18n` mancante per l'interfaccia in italiano e corretta la semantica di `defaultLocale`.
