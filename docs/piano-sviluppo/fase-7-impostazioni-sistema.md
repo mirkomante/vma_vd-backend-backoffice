@@ -178,7 +178,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Checklist di chiusura sottofase**:
 - [x] Global registrato con slug `impostazioni-sistema` e le 4 tab; nomi confermati dall'umano.
 - [x] Prova per ruolo: admin e super-admin lo vedono; un utente con solo `appRole` non entra nell'Admin.
-- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (migrate prod: azione umana prima del push).
+- [x] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (umano, 2026-10-06).
 - [x] Voce di CHANGELOG.
 
 ---

@@ -132,10 +132,21 @@ Eseguire **dopo** il commit locale che contiene la nuova migrazione, **prima** d
 
 ### C.1 — Prerequisiti
 
-- [ ] `gcloud auth application-default login` (ADC valida)
-- [ ] Ruolo IAM **Cloud SQL Client** su progetto `vma-vd`
+- [ ] Account GCP attivo sul progetto `vma-vd` (`gcloud config get-value project` → `vma-vd`)
+- [ ] **ADC valida** (il proxy usa solo le Application Default Credentials, non basta un vecchio `gcloud auth login`):
+  ```bash
+  gcloud auth login
+  gcloud auth application-default login
+  gcloud auth application-default print-access-token >/dev/null && echo "ADC OK"
+  ```
+  Su account **Google Workspace** (`@vietnamonamour.com` ecc.) le ADC scadono con policy di re-auth: se compaiono `invalid_grant` / `invalid_rapt` nei log del proxy, ripetere i due comandi sopra (browser completo, 2FA), **fermare e riavviare** il proxy.
+- [ ] Ruolo IAM **Cloud SQL Client** (`roles/cloudsql.client`) sull’identità usata dall’ADC — non equivale ad altri ruoli “admin” in console
 - [ ] Binari: `cloud-sql-proxy`, `psql`
-- [ ] Password utente **`vma-vd-user`** (prod)
+- [ ] Password utente **`vma-vd-user`**: estrarla dal secret **`DATABASE_URL`** (Secret Manager, progetto `vma-vd`), **non** la password del `.env` locale e **non** la parola letterale `PASSWORD` negli esempi sotto:
+  ```bash
+  gcloud secrets versions access latest --secret=DATABASE_URL --project=vma-vd
+  ```
+  Il secret è la URL **Cloud Run** (host `/cloudsql/...`). Per migrate da locale serve la **stessa password** ma host **`127.0.0.1:5433`** e `?sslmode=disable` (vedi C.3). Se la password contiene `@`, `#`, `%`, … codificarla nell’URL o verificare prima con `psql` interattivo (C.2).
 
 ### C.2 — Avviare il proxy (terminale dedicato, lasciato aperto)
 
@@ -145,14 +156,20 @@ cloud-sql-proxy "vma-vd:europe-west1:vma-vd-database" --port 5433
 
 Finché il proxy non gira, `psql` su `5433` risponde **Connection refused**.
 
-Verifica rapida:
+**Tenere visibile questo terminale** per tutto il flusso C: molti errori compaiono qui (es. `invalid_rapt`, `403`), non nel terminale di `psql` / `pnpm migrate`.
+
+Verifica (in ordine):
 
 ```bash
-nc -z 127.0.0.1 5433 && echo OK
+gcloud sql instances describe vma-vd-database --project=vma-vd --format='value(state)'
+# atteso: RUNNABLE
+
+nc -z 127.0.0.1 5433 && echo "porta aperta"
 psql "postgresql://vma-vd-user@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable"
 ```
 
-(`psql` chiede la password; non legge il `.env`.)
+- `nc` conferma solo che **qualcosa** ascolta su `5433`, non che il tunnel verso Cloud SQL funzioni.
+- `psql` chiede la password (Secret Manager); non legge il `.env`. Se il proxy logga `failed to connect` / `invalid_rapt` → C.1 (ADC). Se `psql` risponde **`password authentication failed`** → password sbagliata o URL con segnaposto `PASSWORD` (C.1).
 
 ### C.3 — Stato migrazioni
 
@@ -205,10 +222,14 @@ DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice
 | Sintomo | Causa probabile | Cosa fare |
 |---------|-----------------|-----------|
 | `Connection refused` su `127.0.0.1:5433` | Proxy non avviato | Terminale con `cloud-sql-proxy ... --port 5433` |
+| `nc` OK ma `psql`: *server closed the connection unexpectedly* | ADC scaduta / re-auth Workspace; oppure proxy senza tunnel | Leggere il **terminale del proxy** al momento del tentativo. Se c’è `invalid_grant` / `invalid_rapt`: `gcloud auth login` + `gcloud auth application-default login`, riavviare il proxy ([re-auth Google Workspace](https://support.google.com/a/answer/9368756)). Se `403` / `notAuthorized`: ruolo **Cloud SQL Client** su `vma-vd` |
+| Proxy: `failed to get instance metadata` / `refresh error` | Come sopra (ADC) | Stessa procedura; verificare `gcloud auth application-default print-access-token` |
+| Proxy: `instance closed the connection` | Postgres ha chiuso (spesso auth) | Controllare password `vma-vd-user`; provare `psql` interattivo |
+| `password authentication failed for user "vma-vd-user"` | Password errata, segnaposto `PASSWORD` nell’URL, o URL Cloud Run copiato così com’è | Password dal secret `DATABASE_URL` (C.1); URL locale con `127.0.0.1:5433` e `sslmode=disable`; encoding caratteri speciali nell’URL |
 | Prompt «dev mode … data loss» | `DATABASE_URL` punta a `vma_vd_dev` (schema da push) | Usare DB vuoto `vma_vd_migr` per B; per prod usare `5433` e `vma-vd-backoffice` |
 | Migrate su prod non fa nulla / DB sbagliato | Porta `5432` o database dev | Controllare utente `vma-vd-user` e porta **5433** |
 | `prod-db.sh` esce subito | Nessuno in ascolto su 5433 | Avviare il proxy |
-| Errore IAM / credential GCP | ADC scaduta o permessi | `gcloud auth application-default login`; ruolo Cloud SQL Client |
+| Errore IAM / credential GCP | ADC scaduta o permessi | `gcloud auth login` + `gcloud auth application-default login`; ruolo Cloud SQL Client |
 | Build OK ma runtime errore SQL | Push **prima** della migrate prod | Migrate prod, poi push; eventuale rollback revisione Cloud Run |
 
 ---

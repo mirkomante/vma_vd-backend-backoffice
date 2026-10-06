@@ -256,7 +256,7 @@ fasi:
       - id: fase-7.1
         nome: "Struttura a tab e definizione campo-per-campo"
         stato: "fatto"
-        note: "Decisa in ADR-109 §1/§5 — questa sottofase implementa, non decide più. Global `impostazioni-sistema` (4 tab vuote, access staff Admin, `versions: false`); migrazione `20261006_083421_add_impostazioni_sistema_global`. Migrate prod prima del push: umano."
+        note: "Decisa in ADR-109 §1/§5 — questa sottofase implementa, non decide più. Global `impostazioni-sistema` (4 tab vuote, access staff Admin, `versions: false`); migrazione `20261006_083421_add_impostazioni_sistema_global`. Migrate prod 2026-10-06 prima del push."
       - id: fase-7.2
         nome: "Fonte unica orari/chiusure (riconciliazione Global 'Generali' menù <-> 'Impostazioni prenotazioni')"
         stato: "da_fare"
