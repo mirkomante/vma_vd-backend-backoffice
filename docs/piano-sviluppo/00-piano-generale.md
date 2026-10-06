@@ -31,7 +31,7 @@
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
 | Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` |
 | Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | ✅ fatto (7.0–7.4; smoke 7.4 prod 2026-10-06) | `fase-7-impostazioni-sistema.md` |
-| Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔶 in corso (8.1 ✅) | `fase-8-shell-app.md` |
+| Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔶 in corso (8.1 ✅, con correzione 8.1b) | `fase-8-shell-app.md` |
 
 ## Ordine di esecuzione corrente
 
@@ -40,8 +40,8 @@ Il numero di fase non indica l'ordine di esecuzione. Priorità decisa il 2026-10
 1. **Fase 4.0** — localizzazione e lingua d'interfaccia ✅ (2026-10-03)
 2. **Fase 7.0** — manutenzione dopo l'audit (F2, F9, F10, F26), prima della 7.1 ✅ (2026-10-05)
 3. ~~**Fase 7.0b** — aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche; una migrazione), prima della 7.1~~ ✅ (2026-10-05)
-4. **Fase 7** — `impostazioni-sistema` (gli orari sono fonte unica per menù e prenotazioni: vanno prima di 6.1 e 5.1)
-5. **Fase 8** — shell `(app)` + shadcn/ui
+4. **Fase 7** — `impostazioni-sistema` (gli orari sono fonte unica per menù e prenotazioni: vanno prima di 6.1 e 5.1) ✅ (2026-10-06)
+5. **Fase 8** — shell `(app)` + shadcn/ui 🔶 in corso (8.1 ✅)
 6. **Fase 6** — menù digitale (6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)
 7. Poi Fase 4.1–4.4 (parte CMS) e Fase 5
 
@@ -96,13 +96,49 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 5. Definizione dei Block del layout builder — ⏸ rimandata
 6. Content population e compilazione Redirects — ⏸ rimandata
 
+## Fase 6 — Menù digitale, panoramica sottofasi
+
+Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non indica l'ordine di esecuzione: **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.5**. Prerequisiti: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate. Il frontend pubblico (6.7) è fuori perimetro: vive in un altro progetto.
+
+0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — 🔲 da fare
+1. Tassonomie e Global «Generali» — 🔲 da fare
+2. Collection del menù e relazione menu fisso–piatto — 🔲 da fare
+3. Giorni Speciali — 🔲 da fare
+4. Disponibilità, reset ai confini di servizio e `disponibilita.json` — 🔲 da fare
+5. Rebuild manuale del menù (Cloud Build) — 🔲 da fare
+6. Backoffice «Menù» nell'App — 🔲 da fare
+7. Frontend pubblico del menù — ➖ fuori perimetro (confermato il 2026-10-03)
+8. Import dei dati elementari dal vecchio backend — 🔲 da fare
+
+## Fase 7 — Impostazioni di sistema, panoramica sottofasi
+
+Dettaglio completo in `fase-7-impostazioni-sistema.md`. Ordine: 7.0 → 7.0b → 7.1 → 7.2 → 7.3 → 7.4. Fase chiusa in produzione (smoke 7.4 eseguito il 2026-10-06).
+
+0. Manutenzione: correzioni dall'audit (F2, F9, F10, F26) — ✅ fatto (2026-10-05)
+0b. Aggiornamento di Payload a 3.90.2 — ✅ fatto (2026-10-05)
+1. Scheletro del Global e nomi — ✅ fatto (2026-10-06)
+2. Orari e chiusure (fonte unica) — ✅ fatto (2026-10-06)
+3. Riferimenti tecnici (Calendario, Comunicazioni, Integrazioni future) — ✅ fatto (2026-10-06)
+4. Permessi granulari campo-per-campo — ✅ fatto (2026-10-06)
+
+## Fase 8 — Shell dell'Area App `(app)` + shadcn/ui, panoramica sottofasi
+
+Dettaglio completo in `fase-8-shell-app.md`. Il numero della sottofase non indica l'ordine di esecuzione: **8.1 → 8.3 → 8.2 → 8.4 → 8.5**, con 8.6 bloccata.
+
+1. Installazione e verifica di shadcn/ui — ✅ fatto (2026-10-06; con correzione 8.1b: entry Tailwind dedicata in `app/(app)/app-ui.css`)
+2. Layout `(app)` mobile-first e navigazione — 🔲 da fare
+3. Ruoli e guardia di accesso — 🔲 da fare
+4. Email di account per gli utenti — 🔲 da fare
+5. Sezione Orari — 🔲 da fare
+6. Verifica in produzione di login locale ed email — ⏸ bloccata (sblocco: 6.6 e 8.5)
+
 ## Fase 5 in poi — dominio specifico del progetto
 
-> Nota di progetto (2026-10-03): la Fase 4 è definita (sezione sopra). Resta da scrivere il file di Fase 5 (prenotazioni), già presente come nodo in `piano.yaml`; i file di Fase 6, 7 e 8 sono scritti e validati (2026-10-04).
+> Nota di progetto (aggiornata 2026-10-06): le Fasi 4, 6, 7 e 8 hanno la propria panoramica sopra. Resta da scrivere il file di Fase 5 (prenotazioni), già presente come nodo in `piano.yaml`.
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 8.3 (ruoli e `canAccessSection`), poi 8.2 — ordine interno 8.1 ✅ → 8.3 → 8.2 → … (`fase-8-shell-app.md`). **Fase 7 chiusa in produzione** (2026-10-06): smoke 7.4 eseguito (login Google Admin e App OK; login locale super-admin OK; quattro tab Admin; GET anonimo Global solo chiavi Orari/chiusure, `googleCalendarId` assente, array riservati `[]`). Prova manager reale su Orari in 8.5. Punti aperti: `po-10`, `po-11`. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod: login locale App / email attivazione in `fase-8.6` (bloccata).
+- **Prossimo passo**: Fase 8.3 (ruoli e `canAccessSection`), poi 8.2 — ordine interno 8.1 ✅ → 8.3 → 8.2 → … (`fase-8-shell-app.md`) (8.1 corretta dalla 8.1b). **Fase 7 chiusa in produzione** (2026-10-06): smoke 7.4 eseguito (login Google Admin e App OK; login locale super-admin OK; quattro tab Admin; GET anonimo Global solo chiavi Orari/chiusure, `googleCalendarId` assente, array riservati `[]`). Prova manager reale su Orari in 8.5. Punti aperti: `po-10`, `po-11`. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod: login locale App / email attivazione in `fase-8.6` (bloccata).
 - **Regola di avvio delle sottofasi** (proposta dalla chat di verifica, condivisa dal pianificatore e **confermata dall'umano il 2026-10-04**): Cursor parte da una sottofase quando non restano rilievi B né P che riguardano quella sottofase o quelle che la precedono nell'ordine di esecuzione; i P su sottofasi successive si correggono prima di avviarle; i rilievi A si raccolgono nella tabella «Rinviati e aperti». **Stato condiviso**: `docs/audit/audit-verifica-3-2026-10-04.md` §7, aggiornato da `docs/audit/audit-verifica-4-2026-10-04.md` §5 (tabelle «Concordato» e «Rinviati e aperti»).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.

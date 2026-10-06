@@ -43,6 +43,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- `00-piano-generale.md`: panoramiche sottofasi Fase 6, 7 e 8 (istruzione template commit ed382d8), stati allineati ai file di fase, tabella Fase 8 e «Ordine di esecuzione corrente» aggiornati, nota «Fase 5 in poi» e «Prossimo passo» (8.1b).
 - Fase 7 chiusa in produzione (2026-10-06): smoke 7.4 registrato in `fase-7` §7.4, `piano.yaml`, `00-piano-generale.md` (tabella Fase 7 e «Prossimo passo»).
 - `piano.yaml` nota fase-7.4: nessun hook maschera/`afterRead`/`beforeChange`; solo `access` di campo; array riservati REST `[]` in 3.90.2 (po-11).
 - Fase 8.6: debito documentato su `hashLocalPassword` (legacy vs Payload v1) e commento obsoleto in `hashLocalCredentialsBeforeChange.ts` (rimando a fix `efc9f30` su `verifyLocalPassword`).
