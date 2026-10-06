@@ -2,7 +2,16 @@ import type { GlobalConfig } from 'payload'
 
 import { isStaffAdminRequest } from '@/lib/auth/userAccess'
 import {
-  prepareSystemSettingsOrariChiusure,
+  normalizeEmailAddressFieldHook,
+  validateEmailAddressField,
+} from '@/lib/systemSettings/emailAddress'
+import {
+  RESEND_SENDER_SITE_OPTIONS,
+  validateResendSenderSiteField,
+  validateResendSendersArray,
+} from '@/lib/systemSettings/resendSenders'
+import {
+  prepareSystemSettingsWrite,
   type SystemSettingsWriteData,
 } from '@/lib/systemSettings/validateSystemSettings'
 import { sortAnnualClosuresByDate } from '@/lib/systemSettings/annualClosures'
@@ -43,7 +52,7 @@ export const SystemSettings: GlobalConfig = {
     beforeValidate: [
       ({ data }) => {
         const incoming = (data ?? {}) as SystemSettingsWriteData
-        return prepareSystemSettingsOrariChiusure(incoming)
+        return prepareSystemSettingsWrite(incoming)
       },
     ],
   },
@@ -201,11 +210,92 @@ export const SystemSettings: GlobalConfig = {
         },
         {
           label: 'Calendario',
-          fields: [],
+          fields: [
+            {
+              name: 'googleCalendarId',
+              type: 'text',
+              label: 'ID calendario Google',
+              admin: {
+                description:
+                  'Riferimento non sensibile al calendario usato dall’integrazione push (Fase 5.4). Lasciare vuoto finché l’integrazione non è attiva.',
+              },
+            },
+          ],
         },
         {
           label: 'Comunicazioni',
-          fields: [],
+          fields: [
+            {
+              name: 'resendSenders',
+              type: 'array',
+              label: 'Mittenti email verso i clienti',
+              labels: {
+                singular: 'Mittente',
+                plural: 'Mittenti email verso i clienti',
+              },
+              admin: {
+                description:
+                  'Un record per sito (vietnamonamour / villadoree). Il mittente di sistema resta nelle variabili RESEND_FROM_*.',
+              },
+              validate: validateResendSendersArray,
+              fields: [
+                {
+                  name: 'site',
+                  type: 'select',
+                  required: true,
+                  label: 'Sito',
+                  options: [...RESEND_SENDER_SITE_OPTIONS],
+                  validate: validateResendSenderSiteField,
+                },
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                  label: 'Nome mittente',
+                },
+                {
+                  name: 'address',
+                  type: 'email',
+                  required: true,
+                  label: 'Indirizzo email',
+                  hooks: {
+                    beforeValidate: [({ value }) => normalizeEmailAddressFieldHook(value)],
+                  },
+                  validate: validateEmailAddressField,
+                },
+              ],
+            },
+            {
+              name: 'staffNotificationContacts',
+              type: 'array',
+              label: 'Contatti notifiche staff',
+              labels: {
+                singular: 'Contatto',
+                plural: 'Contatti notifiche staff',
+              },
+              admin: {
+                description: 'Destinatari interni per notifiche operative (senza segreti in Payload).',
+              },
+              fields: [
+                {
+                  name: 'name',
+                  type: 'text',
+                  required: true,
+                  label: 'Nome',
+                },
+                {
+                  name: 'email',
+                  type: 'email',
+                  required: true,
+                  label: 'Email',
+                  hooks: {
+                    beforeValidate: [({ value }) => normalizeEmailAddressFieldHook(value)],
+                  },
+                  validate: validateEmailAddressField,
+                },
+              ],
+            },
+          ],
         },
         {
           label: 'Integrazioni future',

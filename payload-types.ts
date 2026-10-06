@@ -417,6 +417,31 @@ export interface ImpostazioniSistema {
     checkInTime: string;
     checkOutTime: string;
   };
+  /**
+   * Riferimento non sensibile al calendario usato dall’integrazione push (Fase 5.4). Lasciare vuoto finché l’integrazione non è attiva.
+   */
+  googleCalendarId?: string | null;
+  /**
+   * Un record per sito (vietnamonamour / villadoree). Il mittente di sistema resta nelle variabili RESEND_FROM_*.
+   */
+  resendSenders?:
+    | {
+        site: 'vietnamonamour' | 'villadoree';
+        name: string;
+        address: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Destinatari interni per notifiche operative (senza segreti in Payload).
+   */
+  staffNotificationContacts?:
+    | {
+        name: string;
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -463,6 +488,22 @@ export interface ImpostazioniSistemaSelect<T extends boolean = true> {
     | {
         checkInTime?: T;
         checkOutTime?: T;
+      };
+  googleCalendarId?: T;
+  resendSenders?:
+    | T
+    | {
+        site?: T;
+        name?: T;
+        address?: T;
+        id?: T;
+      };
+  staffNotificationContacts?:
+    | T
+    | {
+        name?: T;
+        email?: T;
+        id?: T;
       };
   updatedAt?: T;
   createdAt?: T;

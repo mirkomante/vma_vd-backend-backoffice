@@ -3,6 +3,7 @@ import * as migration_20261003_155849_localization_enum from './20261003_155849_
 import * as migration_20261005_134746_add_reset_password_requested_at from './20261005_134746_add_reset_password_requested_at';
 import * as migration_20261006_083421_add_impostazioni_sistema_global from './20261006_083421_add_impostazioni_sistema_global';
 import * as migration_20261006_091528_add_impostazioni_sistema_orari_chiusure from './20261006_091528_add_impostazioni_sistema_orari_chiusure';
+import * as migration_20261006_114919_add_impostazioni_sistema_calendario_comunicazioni from './20261006_114919_add_impostazioni_sistema_calendario_comunicazioni';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261006_091528_add_impostazioni_sistema_orari_chiusure.up,
     down: migration_20261006_091528_add_impostazioni_sistema_orari_chiusure.down,
-    name: '20261006_091528_add_impostazioni_sistema_orari_chiusure'
+    name: '20261006_091528_add_impostazioni_sistema_orari_chiusure',
+  },
+  {
+    up: migration_20261006_114919_add_impostazioni_sistema_calendario_comunicazioni.up,
+    down: migration_20261006_114919_add_impostazioni_sistema_calendario_comunicazioni.down,
+    name: '20261006_114919_add_impostazioni_sistema_calendario_comunicazioni'
   },
 ];

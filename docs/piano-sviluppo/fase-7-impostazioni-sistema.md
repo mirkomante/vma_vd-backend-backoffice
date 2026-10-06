@@ -207,8 +207,9 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Checklist di chiusura sottofase**:
 - [x] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
-- [x] Festività (13, Sant’Ambrogio incluso): logica add/remove/deduplica in `lib/` e script; toast e modal in UI. **Prova Admin dev (umano, 2026-10-06):** aggiunta e rimozione per anno OK, inclusa la festività locale di Milano (Sant’Ambrogio). RowLabel: non oggetto di quella prova.
+- [x] Festività (13, Sant’Ambrogio incluso): logica add/remove/deduplica in `lib/` e script; toast e modal in UI. **Prova Admin dev (umano, 2026-10-06):** aggiunta e rimozione per anno OK, inclusa la festività locale di Milano (Sant’Ambrogio).
 - [x] `annualClosures[].date` a mezzogiorno UTC (`lib/`); hook ordine verificato via Local API (`scripts/verify-system-settings-7_2.ts`).
+- [x] RowLabel servizi (`Pranzo 12:30 – 14:30`), RowLabel chiusure, ordinamento per data dopo ricaricamento: **verificati in Admin in produzione dall’umano il 2026-10-06** dopo il deploy di `41851b8`. Login Google dell’App verificato nella stessa sessione.
 - [x] RowLabel, rimozione per anno, ordinamento (hook + `isSortable: false`); esito verifica `isSortable` su Payload 3.90.2 documentato sopra.
 - [x] Migrazione applicata su Cloud SQL prod **prima** del push (umano, 2026-10-06: `20261006_091528_add_impostazioni_sistema_orari_chiusure`; `count(*)` su `impostazioni_sistema` = 0, apply senza workaround).
 - [x] La nota di `fase-5.1` in `piano.yaml` dice già che «Impostazioni prenotazioni» nasce senza questi campi (ADR-109 §3): verificata, nessuna modifica.
@@ -230,7 +231,7 @@ Il punto 2 non è più solo una nota interna: è una **richiesta dell’umano** 
 
 ## 7.3 — Riferimenti tecnici (Calendario, Comunicazioni, Integrazioni future)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-06)
 
 **Dipende da**: 7.2.
 
@@ -246,9 +247,9 @@ Il punto 2 non è più solo una nota interna: è una **richiesta dell’umano** 
 **Vincoli dall'Emendamento a §1**: l'env `RESEND_FROM_*` e `lib/email/env.ts` **non si toccano** in questa fase; non è previsto un test di invio al salvataggio; il prerequisito «dominio Verified in Resend prima di inserire un record» è operativo e non verificato dal sistema.
 
 **Checklist di chiusura sottofase**:
-- [ ] Campi, normalizzazione e unicità per `site`; nessun consumatore collegato.
-- [ ] **Nomi congelati**: elenco degli slug e dei `name` riportato nel CHANGELOG.
-- [ ] Migrazione applicata su Cloud SQL prod prima del push.
+- [x] Campi, normalizzazione e unicità per `site`; nessun consumatore collegato. Validazione sui campi (`validate` + `beforeValidate` email); messaggi in `lib/systemSettings/`; prove Local API in `scripts/verify-system-settings-7_3.ts`.
+- [x] **Nomi congelati**: elenco completo slug/`name` in CHANGELOG (7.1 + 7.2 + 7.3).
+- [ ] Migrazione applicata su Cloud SQL prod **prima** del push (azione umana).
 
 ---
 

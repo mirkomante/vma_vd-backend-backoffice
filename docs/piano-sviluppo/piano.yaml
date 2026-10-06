@@ -263,7 +263,7 @@ fasi:
         note: "Riconciliazione decisa in ADR-109 §2 (amendment ad ADR-107 §1 incluso). Eseguita prima di fase-5.1 e fase-6.1 (arco-21/22 invertiti il 2026-10-03): i due Global nascono senza i campi orario. Estesa dal terzo emendamento ad ADR-109 (2026-10-04): gruppo bnb (check-in e check-out) di vietnamonamour.com."
       - id: fase-7.3
         nome: "Riferimenti tecnici (id Google Calendar, mittenti Resend array, contatti notifiche staff array, slot integrazioni future)"
-        stato: "da_fare"
+        stato: "fatto"
         note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni'). po-01 chiuso: mittenti decisi nell'Emendamento a §1 di ADR-109 (env RESEND_FROM_* per le email di sistema; array 'mittenti-resend' per sito verso i clienti, senza fallback; sito vietnamonamour/villadoree, validazione per sito unico). Calendario e Comunicazioni restano senza consumatori fino a fase-5; nessun arco verso il consumatore delle email agli ospiti finché non è definito."
       - id: fase-7.4
         nome: "Permessi granulari campo-per-campo (admin e super-admin tutto; appRole manager solo Orari e chiusure)"

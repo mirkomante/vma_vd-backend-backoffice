@@ -13,6 +13,16 @@ import {
   mergeItalianPublicHolidays,
   removeItalianPublicHolidaysForYear,
 } from '@/lib/systemSettings/italianPublicHolidays'
+import {
+  isValidEmailAddress,
+  normalizeEmailAddress,
+  validateEmailAddressField,
+} from '@/lib/systemSettings/emailAddress'
+import {
+  countResendSenderSite,
+  validateResendSendersArray,
+  validateResendSenderSiteField,
+} from '@/lib/systemSettings/resendSenders'
 import { formatServiceRowLabel } from '@/lib/systemSettings/serviceOptions'
 
 function assert(condition: boolean, message: string): void {
@@ -74,5 +84,37 @@ export function runSystemSettingsPureTests(): void {
   assert(formatServiceRowLabel('dinner', null, '23:00') === 'Cena', 'format service senza orari completi')
   assert(formatServiceRowLabel(null, '12:00', '13:00') === 'Servizio (nuovo)', 'format service nuova riga')
 
-  console.log('OK funzioni pure (festività, sort, remove, RowLabel)')
+  assert(normalizeEmailAddress('Info@Dominio.IT ') === 'info@dominio.it', 'normalize email')
+  assert(isValidEmailAddress('info@dominio.it'), 'email valida')
+  assert(!isValidEmailAddress('non-email'), 'email non valida')
+  assert(validateEmailAddressField('bad@') !== true, 'validate rifiuta formato')
+  assert(validateResendSendersArray([]) === true, 'array mittenti vuoto OK')
+  assert(
+    validateResendSendersArray([
+      { site: 'vietnamonamour', name: 'A', address: 'a@b.it' },
+      { site: 'villadoree', name: 'B', address: 'b@b.it' },
+    ]) === true,
+    'due siti distinti OK',
+  )
+  assert(
+    validateResendSendersArray([
+      { site: 'vietnamonamour', name: 'A', address: 'a@b.it' },
+      { site: 'vietnamonamour', name: 'B', address: 'b@b.it' },
+    ]) !== true,
+    'stesso site rifiutato',
+  )
+  assert(
+    validateResendSenderSiteField('vietnamonamour', {
+      data: {
+        resendSenders: [
+          { site: 'vietnamonamour' },
+          { site: 'vietnamonamour' },
+        ],
+      },
+    }) !== true,
+    'site duplicato sul campo',
+  )
+  assert(countResendSenderSite([{ site: 'villadoree' }, { site: 'villadoree' }], 'villadoree') === 2, 'count site')
+
+  console.log('OK funzioni pure (festività, sort, remove, RowLabel, email, mittenti)')
 }
