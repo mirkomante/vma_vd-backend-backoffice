@@ -207,15 +207,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Checklist di chiusura sottofase**:
 - [x] Campi (compreso il gruppo `bnb`), validazione sul numero di servizi e sul formato `HH:mm`.
-- [x] Festività (13, Sant’Ambrogio incluso): logica add/remove/deduplica in `lib/` e script; toast e modal in UI (click pulsanti e aspetto RowLabel: prova umana in Admin dev).
+- [x] Festività (13, Sant’Ambrogio incluso): logica add/remove/deduplica in `lib/` e script; toast e modal in UI. **Prova Admin dev (umano, 2026-10-06):** aggiunta e rimozione per anno OK, inclusa la festività locale di Milano (Sant’Ambrogio). RowLabel: non oggetto di quella prova.
 - [x] `annualClosures[].date` a mezzogiorno UTC (`lib/`); hook ordine verificato via Local API (`scripts/verify-system-settings-7_2.ts`).
 - [x] RowLabel, rimozione per anno, ordinamento (hook + `isSortable: false`); esito verifica `isSortable` su Payload 3.90.2 documentato sopra.
-- [ ] Migrazione applicata su Cloud SQL prod prima del push (vedi `docs/procedure/migrazioni-payload-postgres.md` — colonne NOT NULL se esistono righe in `impostazioni_sistema`).
+- [x] Migrazione applicata su Cloud SQL prod **prima** del push (umano, 2026-10-06: `20261006_091528_add_impostazioni_sistema_orari_chiusure`; `count(*)` su `impostazioni_sistema` = 0, apply senza workaround).
 - [x] La nota di `fase-5.1` in `piano.yaml` dice già che «Impostazioni prenotazioni» nasce senza questi campi (ADR-109 §3): verificata, nessuna modifica.
 
 **Decisioni operative (2026-10-06)**:
 - `services` **senza** precompilazione `lunch`/`dinner`: `minRows`/`maxRows` = 2 + validazione; primo salvataggio manuale in Admin.
 - **`services` assente** sul documento Global = orari **non configurati** per i consumatori downstream (nessun fallback silenzioso).
+
+**Debito documentato (2026-10-06)**: migliorare UI/UX del blocco festività in Admin (`ItalianPublicHolidaysUi`: due campi anno, pulsanti affiancati, copy). Funzionalità sufficiente per 7.2; rifinitura estetica/ergonomica rinviata (es. insieme a Fase 8 o su richiesta esplicita), senza cambiare schema né logica in `lib/`.
 
 ---
 

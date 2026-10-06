@@ -39,11 +39,12 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
-- Fase 7.2 (affinamento): `runSystemSettingsPureTests` + `pnpm payload run scripts/verify-system-settings-7_2.ts` — 13 festività e remove; hook `annualClosures` ordine via Local API; funzioni pure sort/remove/RowLabel. Click pulsanti Admin e RowLabel a runtime: **non** verificati dall’agente (umano). `pnpm typecheck`, `pnpm lint`, `pnpm build` OK.
+- Fase 7.2 (affinamento): `runSystemSettingsPureTests` + `pnpm payload run scripts/verify-system-settings-7_2.ts` — 13 festività e remove; hook `annualClosures` ordine via Local API; funzioni pure sort/remove/RowLabel. **Admin dev (umano, 2026-10-06):** aggiungi/rimuovi festività per anno OK (13 righe incl. Sant’Ambrogio). RowLabel non verificato in quella sessione. Debito: migliorare UI/UX blocco festività (documentato in `fase-7` §7.2). `pnpm typecheck`, `pnpm lint`, `pnpm build` OK.
 - Fase 7.2: `pnpm payload run scripts/verify-system-settings-7_2.ts` su Postgres locale (Payload 3.90.2) — rifiuto di `services` con ≠2 righe, nomi duplicati, `24:00` e `9:30`; date in DB a mezzogiorno UTC (`2026-01-06T12:00:00.000Z` / helper); 12 festività, Pasqua e Lunedì dell’Angelo 2024 e 2026, deduplica al secondo merge. Prova click del pulsante festività in Admin UI non eseguita. `pnpm typecheck`, `pnpm lint` (solo avvisi preesistenti sulle migrazioni), `pnpm build` OK. Migrazione provata su `vma_vd_migr` (apply, `migrate:down`, re-apply).
 
 ### Changed
 
+- Fase 7.2: migrazione `20261006_091528_add_impostazioni_sistema_orari_chiusure` applicata su Cloud SQL prod prima del push (umano, 2026-10-06; tabella `impostazioni_sistema` senza righe preesistenti).
 - `docs/procedure/migrazioni-payload-postgres.md` (flusso C): prerequisiti ADC/Workspace e password da Secret Manager `DATABASE_URL`; verifiche proxy/`psql` e tabella problemi frequenti ampliate (re-auth, `invalid_rapt`, auth `vma-vd-user`).
 - Fase 4.0: `@payloadcms/translations@3.89.0` aggiunto come dipendenza diretta (allineata a Payload 3.89.0); tipi Payload rigenerati (`locale: 'it' | 'en'`).
 - `piano.yaml`: `arco-01` parte ora da `fase-4.0` (localizzazione non consegnata da Fase 1); note di `fase-4.3`/`4.4` con parte CMS eseguibile e parte sui siti rimandata. `ADR-105`: nota di chiarimento sui due siti (applicazioni distinte, ciascuna su un proprio progetto Firebase).
