@@ -225,7 +225,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 2. **Messaggi e obbligatorietà — tab Orari e chiusure** (richiesta esplicita dell’umano dopo smoke prod 2026-10-06): messaggi d’errore più chiari e vicini al campo; **non** affrontato in 7.2 oltre alla validazione hook esistente.
    - **(a)** Da verificare in Admin: errori dall’hook del Global (es. `services.N.startTime`) — sul campo o come avviso generico.
    - **(b)** **fase-8** §8.5: riuso messaggi da `lib/` in App.
-3. **Tab Comunicazioni (7.3, smoke prod 2026-10-06)**: RowLabel, `initCollapsed`, messaggi actionable e un solo errore su `site` duplicato — **corretto** in sessione UX post-smoke (nessuna migrazione). **Normalizzazione email in Admin** verificata dall’umano il 2026-10-06 (post-deploy UX). Resta da verificare in Admin: aspetto RowLabel, banner «I seguenti campi non sono validi» (Payload elenca label/path dei campi in errore; testo introduttivo solo via i18n `error.followingFieldsInvalid_*` in `payload.config`, non per singolo Global). **Stesso indirizzo su due siti**: accettato (coerente con ADR-109: unicità per `site`, non per `address`).
+3. **Tab Comunicazioni (7.3, smoke prod 2026-10-06)**: RowLabel, `initCollapsed`, messaggi actionable e un solo errore su `site` duplicato — **corretto** in sessione UX post-smoke (nessuna migrazione). **Smoke prod 2026-10-06 (umano)**: RowLabel mittenti OK; email non valida → errore; duplicato `site` → errore dopo il salvataggio ma il campo **non** è evidenziato in rosso subito (**rinviato** come debito UI/UX). **Diagnosi da fare quando si riprende**: cosa riceve `validate` di `site` dal form state (path con indice riga?; se `path` ha forma diversa `resendSenderRowIndexFromValidatePath` dà `null` e la validate passa in silenzio) e come Admin mappa gli errori sollevati dagli hook sui campi. **Normalizzazione email in Admin** verificata dall’umano il 2026-10-06 (post-deploy UX). Resta da verificare in Admin: aspetto RowLabel, banner «I seguenti campi non sono validi» (Payload elenca label/path dei campi in errore; testo introduttivo solo via i18n `error.followingFieldsInvalid_*` in `payload.config`, non per singolo Global). **Stesso indirizzo su due siti**: accettato (coerente con ADR-109: unicità per `site`, non per `address`).
 
 ---
 
@@ -257,7 +257,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 7.4 — Permessi granulari campo-per-campo
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-06)
 
 **Dipende da**: 7.3 (campi esistenti). Non dipende dal nuovo valore `manager` di `adminRole` (Fase 8.3): usa i valori già esistenti.
 
@@ -280,15 +280,21 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Nascondere il Global dall'Admin** a `adminRole: manager` (`admin.hidden` con funzione): si implementa e si verifica in **Fase 8.3**, insieme al nuovo valore del ruolo.
 
-**Verifiche tecniche** (non ancora fatte): prova per ruolo via Local API e REST (admin, super-admin, utente con `appRole: manager`, utente senza ruoli, richiesta anonima) su lettura e scrittura di ogni campo; rifiuto o scarto di un `update` su un campo non consentito.
+**Implementazione (2026-10-06, rivista post-review)**: `canReadSystemSettingsRequest` / `canUpdateSystemSettingsRequest` e `isActiveAppManagerRequest` in `lib/auth/userAccess.ts`; `staffAdminOnlySystemSettingsFieldAccess` su campi riservati (array + sottocampi). **`access.read`/`access.update` di campo bastano** (provato con hook maschera disattivati). **Nessun Global `afterRead`**: in Payload 3.90.2, con `access.read` negato, l’hook di campo (`fields/hooks/afterRead/promise.js` ~225-237) **elimina la chiave** del text (`googleCalendarId` assente in REST); gli **array** restano in REST come chiavi con **`[]`** (nessuna riga/id/email). `?select[resendSenders]=true` espone la chiave con `[]`. Non si usa `req.payloadAPI` (evita di mascherare `findGlobal` con `overrideAccess: true` e `req` artificiale). In **Local API** manager: stesso comportamento sui valori (`[]`). Checklist: nessun dato riservato leggibile, solo chiavi array vuote ammesse. **Lettura codice server (Fase 5+)**: `payload.findGlobal({ slug: 'impostazioni-sistema', overrideAccess: true, depth: 0 })`; anche `createLocalReq` + `req.payloadAPI = 'REST'` con `overrideAccess: true` deve restituire i campi riservati (test in `verify-system-settings-7_4.ts`).
+
+**Prova radice (2026-10-06, `scripts/verify-system-settings-7_4-root-cause.ts`, hook maschera disattivati, DB `vma_vd_migr` con probe popolato)** — esito in CHANGELOG / Tests. Script regressione: `scripts/verify-system-settings-7_4.ts` (solo DB `vma_vd_migr`; REST richiede `pnpm dev` con lo **stesso** `DATABASE_URL`, preflight su `bnb.checkOutTime`).
+
+**Verifiche tecniche**: eseguite in locale (2026-10-06) — tabella esiti nel CHANGELOG `[Unreleased]` / Tests; `pnpm migrate:create` → nessuna differenza schema.
+
+**Follow-up (Payload 4 / App)** — `po-11`: in migrazione a Payload 4 **ricontrollare** se REST anonimo espone ancora chiavi array riservate solo come `[]` o se il serializzatore le elimina del tutto (comportamento osservato in 3.90.2 documentato sopra). **Fase 8.5**: in UI/API App, un manager che legge `resendSenders` / `staffNotificationContacts` come **`[]` via Local API non deve interpretarlo come «non configurato»** — distinguere assenza di permesso/valore da configurazione vuota reale (orchestrazione in 8.5).
 
 **Checklist di chiusura sottofase**:
-- [ ] Prova per ruolo su ogni campo.
-- [ ] Ogni campo delle tab Calendario, Comunicazioni e Integrazioni dichiara `access.read` riservato ad admin e super-admin; `GET /api/globals/impostazioni-sistema?locale=it`, anonimo, restituisce **solo** le chiavi della tab Orari e chiusure (`services`, `weeklyClosedDays`, `annualClosures`, `bnb`) più i campi di sistema `id`, `createdAt`, `updatedAt` e `globalType`. Test di non regressione: ogni campo nuovo si aggiunge (audit F3).
-- [ ] Un `update` di un utente `appRole: manager` sui campi delle tab Calendario, Comunicazioni o Integrazioni è scartato o rifiutato; sulla tab Orari e chiusure è accettato. La prova rilegge il valore con un admin (o dal database) dopo l'`update` del manager: su un campo vietato deve essere quello di prima, sulla tab Orari e chiusure quello nuovo. In 3.89.0 un campo vietato è scartato in silenzio (verificato il 2026-10-04): non ci si aspetta un errore.
-- [ ] Un utente con `active: false` e cookie ancora valido riceve 403 sul Global (helper `isActiveUser` della 7.0; audit F2).
-- [ ] Nessuna modifica di schema (solo `access`), quindi nessuna migrazione.
-- [ ] Voce di CHANGELOG.
+- [x] Prova per ruolo su ogni campo (`scripts/verify-system-settings-7_4.ts`, Local API + REST anonimo).
+- [x] Campi Calendario/Comunicazioni/Integrazioni con `access.read`/`access.update` staff; GET anonimo senza **valori** riservati (F3; Payload 3.90.2 può lasciare `resendSenders`/`staffNotificationContacts` come chiavi con **`[]`**); `select[resendSenders]` senza righe (solo `[]`).
+- [x] Manager: `update` Orari accettato (`bnb.checkOutTime`); campi staff invariati dopo update misto; Local API.
+- [x] Utente disattivato: Local API lettura/scrittura **negate**; REST con token valido prima della disattivazione (admin: `GET /api/users/me`; manager App: `GET` Global — `Users.access.read` è staff-only) → **solo 403** su `GET` Global (`scripts/verify-system-settings-7_4.ts`).
+- [x] Nessuna migrazione (`migrate:create` senza diff).
+- [x] Voce di CHANGELOG.
 
 ---
 

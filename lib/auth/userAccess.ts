@@ -53,6 +53,35 @@ export function isStaffAdminRequest(req: PayloadRequest): boolean {
   return role === 'admin' || role === 'super-admin'
 }
 
+/** Utente App attivo con `appRole: manager` (senza richiedere staff Admin). */
+export function isActiveAppManagerRequest(req: PayloadRequest): boolean {
+  const user = asUserAccessFields(req.user)
+  if (!isActiveUser(user)) {
+    return false
+  }
+  return user?.appRole === 'manager'
+}
+
+/**
+ * Lettura del Global `impostazioni-sistema`: anonima consentita (campi pubblici via `access` di campo);
+ * utente autenticato solo se attivo e staff Admin o manager App.
+ */
+export function canReadSystemSettingsRequest(req: PayloadRequest): boolean {
+  if (!req.user) {
+    return true
+  }
+  const user = asUserAccessFields(req.user)
+  if (!isActiveUser(user)) {
+    return false
+  }
+  return isStaffAdminRequest(req) || isActiveAppManagerRequest(req)
+}
+
+/** Scrittura del Global: staff Admin o manager App attivo; i campi non-Orari restringono ulteriormente. */
+export function canUpdateSystemSettingsRequest(req: PayloadRequest): boolean {
+  return isStaffAdminRequest(req) || isActiveAppManagerRequest(req)
+}
+
 /**
  * Create: staff Admin/super-admin. Senza `data` (lista Admin, pulsante Crea)
  * si consente l’apertura del form; in submit si rifiuta un Admin di pannello

@@ -1,6 +1,10 @@
 import type { GlobalConfig } from 'payload'
 
-import { isStaffAdminRequest } from '@/lib/auth/userAccess'
+import {
+  canReadSystemSettingsRequest,
+  canUpdateSystemSettingsRequest,
+} from '@/lib/auth/userAccess'
+import { staffAdminOnlySystemSettingsFieldAccess } from '@/lib/systemSettings/fieldAccess'
 import {
   normalizeEmailAddressBeforeValidate,
   validateEmailAddressField,
@@ -36,7 +40,7 @@ const WEEKDAY_OPTIONS = [
 /**
  * Configurazione tecnica trasversale (orari, calendario, comunicazioni).
  * Etichetta Admin distinta da `settings` («Identità autorizzate»).
- * Permessi granulari per tab/campo in fase-7.4; qui solo staff Admin.
+ * Permessi granulari per tab/campo (fase-7.4, ADR-113): Orari pubblici in lettura; manager solo Orari.
  */
 export const SystemSettings: GlobalConfig = {
   slug: SYSTEM_SETTINGS_SLUG,
@@ -47,8 +51,8 @@ export const SystemSettings: GlobalConfig = {
       'Orari e chiusure, calendario, mittenti email verso i clienti e riferimenti per integrazioni future.',
   },
   access: {
-    read: ({ req }) => isStaffAdminRequest(req),
-    update: ({ req }) => isStaffAdminRequest(req),
+    read: ({ req }) => canReadSystemSettingsRequest(req),
+    update: ({ req }) => canUpdateSystemSettingsRequest(req),
   },
   hooks: {
     beforeValidate: [
@@ -217,6 +221,7 @@ export const SystemSettings: GlobalConfig = {
               name: 'googleCalendarId',
               type: 'text',
               label: 'ID calendario Google',
+              access: staffAdminOnlySystemSettingsFieldAccess,
               admin: {
                 description:
                   'Riferimento non sensibile al calendario usato dall’integrazione push (Fase 5.4). Lasciare vuoto finché l’integrazione non è attiva.',
@@ -231,6 +236,7 @@ export const SystemSettings: GlobalConfig = {
               name: 'resendSenders',
               type: 'array',
               label: 'Mittenti email verso i clienti',
+              access: staffAdminOnlySystemSettingsFieldAccess,
               labels: {
                 singular: 'Mittente',
                 plural: 'Mittenti email verso i clienti',
@@ -253,6 +259,7 @@ export const SystemSettings: GlobalConfig = {
                   required: true,
                   label: 'Sito',
                   options: [...RESEND_SENDER_SITE_OPTIONS],
+                  access: staffAdminOnlySystemSettingsFieldAccess,
                   validate: validateResendSenderSiteField,
                 },
                 {
@@ -260,6 +267,7 @@ export const SystemSettings: GlobalConfig = {
                   type: 'text',
                   required: true,
                   label: 'Nome mittente',
+                  access: staffAdminOnlySystemSettingsFieldAccess,
                   validate: validateResendSenderNameField,
                 },
                 {
@@ -267,6 +275,7 @@ export const SystemSettings: GlobalConfig = {
                   type: 'email',
                   required: true,
                   label: 'Indirizzo email',
+                  access: staffAdminOnlySystemSettingsFieldAccess,
                   hooks: {
                     beforeValidate: [normalizeEmailAddressBeforeValidate],
                   },
@@ -278,6 +287,7 @@ export const SystemSettings: GlobalConfig = {
               name: 'staffNotificationContacts',
               type: 'array',
               label: 'Contatti notifiche staff',
+              access: staffAdminOnlySystemSettingsFieldAccess,
               labels: {
                 singular: 'Contatto',
                 plural: 'Contatti notifiche staff',
@@ -296,6 +306,7 @@ export const SystemSettings: GlobalConfig = {
                   type: 'text',
                   required: true,
                   label: 'Nome',
+                  access: staffAdminOnlySystemSettingsFieldAccess,
                   validate: validateStaffNotificationNameField,
                 },
                 {
@@ -303,6 +314,7 @@ export const SystemSettings: GlobalConfig = {
                   type: 'email',
                   required: true,
                   label: 'Email',
+                  access: staffAdminOnlySystemSettingsFieldAccess,
                   hooks: {
                     beforeValidate: [normalizeEmailAddressBeforeValidate],
                   },

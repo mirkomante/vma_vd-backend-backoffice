@@ -233,7 +233,7 @@ fasi:
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
     origine: dominio-applicativo
     file: "fase-7-impostazioni-sistema.md"
-    stato: "in_corso"
+    stato: "fatto"
     note: >
       Sbloccata: la sessione dedicata alla struttura a tab si è tenuta
       (riepilogo-sessione-impostazioni-sistema.md) e le decisioni sono
@@ -267,8 +267,8 @@ fasi:
         note: "Campi decisi in ADR-109 §1 (tab 'Integrazioni future' e 'Comunicazioni'). po-01 chiuso: mittenti decisi nell'Emendamento a §1 di ADR-109 (env RESEND_FROM_* per le email di sistema; array 'mittenti-resend' per sito verso i clienti, senza fallback; sito vietnamonamour/villadoree, validazione per sito unico). Calendario e Comunicazioni restano senza consumatori fino a fase-5; nessun arco verso il consumatore delle email agli ospiti finché non è definito."
       - id: fase-7.4
         nome: "Permessi granulari campo-per-campo (admin e super-admin tutto; appRole manager solo Orari e chiusure)"
-        stato: "da_fare"
-        note: "Permessi decisi in ADR-113, che supera ADR-109 §5 sul manager nell'Admin. Nascondere il Global al manager nell'Admin si verifica in fase-8.3."
+        stato: "fatto"
+        note: "Access Global + campo (lib/auth/userAccess.ts, lib/systemSettings/fieldAccess.ts); hook afterRead/beforeChange per limiti Payload 3.90.2 su array; script verify-system-settings-7_4.ts su vma_vd_migr. Deploy prod e smoke: azione umana post-push (nessuna migrazione). Nascondere il Global al manager nell'Admin resta in fase-8.3."
 
   - id: fase-8
     nome: "Shell dell'Area App (app) + shadcn/ui (infrastruttura condivisa del backoffice)"
