@@ -1,16 +1,21 @@
 /**
- * Token e tema shadcn/ui solo per il route group `(app)` (URL `/app`).
- * Importato esclusivamente da `app/(app)/layout.tsx` — non toccare `app/globals.css`
+ * Entry Tailwind + tema shadcn/ui solo per `(app)` (URL `/app`).
+ * Importato esclusivamente da `app/(app)/layout.tsx` — non modificare `app/globals.css`
  * (condiviso con `(frontend)`).
  */
+@import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+
+@source './**/*.{js,ts,jsx,tsx,mdx}';
+@source '../../components/**/*.{js,ts,jsx,tsx,mdx}';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -118,4 +123,63 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+html {
+  height: 100%;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Allineato a Payload Admin: btn btn--style-primary btn--size-large (da globals.css, solo per `/app`). */
+.google-oauth-login-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  width: 100%;
+  max-width: 20rem;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 15px;
+  border: 0;
+  border-radius: 4px;
+  background-color: var(--theme-elevation-900, #141414);
+  color: var(--theme-elevation-0, #ffffff);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.google-oauth-login-button:hover {
+  background-color: var(--theme-elevation-800, #2e2e2e);
+  color: var(--theme-elevation-0, #ffffff);
 }
