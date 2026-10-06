@@ -1,5 +1,5 @@
 import config from '@payload-config'
-import { getPayload } from 'payload'
+import { getPayload, ValidationError } from 'payload'
 
 import { runSystemSettingsPureTests } from '@/lib/systemSettings/runPureTests'
 import { SYSTEM_SETTINGS_SLUG } from '@/globals/SystemSettings'
@@ -10,6 +10,13 @@ const validServices = [
 ]
 
 const validBnb = { checkInTime: '15:00', checkOutTime: '11:00' }
+
+function validationErrors(error: unknown): { path: string; message: string }[] {
+  if (!(error instanceof ValidationError)) {
+    return []
+  }
+  return error.data.errors.map((entry) => ({ path: entry.path, message: entry.message }))
+}
 
 async function expectReject(label: string, fn: () => Promise<unknown>): Promise<void> {
   try {
@@ -79,8 +86,8 @@ async function main(): Promise<void> {
     }),
   )
 
-  await expectReject('due record con lo stesso site', () =>
-    payload.updateGlobal({
+  try {
+    await payload.updateGlobal({
       slug: SYSTEM_SETTINGS_SLUG,
       data: {
         ...baseOrari,
@@ -91,8 +98,27 @@ async function main(): Promise<void> {
       },
       depth: 0,
       overrideAccess: true,
-    }),
-  )
+    })
+    throw new Error('doppio site: atteso rifiuto, update riuscito')
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('doppio site: atteso rifiuto')) {
+      throw error
+    }
+    const errors = validationErrors(error)
+    if (errors.length !== 1) {
+      throw new Error(
+        `doppio site: atteso 1 errore, trovati ${errors.length}: ${JSON.stringify(errors)}`,
+      )
+    }
+    const only = errors[0]
+    if (only?.path !== 'resendSenders.1.site') {
+      throw new Error(`doppio site: path atteso resendSenders.1.site, trovato ${only?.path}`)
+    }
+    if (!only.message.includes('vietnamonamour.com')) {
+      throw new Error(`doppio site: messaggio inatteso: ${only.message}`)
+    }
+    console.log('OK doppio site → 1 errore su resendSenders.1.site')
+  }
 
   await payload.updateGlobal({
     slug: SYSTEM_SETTINGS_SLUG,

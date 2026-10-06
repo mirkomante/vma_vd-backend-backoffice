@@ -40,6 +40,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Fase 7.3 (UX post-smoke prod, 2026-10-06, senza schema): `RowLabel` + `initCollapsed` su `resendSenders` e `staffNotificationContacts`; messaggi `validate` actionable in `lib/systemSettings/`; duplicato `site` → un solo errore sulla seconda riga (`path` Payload 3.90.2); rimossa validazione sull’array. Principio array in `fase-7` § Principi trasversali; debito §7.2 aggiornato con esito smoke 7.3.
 - Fase 7.2 (post-smoke prod, 2026-10-06): copy «Rimuovi festività» allineata alla logica per **data** (anche etichetta modificata); `window.alert` sostituiti con `toast`; `ServiceRowLabel` + `formatServiceRowLabel` / `SERVICE_NAME_OPTIONS` su `services`; CHANGELOG: sezione `### Tests` unificata e path UI festività corretto.
 
 - Fase 7.2: migrazione `20261006_091528_add_impostazioni_sistema_orari_chiusure` applicata su Cloud SQL prod prima del push (umano, 2026-10-06; tabella `impostazioni_sistema` senza righe preesistenti).
@@ -117,6 +118,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 7.2 (correzioni post-smoke): `runSystemSettingsPureTests` include `formatServiceRowLabel`; `pnpm generate:importmap`; `pnpm payload run scripts/verify-system-settings-7_2.ts` e `pnpm typecheck` OK.
 - Fase 7.3: `runSystemSettingsPureTests` (email, unicità `site`); `pnpm payload run scripts/verify-system-settings-7_3.ts` su `vma_vd_migr` (Payload 3.90.2) — normalizzazione `Info@Dominio.IT ` → `info@dominio.it`, email non valida e doppio `site` rifiutati, due siti distinti OK, `googleCalendarId` e array vuoti OK. Migrazione generata su DB vuoto; apply su `vma_vd_migr` con riga preesistente (orari, B&B, chiusure), `migrate:down` e re-apply OK; nessun `ADD COLUMN … NOT NULL` su `impostazioni_sistema`. `pnpm typecheck`, `pnpm lint` (solo avvisi migrazioni), `pnpm build` OK. **Admin (aspetto campi e messaggi sul campo): non verificato dall’agente** — da provare dall’umano dopo deploy.
 - Fase 7.3 produzione (umano, 2026-10-06): `pnpm payload migrate` su Cloud SQL via proxy **prima** del push; controllo `SELECT id, google_calendar_id, bnb_check_in_time, bnb_check_out_time FROM impostazioni_sistema` → 1 riga, `google_calendar_id` NULL, orari B&B invariati (`15:00` / `11:00`).
+- Fase 7.3 UX (script, Payload 3.90.2): `verify-system-settings-7_3.ts` — doppio `site` → esattamente 1 errore su `resendSenders.1.site`; `runSystemSettingsPureTests` (RowLabel, path/indice riga). **Admin prod (umano, smoke 2026-10-06):** normalizzazione email **non** provata in UI; stesso indirizzo su due siti accettato (ADR-109). RowLabel e messaggi sul campo: da rivedere in Admin dopo deploy UX.
 
 ## [0.3.0] — 2026-10-03
 

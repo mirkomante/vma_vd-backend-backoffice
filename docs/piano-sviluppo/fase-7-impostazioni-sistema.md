@@ -31,6 +31,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 3. **Nessun deploy prima della migrazione.** `main` fa deploy automatico su Cloud Run: per ogni sottofase che cambia lo schema, la migrazione va **applicata su Cloud SQL prod prima del push** (`pnpm payload migrate` via Auth Proxy, `docs/operativo/cloud-sql-produzione.md`).
 4. **Commit solo dopo verifica runtime** (non solo TypeScript), push manuale. Voce di CHANGELOG per ogni commit.
 5. **Convenzioni per la Payload 4** (`ADR-116`, accettata): nel codice nuovo `overrideAccess` e `depth` sempre espliciti, `versions` esplicito su ogni collection e Global nuovi, nessun nuovo `TypedUser` (il cast passa da `asUserAccessFields`), nessuna API che la guida della 4 rimuove o cambia (`useAPIKey`, `lexicalHTML`, `typescriptSchema`, `allowLocalizedWithinLocalized`, `min`/`max` su relationship e upload, `afterOperation` con `operation: 'read'`), script con `payload run` e nessun `config.bin`.
+6. **Array in Admin** (orari, comunicazioni): ogni array ha `RowLabel` (`useRowLabel` + formatter in `lib/systemSettings/`), `initCollapsed: true` salvo eccezione documentata, formato riga deciso in questo file di fase; messaggi `validate` che spiegano **cosa correggere** (testi centralizzati in `lib/systemSettings/`, riusabili dall’App in fase-8 §8.5). Unicità su sottocampo (es. `site`): un solo errore sulla riga duplicata, non sull’intero array.
 
 ---
 
@@ -218,14 +219,13 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - `services` **senza** precompilazione `lunch`/`dinner`: `minRows`/`maxRows` = 2 + validazione; primo salvataggio manuale in Admin.
 - **`services` assente** sul documento Global = orari **non configurati** per i consumatori downstream (nessun fallback silenzioso).
 
-**Debito / richiesta umana (2026-10-06, ampliato dopo smoke prod)** — da trattare in un passaggio dedicato, **senza cambiare schema** né duplicare la logica già in `lib/`:
+**Debito / richiesta umana (2026-10-06, ampliato dopo smoke prod; aggiornato post-smoke 7.3)** — **senza cambiare schema**; logica in `lib/`:
 
 1. **Blocco festività** (`ItalianPublicHolidaysUi`): layout (due campi anno, pulsanti affiancati) e copy già parzialmente aggiornato post-smoke; rifinitura estetica/ergonomica ancora aperta.
-2. **Messaggi e obbligatorietà (richiesta esplicita dell’umano dopo smoke prod 2026-10-06)**: indicazione chiara dei campi e delle sezioni obbligatorie; messaggi d’errore più chiari e vicini al campo (tab Orari e chiusure e resto del Global). Non implementato in 7.2 oltre alla validazione hook esistente.
-   - **(a)** Da verificare in Admin: dove compaiono gli errori sollevati dall’hook del Global (es. `services.N.startTime`, numero di servizi ≠ 2) — sul campo interessato o come avviso generico del documento.
-   - **(b)** Per la sezione Orari dell’App (**fase-8** §8.5, che riusa gli stessi campi): i testi dei messaggi d’errore vanno centralizzati in `lib/` e riusati da Admin Payload e App, non riscritti due volte.
-
-Il punto 2 non è più solo una nota interna: è una **richiesta dell’umano** da pianificare (es. insieme a Fase 8 o task mirato).
+2. **Messaggi e obbligatorietà — tab Orari e chiusure** (richiesta esplicita dell’umano dopo smoke prod 2026-10-06): messaggi d’errore più chiari e vicini al campo; **non** affrontato in 7.2 oltre alla validazione hook esistente.
+   - **(a)** Da verificare in Admin: errori dall’hook del Global (es. `services.N.startTime`) — sul campo o come avviso generico.
+   - **(b)** **fase-8** §8.5: riuso messaggi da `lib/` in App.
+3. **Tab Comunicazioni (7.3, smoke prod 2026-10-06)**: RowLabel, `initCollapsed`, messaggi actionable e un solo errore su `site` duplicato — **corretto** in sessione UX post-smoke (nessuna migrazione). Resta da verificare in Admin: aspetto RowLabel, banner «I seguenti campi non sono validi» (Payload elenca label/path dei campi in errore; testo introduttivo solo via i18n `error.followingFieldsInvalid_*` in `payload.config`, non per singolo Global). **Normalizzazione email in Admin**: non provata dall’umano in prod. **Stesso indirizzo su due siti**: accettato (coerente con ADR-109: unicità per `site`, non per `address`).
 
 ---
 
@@ -245,6 +245,8 @@ Il punto 2 non è più solo una nota interna: è una **richiesta dell’umano** 
 **Validazioni** (`payload-pattern/02-convenzioni-payload.mdc`, hook di normalizzazione): `address` e `email` normalizzati (trim, minuscolo, formato); al più un record di `resendSenders` per `site`.
 
 **Vincoli dall'Emendamento a §1**: l'env `RESEND_FROM_*` e `lib/email/env.ts` **non si toccano** in questa fase; non è previsto un test di invio al salvataggio; il prerequisito «dominio Verified in Resend prima di inserire un record» è operativo e non verificato dal sistema.
+
+**UX Admin post-smoke prod (2026-10-06, senza schema)**: `RowLabel` e `initCollapsed` su `resendSenders` e `staffNotificationContacts`; messaggi `validate` actionable; duplicato `site` → un errore su `resendSenders.N.site` (`validate` sul sottocampo `site` usa `path` con indice riga in Admin; hook `beforeValidate` sull’array replica la stessa regola in Local API dove `path` può mancare). Rimossa `validate` sull’array (evitava tripli errori). Banner errori documento: titolo da traduzione Payload (`error.followingFieldsInvalid_one/other`); elenco = campi con errore (label + messaggio sotto al campo). Personalizzazione nativa del solo titolo/banner via override i18n in config, non del contenuto dell’elenco campo-per-campo.
 
 **Checklist di chiusura sottofase**:
 - [x] Campi, normalizzazione e unicità per `site`; nessun consumatore collegato. Validazione sui campi (`validate` + `beforeValidate` email); messaggi in `lib/systemSettings/`; prove Local API in `scripts/verify-system-settings-7_3.ts`.

@@ -2,6 +2,12 @@
 export const EMAIL_ADDRESS_FORMAT_REGEX =
   /^[a-z0-9](?:[a-z0-9._+-]*[a-z0-9])?@[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/
 
+export const EMAIL_ADDRESS_REQUIRED_MESSAGE =
+  'Indirizzo email obbligatorio: inserisci un indirizzo nel formato nome@dominio.it.'
+
+export const EMAIL_ADDRESS_INVALID_MESSAGE =
+  'Indirizzo email non valido: scrivilo nel formato nome@dominio.it.'
+
 export function normalizeEmailAddress(value: unknown): string {
   if (typeof value !== 'string') {
     return ''
@@ -15,14 +21,14 @@ export function isValidEmailAddress(value: string): boolean {
 
 export function validateEmailAddressField(value: unknown): true | string {
   if (value == null || value === '') {
-    return 'Indirizzo email obbligatorio.'
+    return EMAIL_ADDRESS_REQUIRED_MESSAGE
   }
   const normalized = normalizeEmailAddress(value)
   if (!normalized) {
-    return 'Indirizzo email obbligatorio.'
+    return EMAIL_ADDRESS_REQUIRED_MESSAGE
   }
   if (!isValidEmailAddress(normalized)) {
-    return 'Indirizzo email non valido.'
+    return EMAIL_ADDRESS_INVALID_MESSAGE
   }
   return true
 }

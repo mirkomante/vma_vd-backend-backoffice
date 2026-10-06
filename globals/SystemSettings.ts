@@ -7,8 +7,10 @@ import {
 } from '@/lib/systemSettings/emailAddress'
 import {
   RESEND_SENDER_SITE_OPTIONS,
+  resendSendersBeforeValidateHook,
+  validateResendSenderNameField,
   validateResendSenderSiteField,
-  validateResendSendersArray,
+  validateStaffNotificationNameField,
 } from '@/lib/systemSettings/resendSenders'
 import {
   prepareSystemSettingsWrite,
@@ -236,8 +238,14 @@ export const SystemSettings: GlobalConfig = {
               admin: {
                 description:
                   'Un record per sito (vietnamonamour / villadoree). Il mittente di sistema resta nelle variabili RESEND_FROM_*.',
+                initCollapsed: true,
+                components: {
+                  RowLabel: '@/components/payload/ResendSenderRowLabel#ResendSenderRowLabel',
+                },
               },
-              validate: validateResendSendersArray,
+              hooks: {
+                beforeValidate: [resendSendersBeforeValidateHook],
+              },
               fields: [
                 {
                   name: 'site',
@@ -252,6 +260,7 @@ export const SystemSettings: GlobalConfig = {
                   type: 'text',
                   required: true,
                   label: 'Nome mittente',
+                  validate: validateResendSenderNameField,
                 },
                 {
                   name: 'address',
@@ -275,6 +284,11 @@ export const SystemSettings: GlobalConfig = {
               },
               admin: {
                 description: 'Destinatari interni per notifiche operative (senza segreti in Payload).',
+                initCollapsed: true,
+                components: {
+                  RowLabel:
+                    '@/components/payload/StaffNotificationContactRowLabel#StaffNotificationContactRowLabel',
+                },
               },
               fields: [
                 {
@@ -282,6 +296,7 @@ export const SystemSettings: GlobalConfig = {
                   type: 'text',
                   required: true,
                   label: 'Nome',
+                  validate: validateStaffNotificationNameField,
                 },
                 {
                   name: 'email',
