@@ -13,6 +13,7 @@ import {
   mergeItalianPublicHolidays,
   removeItalianPublicHolidaysForYear,
 } from '@/lib/systemSettings/italianPublicHolidays'
+import { formatServiceRowLabel } from '@/lib/systemSettings/serviceOptions'
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -65,6 +66,13 @@ export function runSystemSettingsPureTests(): void {
     'format row label',
   )
   assert(formatAnnualClosureRowLabel(null, 'x') === 'Chiusura (nuova)', 'format nuova riga')
+
+  assert(
+    formatServiceRowLabel('lunch', '12:30', '14:30') === 'Pranzo 12:30 – 14:30',
+    'format service row con orari',
+  )
+  assert(formatServiceRowLabel('dinner', null, '23:00') === 'Cena', 'format service senza orari completi')
+  assert(formatServiceRowLabel(null, '12:00', '13:00') === 'Servizio (nuovo)', 'format service nuova riga')
 
   console.log('OK funzioni pure (festività, sort, remove, RowLabel)')
 }

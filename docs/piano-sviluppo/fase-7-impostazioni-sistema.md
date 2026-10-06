@@ -199,7 +199,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Forma delle date di chiusura** (audit 2026-10-04): `annualClosures[].date` si scrive sempre come giorno intero a mezzogiorno UTC, la forma che produce il selettore `dayOnly` di Payload (che normalizza a mezzogiorno solo `dayOnly`, `default` e `monthOnly`, non `timeOnly`). Lo stesso helper in `lib/` lo usano il pulsante festività, la sezione Orari dell'App, le Eccezioni giorno (Fase 5) e l'import; altrimenti il controllo duplicati (un solo record per data e servizio) e il confronto con le chiusure annuali falliscono.
 
-**Festività predefinite** (componente UI Admin + `lib/systemSettings/`): due costanti (`ITALIAN_NATIONAL_PUBLIC_HOLIDAY_DEFINITIONS`, `MILAN_LOCAL_PUBLIC_HOLIDAY_DEFINITIONS`) e funzioni pure; Pasqua con algoritmo gregoriano. **Aggiungi festività**: chiede l’anno, aggiunge al form le righe mancanti (toast con N aggiunte / M già presenti; salvataggio esplicito). **Rimuovi festività di un anno**: chiede l’anno, `ConfirmationModal` con conteggio righe, rimuove dal form solo le date che coincidono con le 13 predefinite di quell’anno (le chiusure personalizzate restano). Dopo add/remove il form viene riordinato per data.
+**Festività predefinite** (componente UI Admin + `lib/systemSettings/`): due costanti (`ITALIAN_NATIONAL_PUBLIC_HOLIDAY_DEFINITIONS`, `MILAN_LOCAL_PUBLIC_HOLIDAY_DEFINITIONS`) e funzioni pure; Pasqua con algoritmo gregoriano. **Aggiungi festività**: chiede l’anno, aggiunge al form le righe mancanti (toast con N aggiunte / M già presenti; salvataggio esplicito). **Rimuovi festività di un anno**: chiede l’anno, `ConfirmationModal` con conteggio righe, rimuove dal form ogni riga la cui **data** coincide con una delle 13 predefinite di quell’anno (anche se l’etichetta è stata modificata o la riga era una chiusura personalizzata su quella data). Restano le righe con date diverse. Dopo add/remove il form viene riordinato per data.
 
 **`annualClosures` in Admin**: `RowLabel` (`Chiusura gg/mm/aaaa · etichetta` o `Chiusura (nuova)`); `initCollapsed: true`; `isSortable: false`. **Ordinamento persistito**: hook `beforeValidate` sul campo array ordina per data crescente (UTC, helper di normalizzazione; righe senza data in fondo). **Payload 3.90.2 — ordinamento nativo array**: esiste solo `admin.isSortable` per il **riordino manuale** (drag) in UI; **non** c’è ordinamento automatico per sottocampo → l’hook è necessario.
 
@@ -217,7 +217,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - `services` **senza** precompilazione `lunch`/`dinner`: `minRows`/`maxRows` = 2 + validazione; primo salvataggio manuale in Admin.
 - **`services` assente** sul documento Global = orari **non configurati** per i consumatori downstream (nessun fallback silenzioso).
 
-**Debito documentato (2026-10-06)**: migliorare UI/UX del blocco festività in Admin (`ItalianPublicHolidaysUi`: due campi anno, pulsanti affiancati, copy). Funzionalità sufficiente per 7.2; rifinitura estetica/ergonomica rinviata (es. insieme a Fase 8 o su richiesta esplicita), senza cambiare schema né logica in `lib/`.
+**Debito / richiesta umana (2026-10-06, ampliato dopo smoke prod)** — da trattare in un passaggio dedicato, **senza cambiare schema** né duplicare la logica già in `lib/`:
+
+1. **Blocco festività** (`ItalianPublicHolidaysUi`): layout (due campi anno, pulsanti affiancati) e copy già parzialmente aggiornato post-smoke; rifinitura estetica/ergonomica ancora aperta.
+2. **Messaggi e obbligatorietà (richiesta esplicita dell’umano dopo smoke prod 2026-10-06)**: indicazione chiara dei campi e delle sezioni obbligatorie; messaggi d’errore più chiari e vicini al campo (tab Orari e chiusure e resto del Global). Non implementato in 7.2 oltre alla validazione hook esistente.
+   - **(a)** Da verificare in Admin: dove compaiono gli errori sollevati dall’hook del Global (es. `services.N.startTime`, numero di servizi ≠ 2) — sul campo interessato o come avviso generico del documento.
+   - **(b)** Per la sezione Orari dell’App (**fase-8** §8.5, che riusa gli stessi campi): i testi dei messaggi d’errore vanno centralizzati in `lib/` e riusati da Admin Payload e App, non riscritti due volte.
+
+Il punto 2 non è più solo una nota interna: è una **richiesta dell’umano** da pianificare (es. insieme a Fase 8 o task mirato).
 
 ---
 

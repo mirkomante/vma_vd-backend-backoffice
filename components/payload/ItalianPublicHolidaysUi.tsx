@@ -69,7 +69,7 @@ export const ItalianPublicHolidaysUi: UIFieldClientComponent = () => {
   const handleAdd = useCallback(() => {
     const year = parseYearInput(addYearInput)
     if (year === null) {
-      window.alert('Inserisci un anno valido (1900–2100).')
+      toast.error('Inserisci un anno valido (1900–2100).')
       return
     }
 
@@ -77,7 +77,7 @@ export const ItalianPublicHolidaysUi: UIFieldClientComponent = () => {
     const { addedCount, alreadyPresentCount, rows } = mergeItalianPublicHolidays(existing, year)
 
     if (addedCount === 0) {
-      window.alert(`Le festività del ${year} sono già tutte presenti.`)
+      toast.info(`Le festività del ${year} sono già tutte presenti.`)
       return
     }
 
@@ -101,7 +101,7 @@ export const ItalianPublicHolidaysUi: UIFieldClientComponent = () => {
   const handleRemoveRequest = useCallback(() => {
     const year = parseYearInput(removeYearInput)
     if (year === null) {
-      window.alert('Inserisci un anno valido (1900–2100).')
+      toast.error('Inserisci un anno valido (1900–2100).')
       return
     }
 
@@ -147,8 +147,10 @@ export const ItalianPublicHolidaysUi: UIFieldClientComponent = () => {
     <div className="field-type ui" style={{ marginBottom: '1.5rem' }}>
       <label className="field-label">Festività predefinite</label>
       <p className="field-description" style={{ marginBottom: '0.75rem' }}>
-        13 festività (nazionali e Sant’Ambrogio). Le righe restano modificabili; le chiusure
-        personalizzate non coincidono con le date predefinite e non vengono rimosse.
+        13 festività (nazionali e Sant’Ambrogio). «Rimuovi festività di un anno» elimina dal form
+        ogni riga la cui <strong>data</strong> coincide con una festività predefinita di quell’anno,
+        anche se l’etichetta è stata modificata o la riga era una chiusura personalizzata su quella
+        data. Restano le righe con date diverse.
       </p>
 
       <div
@@ -204,7 +206,7 @@ export const ItalianPublicHolidaysUi: UIFieldClientComponent = () => {
       <ConfirmationModal
         body={
           pendingRemoveCount > 0 && pendingRemoveYear !== null
-            ? `Verranno rimosse ${pendingRemoveCount} righe corrispondenti alle festività predefinite del ${pendingRemoveYear}. Le chiusure personalizzate restano.`
+            ? `Verranno rimosse ${pendingRemoveCount} righe la cui data coincide con una festività predefinita del ${pendingRemoveYear}, indipendentemente dall’etichetta. Restano le righe con date diverse.`
             : null
         }
         confirmLabel="Rimuovi"

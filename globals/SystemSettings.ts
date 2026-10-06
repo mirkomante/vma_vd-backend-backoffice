@@ -6,6 +6,7 @@ import {
   type SystemSettingsWriteData,
 } from '@/lib/systemSettings/validateSystemSettings'
 import { sortAnnualClosuresByDate } from '@/lib/systemSettings/annualClosures'
+import { SERVICE_NAME_OPTIONS } from '@/lib/systemSettings/serviceOptions'
 import { validateTimeOfDayField } from '@/lib/systemSettings/timeOfDay'
 
 /** Slug Payload del Global di configurazione tecnica trasversale (ADR-109). */
@@ -66,16 +67,16 @@ export const SystemSettings: GlobalConfig = {
               admin: {
                 description:
                   'Due righe fisse: Pranzo e Cena, ciascuna con orario di inizio e fine (HH:mm, ora locale).',
+                components: {
+                  RowLabel: '@/components/payload/ServiceRowLabel#ServiceRowLabel',
+                },
               },
               fields: [
                 {
                   name: 'name',
                   type: 'select',
                   required: true,
-                  options: [
-                    { label: 'Pranzo', value: 'lunch' },
-                    { label: 'Cena', value: 'dinner' },
-                  ],
+                  options: [...SERVICE_NAME_OPTIONS],
                   label: 'Servizio',
                 },
                 {
