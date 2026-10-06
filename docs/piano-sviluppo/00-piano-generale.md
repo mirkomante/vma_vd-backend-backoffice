@@ -30,7 +30,7 @@
 | Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔶 in corso (4.0 ✅; 4.1–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
 | Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` |
-| Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | ✅ fatto in dev (7.0–7.4 ✅; 7.4 in prod dopo deploy) | `fase-7-impostazioni-sistema.md` |
+| Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | ✅ fatto (7.0–7.4; smoke 7.4 prod 2026-10-06) | `fase-7-impostazioni-sistema.md` |
 | Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔲 da fare | `fase-8-shell-app.md` |
 
 ## Ordine di esecuzione corrente
@@ -102,7 +102,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 ## Prossimi passi
 
-- **Prossimo passo**: Fase 8.1 (shell `(app)` + shadcn/ui), ordine interno 8.1 → 8.3 → 8.2 → … (`fase-8-shell-app.md`). Fase 7 chiusa in dev (7.4 permessi, nessuna migrazione): deploy prod e smoke 7.4 (Admin vede tutte le tab; GET anonimo solo Orari) restano azione umana; prova manager reale in 8.5. Fase 7.3 in prod (2026-10-06). Punti aperti: `po-10`, `po-11`. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod: login locale App / email attivazione in `fase-8.6` (bloccata).
+- **Prossimo passo**: Fase 8.1 (shell `(app)` + shadcn/ui), ordine interno 8.1 → 8.3 → 8.2 → … (`fase-8-shell-app.md`). **Fase 7 chiusa in produzione** (2026-10-06): smoke 7.4 eseguito (login Google Admin e App OK; login locale super-admin OK; quattro tab Admin; GET anonimo Global solo chiavi Orari/chiusure, `googleCalendarId` assente, array riservati `[]`). Prova manager reale su Orari in 8.5. Punti aperti: `po-10`, `po-11`. Fase 3 chiusa ✅ (2026-10-03, § 3.5). Lacuna prod: login locale App / email attivazione in `fase-8.6` (bloccata).
 - **Regola di avvio delle sottofasi** (proposta dalla chat di verifica, condivisa dal pianificatore e **confermata dall'umano il 2026-10-04**): Cursor parte da una sottofase quando non restano rilievi B né P che riguardano quella sottofase o quelle che la precedono nell'ordine di esecuzione; i P su sottofasi successive si correggono prima di avviarle; i rilievi A si raccolgono nella tabella «Rinviati e aperti». **Stato condiviso**: `docs/audit/audit-verifica-3-2026-10-04.md` §7, aggiornato da `docs/audit/audit-verifica-4-2026-10-04.md` §5 (tabelle «Concordato» e «Rinviati e aperti»).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.

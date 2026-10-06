@@ -42,6 +42,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Fase 7 chiusa in produzione (2026-10-06): smoke 7.4 registrato in `fase-7` §7.4, `piano.yaml`, `00-piano-generale.md` (tabella Fase 7 e «Prossimo passo»).
 - `piano.yaml` nota fase-7.4: nessun hook maschera/`afterRead`/`beforeChange`; solo `access` di campo; array riservati REST `[]` in 3.90.2 (po-11).
 - Fase 8.6: debito documentato su `hashLocalPassword` (legacy vs Payload v1) e commento obsoleto in `hashLocalCredentialsBeforeChange.ts` (rimando a fix `efc9f30` su `verifyLocalPassword`).
 - Fase 7.2 §7.2 debito UI/UX punto 3 (Comunicazioni): esito smoke prod 2026-10-06 (RowLabel OK; email invalida; duplicato `site` senza highlight immediato — debito; nota diagnosi `validate`/`path`).
@@ -130,6 +131,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 7.4 (prova radice `afterRead`, 2026-10-06, Payload 3.90.2, `vma_vd_migr`, Global senza hook maschera/`afterRead`): REST anon `?locale=it` — `googleCalendarId` assente; `resendSenders`/`staffNotificationContacts` **chiavi con `[]`** (hook di campo non rimuove gli array); `?select[resendSenders]=true` — `id`, `resendSenders: []`. Local manager — stesso `[]`. **Decisione:** nessun Global `afterRead` (niente criterio `payloadAPI`; nessun valore riservato in REST). **Regressione Fase 5** (`verify-system-settings-7_4.ts`): `createLocalReq` + `req.payloadAPI = 'REST'` + `findGlobal({ overrideAccess: true, req })` → probe **OK** su `vma_vd_migr`.
 - Fase 7.3 UX (script, Payload 3.90.2): `verify-system-settings-7_3.ts` — doppio `site` → esattamente 1 errore su `resendSenders.1.site`; `runSystemSettingsPureTests` (RowLabel, path/indice riga). **Admin prod (umano, smoke 2026-10-06):** stesso indirizzo su due siti accettato (ADR-109). RowLabel e messaggi sul campo: da rivedere in Admin dopo deploy UX.
 - Fase 7.3 UX (Admin prod, umano, 2026-10-06): normalizzazione email su `resendSenders[].address` / contatti staff verificata in UI (trim e minuscolo al salvataggio).
+- Fase 7.4 smoke produzione (umano, 2026-10-06, post-deploy senza migrazione): login Google Admin e App OK; login locale super-admin OK (regressione `hash.ts`); quattro tab Admin visibili, Orari e chiusure intatti; `curl` anonimo su Global in prod — 10 chiavi (`annualClosures`, `bnb`, `createdAt`, `globalType`, `id`, `resendSenders`, `services`, `staffNotificationContacts`, `updatedAt`, `weeklyClosedDays`), `googleCalendarId` assente, `resendSenders` e `staffNotificationContacts` come `[]`; con contatto staff di prova in DB la risposta anonima restava `[]`; contatto cancellato.
 
 ## [0.3.0] — 2026-10-03
 

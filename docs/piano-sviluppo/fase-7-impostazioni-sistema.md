@@ -288,6 +288,8 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Follow-up (Payload 4 / App)** — `po-11`: in migrazione a Payload 4 **ricontrollare** se REST anonimo espone ancora chiavi array riservate solo come `[]` o se il serializzatore le elimina del tutto (comportamento osservato in 3.90.2 documentato sopra). **Fase 8.5**: in UI/API App, un manager che legge `resendSenders` / `staffNotificationContacts` come **`[]` via Local API non deve interpretarlo come «non configurato»** — distinguere assenza di permesso/valore da configurazione vuota reale (orchestrazione in 8.5).
 
+**Smoke produzione (umano, 2026-10-06, post-deploy 7.4, nessuna migrazione)** — login Google Admin e App OK; login locale del super-admin OK (regressione su `hash.ts`); quattro tab visibili in Admin e tab Orari e chiusure intatta. `curl` anonimo su `GET /api/globals/impostazioni-sistema?locale=it` in produzione: dieci chiavi (`annualClosures`, `bnb`, `createdAt`, `globalType`, `id`, `resendSenders`, `services`, `staffNotificationContacts`, `updatedAt`, `weeklyClosedDays`); `googleCalendarId` assente; `resendSenders` e `staffNotificationContacts` come `[]`. Con un contatto staff di prova inserito in database la risposta anonima restava `[]` (comportamento atteso Payload 3.90.2); contatto di prova cancellato.
+
 **Checklist di chiusura sottofase**:
 - [x] Prova per ruolo su ogni campo (`scripts/verify-system-settings-7_4.ts`, Local API + REST anonimo).
 - [x] Campi Calendario/Comunicazioni/Integrazioni con `access.read`/`access.update` staff; GET anonimo senza **valori** riservati (F3; Payload 3.90.2 può lasciare `resendSenders`/`staffNotificationContacts` come chiavi con **`[]`**); `select[resendSenders]` senza righe (solo `[]`).
