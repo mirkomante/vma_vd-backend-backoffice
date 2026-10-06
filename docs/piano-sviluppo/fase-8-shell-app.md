@@ -39,7 +39,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 8.1 — Installazione e verifica di shadcn/ui
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-06)
 
 **Dipende da**: Fase 4.0 e Fase 7 completate.
 
@@ -53,11 +53,22 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Dipendenze**: si installano i componenti solo quando servono alle sottofasi 8.2–8.5. Le librerie che shadcn aggiunge (utilità di classi, icone, ecc.) vanno elencate nel CHANGELOG con la versione fissata.
 
+**Verifica compatibilità (2026-10-06)** — documentazione ufficiale shadcn/ui ([Tailwind v4](https://ui.shadcn.com/docs/tailwind-v4), [components.json](https://ui.shadcn.com/docs/components-json)): supporto esplicito a Tailwind v4 (`@theme`, `@theme inline`) e React 19; `tailwind.config` vuoto in v4. Next.js App Router coperto dalla guida [Installation / Next.js](https://ui.shadcn.com/docs/installation/next) (nessun vincolo di versione minima Next oltre allo stack del progetto). **Init eseguito con CLI `shadcn@4.21.3`**; dipendenze runtime pin in `package.json`: `shadcn@4.21.2`, `cn@0.4.0`, `class-variance-authority@0.7.1`, `lucide-react@1.52.0`, `tw-animate-css@1.4.0`. Helper `lib/utils.ts` (re-export `cn`). Nessun componente UI committato (prova `button` rimossa).
+
+**Isolamento CSS — rischi risolti o documentati**:
+
+1. **Collisione `--background` / `--foreground`**: `app/globals.css` definisce ancora `--background` e `--foreground` su `:root` (e `prefers-color-scheme: dark`) per `(frontend)` e stile base condiviso. In `(app)` il layout importa prima `globals.css`, poi `app/(app)/app-ui.css`: i token shadcn sullo stesso `:root` del documento `/app` **sovrascrivono** quelli legacy solo nell’html di `(app)` (documento separato da `/` e `/admin`). Il `<body>` dell’App usa classi Tailwind semantiche (`bg-background`, `text-foreground`, `font-sans`) invece del `color`/`background` hardcoded di `globals.css` su `body`. **Dark mode**: shadcn usa la variante `@custom-variant dark` (classe `.dark` sull’antenato); `globals.css` usa `@media (prefers-color-scheme: dark)` su `:root`. Fino alla 8.2 non si applica `.dark` su `/app`: palette shadcn resta in tema chiaro; `prefers-color-scheme` in `globals` può ancora influire su `color-scheme` dell’html. Allineamento dark (classe vs media query) resta decisione di shell in 8.2.
+
+2. **`@import 'tailwindcss'` nel CSS dedicato**: `app/(app)/app-ui.css` **non** ripete `@import 'tailwindcss'` (evita doppio bundle Tailwind e non tocca `(frontend)`). Contiene `@import 'tw-animate-css'`, `@import 'shadcn/tailwind.css'`, `@theme inline`, token `:root`/`.dark`. Le utility semantiche (`bg-background`, ecc.) sono generate perché `globals.css` fa già `@import 'tailwindcss'` e `@source` su `(app)`/`components`; `@tailwindcss/postcss` processa anche `app-ui.css` come entry separata. **Verificato**: `pnpm build` OK; nessun `@layer base` con `@apply` in `app-ui.css` (evita `@reference` finché non servono fogli CSS modulari). Se in futuro servisse `@apply` in un file senza `@import 'tailwindcss'`, opzioni da piano: `@reference` verso `globals.css` (doc Tailwind v4); oppure secondo entry con proprio `@import 'tailwindcss'` e `(app)` senza `globals.css` (cambia lo stile base di `/app`).
+
+**Prova isolamento CSS (prod locale, `pnpm build && PORT=3001 pnpm start`)** — HTML scaricato con `curl`; sui CSS linkati, `grep -E 'sidebar-primary|--radius:'` solo su `/app/login` (chunk `app-ui`), **non** su `/admin` né `/`. Confronto visivo Admin/frontend: azione umana.
+
 **Checklist di chiusura sottofase**:
-- [ ] Esito della verifica di compatibilità documentato nel CHANGELOG.
-- [ ] `pnpm build` passa; `/app`, `/app/login` e `/admin` si caricano.
-- [ ] L'Admin e `(frontend)` non cambiano aspetto.
-- [ ] Voce di CHANGELOG.
+- [x] Esito della verifica di compatibilità documentato nel CHANGELOG.
+- [x] `pnpm build` passa; `/app`, `/app/login` e `/admin` si caricano (prod locale; caricamento pagina non verificato visivamente).
+- [x] Isolamento token shadcn verificato via `curl`+`grep` sui CSS (Admin e `/` esclusi).
+- [x] `git diff app/globals.css` vuoto dopo init (contenuto shadcn spostato in `app/(app)/app-ui.css`, `components.json` → `tailwind.css` su quel file).
+- [x] Voce di CHANGELOG.
 
 ---
 

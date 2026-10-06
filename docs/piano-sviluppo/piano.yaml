@@ -274,17 +274,16 @@ fasi:
     nome: "Shell dell'Area App (app) + shadcn/ui (infrastruttura condivisa del backoffice)"
     origine: dominio-applicativo
     file: "fase-8-shell-app.md"
-    stato: "da_fare"
+    stato: "in_corso"
     note: >
-      Aggiunta il 2026-10-03: nessuna sottofase di fase-5 o fase-6 creava la
-      shell condivisa dal backoffice. Oggi esiste solo /app/login,
-      canAccessSection è uno stub che restituisce false e shadcn/ui non è
-      installato. Il numero non indica l'ordine di esecuzione (vedi
-      meta.ordine_esecuzione). Struttura delle sottofasi confermata nel file di fase (validato, 2026-10-04).
+      Shell condivisa: /app/login operativo; canAccessSection ancora stub (8.3).
+      shadcn/ui inizializzato in 8.1 (2026-10-06). Il numero non indica l'ordine
+      di esecuzione (vedi meta.ordine_esecuzione). File di fase validato 2026-10-04.
     sottofasi:
       - id: fase-8.1
         nome: "Installazione e verifica di shadcn/ui (compatibilità con le versioni di Tailwind e Next in uso)"
-        stato: "da_fare"
+        stato: "fatto"
+        note: "CLI shadcn@4.21.3 init; token in app/(app)/app-ui.css (components.json tailwind.css); globals.css invariato. Dipendenze pin: shadcn 4.21.2, cn 0.4.0, cva 0.7.1, lucide-react 1.52.0, tw-animate-css 1.4.0. Isolamento CSS verificato curl+grep su PORT=3001 pnpm start."
       - id: fase-8.2
         nome: "Layout (app) mobile-first e navigazione per sezione (menu, hours, reservations)"
         stato: "da_fare"

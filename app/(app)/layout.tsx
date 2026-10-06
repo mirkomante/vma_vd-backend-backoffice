@@ -4,6 +4,7 @@ import type React from 'react'
 import { Geist, Geist_Mono } from 'next/font/google'
 
 import '../globals.css'
+import './app-ui.css'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,7 +28,9 @@ type AppAreaLayoutProps = {
 export default function AppAreaLayout({ children }: AppAreaLayoutProps) {
   return (
     <html lang="it" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="flex min-h-dvh w-full flex-col">{children}</body>
+      <body className="flex min-h-dvh w-full flex-col bg-background font-sans text-foreground">
+        {children}
+      </body>
     </html>
   )
 }
