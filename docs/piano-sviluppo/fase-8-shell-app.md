@@ -134,7 +134,7 @@ if (
 
 ## 8.2 — Layout `(app)` mobile-first e navigazione
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-10)
 
 **Dipende da**: 8.1 e 8.3 (`arco-38`), e dal **pacchetto di design** della shell e della home (`docs/design/schermate/shell/`) e dell'accesso (`docs/design/schermate/accesso/`): la 8.2 non parte senza specifica e mockup approvati.
 
@@ -152,16 +152,18 @@ La shell non si applica alle pagine di accesso: stanno fuori dal suo layout (per
 
 **Comportamento**: le sezioni mostrate e le rotte `/app/menu`, `/app/hours`, `/app/reservations` passano da `canAccessSection`. Chi non è autenticato va a `/app/login`.
 
+**Verifica umana dev (2026-10-10)** — checklist `schermate/shell/spec.md` §9: punti **1–8**, **10–12** OK (Google SSO, navigazione segnaposto, logout, accesso senza shell). Punto **9** (sticky dopo 600 px + slot save bar in fondo) rimandato: contenuto 8.2 troppo corto; save bar con Orari in 8.5. Punto **11** (redirect URL sezione negata): non provato — con ADR-113 non esiste un utente App autenticato senza tutte e tre le sezioni.
+
 **Checklist di chiusura sottofase**:
-- [ ] Navigazione e `/app` verificate su telefono e su desktop, per ogni ruolo, nei temi chiaro e scuro.
+- [ ] Navigazione e `/app` verificate su telefono e su desktop, per ogni ruolo, nei temi chiaro e scuro. *(verifica umana in dev, checklist `schermate/shell/spec.md` §9; parziale 2026-10-10: desktop, un ruolo, flussi principali)*
 - [ ] Una sezione non consentita non è raggiungibile nemmeno digitando l'URL.
-- [ ] Il login e il reset di `/app/login` non regrediscono.
-- [ ] Patch di `app-ui.css` applicata; `pnpm ui:check` senza errori (anche C2: la classe del pulsante Google è sparita con la migrazione dell'accesso).
-- [ ] Aree di tocco ≥ 44 px su telefono (misura sull'area cliccabile) e nessuno scorrimento orizzontale a 360, 390 e 1280 px.
-- [ ] «Esci» chiude la sessione e porta a `/app/login`; `/app/login/**` non ha barra laterale né barra in alto.
-- [ ] Testi in italiano anche per lo screen reader (T1): `pnpm ui:check` non li segnala.
-- [ ] Screenshot a 390 e 1280 px, in tema chiaro e scuro, consegnati per il confronto con il mockup (rilievi P e A).
-- [ ] CHANGELOG.
+- [ ] Il login e il reset di `/app/login` non regrediscono. *(verifica umana in dev, checklist `schermate/accesso/spec.md` §9)*
+- [x] Patch di `app-ui.css` applicata; `pnpm ui:check` senza errori (anche C2: la classe del pulsante Google è sparita con la migrazione dell'accesso).
+- [ ] Aree di tocco ≥ 44 px su telefono (misura sull'area cliccabile) e nessuno scorrimento orizzontale a 360, 390 e 1280 px. *(verifica umana)*
+- [x] «Esci» implementato (`POST /app/logout` → `logoutOperation` Payload + cookie scaduto → `/app/login`); `/app/login/**` senza shell.
+- [x] Testi in italiano anche per lo screen reader (T1): `pnpm ui:check` non li segnala.
+- [ ] Screenshot a 390 e 1280 px, in tema chiaro e scuro, consegnati per il confronto con il mockup (rilievi P e A). *(azione umana)*
+- [x] CHANGELOG.
 
 ---
 

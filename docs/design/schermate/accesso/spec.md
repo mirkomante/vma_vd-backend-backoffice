@@ -46,10 +46,10 @@ Comune alle quattro pagine (`data-block` dai mockup):
 | `intestazione-accesso` | Icona in un quadrato con `bg-primary`, titolo (`h1`), descrizione | testo |
 | (scheda) | Contiene avvisi, pulsanti e modulo | `Card`, `CardContent` |
 | `avviso` | Esito o errore, con icona | `Alert (default | destructive)`, `AlertDescription` |
-| Pulsante Google (login) | «Accedi con Google», collegamento a tutta larghezza; **accesso principale** | `Button (default, lg)` con `render` come `a` |
+| Pulsante Google (login) | «Accedi con Google», collegamento a tutta larghezza; **accesso principale** | `<a>` con le classi di `buttonVariants({ size: "lg" })` (aspetto di `Button (default, lg)`; è un collegamento: niente `Button render`, vedi la regola UI) |
 | `separatore-oppure` (login) | Linea, «oppure», linea | `Separator` ×2 |
 | `modulo-accesso` | Campi e pulsante di invio | `FieldGroup`, `Field`, `FieldLabel`, `Input`, `Button (default, lg)` nelle pagine con il solo modulo (forgot, reset); `Button (outline, lg)` nel login, dove è l'accesso secondario |
-| `collegamenti` | Collegamenti sotto la scheda | `Button (link)` sottolineato, con `render` come `a` |
+| `collegamenti` | Collegamenti sotto la scheda | `<a>` o `Link` con le classi di `buttonVariants({ variant: "link" })`, sottolineati (aspetto di `Button (link)`; niente `Button render`, vedi la regola UI) |
 
 Pagine: **login** (avviso facoltativo, Google, separatore, modulo email e password, «Password dimenticata?», «Torna al sito»); **forgot** (avviso facoltativo, modulo con la sola email, «Torna al login»); **reset** (avviso facoltativo, modulo con la nuova password se c'è il token, «Torna al login»); **verify** (solo l'avviso, «Vai al login»).
 
@@ -107,7 +107,7 @@ Il separatore «oppure» si mostra in maiuscolo con lo stile del progetto (`uppe
 ## 8. Componenti da installare e da comporre
 
 - **Da installare** (8.2): `card`, `field`, `label`, `input`, `button`, `alert`, `separator` (con le deviazioni di `installazione-componenti-ui.md`).
-- **Componenti di composizione** (`components/app/`): la pagina di accesso (colonna, intestazione con icona, scheda, collegamenti), l'avviso di accesso (un `Alert` con icona e ruolo), il collegamento sottolineato (`Button` di tipo link). Sostituiscono `components/auth/AppAuthField.tsx`, `GoogleOAuthLoginLink.tsx`, `LoginFailureNotice.tsx` e `LoginInfoNotice.tsx`, che **si eliminano** alla migrazione. `components/auth/AdminGoogleLoginBefore.tsx` è dell'Admin e resta.
+- **Componenti di composizione** (`components/app/`): la pagina di accesso (colonna, intestazione con icona, scheda, collegamenti), l'avviso di accesso (un `Alert` con icona e ruolo), il collegamento sottolineato (un `a` o `Link` con le classi di `buttonVariants`, variante link). Sostituiscono `components/auth/AppAuthField.tsx`, `GoogleOAuthLoginLink.tsx`, `LoginFailureNotice.tsx` e `LoginInfoNotice.tsx`, che **si eliminano** alla migrazione. `components/auth/AdminGoogleLoginBefore.tsx` è dell'Admin e resta.
 - **Da rimuovere**: da `app/(app)/app-ui.css` la classe `.google-oauth-login-button` e la sua variante `:hover` (restano in `app/globals.css`, che serve l'Admin). Fatto questo `pnpm ui:check` non segnala più C2.
 - **Eccezioni alla regola UI** (`ui-check-allow`): `<input type="hidden" name="token">` nel modulo di reset non è un controllo dell'interfaccia e `ui:check` lo esclude già; nessun'altra prevista. I `form` nativi sono ammessi.
 - **Logica pura in `lib/`**: nessuna nuova (i messaggi e le regole restano in `lib/auth/**`).
