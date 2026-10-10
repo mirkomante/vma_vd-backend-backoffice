@@ -65,7 +65,7 @@ Voce **«Vai all'Admin»** nel menu utente (quello che si apre dal nome in fondo
 
 - Tre scelte nel menu utente: **Chiaro, Scuro, Sistema**, voci piatte con spunta (niente sottomenu, scomodi da toccare). Scelta iniziale: Sistema.
 - La scelta vale **per dispositivo**, non per account (nessun campo in `users`, nessuna migrazione). Se in futuro servisse per account: campo in `users` e migrazione.
-- Requisiti comportamentali: nessun lampo del tema sbagliato al caricamento della pagina; i controlli nativi del browser seguono il tema scelto (`color-scheme`); ogni schermata va verificata in tutti e due i temi.
+- Requisiti comportamentali: nessun lampo del tema sbagliato al caricamento della pagina; i controlli nativi del browser (ora, data, barre di scorrimento) seguono il tema scelto: in `app-ui.css` `:root { color-scheme: light }` e `.dark { color-scheme: dark }` (nel mockup mancava e il campo ora nativo lo ha reso visibile); ogni schermata va verificata in tutti e due i temi.
 - Token: in `.dark`, `--sidebar-primary` oggi è un blu (`oklch(0.488 0.243 264.376)`), non neutro. Va portato al grigio di `--primary`: `--sidebar-primary: oklch(0.922 0 0)` e `--sidebar-primary-foreground: oklch(0.205 0 0)`.
 - Oggi `app-ui.css` non imposta `color-scheme` e `/app` resta chiaro anche con il sistema in scuro (verificato con Playwright: nessuna differenza di pixel).
 
@@ -114,7 +114,10 @@ Non ancora adattati perché non usati finora: casella di spunta, interruttore, r
 - È uno **slot della shell, fuori dal contenitore con il padding** (vedi P2 nella sezione 3): dentro il contenitore non si aggancia in modo affidabile. Il suo contenuto è allineato alla colonna del modulo (D8).
 - Gli elementi modificati in un foglio (es. una chiusura annuale) hanno «Applica», che modifica solo il modulo; la persistenza avviene con «Salva modifiche». Il testo del foglio lo dice.
 - **Errore di validazione**: nessun salvataggio; banner in testa («Controlla i campi evidenziati»), campo con errore evidenziato con il suo messaggio, e il primo campo non valido viene portato in vista e riceve il focus.
-- **Esito**: messaggio «… salvati» in pagina (notifica di shadcn da definire, vedi A6).
+- **Esito**: messaggio «… salvati» in pagina con `Alert`, non il `Toaster` di shadcn (A6 risolto per ora: nessuna dipendenza da `next-themes`).
+- **Salvataggio in corso**: l'intero modulo è disabilitato, la barra dice «Salvataggio in corso…», il pulsante ha lo `Spinner`.
+- **Errore del server**: avviso rosso generico, le modifiche restano e la barra resta, per riprovare.
+- **Uscita con modifiche non salvate**: conferma «Uscire senza salvare?» con «Resta qui» e «Esci senza salvare»; chiusura o ricaricamento con l'avviso nativo del browser.
 
 ### D8 — Larghezza del contenuto
 
@@ -137,11 +140,12 @@ Mockup funzionante costruito con i componenti reali, le dimensioni di tocco di D
 - **A1 — Dopo un errore di validazione** la pagina deve portare il campo con errore in vista e dargli il focus: chi preme «Salva» dal fondo non vede altrimenti nulla cambiare, perché banner ed errore sono più in alto. Nel mockup è fatto; va nella specifica come comportamento.
 - **A2 — Barra di salvataggio:** su telefono, con i due pulsanti affiancati, occupa 97 px (129 con i pulsanti uno sopra l'altro).
 - **A3 — Salvataggio a due livelli:** il foglio di una chiusura ha «Applica» (modifica il modulo) e la pagina ha «Salva modifiche» (salva). Deciso in D7; il testo del foglio lo spiega. Resta un punto da verificare con persone reali.
-- **A4 — Orari come testo:** il mockup usa un campo di testo con tastiera numerica e segnaposto `12:30` (come l'Admin). L'alternativa `type="time"` dà il selettore nativo, ma il formato mostrato dipende dalle impostazioni del dispositivo.
+- **A4 — Orari: deciso `Input type="time"`** (il valore resta `HH:mm` a 24 ore; il formato mostrato segue il dispositivo). Su iOS la tastiera numerica non dà i due punti (comportamento noto, non verificato qui), quindi un campo di testo sarebbe stato scomodo da telefono.
 - **A5 — Festività:** l'Admin ha due campi anno («aggiungi» e «rimuovi»); nel mockup ce n'è uno solo, con due pulsanti. Il comportamento resta quello delle funzioni di `lib/systemSettings/`; la checklist di §8.5 («le righe del pulsante festività corrispondono a quelle dell'Admin») resta valida.
-- **A6 — Notifiche di conferma:** il wrapper `Sonner` di shadcn importa `next-themes`. Se il tema è gestito a mano (D4), il `Toaster` va collegato alla nostra scelta, oppure si adotta `next-themes` anche per il tema. Il mockup usa un messaggio in pagina (`Alert`).
-- **A7 — Orari non configurati:** se `services` manca sul Global, la sezione deve mostrare lo stato «non configurato» (`fase-7` §7.2, «nessun default inventato»). Non è nel mockup: da specificare.
+- **A6 — Notifiche di conferma:** il wrapper `Sonner` di shadcn importa `next-themes`. Per Orari si usa un avviso in pagina (`Alert`), senza dipendenze. Resta aperto per le altre schermate se serviranno notifiche temporanee.
+- **A7 — Orari non configurati:** risolto: avviso informativo e campi vuoti (specifica di Orari, comportamento 13).
 - **A8 — Elenco lungo:** con più anni le chiusure crescono di 13 righe all'anno. Il mockup le raggruppa per anno; da verificare con molti dati.
+- **A9 — Stati completati (2026-10-10):** salvataggio in corso, errore del server, orari non configurati, errore di caricamento e uscita con modifiche non salvate sono ora nel mockup e nella specifica di Orari. Punto tecnico aperto: intercettare i collegamenti con l'App Router per la conferma di uscita (fallback: solo `beforeunload`).
 
 ## 4. Verifiche tecniche fatte in questa sessione
 
@@ -169,7 +173,7 @@ I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da 
 
 ## 7. Prossimi passi
 
-1. Provare le decisioni su tre schermate: Orari (§8.5, approvata e confezionata in `schermate/orari/`), elenco prenotazioni, modifica di un piatto.
+1. Provare le decisioni su tre schermate: Orari (§8.5, chiusa e confezionata in `schermate/orari/`), elenco prenotazioni, modifica di un piatto.
 2. Mockup HTML finali annotati con `data-component`, `data-variant`, `data-size`.
 3. Regola UI di progetto `.cursor/rules/ui/…mdc`, modello di specifica per schermata, script `pnpm ui:check`.
 4. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi.
