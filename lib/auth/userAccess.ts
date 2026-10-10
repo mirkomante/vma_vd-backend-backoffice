@@ -24,16 +24,22 @@ export function canAccessAdminPanel(user: UserAccessFields | null | undefined): 
     return false
   }
   const role = user?.adminRole
-  return role === 'admin' || role === 'super-admin'
+  return role === 'manager' || role === 'admin' || role === 'super-admin'
 }
 
-/** Accesso all’Area App: utente attivo con un `appRole` diverso da `none`. */
+/**
+ * Accesso all’Area App (ADR-113 §3, fase-8 §5-bis): utente attivo con `adminRole`
+ * `admin`/`super-admin`, oppure `appRole: manager`. `adminRole: manager` senza `appRole` escluso.
+ */
 export function canAccessAppArea(user: UserAccessFields | null | undefined): boolean {
   if (!isActiveUser(user)) {
     return false
   }
-  const role = user?.appRole
-  return role != null && role !== 'none'
+  const adminRole = user?.adminRole ?? 'none'
+  if (adminRole === 'admin' || adminRole === 'super-admin') {
+    return true
+  }
+  return user?.appRole === 'manager'
 }
 
 export function isSuperAdminRequest(req: PayloadRequest): boolean {

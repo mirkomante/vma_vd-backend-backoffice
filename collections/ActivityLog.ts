@@ -6,6 +6,7 @@ import {
   ACTIVITY_LOG_METHODS,
   ACTIVITY_LOG_SLUG,
 } from '@/lib/activityLog/constants'
+import { hideFromAdminRoleManager } from '@/lib/auth/adminPanelVisibility'
 import { isStaffAdminRequest } from '@/lib/auth/userAccess'
 
 export const ActivityLog: CollectionConfig = {
@@ -19,6 +20,7 @@ export const ActivityLog: CollectionConfig = {
     defaultColumns: ['createdAt', 'user', 'eventType', 'area', 'method'],
     description:
       'Eventi di autenticazione e, in futuro, azioni sui documenti. Scrittura solo da hook di sistema.',
+    hidden: ({ user }) => hideFromAdminRoleManager(user),
   },
   timestamps: true,
   access: {

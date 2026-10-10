@@ -4,6 +4,7 @@
 
 export const ADMIN_ROLE_OPTIONS = [
   { label: 'Nessuno', value: 'none' },
+  { label: 'Manager (contenuti siti)', value: 'manager' },
   { label: 'Admin', value: 'admin' },
   { label: 'Super-admin', value: 'super-admin' },
 ] as const
@@ -33,8 +34,8 @@ export function loginMethodIncludesLocal(
   return method === 'local' || method === 'sso-and-local'
 }
 
-/** Sezioni dell'Area App il cui enforcement permessi verrà collegato in Fase 5/6 */
-export type AppSection = 'menu' | 'reservations'
+/** Sezioni dell'Area App (ADR-113 §3). */
+export type AppSection = 'menu' | 'hours' | 'reservations'
 
 export type UserAccessFields = {
   id?: number | string

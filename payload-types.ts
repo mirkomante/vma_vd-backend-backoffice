@@ -162,11 +162,11 @@ export interface ActivityLog {
 export interface User {
   id: number;
   /**
-   * Accesso al pannello Payload (/admin). Un solo valore per area; non cumulabile con altri valori nello stesso campo.
+   * Ruolo nel pannello Payload (/admin): CMS dei siti (manager), gestione completa (admin/super-admin). Distinto da App Role.
    */
-  adminRole: 'none' | 'admin' | 'super-admin';
+  adminRole: 'none' | 'manager' | 'admin' | 'super-admin';
   /**
-   * Ruolo nell’Area App (/app). Separato da adminRole; enforcement per sezione nelle fasi di dominio.
+   * Ruolo nell’Area App (/app): menù, orari e prenotazioni (manager). Admin e super-admin accedono all’App senza valorizzare questo campo.
    */
   appRole: 'none' | 'manager';
   /**

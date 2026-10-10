@@ -5,6 +5,7 @@ import {
   SETTINGS_SLUG,
   type SettingsWriteData,
 } from '@/lib/auth/allowedDomains'
+import { hideFromAdminRoleManager } from '@/lib/auth/adminPanelVisibility'
 import { isStaffAdminRequest, isSuperAdminRequest } from '@/lib/auth/userAccess'
 
 /**
@@ -18,6 +19,7 @@ export const Settings: GlobalConfig = {
   admin: {
     description:
       'Domini Google Workspace ammessi al login SSO, con flag separati per Area Admin e Area App. Almeno un dominio è obbligatorio.',
+    hidden: ({ user }) => hideFromAdminRoleManager(user),
   },
   access: {
     read: ({ req }) => isStaffAdminRequest(req),

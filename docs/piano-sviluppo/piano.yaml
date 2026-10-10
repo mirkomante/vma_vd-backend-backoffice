@@ -276,9 +276,9 @@ fasi:
     file: "fase-8-shell-app.md"
     stato: "in_corso"
     note: >
-      Shell condivisa: /app/login operativo; canAccessSection ancora stub (8.3).
-      shadcn/ui inizializzato in 8.1 (2026-10-06). Il numero non indica l'ordine
-      di esecuzione (vedi meta.ordine_esecuzione). File di fase validato 2026-10-04.
+      Shell condivisa: /app/login operativo; 8.3 in corso (guardie ADR-113, migrazione
+      enum manager, admin.hidden). shadcn/ui inizializzato in 8.1 (2026-10-06). Il numero
+      non indica l'ordine di esecuzione (vedi meta.ordine_esecuzione). File di fase validato 2026-10-04.
     sottofasi:
       - id: fase-8.1
         nome: "Installazione e verifica di shadcn/ui (compatibilità con le versioni di Tailwind e Next in uso)"
@@ -290,8 +290,8 @@ fasi:
         note: "Dipende da fase-8.1 e da fase-8.3 (la navigazione usa canAccessSection, arco-38): ordine di esecuzione 8.1, 8.3, 8.2."
       - id: fase-8.3
         nome: "Ruoli e guardia di accesso: valore manager in adminRole (migrazione), canAccessSection a tre sezioni, admin.hidden per il manager"
-        stato: "da_fare"
-        note: "po-02 chiuso da ADR-113 (accettata): manager unico per menù, orari e prenotazioni; accesso all'App di admin e super-admin derivato da adminRole. Deroga a ADR-001 e ADR-004 di catalogo."
+        stato: "in_corso"
+        note: "🔶 codice completo; in attesa migrazione Cloud SQL prod e prove SSO (umano). Script verify-roles-8_3-matrix.ts e verify-roles-8_3.ts. po-02 chiuso da ADR-113."
       - id: fase-8.4
         nome: "Email di account per gli utenti dell'Admin: reinvio dell'attivazione (login locale) ed email di account creato (SSO)"
         stato: "da_fare"

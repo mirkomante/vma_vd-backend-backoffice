@@ -12,6 +12,16 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 8.3: valore `manager` in `adminRole` (migrazione `20261010_071726_add_admin_role_manager`); `canAccessAdminPanel` / `canAccessAppArea` / `canAccessSection` (tre sezioni) secondo ADR-113; `assertUserAllowedForAppLocalLogin` rifiuta `adminRole !== 'none'`; controllo F1 escalation super-admin in `beforeValidate` di `users`; `admin.hidden` per manager su `users`, `activity-log`, Global `settings` e `impostazioni-sistema` (`lib/auth/adminPanelVisibility.ts`). Script `scripts/verify-roles-8_3-matrix.ts`, `scripts/verify-roles-8_3.ts`. Matrice `fase-2-login.md` (riga A-bis manager CMS, nota accesso App admin).
+
+### Changed
+
+- Fase 8.3: etichette/descrizioni campi `adminRole` e `appRole` in `collections/Users.ts`; checklist 2.6 con controllo login locale App e `adminRole`.
+
+### Tests
+
+- Fase 8.3: su `vma_vd_dev`, enum applicato con `ALTER TYPE … ADD VALUE 'manager'` (DB già allineato via `push`; `pnpm migrate` interattivo non applicabile senza tabella `payload_migrations` completa). `pnpm payload run scripts/verify-roles-8_3-matrix.ts` OK (120 asserzioni). `pnpm payload run scripts/verify-roles-8_3.ts` OK con `pnpm dev` su stesso `DATABASE_URL` (F1 REST/Local, accesso manager CMS, login App promozione, `assertLocalPasswordAllowed` per manager). Prove SSO Google non eseguite (azione umana). Migrazione prod: da applicare l'umano prima del push (`docs/operativo/cloud-sql-produzione.md`).
+
 - Fase 8.1: infrastruttura shadcn/ui isolata in `(app)` — `components.json` (`style: base-nova`, `tailwind.config` vuoto, `tailwind.css`: `app/(app)/app-ui.css`); `app/(app)/app-ui.css` (token OKLCH, `@theme inline`, `@custom-variant dark`, import `tw-animate-css` e `shadcn/tailwind.css`); `lib/utils.ts` (`cn`); layout `(app)` importa `app-ui.css` e classi semantiche su `body`. CLI init: **`shadcn@4.21.3`**. Dipendenze pin: **`shadcn@4.21.2`**, **`cn@0.4.0`**, **`class-variance-authority@0.7.1`**, **`lucide-react@1.52.0`**, **`tw-animate-css@1.4.0`**. Compatibilità documentata: Tailwind v4 + React 19 ([shadcn Tailwind v4](https://ui.shadcn.com/docs/tailwind-v4)); Next 16.3.5 App Router allineato alla guida Next di shadcn. `app/globals.css` non modificato.
 - Fase 7.4: permessi granulari su `impostazioni-sistema` — helper in `lib/auth/userAccess.ts`, `lib/systemSettings/fieldAccess.ts`; script `scripts/verify-system-settings-7_4.ts`. Nessuna migrazione.
 - Fase 7.4 (revisione): rimossi `beforeChange` manager e maschera Local/`context`; ~~`afterRead` solo REST~~ **rimosso del tutto** (2026-10-06): `access.read` di campo basta in REST anonimo.

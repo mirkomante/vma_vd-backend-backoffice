@@ -23,6 +23,7 @@ import {
   isLocalAppUserProfile,
   showAppLocalPasswordFields,
 } from '@/lib/auth/localAppUserAdmin'
+import { hideFromAdminRoleManager } from '@/lib/auth/adminPanelVisibility'
 import {
   canAccessAdminPanel,
   canCreateUser,
@@ -52,6 +53,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'adminRole', 'appRole', 'loginMethod', 'emailVerified', 'active'],
+    hidden: ({ user }) => hideFromAdminRoleManager(user),
   },
   access: {
     admin: ({ req }) => canAccessAdminPanel(req.user as UserAccessFields),
@@ -69,7 +71,7 @@ export const Users: CollectionConfig = {
       options: [...ADMIN_ROLE_OPTIONS],
       admin: {
         description:
-          'Accesso al pannello Payload (/admin). Un solo valore per area; non cumulabile con altri valori nello stesso campo.',
+          'Ruolo nel pannello Payload (/admin): CMS dei siti (manager), gestione completa (admin/super-admin). Distinto da App Role.',
       },
     },
     {
@@ -80,7 +82,7 @@ export const Users: CollectionConfig = {
       options: [...APP_ROLE_OPTIONS],
       admin: {
         description:
-          'Ruolo nell’Area App (/app). Separato da adminRole; enforcement per sezione nelle fasi di dominio.',
+          'Ruolo nell’Area App (/app): menù, orari e prenotazioni (manager). Admin e super-admin accedono all’App senza valorizzare questo campo.',
       },
     },
     {
@@ -193,6 +195,25 @@ export const Users: CollectionConfig = {
           data: writeData,
           originalDoc: current,
         })
+
+        const incomingAdminRole = writeData?.adminRole
+        const actor = req.user as UserAccessFields | null
+        if (
+          actor &&
+          incomingAdminRole === 'super-admin' &&
+          actor.adminRole !== 'super-admin' &&
+          (current as UserAccessFields | undefined)?.adminRole !== 'super-admin'
+        ) {
+          throw new ValidationError({
+            collection: 'users',
+            errors: [
+              {
+                message: 'Solo un super-admin può assegnare il ruolo super-admin.',
+                path: 'adminRole',
+              },
+            ],
+          })
+        }
 
         const mergedProfile = { ...current, ...writeData } as UserAccessFields
 

@@ -11,11 +11,14 @@ export class AppLocalLoginRejectedError extends Error {
 }
 
 /**
- * Login locale Area App: utente attivo con ruolo App.
- * L’allow-list domini (2.2) non si applica. Utente solo-SSO o senza hash:
- * il confronto password fallisce da solo, nessun caso speciale.
+ * Login locale Area App: solo `adminRole: none` con accesso App (ADR-004, fase-8 §5-bis).
+ * L’allow-list domini (2.2) non si applica.
  */
 export function assertUserAllowedForAppLocalLogin(user: UserAccessFields): void {
+  if ((user.adminRole ?? 'none') !== 'none') {
+    throw new AppLocalLoginRejectedError()
+  }
+
   if (!canAccessAppArea(user)) {
     throw new AppLocalLoginRejectedError()
   }

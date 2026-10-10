@@ -45,7 +45,7 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 **Checklist**:
 
-- Creare la collection `users` con i campi: `email` (text, required, unique — funge anche da username per il login locale), `adminRole` (select singolo: none/admin/super-admin), `appRole` (select singolo: none/[ruoli App del progetto]), `active` (checkbox, **default false** — va selezionato esplicitamente in creazione, mai concesso implicitamente).
+- Creare la collection `users` con i campi: `email` (text, required, unique — funge anche da username per il login locale), `adminRole` (select singolo: none/manager/admin/super-admin — vedi `ADR-113`), `appRole` (select singolo: none/[ruoli App del progetto]), `active` (checkbox, **default false** — va selezionato esplicitamente in creazione, mai concesso implicitamente).
 - Non aggiungere un campo `roles` cumulativo unico: i due ruoli sono campi separati, non cumulabili all'interno della stessa area.
 - Il campo `password` è gestito nativamente da Payload (auth abilitata sulla collection): non ricostruire un meccanismo di hashing custom.
 - Implementare la validazione custom sul campo `password` secondo la policy password decisa per il progetto (Payload impone nativamente solo un minimo di 8 caratteri).
@@ -62,7 +62,8 @@ Segnalare questa sequenza non è una violazione del piano: è l'ordine di esecuz
 
 | Caso | adminRole | appRole | loginMethod | Password/conferma | active/emailVerified | Vincolo |
 |---|---|---|---|---|---|---|
-| A — Solo Admin | admin/super-admin | none | SSO (obbligato) | nascosti | non rilevante | — |
+| A — Admin (e super-admin) | admin/super-admin | none | SSO (obbligato) | nascosti | non rilevante | accesso anche all’Area App derivato da `adminRole` (`ADR-113` §3) |
+| A-bis — Manager CMS (solo Admin) | manager | none o manager | SSO (obbligato) | nascosti | non rilevante | nessun permesso su `users`; CMS siti in Admin (Fase 4.1) |
 | B — Admin + anche utente App | admin/super-admin | ≠ none | SSO (obbligato per tutto il record) | nascosti | non rilevante | `loginMethod: locale` bloccato in validazione |
 | C — Solo App via SSO | none | ≠ none | SSO | nascosti | non rilevante | — |
 | D — Solo App locale | none | ≠ none | locale | **mostrati, obbligatori** | **da selezionare esplicitamente, default false** | unico caso con password |
@@ -194,6 +195,7 @@ Entrambe le matrici sono vincolanti per ogni progetto che eredita questo templat
 
 **Checklist**:
 - Costruire la pagina di login custom dell'Area App con bottone del provider SSO (2.5) **e** form email/password.
+- Rifiutare il login locale dell'App se `adminRole !== 'none'` (qualsiasi `appRole`), con lo stesso messaggio generico degli altri fallimenti (`assertUserAllowedForAppLocalLogin`, allineato a `localPasswordGuard.ts` — Fase 8.3).
 - Verificare il flusso: ricerca utente per email → verifica password → verifica `active` → sessione. **Il progetto usa `disableLocalStrategy` sulla collection `users` (vedi 2.4)**: l'operazione nativa di login Payload è bloccata per l'intera collection, non solo per l'Admin — questo form deve passare da un endpoint custom, non dall'operazione standard. Vedi il pattern completo in `payload-pattern/04-auth-locale-con-sso-esclusivo.mdc`. Se l'utente non ha password impostata (solo SSO) o la password non combacia, il fallimento deve essere naturale (nessun caso speciale da gestire esplicitamente).
 - Il controllo identità/allow-list (2.2) **non si applica** al login locale: verificare che non venga richiamato per errore in questo percorso.
 - Messaggio di rifiuto identico a quello del flusso SSO in ogni caso di fallimento.

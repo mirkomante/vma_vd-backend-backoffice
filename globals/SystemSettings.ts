@@ -1,5 +1,6 @@
 import type { GlobalConfig } from 'payload'
 
+import { hideFromAdminRoleManager } from '@/lib/auth/adminPanelVisibility'
 import {
   canReadSystemSettingsRequest,
   canUpdateSystemSettingsRequest,
@@ -49,6 +50,7 @@ export const SystemSettings: GlobalConfig = {
   admin: {
     description:
       'Orari e chiusure, calendario, mittenti email verso i clienti e riferimenti per integrazioni future.',
+    hidden: ({ user }) => hideFromAdminRoleManager(user),
   },
   access: {
     read: ({ req }) => canReadSystemSettingsRequest(req),
