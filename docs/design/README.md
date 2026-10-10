@@ -5,6 +5,9 @@ Design UI/UX dell'Area App `(app)`. L'Admin è quello standard di Payload e non 
 | Percorso | Cosa contiene |
 |---|---|
 | `decisioni-layout-app.md` | Decisioni generali (menu, home, tema, filtri, dimensioni di tocco, salvataggio, larghezza), registro delle deviazioni dai componenti shadcn, rilievi e punti aperti |
+| `modello-specifica-schermata.md` | Modello della specifica di schermata, con i controlli comuni di accettazione |
+| `installazione-componenti-ui.md` | Come installare i componenti shadcn e le deviazioni D6 da applicare subito dopo |
+| `patch-app-ui-css.md` | Le correzioni da applicare a `app/(app)/app-ui.css` all'inizio della 8.2 |
 | `schermate/<nome>/` | Un pacchetto per ogni schermata approvata (vedi sotto) |
 | `assets/` | `mockup.css` (generato) e il font Geist, usati dai mockup statici |
 
@@ -21,3 +24,5 @@ Design UI/UX dell'Area App `(app)`. L'Admin è quello standard di Payload e non 
 - Il mockup statico è identico al prototipo su notebook (differenza 0,0 % a 1280 px, in chiaro e in scuro).
 
 **Pacchetti presenti**: `schermate/orari/`, `schermate/prenotazioni/`, `schermate/piatti/`.
+
+**Regola e controllo per Cursor** (fuori da questa cartella): `.cursor/rules/ui/01-ui-app-invarianti.mdc` (la regola UI di progetto) e `scripts/ui-check.mjs`, da lanciare con `pnpm ui:check` dopo aver aggiunto lo script a `package.json`.

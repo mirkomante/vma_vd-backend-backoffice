@@ -136,21 +136,27 @@ if (
 
 **Stato**: 🔲 da fare
 
-**Dipende da**: 8.1 e 8.3 (`arco-38`).
+**Dipende da**: 8.1 e 8.3 (`arco-38`), e dal **pacchetto di design** della shell, dell'accesso e della home (`docs/design/schermate/…`, da produrre prima di iniziare: la 8.2 non parte senza specifica e mockup approvati).
 
 **Obiettivo**: la shell dell'App: intestazione, navigazione per le tre sezioni, uscita, e `/app` come pagina iniziale al posto del placeholder della Fase 1.
 
-**Passaggi da confermare con l'umano prima di scrivere codice** (nessun documento li fissa):
-1. Il pattern di navigazione su telefono e su schermo largo (per esempio barra in basso e menu laterale).
-2. Il contenuto di `/app`: schede di accesso alle sole sezioni consentite.
-3. Se chi ha accesso all'Admin vede un collegamento a `/admin` nell'App.
+**Decisioni di design** (confermate il 2026-10-10; fonte: `docs/design/decisioni-layout-app.md`, che prevale su questo elenco; il codice presentazionale lo scrive Cursor da specifica approvata, con la regola `.cursor/rules/ui/01-ui-app-invarianti.mdc`):
+1. **Navigazione**: componente `Sidebar` di shadcn con tre gruppi e tutte le destinazioni visibili (Menù: Piatti, Vini, Bevande, Distillati, Menù fissi; Orari; Prenotazioni: Elenco, Eccezioni giorno, Impostazioni); pannello laterale sotto 768 px, barra fissa da 768 px (D1).
+2. **Contenuto di `/app`**: home «Oggi» con una scheda per sezione consentita; la riga di stato di ogni scheda si attiva quando esiste la query (5.5, 6.6, 8.5) (D2).
+3. **Collegamento a `/admin`**: voce «Vai all'Admin» nel menu utente, per chi supera `canAccessAdminPanel` (D3).
+4. In più: tema chiaro, scuro e sistema scelto per dispositivo, nel menu utente (D4); filtri delle liste a foglio su telefono (D5); aree di tocco da 44 px nei componenti (D6); pagine-modulo con barra di salvataggio e elenchi di record con azione immediata (D7, D9); larghezza delle colonne (D8); due lingue nei moduli (D10).
+
+**Da fare all'inizio della 8.2**: applicare la patch di `app/(app)/app-ui.css` (`docs/design/patch-app-ui-css.md`); installare i componenti come da `docs/design/installazione-componenti-ui.md`, con le deviazioni D6; aggiungere lo script `ui:check` (`scripts/ui-check.mjs`) a `package.json`; portare ai componenti shadcn la home e le quattro pagine di accesso (`/app/login`, `forgot`, `reset`, `verify`), oggi con colori della palette Tailwind e con la classe personalizzata del pulsante Google.
 
 **Comportamento**: le sezioni mostrate e le rotte `/app/menu`, `/app/hours`, `/app/reservations` passano da `canAccessSection`. Chi non è autenticato va a `/app/login`.
 
 **Checklist di chiusura sottofase**:
-- [ ] Navigazione e `/app` verificate su telefono e su desktop, per ogni ruolo.
+- [ ] Navigazione e `/app` verificate su telefono e su desktop, per ogni ruolo, nei temi chiaro e scuro.
 - [ ] Una sezione non consentita non è raggiungibile nemmeno digitando l'URL.
 - [ ] Il login e il reset di `/app/login` non regrediscono.
+- [ ] Patch di `app-ui.css` applicata; `pnpm ui:check` senza errori (anche C2: la classe del pulsante Google è sparita con la migrazione dell'accesso).
+- [ ] Aree di tocco ≥ 44 px su telefono (misura sull'area cliccabile) e nessuno scorrimento orizzontale a 360, 390 e 1280 px.
+- [ ] Screenshot a 390 e 1280 px, in tema chiaro e scuro, consegnati per il confronto con il mockup (rilievi P e A).
 - [ ] CHANGELOG.
 
 ---
@@ -214,10 +220,12 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 
 **Obiettivo**: la schermata `/app/hours` in cui il manager modifica gli orari di vietnamonamour.com.
 
+**Specifica e mockup**: `docs/design/schermate/orari/` (struttura dei componenti, stati, testi, comportamenti e checklist di accettazione); è la fonte per tutto il livello presentazionale.
+
 **Contenuto**: tab Orari e chiusure di `impostazioni-sistema`: orari dei due servizi, giorni di riposo settimanale, chiusure annuali (con il pulsante delle festività) e check-in e check-out del B&B. Legge e scrive con la Local API **con la sessione dell'utente** (`overrideAccess: false`), così valgono i permessi di `ADR-113`.
 
 **Vincoli**:
-- Gli orari sono testo `HH:mm` a 24 ore; validazione e funzione di calcolo delle festività sono quelle di `lib/` della Fase 7.2, non duplicate.
+- Gli orari sono testo `HH:mm` a 24 ore (il dato); nell'interfaccia il campo è un `Input type="time"`, che dà sempre quel formato e il selettore nativo da telefono. Validazione e funzione di calcolo delle festività sono quelle di `lib/` della Fase 7.2, non duplicate.
 - Campi adatti al telefono, messaggi di errore in italiano, conferma del salvataggio.
 - **Fuori perimetro**: le chiusure per data (Eccezioni giorno) restano in Prenotazioni (5.2, 5.5).
 

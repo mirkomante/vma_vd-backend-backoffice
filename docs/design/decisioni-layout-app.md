@@ -217,7 +217,7 @@ Prototipo con elenco per categoria (in ordine per nome), interruttore «Terminat
 - Tabelle su tablet touch: righe con azioni a 44 px, quindi meno righe visibili che con il mouse. Da verificare nelle schermate di dettaglio.
 - Selettore di data (celle del calendario a 44 px su touch): da adattare quando si installa.
 - Se la scelta del tema debba valere per account invece che per dispositivo.
-- Componenti di composizione di progetto (P2) e loro elenco.
+- Componenti di composizione di progetto (P2): la convenzione è fissata dalla regola UI (`components/app/`, solo con componenti di `components/ui`, dichiarati nella sezione 8 di ogni specifica); l'elenco completo si forma con le schermate.
 - Come gestire il tema rispetto a `next-themes` e al `Toaster` (A6).
 - **Debito: paginazione delle liste oltre 100 voci** (oggi i piatti sono 44). Predisposta: ricerca, filtri e ordine nella richiesta, avviso di elenco parziale; da aggiungere «Mostra altri piatti» quando serve.
 - **Debito: casella «solo per menu fisso» sui piatti** (`soloMenuFissi`): migrazione additiva, da aggiungere quando il frontend pubblico la leggerà e se esisterà un piatto che non va alla carta.
@@ -228,7 +228,12 @@ I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da 
 
 ## 8. Prossimi passi
 
-1. Provare le decisioni su tre schermate: Orari (§8.5, chiusa e confezionata in `schermate/orari/`), elenco prenotazioni (chiusa e confezionata in `schermate/prenotazioni/`), piatti (design chiuso e confezionato in `schermate/piatti/`, assunzioni da confermare).
+**Fatto il 2026-10-10**
+1. Prove su tre schermate, confezionate in `schermate/orari/`, `schermate/prenotazioni/` e `schermate/piatti/` (assunzioni di Piatti confermate).
 2. Mockup HTML finali annotati con `data-component`, `data-variant`, `data-size`.
-3. Regola UI di progetto `.cursor/rules/ui/…mdc`, modello di specifica per schermata, script `pnpm ui:check`.
-4. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi.
+3. Regola UI di progetto `.cursor/rules/ui/01-ui-app-invarianti.mdc` (`stato: da validare`: si promuove al catalogo dopo le prime schermate implementate), `modello-specifica-schermata.md`, `scripts/ui-check.mjs` (`pnpm ui:check`), `patch-app-ui-css.md`, `installazione-componenti-ui.md`. §8.2 e §8.5 di `fase-8-shell-app.md` allineate.
+
+**Da fare**
+4. Pacchetto di design di **shell, accesso e home** (8.2): barra laterale e menu utente con tema e Admin, le quattro pagine di accesso (`login`, `forgot`, `reset`, `verify`), home «Oggi», stati vuoti (utente senza sezioni).
+5. Le altre schermate quando arriva la loro fase: Eccezioni giorno e Impostazioni (5.x); Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali e Messaggio globale (6.6).
+6. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi, con i controlli comuni del modello di specifica.

@@ -1,0 +1,76 @@
+---
+description: Invarianti del livello presentazionale dell'Area App (app): si implementa solo da specifica approvata, con soli componenti shadcn, token semantici e testi della specifica; componente mancante, fermarsi e chiedere
+globs: app/*app*/**, components/app/**, components/ui/**
+alwaysApply: false
+stato: da validare
+---
+
+# UI dell'Area App `(app)`
+
+Regola **solo di questo progetto** (non del catalogo): si promuove al catalogo dopo averla validata sulle prime schermate implementate. Non riguarda l'Admin (resta il Payload standard). Integra `stack/01-stile-codice.mdc` e `core/04-changelog-commit.mdc`.
+
+## Fonte di verità
+
+Il design è nel repo e **non si reinterpreta**:
+- `docs/design/decisioni-layout-app.md`: decisioni generali (D1–D10) e registro delle deviazioni dai componenti shadcn.
+- `docs/design/schermate/<nome>/spec.md`: la specifica della schermata (componenti e varianti, stati, testi, comportamenti, checklist di accettazione).
+- `docs/design/schermate/<nome>/mockup.html` e gli screenshot `*.png` della stessa cartella: il riferimento visivo.
+- `docs/design/installazione-componenti-ui.md` e `docs/design/patch-app-ui-css.md`: come installare i componenti e correggere `app-ui.css`.
+
+## Come si implementa una schermata
+
+1. Si parte solo se esistono specifica **approvata** e mockup. Altrimenti: fermarsi e chiedere, non inventare.
+2. Se specifica e mockup si contraddicono, o la specifica non copre un caso: **fermarsi e chiedere**.
+3. Implementare tutti gli stati della tabella «Stati» della specifica (caricamento, errore, vuoto, nessun risultato, errore dell'azione, ...): nessuno si omette, nessuno si aggiunge.
+4. I testi sono quelli della tabella «Testi»: italiano, singolare e plurale compresi. Nessun testo inventato.
+5. Prima del commit: `pnpm ui:check` senza errori e la checklist di accettazione della specifica, punto per punto, con l'esito di ciascun punto riportato nel CHANGELOG (anche gli esiti negativi, come in `core/04`).
+6. Consegnare gli screenshot a 390 e a 1280 px, in tema chiaro e scuro, per il confronto con il mockup.
+
+## Divieti (li controlla `pnpm ui:check`)
+
+Nelle schermate (`app/(app)/**`) e nei componenti di composizione (`components/app/**`):
+- **R1** colori letterali (`#fff`, `rgb(...)`, `oklch(...)`); **R2** colori della palette Tailwind (`bg-emerald-600`, `text-neutral-600`, `bg-white`, ...): solo colori semantici (`bg-background`, `text-muted-foreground`, `bg-primary`, `border`, ...).
+- **R3** valori o varianti arbitrari (`w-[calc(...)]`, `text-[11px]`, `[&_svg]:...`).
+- **R4** `style={...}`; **R6** prefisso `dark:` (il tema passa dai token); **R8** `pointer-coarse:` o `pointer-fine:` (stanno solo in `components/ui`).
+- **R5** elementi nativi `<button>`, `<input>`, `<select>`, `<textarea>`, `<label>`, `<table>`, `<dialog>`: usare `Button`, `Input`, `Select`, `Textarea`, `FieldLabel`, `Table`, `Sheet`/`AlertDialog`.
+- **R7** import da `@base-ui/react`, `@radix-ui/*`, `sonner`, `vaul`, `cmdk` o altre librerie UI: si importa solo da `@/components/ui/...`.
+- **R9** file CSS di schermata; **C2** classi CSS personalizzate in `app-ui.css` (nessuna: i token stanno in `app-ui.css`, il resto sono componenti).
+- Nessuna modifica a `app/globals.css`, condiviso con `(frontend)`.
+
+Un'eccezione puntuale si dichiara con un commento `ui-check-allow: <motivo>` sulla riga (o su una riga di solo commento subito sopra). Il motivo è obbligatorio e va riportato nella sezione «Componenti di composizione» della specifica. Esempio ammesso: l'intera scheda tappabile dell'elenco (`<button type="button">` che contiene una `Card`).
+
+## Obblighi
+
+- **Solo componenti installati in `components/ui`**. Un import da `@/components/ui/x` senza il file corrispondente è un errore (R10): vedi «Componente mancante».
+- **Responsive con `md:`** (768 px, il punto di passaggio della `Sidebar` di shadcn): elenco in tabella da `md`, in schede sotto `md`; fogli dal basso sotto `md`, da destra da `md`.
+- **Dimensioni di tocco ≥ 44 px solo nei componenti** (D6): le schermate non impostano altezze per il tocco. Se un elemento interattivo resta sotto 44 px, è un difetto del componente o un componente mancante, non si corregge nella schermata.
+- **Accessibilità**: ogni elemento interattivo ha un nome accessibile (i pulsanti con sola icona hanno `aria-label`); i campi hanno `FieldLabel` con `htmlFor`; gli errori di campo usano `aria-invalid` e `FieldError`; gli avvisi sono in un'area `role="status"` (o `role="alert"` se di errore). Dopo un errore di validazione il primo campo non valido è in vista e ha il focus.
+- **Salvataggio**: pagine-modulo con la barra «Salva modifiche» (D7); elenchi di record con azione immediata e conferma per le azioni irreversibili (D9). Mentre si salva: pulsanti disabilitati, `Spinner`, «Salvataggio…».
+- **Logica fuori dalla schermata**: calcoli e regole (azioni per stato, totali, formati, singolare e plurale) sono funzioni pure in `lib/` con test; la schermata le chiama. Nessuna logica di dominio nei componenti di composizione.
+- **Dati**: lettura e scrittura con la Local API **con la sessione dell'utente** (`overrideAccess: false`); la guardia è `canAccessSection(user, section)`.
+
+## Componenti di composizione (`components/app/`)
+
+Servono quando uno stesso insieme di componenti si ripete (colonna dell'elenco, riga di prenotazione, modulo, barra di salvataggio, ...).
+- Sono costruiti **solo** con componenti di `components/ui` e classi di layout (flex, gap, spaziatura, tipografia) con token; stessi divieti di R1–R8.
+- Si dichiarano nella sezione «Componenti di composizione» della specifica e si usano solo se elencati. Uno non elencato: fermarsi e chiedere.
+- Ricevono i dati come proprietà tipizzate; il caricamento dei dati sta nella pagina (server component).
+- La barra di salvataggio è uno **slot della shell fuori dal contenitore con il padding** (non si aggancia dentro); la sua posizione è in D7.
+
+## Componente mancante: fermarsi e chiedere
+
+Se serve un componente che non c'è in `components/ui`, o un comportamento che i componenti installati non offrono:
+1. **Non** scrivere un componente a mano, **non** usare un elemento nativo, **non** importare una libreria UI.
+2. Fermarsi e riportare: il nome del componente, in quale schermata e per che cosa serve, e dove la specifica o il mockup lo mostrano.
+3. Si decide fuori da questa chat (design): si installa da shadcn con le sue deviazioni, oppure si aggiorna la specifica.
+
+## `components/ui` e registro delle deviazioni
+
+- I componenti si installano con la CLI già presente nel progetto, `pnpm exec shadcn add <nome>` (versione fissata in `package.json`; non `@latest`; stile `base-nova`, `components.json`), **seguendo `docs/design/installazione-componenti-ui.md`**: si installano solo i componenti che servono alla sottofase in corso; subito dopo l'installazione si applicano le deviazioni D6 del registro, poi si lancia `pnpm ui:check`. Le librerie che la CLI aggiunge (per esempio `@base-ui/react`) si fissano a versione esatta e si elencano nel CHANGELOG, come in 8.1.
+- Reinstallare o aggiornare un componente **sovrascrive** le deviazioni: dopo ogni `shadcn add` o aggiornamento, ripetere il controllo.
+- Non si modifica un file di `components/ui` per un'esigenza di una singola schermata. Una nuova deviazione si propone (nome del componente, classi, motivo) e, se approvata, si aggiunge al registro e al controllo di `ui:check`.
+
+## Verifica
+
+- `pnpm ui:check` fallisce (uscita 1) su R1–R10, sulle deviazioni D6 mancanti nei componenti installati (D6) e su `app-ui.css` non allineato (C1, C2).
+- Il confronto visivo con il mockup lo fa la chat di design, sugli screenshot consegnati: i rilievi sono etichettati **P** (da correggere prima della fase successiva) e **A** (non bloccanti). Su telefono il confronto è sulle misure geometriche, non sulla differenza di pixel.
