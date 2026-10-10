@@ -1,12 +1,12 @@
 # Piatti, elenco e modulo — specifica di schermata (`/app/menu`, voce Piatti)
 
-**Stato**: design chiuso il 2026-10-10 (gestione delle due lingue: alternativa B scelta da Mirko). Le assunzioni della sezione 10 sono **da confermare** prima di consegnare la schermata a Cursor.
+**Stato**: chiusa il 2026-10-10. Gestione delle due lingue: alternativa B scelta da Mirko. Le scelte della sezione 10 sono state confermate da Mirko lo stesso giorno (l'ordine è per nome, corretto dopo la verifica di `ADR-112`).
 
 **Si implementa in**: `fase-6` sottofase 6.6 (backoffice «Menù»; non ancora nel repo). Dipende da 8.2 (shell), 8.3 (guardia), 6.2 (collection `dishes`), 6.4 (disponibilità) e 6.5 (ricompilazione).
 
 **Riferimenti**: `docs/design/decisioni-layout-app.md` (D1–D10), `fase-6-menu-digitale.md` §§6.1, 6.2, 6.4, 6.5, 6.6, `ADR-108`, `ADR-112`, `ADR-113`, `riepilogo-sessione-varianti-porzione-piatto.md` (il piatto non ha varianti: la quantità vive nella composizione del menu fisso).
 
-**File del pacchetto** (stessa cartella): `mockup.html` (mockup statico annotato) e screenshot di riferimento. Stato iniziale: `390-chiaro.png`, `390-scuro.png`, `1280-chiaro.png`, `1280-scuro.png` (pagina intera). Telefono: `390-filtri-chiaro.png`, `390-filtri-attivi-chiaro.png`, `390-modulo-chiaro.png`, `390-modulo-inglese-aperto-chiaro.png`, `390-modulo-allergeni-chiaro.png`, `390-modulo-fondo-chiaro.png`, `390-nuovo-chiaro.png`, `390-nuovo-errori-chiaro.png`, `390-terminato-chiaro.png`, `390-menu-azioni-chiaro.png`, `390-ricompila-chiaro.png`, `390-ricompila-avviata-chiaro.png`, `390-ricompilazione-in-corso-chiaro.png`, `390-caricamento-chiaro.png`, `390-errore-caricamento-chiaro.png`, `390-vuoto-chiaro.png`, `390-nessun-risultato-chiaro.png`, `390-errore-azione-chiaro.png`. Notebook: `1280-modulo-chiaro.png`, `1280-menu-azioni-chiaro.png`. Il mockup usa `../../assets/mockup.css` e il font `../../assets/Geist-Variable.woff2`.
+**File del pacchetto** (stessa cartella): `mockup.html` (mockup statico annotato) e screenshot di riferimento. Stato iniziale: `390-chiaro.png`, `390-scuro.png`, `1280-chiaro.png`, `1280-scuro.png` (pagina intera). Telefono: `390-filtri-chiaro.png`, `390-filtri-attivi-chiaro.png`, `390-modulo-chiaro.png`, `390-modulo-inglese-aperto-chiaro.png`, `390-modulo-allergeni-chiaro.png`, `390-modulo-fondo-chiaro.png`, `390-nuovo-chiaro.png`, `390-nuovo-errori-chiaro.png`, `390-terminato-chiaro.png`, `390-menu-azioni-chiaro.png`, `390-ricompila-chiaro.png`, `390-ricompila-avviata-chiaro.png`, `390-ricompilazione-in-corso-chiaro.png`, `390-piu-di-100-piatti-chiaro.png`, `390-caricamento-chiaro.png`, `390-errore-caricamento-chiaro.png`, `390-vuoto-chiaro.png`, `390-nessun-risultato-chiaro.png`, `390-errore-azione-chiaro.png`. Notebook: `1280-modulo-chiaro.png`, `1280-menu-azioni-chiaro.png`. Il mockup usa `../../assets/mockup.css` e il font `../../assets/Geist-Variable.woff2`.
 
 ---
 
@@ -34,8 +34,9 @@ Collection `dishes` (`fase-6` §6.2), con la Local API **con la sessione dell'ut
 | Disabilitato | `disabled` | Assenza a tempo indefinito |
 
 **Interrogazioni**
-- Elenco: tutti i piatti, disabilitati compresi, raggruppati per categoria. Ricerca sul nome (italiano e inglese). Filtri: categoria, stato (Disponibili, Terminati, Disabilitati), «Senza allergeni dichiarati» (nessun allergene selezionato: aiuta la revisione di 6.8, non è una validazione).
-- Stato mostrato: **Disabilitato** se `disabled`, altrimenti **Terminato** se `soldOut`, altrimenti **Disponibile**.
+- Elenco: tutti i piatti, disabilitati compresi, raggruppati per categoria. **Ordine: per nome**, sia le categorie sia i piatti dentro ciascuna (come il contratto del menù pubblico, `ADR-112` §1: «per nome, come oggi, salvo un campo esplicito introdotto in seguito»); se un giorno esiste un campo di ordinamento, l'elenco lo segue. Quali categorie compaiono in quale pagina del menù pubblico è configurazione del frontend (`ADR-112` §2): il backoffice non la mostra. Ricerca sul nome (italiano e inglese).
+- **Ricerca, filtri e ordine si applicano nella richiesta** (condizione `where` e `sort` della Local API), non nel browser dopo aver letto tutto. Così l'eventuale paginazione futura (sezione 10) non cambia la schermata. La richiesta usa `limit=100`, come il contratto di `ADR-112` (oggi i piatti sono 44). Filtri: categoria, stato (Disponibili, Terminati, Disabilitati), «Senza allergeni dichiarati» (nessun allergene selezionato: aiuta la revisione di 6.8, non è una validazione).
+- Stato mostrato: **Disabilitato** se `disabled`, altrimenti **Terminato** se `soldOut`, altrimenti **Disponibile**. Entrambi valgono **ovunque** il piatto compare, menù fissi compresi (un solo piatto, un solo stato: `ADR-108` §4).
 
 **Effetti sul menù pubblico**
 - «Terminato» e abilita/disabilita riscrivono `disponibilita.json` (6.4) e compaiono entro pochi secondi, senza ricompilazione.
@@ -59,7 +60,7 @@ Ricavato dal mockup annotato (`Componente (variante, dimensione)`).
 | (stato) modulo | Nuovo piatto e modifica | `Sheet`, `FieldGroup`, `Field`, `Input`, `Textarea`, `Collapsible` (traduzione), `Badge (outline)`, `Select`, `FieldSet` + `ToggleGroup (outline, multiple)` (allergeni), `Checkbox` ×4 (caratteristiche), `Switch` ×2 (disponibilità), `FieldError`, `Button (lg)` Salva e Annulla |
 | (stato) ricompila | Conferma della ricompilazione | `AlertDialog`, `Button (default)`, `Spinner` |
 | (stato) caricamento | Quattro blocchi | `Skeleton` |
-| (stato) avvisi | Esito, errore di caricamento, errore dell'azione | `Alert (default | destructive)`, `AlertTitle`, `AlertDescription` |
+| (stato) avvisi | Esito, elenco parziale, errore di caricamento, errore dell'azione | `Alert (default | destructive)`, `AlertTitle`, `AlertDescription` |
 
 La shell (barra laterale, menu utente, tema) è quella di D1–D4 e non fa parte di questa specifica.
 
@@ -94,6 +95,7 @@ Nessuno scorrimento orizzontale a 360, 390 e 1280 px. Le barre agganciate richie
 | Errori del modulo | Messaggi sotto i campi; il primo campo non valido ha il focus | `390-nuovo-errori-chiaro.png` |
 | Ricompila | Conferma con la spiegazione; poi avviso «Ricompilazione avviata» o «già in corso» | `390-ricompila-chiaro.png`, `390-ricompila-avviata-chiaro.png`, `390-ricompilazione-in-corso-chiaro.png` |
 | Errore dell'azione | Avviso rosso nel foglio che l'ha avviata; nulla cambia | `390-errore-azione-chiaro.png` |
+| Più di 100 piatti | Avviso in testa all'elenco: «Mostrati 100 piatti su 137» e come restringere | `390-piu-di-100-piatti-chiaro.png` |
 | Caricamento | Quattro blocchi `Skeleton` | `390-caricamento-chiaro.png` |
 | Errore di caricamento | Solo avviso rosso con «Riprova» | `390-errore-caricamento-chiaro.png` |
 | Nessun piatto | Messaggio e «Nuovo piatto» | `390-vuoto-chiaro.png` |
@@ -117,8 +119,9 @@ Tutti in italiano; `{…}` sono dinamici.
 | Avvisi di salvataggio | Piatto aggiunto · Piatto salvato / «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».» |
 | Conferma ricompila | Ricompilare il menù pubblico? / La pubblicazione richiede alcuni minuti. Serve per vedere piatti nuovi e modifiche ai contenuti, ai servizi, agli orari, alle chiusure e ai giorni speciali. «Terminato» e «disabilitato» valgono già. / Indietro, Ricompila |
 | Esito ricompila | Ricompilazione avviata / Il menù pubblico si aggiorna tra alcuni minuti. · Una ricompilazione è già in corso / Attendi che finisca prima di avviarne un'altra. |
-| Modulo | Nuovo piatto («Il piatto compare nel menù pubblico dopo la ricompilazione.») · Modifica piatto («{nome}») · Nome, Descrizione · «Traduzione inglese (facoltativa)» con «Manca» o «Presente» · Name, Description · «Facoltativa. Se resta vuota, il menù mostra il testo italiano.» · Prezzo (€), Categoria (segnaposto «Scegli») · Allergeni «Seleziona quelli presenti nel piatto.» + « Selezionati: {n}.» · Caratteristiche: Senza glutine, Senza latticini, Vegano, Senza uova · Disponibilità: «Terminato per il servizio» («Temporaneo: si azzera da solo al cambio di servizio.»), «Disabilitato» («Assente a tempo indefinito: il piatto non compare nel menù.») · Salva («Salvataggio…»), Annulla |
+| Modulo | Nuovo piatto («Il piatto compare nel menù pubblico dopo la ricompilazione.») · Modifica piatto («{nome}») · Nome, Descrizione · «Traduzione inglese (facoltativa)» con «Manca» o «Presente» · Name, Description · «Facoltativa. Se resta vuota, il menù mostra il testo italiano.» · Prezzo (€), Categoria (segnaposto «Scegli») · Allergeni «Seleziona quelli presenti nel piatto.» + « Selezionati: {n}.» · Caratteristiche: Senza glutine, Senza latticini, Vegano, Senza uova · Disponibilità: «Terminato per il servizio» («Temporaneo: si azzera da solo tra la fine di questo servizio e l’inizio del successivo.»), «Disabilitato» («Assente a tempo indefinito: il piatto non compare nel menù.») · Salva («Salvataggio…»), Annulla |
 | Errori del modulo | Campo obbligatorio. · Inserisci un prezzo valido (es. 9,50). · Scegli una categoria. |
+| Elenco parziale | Mostrati 100 piatti su {totale} / Restringi l’elenco con la ricerca o i filtri per trovare gli altri. |
 | Errore dell'azione | Operazione non riuscita / Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore. |
 | Errore di caricamento | Impossibile caricare i piatti / Riprova tra qualche istante; se il problema continua, avvisa l’amministratore. / Riprova |
 | Vuoti | Nessun piatto nel menù. (+ «Nuovo piatto») · Nessun risultato con questi filtri. (+ «Azzera filtri») |
@@ -138,7 +141,10 @@ Tutti in italiano; `{…}` sono dinamici.
 9. **Ricompila il menù pubblico**: apre la conferma; «Ricompila» avvia la pubblicazione. Un secondo avvio ravvicinato viene ignorato con il messaggio «già in corso» (`fase-6` §6.5). L'esito della pubblicazione non si mostra qui (6.5).
 10. **Filtri e ricerca**: come nelle altre liste (D5): foglio con Applica e Azzera, etichette rimovibili, numero sul pulsante. I gruppi senza righe non compaiono.
 11. **Foglio con modulo lungo**: i pulsanti Salva e Annulla restano agganciati in fondo mentre il contenuto scorre.
-12. **Tema e tocco**: come D4 e D6.
+12. **Elenco parziale**: se il totale supera il limite della richiesta, compare l'avviso in testa all'elenco (mai troncare in silenzio). Finché non c'è la paginazione, si trovano gli altri piatti con ricerca e filtri.
+13. **Ordine**: categorie e piatti per nome, senza distinzione tra maiuscole e minuscole e con le regole dell'italiano.
+14. **Piatto disabilitato**: è disabilitato ovunque, anche dentro i menù fissi; nella schermata dei menù fissi la riga di quel piatto mostrerà che è disabilitato (da disegnare con quella schermata).
+15. **Tema e tocco**: come D4 e D6.
 
 ## 8. Componenti da installare e da comporre
 
@@ -167,20 +173,27 @@ Si verifica con Playwright (viewport e, per il tocco, `is_mobile` e `has_touch`)
 15. **Temi**: chiaro, scuro e Sistema.
 16. **Accesso**: `canAccessSection(user, 'menu')` falsa → sezione non raggiungibile dall'URL.
 17. **`pnpm ui:check`** passa.
-18. **Confronto visivo** con i PNG di riferimento a 390 e 1280 px, in tema chiaro e scuro: rilievi etichettati P e A.
+18. **Ordine e interrogazione**: categorie e piatti per nome; ricerca, filtri e ordine arrivano dalla richiesta (non dal browser): con 101 piatti nel database la richiesta restituisce 100 e l'avviso «Mostrati 100 piatti su 101» compare.
+19. **Disabilitato ovunque**: un piatto disabilitato non compare nel menù pubblico né alla carta né dentro un menu fisso (prova con il frontend di prova della 6.5).
+20. **Confronto visivo** con i PNG di riferimento a 390 e 1280 px, in tema chiaro e scuro: rilievi etichettati P e A.
 
-## 10. Assunzioni da confermare e punti aperti
+## 10. Scelte confermate e debiti
 
-**Assunzioni** (il design le usa; vanno confermate):
+**Scelte confermate da Mirko il 2026-10-10**
 
-- **Raggruppamento per categoria** con intestazioni, e **ordine dei piatti** nel gruppo uguale a quello dell'inserimento. L'ordine di visualizzazione sul menù pubblico non è stato letto in questa sessione (`ADR-108`): se serve un ordine alfabetico o manuale, l'elenco lo segue.
+- **Ordine**: per nome (categorie e piatti), come il menù pubblico (`ADR-112` §1). L'assunzione iniziale «ordine di inserimento» era sbagliata ed è stata sostituita dopo la verifica degli ADR.
 - **Ricerca** sul nome italiano e inglese.
-- **Azioni rapide dall'elenco**: due, «Terminato» (interruttore) e «Disabilita/Abilita» (menu «⋯»); tutto il resto passa dal modulo.
-- **Il testo del reset** («si azzera da solo al cambio di servizio») è provvisorio: il momento del «confine» (a fine servizio o all'inizio del successivo) è una decisione ancora aperta in 6.4.
-- **Le stesse alternative** (due lingue, foglio, filtri) valgono per vini, bevande e menù fissi; ogni voce avrà la sua schermata.
+- **Reset di «terminato»**: «terminato» vale per il servizio in cui è stato segnato e si azzera tra la fine di quel servizio e l'inizio del successivo. Il testo del modulo dice proprio questo. Resta alla 6.4 il momento esatto nel mezzo (a fine servizio o poco prima dell'inizio del successivo) e che cosa succede se lo si segna fuori da un servizio (per esempio la mattina prima dell'apertura).
+- **Piatto disabilitato**: è disabilitato ovunque, menù fissi compresi; lo stesso vale per «terminato».
+- **«Tris di nem»** (un mix di tre tipi): è un piatto a sé, non una porzione. La quantità di un piatto base dentro un menu fisso resta `portion`.
+- **`soloMenuFissi`**: non si aggiunge ora (vedi i debiti).
 
-**Da decidere o verificare**
-- **Molti piatti**: l'elenco legge fino a 100 voci per richiesta (`limit=100` in `fase-6` §6.2); con più piatti serve la paginazione o il caricamento progressivo. Non progettato.
-- **Piatto referenziato da un menu fisso** e disabilitato: comportamento nei menù fissi da definire con quella schermata.
+**Debiti futuri, da tenere in conto perché l'aggiunta sia semplice**
+
+- **Paginazione oltre 100 piatti**: oggi i piatti sono 44 e `ADR-112` usa `limit=100` «finché non ci sono altre pagine». Per renderla semplice: ricerca, filtri e ordine stanno già nella richiesta (sezione 2), l'avviso di elenco parziale evita di troncare in silenzio, e il raggruppamento per categoria si calcola sui piatti letti. Quando servirà, si aggiunge un pulsante «Mostra altri piatti» in fondo all'elenco (stesso `Button` del progetto) che legge la pagina successiva; i totali per categoria e il resto della schermata restano uguali.
+- **`soloMenuFissi`** (piatto che esiste solo dentro un menu fisso e non va alla carta): una casella «solo per menu fisso», falsa per default, con una migrazione additiva e un filtro nell'elenco. Ha effetto solo quando il frontend pubblico (6.7, fuori perimetro) la legge; per questo si aggiunge insieme a quel bisogno. Il punto del modulo che la ospiterebbe è la sezione «Caratteristiche». Oggi non esiste alcun piatto con questa esigenza (le due varianti «2 Nem» non si importano).
+
+**Ancora aperti**
 - **Esito della ricompilazione**: la conferma di fine pubblicazione non è in 6.5; la schermata dice solo «avviata».
 - **Traduzioni**: se in futuro le lingue diventano più di due, il blocco «Traduzione inglese» va rivisto.
+- Le stesse alternative (due lingue, foglio, filtri) valgono per vini, bevande e menù fissi; ogni voce avrà la sua schermata.

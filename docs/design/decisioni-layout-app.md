@@ -141,6 +141,7 @@ Il salvataggio con barra unica (D7) vale per le **pagine-modulo** (Orari, impost
 - **Scorciatoie su notebook**: menu «⋯» di riga con le stesse azioni del dettaglio.
 - **Cose che richiedono attenzione** (es. prenotazioni da confermare) hanno una scheda propria con il conteggio e le azioni in vista, invece di restare sparse nell'elenco.
 - **Righe non attive** attenuate e escluse dai totali; **righe anonimizzate** con «Dati anonimizzati» in corsivo e senza azioni.
+- **Ordine delle liste**: per nome, come il contratto del menù pubblico (`ADR-112` §1), finché non esiste un campo di ordinamento esplicito; ricerca, filtri e ordine si applicano nella richiesta, non nel browser.
 - **Azioni rapide dall'elenco** (piatti: «Terminato» con un interruttore, abilita/disabilita dal menu «⋯»): un tocco, effetto immediato, avviso con il testo di che cosa succede sul menù pubblico.
 - **Foglio con modulo lungo**: i pulsanti restano agganciati in fondo (bordo superiore, sfondo pieno) e, se sono due, affiancati (77 px di altezza invece di 130). Vale per tutti i fogli (`SheetFooter`).
 - **Azione di pagina principale in alto su telefono**: nelle intestazioni con più pulsanti, «Nuovo …» sta sopra l'azione secondaria (su notebook l'azione principale è a destra).
@@ -187,14 +188,16 @@ Prototipo con i componenti reali, dati di esempio, le regole di `ADR-106` e `ADR
 
 ### Piatti (elenco e modulo)
 
-Prototipo con elenco per categoria, interruttore «Terminato», menu «⋯», filtri, modulo con traduzione a scomparsa, allergeni a scelta multipla, caratteristiche e disponibilità, ricompilazione del menù pubblico, e gli stati di caricamento, errore, vuoto e nessun risultato. Specifica e screenshot: `schermate/piatti/`. Il piatto non ha varianti (`riepilogo-sessione-varianti-porzione-piatto.md`): la quantità vive nella composizione del menu fisso.
+Prototipo con elenco per categoria (in ordine per nome), interruttore «Terminato», menu «⋯», filtri, modulo con traduzione a scomparsa, allergeni a scelta multipla, caratteristiche e disponibilità, ricompilazione del menù pubblico, e gli stati di caricamento, errore, vuoto e nessun risultato. Specifica e screenshot: `schermate/piatti/`. Il piatto non ha varianti (`riepilogo-sessione-varianti-porzione-piatto.md`): la quantità vive nella composizione del menu fisso.
 
 - **P4 — Due difetti reali nelle aree di tocco, trovati con una misura più severa**: la casella di spunta aveva un'area di 42 × 42 px, non 44 (l'estensione parte dal bordo interno e il bordo di 1 px per lato ne toglie due), e il collegamento corto della briciola di pane era largo 36 px. Corretti (`-inset-4` per la casella, `-inset-3.5` su tutti i lati per il collegamento; registro D6). La misura ora prova a 21,5 px dal centro nelle quattro direzioni, porta ogni elemento al centro dello schermo e salta quelli coperti dal velo.
 - **P5 — Pulsanti di un modulo lungo fuori vista**: nel modulo del piatto «Salva» era a oltre 1800 px da scorrere. Ora il footer del foglio è agganciato in fondo, per tutti i fogli (D9). Con i due pulsanti affiancati occupa 77 px invece di 130. Gli screenshot di Orari (foglio della chiusura) e di Prenotazioni (fogli) sono stati rigenerati.
 - **A14 — Stato «Disponibile»**: con quasi tutti i piatti disponibili, un badge scuro su ciascuno nascondeva le eccezioni. Ora Disponibile è un testo discreto (nessun badge su telefono) e il badge resta per Terminato e Disabilitato.
 - **A15 — Ordine dei pulsanti su telefono**: nell'intestazione, l'azione principale va sopra la secondaria. L'ordine visivo e quello della tastiera sono invertiti su telefono (accettato).
-- **A16 — Reset di «terminato»**: il testo «si azzera da solo al cambio di servizio» è provvisorio; il momento del confine è una decisione aperta in 6.4.
-- **A17 — Ordine nel gruppo, paginazione, piatti nei menù fissi disabilitati**: non definiti (sezione 10 della specifica).
+- **P6 — Assunzione sbagliata sull'ordine dell'elenco**: avevo scritto «ordine di inserimento» senza aver letto `ADR-112`, che prescrive l'ordine per nome (come il menù pubblico). Trovato rileggendo gli ADR su richiesta di Mirko e corretto: categorie e piatti per nome, e ricerca, filtri e ordine nella richiesta, non nel browser.
+- **A16 — Reset di «terminato»** (risolto): vale per il servizio in cui è segnato e si azzera tra la fine di quel servizio e l'inizio del successivo; il momento esatto e il caso «segnato fuori da un servizio» restano alla 6.4.
+- **A17 — Paginazione, piatto disabilitato nei menù fissi, `soloMenuFissi`** (risolti il 2026-10-10): la paginazione è un debito futuro (con la richiesta già predisposta e l'avviso «Mostrati 100 piatti su N» per non troncare in silenzio); un piatto disabilitato (e anche uno terminato) lo è ovunque; `soloMenuFissi` non si aggiunge ora.
+- **A18 — «Tris di nem»** (mix di tre tipi): è un piatto a sé; la quantità di un piatto base in un menu fisso resta `portion`.
 
 **Misure**: nessuno scorrimento orizzontale a 390 px; nessun elemento sotto 44 px in elenco, filtri, modulo, nuovo piatto e conferma; mockup statico identico al prototipo a 1280 px (0,0 % in chiaro e in scuro).
 
@@ -216,6 +219,8 @@ Prototipo con elenco per categoria, interruttore «Terminato», menu «⋯», fi
 - Se la scelta del tema debba valere per account invece che per dispositivo.
 - Componenti di composizione di progetto (P2) e loro elenco.
 - Come gestire il tema rispetto a `next-themes` e al `Toaster` (A6).
+- **Debito: paginazione delle liste oltre 100 voci** (oggi i piatti sono 44). Predisposta: ricerca, filtri e ordine nella richiesta, avviso di elenco parziale; da aggiungere «Mostra altri piatti» quando serve.
+- **Debito: casella «solo per menu fisso» sui piatti** (`soloMenuFissi`): migrazione additiva, da aggiungere quando il frontend pubblico la leggerà e se esisterà un piatto che non va alla carta.
 
 ## 7. Impatto sul piano
 
