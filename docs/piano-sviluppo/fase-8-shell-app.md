@@ -20,7 +20,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - **UI**: shadcn/ui (`ui_kit` in `piano.yaml`), mobile-first, interfaccia in italiano.
 - **Questa fase non costruisce** il contenuto delle sezioni Menù (6.6) e Prenotazioni (5.5), né i contenuti dei siti (CMS nell'Admin). Le chiusure per data (Eccezioni giorno, `ADR-107` §2) stanno in Prenotazioni, non in Orari.
 
-**Stato attuale del repo (verificato)**: esistono il layout `app/(app)/layout.tsx`, `/app` (placeholder della Fase 1), `/app/login`, `/app/login/verify`, `/forgot`, `/reset`. `canAccessSection` è uno stub che restituisce sempre `false` e nessuna route lo invoca. shadcn/ui non è installato. Versioni: Next 16.3.5, React 19.2.8, Tailwind `^4.3.3` con `@tailwindcss/postcss`; non esistono `components.json` né `tailwind.config`. `app/globals.css` è importato da `(app)` e da `(frontend)`, non da `(payload)`.
+**Stato attuale del repo (verificato)**: esistono il layout `app/(app)/layout.tsx`, `/app` (placeholder della Fase 1), `/app/login`, `/app/login/verify`, `/forgot`, `/reset`. `canAccessSection` implementato in 8.3 (ADR-113); le route App lo useranno in 8.2. shadcn/ui installato in 8.1. Versioni: Next 16.3.5, React 19.2.8, Tailwind `^4.3.3` con `@tailwindcss/postcss`; non esistono `components.json` né `tailwind.config`. `app/globals.css` è importato da `(app)` e da `(frontend)`, non da `(payload)`.
 
 ## Ordine di dipendenza reale
 
@@ -78,7 +78,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 8.3 — Ruoli e guardia di accesso
 
-**Stato**: 🔶 in corso (codice completo; in attesa di migrazione su Cloud SQL prod e prove SSO)
+**Stato**: ✅ fatto (2026-10-10)
 
 **Dipende da**: 8.1 (ordine di esecuzione: prima della 8.2).
 
@@ -120,11 +120,11 @@ if (
 **Non** adottare al suo posto: (a) solo una funzione `access.update` che legge `data` (non copre l'update in blocco); (b) nascondere `adminRole` nell'interfaccia (la REST resta aperta); (c) un `access.update` di campo riservato ai super-admin (troppo largo: impedirebbe all'admin anche le modifiche legittime tra `none` e `admin`).
 
 **Checklist di chiusura sottofase**:
-- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
+- [x] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (conferma umana 2026-10-10).
 - [x] Prova per ruolo: matrice pura `scripts/verify-roles-8_3-matrix.ts` (ADR-113); integrazione DB/REST in `scripts/verify-roles-8_3.ts` (super-admin, admin, manager CMS, manager App, promozione login locale).
 - [x] **Escalation a super-admin** (audit F1, `po-10`): un `admin` che imposta `adminRole: super-admin` su sé stesso o su un altro admin è rifiutato, via REST (anche `PATCH /api/users?where=…`) e via Local API con `overrideAccess: false`. L'8.3 non si chiude senza questa prova: la correzione arrivi o no dal template, il controllo di riferimento è il blocco «Controllo di F1» della voce 9.
 - [x] Utente con `active: false` e cookie ancora valido: `canAccessSection` falsa per le tre sezioni e 403 su ogni risorsa (helper `isActiveUser` della 7.0; audit F2).
-- [ ] Super-admin con `appRole: none`: login Google su `/app/login` → `/app`; `adminRole: manager` senza `appRole`: rifiutato con il messaggio generico (audit M3). Prerequisito: il dominio dell'utente di prova ha `allowApp` vero in «Identità autorizzate». **Azione umana (SSO reale).**
+- [x] Super-admin con `appRole: none`: login Google su `/app/login` → `/app`; `adminRole: manager` senza `appRole`: rifiutato con il messaggio generico (audit M3). Prerequisito: il dominio dell'utente di prova ha `allowApp` vero in «Identità autorizzate». Conferma umana login SSO 2026-10-10.
 - [x] Un utente con `adminRole` diverso da `none` e `hash`/`salt` residui (creato come utente App con login locale e poi promosso con `loginMethod: sso`) è rifiutato da `POST /api/users/login/app`, con `appRole: manager` e con `appRole: none`. Procedura sul database di sviluppo: (1) creare dall'Admin un utente `adminRole: none`, `appRole: manager`, `loginMethod: local`, con password; (2) **verificare l'email** (link di attivazione, oppure in sviluppo `update users set email_verified = true where email = '…'`): senza, ogni login dell'App è rifiutato e la prova non dimostra nulla; (3) **controllo positivo**: `curl -i -X POST http://localhost:3000/api/users/login/app --data-urlencode 'email=…' --data-urlencode 'password=…'` risponde 302 a `/app`; (4) promuoverlo con `PATCH` (con il cookie di un admin o super-admin, per esempio la sessione dell'Admin) a `adminRole: admin` e `loginMethod: sso` (la password non viene toccata, `hash` e `salt` restano); (5) lo stesso `curl` ora risponde 302 a `/app/login?authFailed=1`, con `appRole: manager` e dopo averlo portato a `appRole: none`; (6) eliminare l'utente di prova (audit R1, S1).
 - [x] `canAccessSection` verificata per le tre sezioni (matrice); nessuna route la invoca ancora (8.2).
 - [x] Rifiuto di login locale per `adminRole: manager` verificato (`verify-roles-8_3.ts`).
