@@ -136,7 +136,7 @@ if (
 
 **Stato**: 🔲 da fare
 
-**Dipende da**: 8.1 e 8.3 (`arco-38`), e dal **pacchetto di design** della shell, dell'accesso e della home (`docs/design/schermate/…`, da produrre prima di iniziare: la 8.2 non parte senza specifica e mockup approvati).
+**Dipende da**: 8.1 e 8.3 (`arco-38`), e dal **pacchetto di design** della shell e della home (`docs/design/schermate/shell/`) e dell'accesso (`docs/design/schermate/accesso/`): la 8.2 non parte senza specifica e mockup approvati.
 
 **Obiettivo**: la shell dell'App: intestazione, navigazione per le tre sezioni, uscita, e `/app` come pagina iniziale al posto del placeholder della Fase 1.
 
@@ -146,7 +146,9 @@ if (
 3. **Collegamento a `/admin`**: voce «Vai all'Admin» nel menu utente, per chi supera `canAccessAdminPanel` (D3).
 4. In più: tema chiaro, scuro e sistema scelto per dispositivo, nel menu utente (D4); filtri delle liste a foglio su telefono (D5); aree di tocco da 44 px nei componenti (D6); pagine-modulo con barra di salvataggio e elenchi di record con azione immediata (D7, D9); larghezza delle colonne (D8); due lingue nei moduli (D10).
 
-**Da fare all'inizio della 8.2**: applicare la patch di `app/(app)/app-ui.css` (`docs/design/patch-app-ui-css.md`); installare i componenti come da `docs/design/installazione-componenti-ui.md`, con le deviazioni D6; aggiungere lo script `ui:check` (`scripts/ui-check.mjs`) a `package.json`; portare ai componenti shadcn la home e le quattro pagine di accesso (`/app/login`, `forgot`, `reset`, `verify`), oggi con colori della palette Tailwind e con la classe personalizzata del pulsante Google.
+**Da fare all'inizio della 8.2**: applicare la patch di `app/(app)/app-ui.css` (`docs/design/patch-app-ui-css.md`); installare i componenti come da `docs/design/installazione-componenti-ui.md`, con le deviazioni D6 e i testi in italiano (T1); portare ai componenti shadcn la home (`schermate/shell/spec.md`) e le quattro pagine di accesso (`/app/login`, `forgot`, `reset`, `verify`; `schermate/accesso/spec.md`), oggi con colori della palette Tailwind e con la classe personalizzata del pulsante Google, eliminando i quattro componenti di `components/auth/` dell'App e la classe da `app-ui.css`. La shell comprende anche l'**uscita («Esci»)**, che oggi non esiste nel repo, e una tabella di navigazione con le voci abilitate solo quando la loro schermata esiste.
+
+La shell non si applica alle pagine di accesso: stanno fuori dal suo layout (per esempio in un route group separato).
 
 **Comportamento**: le sezioni mostrate e le rotte `/app/menu`, `/app/hours`, `/app/reservations` passano da `canAccessSection`. Chi non è autenticato va a `/app/login`.
 
@@ -156,6 +158,8 @@ if (
 - [ ] Il login e il reset di `/app/login` non regrediscono.
 - [ ] Patch di `app-ui.css` applicata; `pnpm ui:check` senza errori (anche C2: la classe del pulsante Google è sparita con la migrazione dell'accesso).
 - [ ] Aree di tocco ≥ 44 px su telefono (misura sull'area cliccabile) e nessuno scorrimento orizzontale a 360, 390 e 1280 px.
+- [ ] «Esci» chiude la sessione e porta a `/app/login`; `/app/login/**` non ha barra laterale né barra in alto.
+- [ ] Testi in italiano anche per lo screen reader (T1): `pnpm ui:check` non li segnala.
 - [ ] Screenshot a 390 e 1280 px, in tema chiaro e scuro, consegnati per il confronto con il mockup (rilievi P e A).
 - [ ] CHANGELOG.
 

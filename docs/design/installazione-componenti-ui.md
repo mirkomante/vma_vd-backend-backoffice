@@ -48,6 +48,19 @@ Regola: **ogni elemento interattivo ha un'area di tocco di almeno 44 px sui disp
 | `sheet.tsx` | Il foglio scorre e non supera il 90 % dello schermo (dal basso); **il footer resta agganciato in fondo** | `bg-popover text-popover-foreground fixed z-50 flex flex-col gap-4` (SheetContent) | `… flex flex-col gap-4 overflow-y-auto data-[side=bottom]:max-h-[90svh]` |
 | | | `"gap-2 p-4 mt-auto flex flex-col"` (SheetFooter) | `"gap-2 p-4 mt-auto flex flex-col sticky bottom-0 border-t bg-popover"` |
 
+**Testi in italiano (T1)**: i componenti hanno testi di default in inglese per lo screen reader. Applicarli subito dopo l'installazione, insieme alle deviazioni D6; `pnpm ui:check` segnala quelli rimasti.
+
+| File | Cerca | Sostituisci con |
+|---|---|---|
+| `sidebar.tsx` | `<SheetTitle>Sidebar</SheetTitle>` | `<SheetTitle>Menu</SheetTitle>` |
+| | `Displays the mobile sidebar.` | `Menu di navigazione dell’Area App.` |
+| | `Toggle Sidebar` (nel pulsante, nel margine `aria-label` e `title`) | `Apri o chiudi il menu` |
+| `sheet.tsx` | `<span className="sr-only">Close</span>` | `<span className="sr-only">Chiudi</span>` |
+| `breadcrumb.tsx` | `aria-label="breadcrumb"` | `aria-label="Percorso"` |
+| | `<span className="sr-only">More</span>` | `<span className="sr-only">Altro</span>` |
+
+Se si installano altri componenti con testi in inglese (per esempio paginazione o calendario), si traducono nello stesso modo e si aggiungono qui e a `scripts/ui-check.mjs`.
+
 Componenti non ancora adattati perché non usati nelle schermate disegnate: `radio-group`, `calendar`, `pagination`, e i collegamenti dentro il testo. Se servono, si adattano nello stesso passo in cui si installano e si aggiungono qui e in `scripts/ui-check.mjs`.
 
 ## 4. Dopo l'installazione

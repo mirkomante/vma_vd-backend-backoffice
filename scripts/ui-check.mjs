@@ -5,7 +5,7 @@
  *
  * Controlla:
  *  - le schermate (`app/(app)/**`) e i componenti di composizione (`components/app/**`);
- *  - le deviazioni delle dimensioni di tocco nei file di `components/ui` (D6 di docs/design/decisioni-layout-app.md);
+ *  - le deviazioni delle dimensioni di tocco (D6) e dei testi in italiano (T1) nei file di `components/ui` (docs/design/decisioni-layout-app.md);
  *  - `app/(app)/app-ui.css` (patch di docs/design/patch-app-ui-css.md).
  *
  * Eccezione puntuale: un commento `ui-check-allow: <motivo>` sulla riga o sulla riga precedente.
@@ -91,6 +91,17 @@ const UI_MARKERS = [
   ['switch.tsx', /pointer-coarse:after:-inset-y-3\.5/g, 1, 'Switch: area di tocco'],
 ]
 
+/** Testi di default in inglese dei componenti shadcn: l'interfaccia è solo in italiano (anche per lo screen reader). */
+const UI_ENGLISH = [
+  [/Toggle Sidebar/, '«Toggle Sidebar» → «Apri o chiudi il menu»'],
+  [/Displays the mobile sidebar/, '«Displays the mobile sidebar.» → «Menu di navigazione dell’Area App.»'],
+  [/<SheetTitle>Sidebar<\/SheetTitle>/, '«Sidebar» → «Menu»'],
+  [/<span className="sr-only">Close<\/span>/, '«Close» → «Chiudi»'],
+  [/aria-label="breadcrumb"/, '«breadcrumb» → «Percorso»'],
+  [/<span className="sr-only">More<\/span>/, '«More» → «Altro»'],
+  [/sr-only">(?:Previous|Next)(?: page)?<\/span>/, '«Previous» e «Next» → «Precedente» e «Successivo»'],
+]
+
 const problems = []
 const allows = []
 const add = (file, line, id, name, detail) => problems.push({ file, line, id, name, detail })
@@ -151,6 +162,15 @@ for (const [name, rx, min, label] of UI_MARKERS) {
   if (!existsSync(p)) continue
   const n = (readFileSync(p, 'utf8').match(rx) ?? []).length
   if (n < min) add(`${UI_DIR}/${name}`, 1, 'D6', 'deviazione D6 mancante', `${label} (trovate ${n}, attese almeno ${min}); vedi docs/design/installazione-componenti-ui.md`)
+}
+
+/* 2-bis. Testi in inglese nei componenti installati (T1) */
+for (const file of walk(join(ROOT, UI_DIR))) {
+  if (!file.endsWith('.tsx')) continue
+  const lines = readFileSync(file, 'utf8').split('\n')
+  lines.forEach((line, i) => {
+    for (const [rx, hint] of UI_ENGLISH) if (rx.test(line)) add(rel(file), i + 1, 'T1', 'testo in inglese in un componente', `${hint}; vedi docs/design/installazione-componenti-ui.md`)
+  })
 }
 
 /* 3. app-ui.css */

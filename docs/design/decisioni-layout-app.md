@@ -59,7 +59,7 @@ Una scheda per ogni sezione consentita (Prenotazioni, Menù, Orari): icona, tito
 
 ### D3 — Collegamento a `/admin`
 
-Voce **«Vai all'Admin»** nel menu utente (quello che si apre dal nome in fondo alla barra), con icona di collegamento esterno. Visibile solo se `canAccessAdminPanel(user)`. Motivo: l'Admin è pensato soprattutto per l'uso da web e i contenuti dei siti, dopo l'inserimento iniziale, si aggiornano di rado.
+Voce **«Vai all'Admin»** nel menu utente (quello che si apre dal blocco con l'email in fondo alla barra), con icona di collegamento esterno. Visibile solo se `canAccessAdminPanel(user)`. Motivo: l'Admin è pensato soprattutto per l'uso da web e i contenuti dei siti, dopo l'inserimento iniziale, si aggiornano di rado.
 
 ### D4 — Tema chiaro, scuro, sistema
 
@@ -104,6 +104,7 @@ Ogni elemento interattivo ha un'area di tocco di almeno **44 × 44 px** sui disp
 | `breadcrumb` | `BreadcrumbLink`: area di tocco estesa (`pointer-coarse:relative pointer-coarse:after:absolute pointer-coarse:after:-inset-3.5`) | D6 (il collegamento era alto 20 px e, se corto, largo 36) |
 | `sheet` | Contenuto: `overflow-y-auto` e `data-[side=bottom]:max-h-[90svh]`. `SheetFooter`: `sticky bottom-0 border-t bg-popover` | I moduli più alti dello schermo scorrono e i pulsanti restano in vista |
 | `checkbox` | `relative` e `pointer-coarse:after:absolute pointer-coarse:after:-inset-4` | D6: casella da 16 px con area di tocco da 46 px (l'estensione parte dal bordo interno: `-inset-3.5` dava solo 42 px) |
+| `sidebar`, `sheet`, `breadcrumb` (testi) | Testi per lo screen reader in italiano (T1): «Toggle Sidebar» → «Apri o chiudi il menu» (pulsante e margine), «Sidebar» → «Menu», «Displays the mobile sidebar.» → «Menu di navigazione dell’Area App.», «Close» → «Chiudi», `aria-label="breadcrumb"` → «Percorso», «More» → «Altro» | L'interfaccia è solo in italiano, anche per lo screen reader; `ui:check` segnala i testi inglesi (T1) |
 | `switch` | `pointer-coarse:after:-inset-y-3.5` (si aggiunge a `after:-inset-x-3 after:-inset-y-2`) | D6: area di tocco da 54 × 44 px |
 
 Non ancora adattati perché non usati finora: radio, calendario, paginazione, link nel testo. Si adattano nello stesso passo in cui si installano.
@@ -149,6 +150,14 @@ Il salvataggio con barra unica (D7) vale per le **pagine-modulo** (Orari, impost
 ### D10 — Due lingue nei moduli: italiano sempre in vista, inglese a scomparsa
 
 Per i campi localizzati (oggi nome e descrizione dei piatti; poi vini, bevande, menù fissi) il modulo mostra sempre i campi italiani, obbligatori; sotto, una riga «Traduzione inglese (facoltativa)» con un badge «Manca» o «Presente» che si apre per scrivere in inglese. Si apre da sola se la traduzione esiste. Se l'inglese resta vuoto, il menù pubblico usa l'italiano (ripiego di `fase-6` §6.6). Scelta di Mirko tra tre alternative (schede, inglese a scomparsa, tutti i campi in vista).
+
+### D11 — Pagine di accesso
+
+Le quattro pagine (`login`, `forgot`, `reset`, `verify`) restano **fuori dalla shell** e non cambiano flussi, rotte, campi né messaggi (invariante dell'autenticazione). Disegno: colonna centrata larga al massimo `max-w-sm`; sopra, un quadrato con l'icona dell'App, il titolo e la descrizione; una scheda con avvisi e modulo; sotto, i collegamenti sottolineati. **«Accedi con Google» è il pulsante principale** (Google è l'accesso principale; l'accesso con email e password potrà essere tolto in futuro) e «Accedi» con email il secondario. I moduli restano form nativi con POST (nessuno stato «invio in corso»). I messaggi sono le costanti di `lib/auth/**`. Il tema segue la scelta del dispositivo anche qui. Specifica in `schermate/accesso/`.
+
+### D12 — Utente e ruolo nella shell
+
+L'utente nella barra laterale si mostra con l'**email** e le **iniziali** ricavate dall'email: la collection `users` non ha un campo nome. Il ruolo sta sotto «Area App» in cima alla barra: «Super-admin», «Admin» o «Manager» (con `adminRole` che prevale su `appRole`). Voci del menu non ancora abilitate (la cui schermata non esiste) non si mostrano. Specifica in `schermate/shell/`.
 
 ## 3. Prova su Orari (§8.5), 2026-10-10
 
@@ -201,6 +210,18 @@ Prototipo con elenco per categoria (in ordine per nome), interruttore «Terminat
 
 **Misure**: nessuno scorrimento orizzontale a 390 px; nessun elemento sotto 44 px in elenco, filtri, modulo, nuovo piatto e conferma; mockup statico identico al prototipo a 1280 px (0,0 % in chiaro e in scuro).
 
+### Shell, accesso e home (§8.2)
+
+Prototipo della shell (barra laterale, menu utente, tema), della home con e senza righe di stato e dello stato senza sezioni, e delle quattro pagine di accesso con tutti gli stati. Specifiche e screenshot: `schermate/shell/` e `schermate/accesso/`.
+
+- **P7 — Il blocco utente mostrava un nome che il dato non ha**: nei primi mockup il menu utente diceva «Marco Rossi», ma la collection `users` ha solo l'email (nessun campo nome, `collections/Users.ts`). Corretto in tutto il design (D12): email e iniziali dall'email. Per questo ho rigenerato mockup statici e screenshot di Orari, Prenotazioni e Piatti.
+- **P8 — Testi inglesi nei componenti**: shadcn contiene testi di default in inglese per lo screen reader («Toggle Sidebar», «Close», «breadcrumb», «More», il titolo del pannello «Sidebar»). Con l'interfaccia solo in italiano vanno tradotti: nuova deviazione T1 nel registro e controllo T1 in `ui:check`.
+- **A19 — Collegamenti non riconoscibili**: il `Button` di tipo link non è sottolineato finché non ci si passa sopra. Nelle pagine di accesso i collegamenti sono sottolineati sempre.
+- **A20 — «Esci» non esiste ancora nel repo**: il menu utente lo prevede; va implementato in 8.2 (strada proposta: logout REST di Payload da un modulo), verificando che chiuda anche la sessione dell'Admin.
+- **A21 — Voci del menu con schermata non ancora esistente**: nascoste finché la rotta non esiste (flag `enabled` nella tabella di navigazione), per non portare a un 404.
+- **Scelte confermate da Mirko il 2026-10-10** per shell e accesso: solo email e iniziali nel blocco utente con il ruolo sotto «Area App»; utente senza accesso all'App verso `/app/login?authFailed=1` e sezione non consentita verso `/app`; «Accedi con Google» principale e «Accedi» con email secondario, scheda centrata, collegamenti sottolineati; titolo «Area App» finché nessuna riga di stato è attiva; ordine delle schede Prenotazioni, Menù, Orari; voci non ancora abilitate nascoste.
+- **Verificato**: i marcatori D6 e T1 di `ui:check` passano sui venti componenti modificati del prototipo e falliscono su quelli stock; mockup statici identici ai prototipi a 1280 px (0,0 % in chiaro e in scuro) per tutte le sei schermate; nessuno scorrimento orizzontale e nessun elemento sotto 44 px nelle dieci pagine di accesso.
+
 ## 5. Verifiche tecniche fatte in questa sessione
 
 - Sorgenti dei componenti: repository `shadcn-ui/ui`, commit `2d3f1cd` (2026-10-09), cartelle `apps/v4/registry/bases/base/ui` e `styles/style-nova.css`. **`base-nova` poggia su `@base-ui/react`, non su Radix.** Le classi `cn-*` dei componenti si risolvono con `style-nova.css`: 422 blocchi, tutti `@apply` semplici.
@@ -221,6 +242,9 @@ Prototipo con elenco per categoria (in ordine per nome), interruttore «Terminat
 - Come gestire il tema rispetto a `next-themes` e al `Toaster` (A6).
 - **Debito: paginazione delle liste oltre 100 voci** (oggi i piatti sono 44). Predisposta: ricerca, filtri e ordine nella richiesta, avviso di elenco parziale; da aggiungere «Mostra altri piatti» quando serve.
 - **Debito: casella «solo per menu fisso» sui piatti** (`soloMenuFissi`): migrazione additiva, da aggiungere quando il frontend pubblico la leggerà e se esisterà un piatto che non va alla carta.
+- **Uscita («Esci»)** da implementare in 8.2, con la verifica sulla sessione dell'Admin.
+- **Utente già autenticato su `/app/login`**: oggi vede la pagina; si può reindirizzare a `/app`. Non deciso.
+- **Percorsi delle sottovoci del menu**: da fissare con le sottofasi 5.5 e 6.6.
 
 ## 7. Impatto sul piano
 
@@ -229,11 +253,10 @@ I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da 
 ## 8. Prossimi passi
 
 **Fatto il 2026-10-10**
-1. Prove su tre schermate, confezionate in `schermate/orari/`, `schermate/prenotazioni/` e `schermate/piatti/` (assunzioni di Piatti confermate).
-2. Mockup HTML finali annotati con `data-component`, `data-variant`, `data-size`.
-3. Regola UI di progetto `.cursor/rules/ui/01-ui-app-invarianti.mdc` (`stato: da validare`: si promuove al catalogo dopo le prime schermate implementate), `modello-specifica-schermata.md`, `scripts/ui-check.mjs` (`pnpm ui:check`), `patch-app-ui-css.md`, `installazione-componenti-ui.md`. §8.2 e §8.5 di `fase-8-shell-app.md` allineate.
+1. Prove su tre schermate, confezionate in `schermate/orari/`, `schermate/prenotazioni/` e `schermate/piatti/`.
+2. Regola UI di progetto `.cursor/rules/ui/01-ui-app-invarianti.mdc` (`stato: da validare`), `modello-specifica-schermata.md`, `scripts/ui-check.mjs`, `patch-app-ui-css.md`, `installazione-componenti-ui.md`.
+3. Pacchetti di **shell e home** (`schermate/shell/`) e di **accesso** (`schermate/accesso/`) per la 8.2.
 
 **Da fare**
-4. Pacchetto di design di **shell, accesso e home** (8.2): barra laterale e menu utente con tema e Admin, le quattro pagine di accesso (`login`, `forgot`, `reset`, `verify`), home «Oggi», stati vuoti (utente senza sezioni).
-5. Le altre schermate quando arriva la loro fase: Eccezioni giorno e Impostazioni (5.x); Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali e Messaggio globale (6.6).
-6. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi, con i controlli comuni del modello di specifica.
+4. Le altre schermate quando arriva la loro fase: Eccezioni giorno e Impostazioni (5.x); Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali e Messaggio globale (6.6).
+5. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi, con i controlli comuni del modello di specifica.
