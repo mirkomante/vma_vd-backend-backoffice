@@ -157,7 +157,7 @@ Le quattro pagine (`login`, `forgot`, `reset`, `verify`) restano **fuori dalla s
 
 ### D12 — Utente e ruolo nella shell
 
-L'utente nella barra laterale si mostra con l'**email** e le **iniziali** ricavate dall'email: la collection `users` non ha un campo nome. Il ruolo sta sotto «Area App» in cima alla barra: «Super-admin», «Admin» o «Manager» (con `adminRole` che prevale su `appRole`). Voci del menu non ancora abilitate (la cui schermata non esiste) non si mostrano. Specifica in `schermate/shell/`.
+L'utente nella barra laterale si mostra con l'**email** e le **iniziali** ricavate dall'email: la collection `users` non ha un campo nome. Il ruolo sta sotto «Area App» in cima alla barra: «Super-admin», «Admin» o «Manager» (con `adminRole` che prevale su `appRole`). Voci del menu non ancora abilitate (la cui pagina non esiste) non si mostrano: nella 8.2 sono tre (Piatti, Orari, Elenco), ciascuna con una pagina segnaposto. Specifica in `schermate/shell/`.
 
 ## 3. Prova su Orari (§8.5), 2026-10-10
 
@@ -220,6 +220,8 @@ Prototipo della shell (barra laterale, menu utente, tema), della home con e senz
 - **A20 — «Esci» non esiste ancora nel repo**: il menu utente lo prevede; va implementato in 8.2 (strada proposta: logout REST di Payload da un modulo), verificando che chiuda anche la sessione dell'Admin.
 - **A21 — Voci del menu con schermata non ancora esistente**: nascoste finché la rotta non esiste (flag `enabled` nella tabella di navigazione), per non portare a un 404.
 - **Scelte confermate da Mirko il 2026-10-10** per shell e accesso: solo email e iniziali nel blocco utente con il ruolo sotto «Area App»; utente senza accesso all'App verso `/app/login?authFailed=1` e sezione non consentita verso `/app`; «Accedi con Google» principale e «Accedi» con email secondario, scheda centrata, collegamenti sottolineati; titolo «Area App» finché nessuna riga di stato è attiva; ordine delle schede Prenotazioni, Menù, Orari; voci non ancora abilitate nascoste.
+- **P9 — Mancava la pagina segnaposto delle sezioni**: nella 8.2 nessuna schermata di sezione esiste, ma il piano prevede già le rotte `/app/menu`, `/app/hours`, `/app/reservations` protette da `canAccessSection`. Con la regola «le voci senza schermata sono nascoste» il menu della 8.2 sarebbe stato vuoto e la guardia per URL non verificabile. Trovato scrivendo il prompt per Cursor. Aggiunto lo stato «segnaposto» (titolo e «Questa sezione sarà disponibile a breve.») e, nella 8.2, un menu di tre voci. Rigenerati mockup statico e screenshot della shell.
+- **A22 — Descrizioni delle schede della home**: parlano anche di sottovoci non ancora abilitate; restano quelle definitive.
 - **Verificato**: i marcatori D6 e T1 di `ui:check` passano sui venti componenti modificati del prototipo e falliscono su quelli stock; mockup statici identici ai prototipi a 1280 px (0,0 % in chiaro e in scuro) per tutte le sei schermate; nessuno scorrimento orizzontale e nessun elemento sotto 44 px nelle dieci pagine di accesso.
 
 ## 5. Verifiche tecniche fatte in questa sessione

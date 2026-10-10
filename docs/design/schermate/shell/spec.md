@@ -6,7 +6,7 @@
 
 **Riferimenti**: `docs/design/decisioni-layout-app.md` (D1–D12), `ADR-102`, `ADR-113`, `lib/auth/userAccess.ts`, `lib/auth/canAccessSection.ts`, `fase-8-shell-app.md` §§8.2 e 8.3.
 
-**File del pacchetto** (stessa cartella): `mockup.html` (home senza righe di stato, come nella 8.2) e screenshot di riferimento. Stato iniziale: `390-chiaro.png`, `390-scuro.png`, `1280-chiaro.png`, `1280-scuro.png` (pagina intera). Home: `390-con-righe-di-stato-chiaro.png`, `1280-con-righe-di-stato-chiaro.png`, `390-vuota-chiaro.png`, `1280-vuota-chiaro.png`. Shell: `390-menu-aperto-chiaro.png`, `390-menu-utente-chiaro.png`, `1280-menu-utente-chiaro.png`, `1280-menu-utente-scuro.png`, `1280-menu-chiuso-chiaro.png`. Il mockup usa `../../assets/mockup.css` e il font `../../assets/Geist-Variable.woff2`.
+**File del pacchetto** (stessa cartella): `mockup.html` (home senza righe di stato, come nella 8.2, con il menu a tre voci) e screenshot di riferimento. Stato iniziale: `390-chiaro.png`, `390-scuro.png`, `1280-chiaro.png`, `1280-scuro.png` (pagina intera). Segnaposto: `390-segnaposto-chiaro.png`, `1280-segnaposto-chiaro.png`. Home con il menu completo (a regime): `390-con-righe-di-stato-chiaro.png`, `1280-con-righe-di-stato-chiaro.png`, `390-vuota-chiaro.png`, `1280-vuota-chiaro.png`. Shell: `390-menu-aperto-chiaro.png`, `390-menu-utente-chiaro.png`, `1280-menu-utente-chiaro.png`, `1280-menu-utente-scuro.png`, `1280-menu-chiuso-chiaro.png`. Il mockup usa `../../assets/mockup.css` e il font `../../assets/Geist-Variable.woff2`.
 
 ---
 
@@ -39,7 +39,8 @@ La shell è il contenitore comune di tutte le pagine dell'App dopo l'accesso: ba
 | Orari | Orari | `hours` |
 | Prenotazioni | Elenco, Eccezioni giorno, Impostazioni | `reservations` |
 
-- Un gruppo compare solo se l'utente ha la sezione. Una voce compare solo se è `enabled`: **finché la sua schermata non esiste, la voce non si mostra** (non deve portare a un 404). Si abilita nella sottofase della schermata (8.5 per Orari, 5.5, 6.6).
+- Un gruppo compare solo se l'utente ha la sezione. Una voce compare solo se è `enabled`: **finché la sua pagina non esiste, la voce non si mostra** (non deve portare a un 404). Si abilita nella sottofase della schermata (8.5 per Orari, 5.5, 6.6).
+- **Nella 8.2 sono abilitate tre voci**, quelle che portano alle rotte di sezione già previste dal piano: Menù › Piatti (`/app/menu`), Orari (`/app/hours`), Prenotazioni › Elenco (`/app/reservations`). Ciascuna apre una **pagina segnaposto** dentro la shell (sezione 5), che passa dalla guardia `canAccessSection` e viene sostituita dalla schermata vera nella sua sottofase. Vini, Bevande, Distillati, Menù fissi, Eccezioni giorno e Impostazioni restano nascoste. Così nella 8.2 la navigazione e la guardia per URL si possono verificare. Gli screenshot degli altri pacchetti (Orari, Prenotazioni, Piatti) mostrano il menu completo, quello a regime.
 - I percorsi delle sezioni sono `/app/menu`, `/app/hours`, `/app/reservations` (`fase-8` §8.2); quelli delle sottovoci li fissa la sottofase di ogni sezione.
 - **Uscita («Esci»)**: nel repo non esiste ancora un percorso di uscita per l'App. Vedi sezione 7, comportamento 8.
 
@@ -54,6 +55,7 @@ La shell è il contenitore comune di tutte le pagine dell'App dopo l'accesso: ba
 | Area contenuto | Colonna con il contenuto della pagina | `SidebarInset` |
 | `schede-sezioni` (home) | Una scheda per sezione consentita | `Card` dentro un collegamento (eccezione dichiarata, sezione 8) |
 | `scheda-<sezione>` | Icona, titolo, descrizione, riga di stato (facoltativa), freccia | `Card`, `CardContent` |
+| (stato) segnaposto | Titolo e descrizione della sezione, dentro la shell | testo (`h1`, `p`) |
 | (stato) home vuota | Messaggio per l'utente senza sezioni | testo in un riquadro tratteggiato |
 
 La scheda è un collegamento intero: un `a` che contiene la `Card` (eccezione dichiarata, sezione 8).
@@ -78,7 +80,8 @@ La scheda è un collegamento intero: un `a` che contiene la `Card` (eccezione di
 
 | Stato | Cosa si vede | Riferimento |
 |---|---|---|
-| Home senza righe di stato (**come nella 8.2**) | Titolo «Area App», «Scegli una sezione.», tre schede con titolo e descrizione | `*-chiaro.png`, `*-scuro.png`, `mockup.html` |
+| Home senza righe di stato (**come nella 8.2**) | Titolo «Area App», «Scegli una sezione.», tre schede con titolo e descrizione; menu con tre voci (Piatti, Orari, Elenco) | `*-chiaro.png`, `*-scuro.png`, `mockup.html` |
+| Segnaposto di sezione (8.2) | Titolo («Piatti», «Orari», «Prenotazioni»), «Questa sezione sarà disponibile a breve.», voce corrente evidenziata e percorso nella barra | `390-segnaposto-chiaro.png`, `1280-segnaposto-chiaro.png` |
 | Home con righe di stato | Titolo «Oggi», una riga di stato per sezione, solo per le righe attive | `390-con-righe-di-stato-chiaro.png`, `1280-con-righe-di-stato-chiaro.png` |
 | Home senza sezioni | Messaggio «Nessuna sezione disponibile» e il testo di assistenza; la barra non ha gruppi | `390-vuota-chiaro.png`, `1280-vuota-chiaro.png` |
 | Menu aperto (telefono) | Pannello con i gruppi, il blocco utente in fondo, velo sul resto | `390-menu-aperto-chiaro.png` |
@@ -102,6 +105,7 @@ Tutti in italiano.
 | Home (con righe) | Oggi / Situazione di oggi e accesso alle sezioni. |
 | Schede | Prenotazioni: «Elenco, eccezioni giorno, impostazioni» · Menù: «Piatti, vini, bevande, distillati, menù fissi» · Orari: «Ristorante, B&B, giorni di riposo, chiusure» |
 | Righe di stato (quando attive) | Prenotazioni: «Oggi {N} coperti · prossima alle {HH:mm}» (5.5) · Menù: «{N} piatti non disponibili» (6.6) · Orari: «Oggi: {HH:mm}–{HH:mm} e {HH:mm}–{HH:mm}» (8.5; mai «aperto» finché non esistono le Eccezioni giorno) |
+| Segnaposto di sezione | Titolo: Piatti · Orari · Prenotazioni (gli stessi delle schermate vere). Descrizione: Questa sezione sarà disponibile a breve. |
 | Home senza sezioni | Nessuna sezione disponibile / Il tuo account non ha accesso a nessuna sezione. Se ritieni di dover avere accesso, contatta l’amministratore. |
 | Titolo del documento | «Area App» nella home e «{Pagina} · Area App» nelle altre; descrizione «Backoffice operativo» (oggi «… placeholder Fase 1») |
 
@@ -117,7 +121,8 @@ Tutti in italiano.
 6. **Tema**: tre voci a scelta singola nel menu utente (Chiaro, Scuro, Sistema), predefinita Sistema; la scelta vale per il dispositivo (D4) e si applica **prima** del primo disegno della pagina (nessun lampo del tema sbagliato), anche nelle pagine di accesso. I controlli nativi del browser seguono il tema (`color-scheme`).
 7. **«Vai all'Admin»**: collegamento a `/admin` nella stessa scheda, per chi supera `canAccessAdminPanel`. Con modifiche non salvate in una pagina-modulo, come ogni altro collegamento fuori pagina, apre la conferma di uscita (specifica di Orari, comportamento 15).
 8. **«Esci»**: termina la sessione e porta a `/app/login`. **Non esiste ancora nel repo**: da implementare in 8.2. Strada proposta, da verificare: il logout REST di Payload (`POST /api/users/logout`, cookie `payload-token`) da un modulo, senza JavaScript. Va verificato che la sessione sia la stessa dell'Admin (uscendo dall'App si esce anche dall'Admin) e che il registro attività annoti `logout` come gli altri eventi (il tipo esiste nello schema).
-9. **Tastiera**: la scorciatoia di shadcn per aprire e chiudere la barra (Ctrl o Cmd + B) resta quella del componente; tutte le voci si raggiungono con Tab, con ordine uguale a quello visivo.
+9. **Segnaposto di sezione**: nella 8.2 le tre rotte `/app/menu`, `/app/hours`, `/app/reservations` mostrano il segnaposto dentro la shell, con la voce corrente evidenziata e il percorso («Menù › Piatti», «Orari», «Prenotazioni › Elenco»). Passano da `canAccessSection`: senza sezione portano a `/app`. Si sostituiscono con la schermata vera (8.5 per Orari, 5.5, 6.6) senza cambiare la rotta.
+10. **Tastiera**: la scorciatoia di shadcn per aprire e chiudere la barra (Ctrl o Cmd + B) resta quella del componente; tutte le voci si raggiungono con Tab, con ordine uguale a quello visivo.
 
 ## 8. Componenti da installare e da comporre
 
@@ -140,7 +145,8 @@ Valgono i **controlli comuni C1–C10** del modello di specifica (`modello-speci
 8. **Testi dei componenti**: i nomi accessibili sono in italiano («Apri o chiudi il menu», «Chiudi», «Percorso», «Menu»); `pnpm ui:check` non segnala testi in inglese.
 9. **Barra in alto agganciata**: dopo uno scorrimento di 600 px ha `top = 0`; lo slot della barra di salvataggio resta in fondo alla finestra (provato con la pagina Orari).
 10. **Uscita**: «Esci» chiude la sessione e porta a `/app/login`; dopo, `/app` porta di nuovo al login.
-11. **Accesso fuori dalla shell**: `/app/login` e le altre pagine di accesso non hanno barra laterale né barra in alto.
+11. **Segnaposto**: le tre rotte esistono e mostrano titolo e descrizione del segnaposto; con la guardia falsa portano a `/app` (provato con un utente di prova senza accesso); il menu della 8.2 ha esattamente tre voci.
+12. **Accesso fuori dalla shell**: `/app/login` e le altre pagine di accesso non hanno barra laterale né barra in alto.
 
 ## 10. Scelte confermate, assunzioni e debiti
 
@@ -153,6 +159,8 @@ Valgono i **controlli comuni C1–C10** del modello di specifica (`modello-speci
 - Home senza righe di stato nella 8.2, con il titolo «Area App»; «Oggi» solo quando almeno una riga è attiva.
 - Voci non ancora abilitate **nascoste** (non portano a un 404).
 - Ordine delle schede della home: Prenotazioni, Menù, Orari.
+
+**Nota sulle schede della home**: le descrizioni («Piatti, vini, bevande, distillati, menù fissi», ...) parlano anche di sottovoci non ancora abilitate; nella 8.2 il testo resta quello definitivo (rilievo non bloccante).
 
 **Da fare / da verificare in 8.2**
 - **Uscita («Esci»)** da implementare (sezione 7, comportamento 8).
