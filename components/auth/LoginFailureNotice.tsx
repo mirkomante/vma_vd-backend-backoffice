@@ -7,6 +7,7 @@ type LoginFailureNoticeProps = {
   searchParams?: Record<string, string | string[] | undefined>
 }
 
+/** Avviso generico di login fallito (Admin emergenza e altri flussi fuori dall’Area App). */
 export function LoginFailureNotice({ searchParams }: LoginFailureNoticeProps) {
   const raw = searchParams?.[AUTH_FAILURE_QUERY_PARAM]
   const failed = raw === '1' || raw === 'true' || (Array.isArray(raw) && raw.includes('1'))

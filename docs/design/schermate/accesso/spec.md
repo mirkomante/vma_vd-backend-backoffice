@@ -142,5 +142,6 @@ Valgono i controlli comuni **C1, C2, C3, C5, C6, C9, C10** del modello di specif
 - **Messaggi di validazione del browser** (campo vuoto, email non valida): nella lingua del browser. Personalizzarli richiederebbe JavaScript, in contrasto con i moduli nativi.
 
 **Debiti futuri**
+- **Checklist §9 completa (regressione accesso post-8.2)**: flussi reset/verify, confronto messaggi con `lib/auth/**`, reset senza token — accettato come debito alla chiusura 8.2 (2026-10-10); da eseguire prima di considerare l’accesso «chiuso» oltre la migrazione UI.
 - **Togliere l'accesso con email e password** (previsto da Mirko in futuro): nel login si tolgono il separatore «oppure», il modulo e il collegamento «Password dimenticata?»; le pagine `forgot`, `reset` e `verify` non servono più. Il blocco del modulo è già separato, quindi non cambia il resto della pagina.
 - Logo di Google sul pulsante; mostra password; limite di tentativi con messaggio dedicato.

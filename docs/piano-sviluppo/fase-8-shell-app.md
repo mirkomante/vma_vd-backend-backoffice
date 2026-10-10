@@ -154,16 +154,28 @@ La shell non si applica alle pagine di accesso: stanno fuori dal suo layout (per
 
 **Verifica umana dev (2026-10-10)** — checklist `schermate/shell/spec.md` §9: punti **1–8**, **10–12** OK (Google SSO, navigazione segnaposto, logout, accesso senza shell). Punto **9** (sticky dopo 600 px + slot save bar in fondo) rimandato: contenuto 8.2 troppo corto; save bar con Orari in 8.5. Punto **11** (redirect URL sezione negata): non provato — con ADR-113 non esiste un utente App autenticato senza tutte e tre le sezioni.
 
+**Accettazione parziale 8.2 (Mirko, 2026-10-10)**:
+1. **Ruoli e temi** (multi-ruolo, chiaro/scuro): accettati per chiusura 8.2; **riverifica** quando l’Area App sarà completa (matrice ruoli + temi su device reali).
+2. **Screenshot dev**: `docs/design/schermate/shell/verify-dev-20261010-390-home.png`, `verify-dev-20261010-390-sidebar-trigger.png`, `verify-dev-20261010-1280-sidebar-voce.png` (Safari responsive; confronto formale P/A con mockup opzionale).
+3. **Touch e larghezze** (360/390/1280): OK su campione ispezionato (schede home ~76 px; nessuno scroll orizzontale osservato).
+4. **Checklist accesso** (`schermate/accesso/spec.md` §9): **debito** — regressione completa reset/verify/messaggi da ripetere prima di considerare l’accesso «chiuso» (vedi §10 debiti sotto).
+
 **Checklist di chiusura sottofase**:
-- [ ] Navigazione e `/app` verificate su telefono e su desktop, per ogni ruolo, nei temi chiaro e scuro. *(verifica umana in dev, checklist `schermate/shell/spec.md` §9; parziale 2026-10-10: desktop, un ruolo, flussi principali)*
-- [ ] Una sezione non consentita non è raggiungibile nemmeno digitando l'URL.
-- [ ] Il login e il reset di `/app/login` non regrediscono. *(verifica umana in dev, checklist `schermate/accesso/spec.md` §9)*
+- [x] Navigazione e `/app` verificate su telefono e su desktop, per ogni ruolo, nei temi chiaro e scuro. *(accettazione parziale 2026-10-10; riverifica a fine percorso App)*
+- [ ] Una sezione non consentita non è raggiungibile nemmeno digitando l'URL. *(non testabile con ruoli attuali; vedi §9.11 shell)*
+- [ ] Il login e il reset di `/app/login` non regrediscono. *(debito: checklist accesso §9 completa)*
 - [x] Patch di `app-ui.css` applicata; `pnpm ui:check` senza errori (anche C2: la classe del pulsante Google è sparita con la migrazione dell'accesso).
-- [ ] Aree di tocco ≥ 44 px su telefono (misura sull'area cliccabile) e nessuno scorrimento orizzontale a 360, 390 e 1280 px. *(verifica umana)*
+- [x] Aree di tocco ≥ 44 px su telefono (misura sull'area cliccabile) e nessuno scorrimento orizzontale a 360, 390 e 1280 px. *(OK Mirko 2026-10-10; nota: voci sidebar desktop ~32 px altezza — D6 `pointer-coarse` su touch)*
 - [x] «Esci» implementato (`POST /app/logout` → `logoutOperation` Payload + cookie scaduto → `/app/login`); `/app/login/**` senza shell.
 - [x] Testi in italiano anche per lo screen reader (T1): `pnpm ui:check` non li segnala.
-- [ ] Screenshot a 390 e 1280 px, in tema chiaro e scuro, consegnati per il confronto con il mockup (rilievi P e A). *(azione umana)*
+- [x] Screenshot a 390 e 1280 px, in tema chiaro e scuro, consegnati per il confronto con il mockup (rilievi P e A). *(verify-dev-20261010-*; set completo chiaro/scuro opzionale)*
 - [x] CHANGELOG.
+
+**Debiti 8.2 (verifica)**:
+- Riverifica shell §9 multi-ruolo e temi a fine implementazione sezioni.
+- Checklist completa `schermate/accesso/spec.md` §9 (flussi reset/verify e messaggi vs `lib/auth/**`).
+- Redirect URL sezione non consentita (quando esiste un ruolo utile al test).
+- Shell §9.9 sticky + save bar con pagina Orari (8.5).
 
 ---
 
