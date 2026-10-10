@@ -100,9 +100,12 @@ Ogni elemento interattivo ha un'area di tocco di almeno **44 × 44 px** sui disp
 | `toggle` | Stato selezionato con `bg-primary text-primary-foreground` (anche in hover) al posto di `bg-muted` | Il grigio chiaro di shadcn non si distingue dal non selezionato (giorni di riposo) |
 | `sidebar` | `pointer-coarse:h-11` su `SidebarMenuButton` (`default`, `sm`), sulla sotto-voce e su `SidebarInput` | D6 |
 | `dropdown-menu` | `pointer-coarse:py-3` su voci, voci con spunta, voci radio e sotto-menu | D6 |
-| `tabs` | `pointer-coarse:group-data-horizontal/tabs:h-11` sulla lista | D6 |
+| `tabs` | Lista `pointer-coarse:group-data-horizontal/tabs:h-auto`; scheda `pointer-coarse:h-11` | D6 (la scheda era alta 37 px) |
+| `breadcrumb` | `BreadcrumbLink`: area di tocco estesa (`pointer-coarse:after:absolute pointer-coarse:after:-inset-y-3.5 pointer-coarse:after:inset-x-0`) | D6 (il collegamento era alto 20 px) |
+| `sheet` | `overflow-y-auto` e `data-[side=bottom]:max-h-[90svh]` | I moduli più alti dello schermo devono scorrere |
+| `checkbox` | `relative` e `pointer-coarse:after:absolute pointer-coarse:after:-inset-3.5` | D6: casella da 16 px con area di tocco da 44 px |
 
-Non ancora adattati perché non usati finora: casella di spunta, interruttore, radio, calendario, paginazione, link nel testo. Si adattano nello stesso passo in cui si installano.
+Non ancora adattati perché non usati finora: interruttore, radio, calendario, paginazione, link nel testo. Si adattano nello stesso passo in cui si installano.
 
 **Eccezioni** (da compilare solo con decisione esplicita): nessuna.
 
@@ -123,8 +126,20 @@ Non ancora adattati perché non usati finora: casella di spunta, interruttore, r
 
 - **Pagine-modulo** (Orari, modifica di un piatto, impostazioni): colonna centrata larga al massimo `max-w-xl` (576 px). Su schermo largo le righe del modulo restano leggibili (con la larghezza piena, etichetta e icone di una riga si trovavano a oltre 800 px di distanza). Su telefono la colonna occupa tutta la larghezza.
 - **Gruppi di scelta** (giorni di riposo): su schermo largo voci compatte da 56 px (`sm:w-14`, gruppo di 392 px); su telefono occupano la riga.
-- **Pagine con tabelle** (elenco prenotazioni): larghezza diversa, da definire con quella schermata.
+- **Pagine con tabelle** (elenco prenotazioni): colonna centrata larga al massimo `max-w-5xl` (64 rem; a 1280 px è 976 px, oltre i 1280 px si ferma a 1024 px). Su telefono tutta la larghezza, con schede al posto della tabella.
 - La barra di salvataggio e il banner seguono la stessa colonna.
+
+### D9 — Elenchi di record: ogni azione si salva subito
+
+Il salvataggio con barra unica (D7) vale per le **pagine-modulo** (Orari, impostazioni). Per gli **elenchi di record** (prenotazioni, e in seguito piatti e simili) ogni azione si salva subito.
+
+- **Dettaglio e modulo in un foglio** (dal basso sotto 768 px, da destra da 768 px): un tocco sulla riga, o il nome su notebook, apre il dettaglio con le azioni dello stato; «Modifica» e «Nuova» usano lo stesso modulo nel foglio, con «Salva» e «Annulla».
+- **Azioni irreversibili** (cancella, rifiuta, segna no-show, anonimizza): finestra di conferma con la frase «Non si può annullare.» e, dove previsto, un motivo facoltativo. Le azioni positive (conferma) sono immediate.
+- **Esito**: avviso in pagina con il nome e la data; resta fino alla prossima azione.
+- **Errore dell'azione**: avviso rosso nel punto da cui è partita (finestra o foglio), nessuna modifica, si può riprovare. Mentre si salva: pulsanti disabilitati, `Spinner`, «Salvataggio…».
+- **Scorciatoie su notebook**: menu «⋯» di riga con le stesse azioni del dettaglio.
+- **Cose che richiedono attenzione** (es. prenotazioni da confermare) hanno una scheda propria con il conteggio e le azioni in vista, invece di restare sparse nell'elenco.
+- **Righe non attive** attenuate e escluse dai totali; **righe anonimizzate** con «Dati anonimizzati» in corsivo e senza azioni.
 
 ## 3. Prova su Orari (§8.5), 2026-10-10
 
@@ -147,14 +162,27 @@ Mockup funzionante costruito con i componenti reali, le dimensioni di tocco di D
 - **A8 — Elenco lungo:** con più anni le chiusure crescono di 13 righe all'anno. Il mockup le raggruppa per anno; da verificare con molti dati.
 - **A9 — Stati completati (2026-10-10):** salvataggio in corso, errore del server, orari non configurati, errore di caricamento e uscita con modifiche non salvate sono ora nel mockup e nella specifica di Orari. Punto tecnico aperto: intercettare i collegamenti con l'App Router per la conferma di uscita (fallback: solo `beforeunload`).
 
-## 4. Verifiche tecniche fatte in questa sessione
+## 4. Prova sull'elenco prenotazioni (§5.5), 2026-10-10
+
+Prototipo con i componenti reali, dati di esempio, le regole di `ADR-106` e `ADR-107`, due schede (Giorno, Da confermare; struttura confermata da Mirko), foglio per filtri, dettaglio e modulo, conferme, e gli stati di caricamento, errore, vuoto, nessun risultato e anonimizzate. Specifica e screenshot: `schermate/prenotazioni/`.
+
+**Rilievi**
+- **P3 — Due elementi interattivi sotto 44 px, mai emersi in Orari perché lì non c'erano**: la scheda di `Tabs` (37 px) e il collegamento della briciola di pane (20 px). Corretti nei componenti (registro D6). La misura va fatta sull'**area cliccabile reale** (si campionano punti intorno al centro con `elementFromPoint`), non solo sul riquadro, escludendo gli elementi coperti dal velo di un foglio o di una finestra.
+- **A10 — Singolare e plurale**: nel prototipo comparivano «1 persone» e «1 coperti». Corretti; la regola è nella specifica. Con la «1 chiusura» di Orari è il secondo caso: i testi con numeri vanno sempre al singolare con 1.
+- **A11 — Etichetta delle righe anonimizzate**: «Prenotazione anonimizzata» si troncava a 390 px; ora «Dati anonimizzati».
+- **A12 — Casella di spunta di base-ui**: l'`id` va sull'input nativo nascosto; nei test si clicca l'etichetta, come fa l'utente.
+- **A13 — Assunzioni sul dominio** (modifica solo su Confermata e In attesa, canali dell'inserimento manuale, casella dell'informativa, capienza e soglia nell'inserimento manuale, prenotazioni in attesa con data passata): elencate in `schermate/prenotazioni/spec.md`, sezione 10; **confermate da Mirko il 2026-10-10**.
+
+**Misure**: nessuno scorrimento orizzontale a 390 px; aree di tocco a posto in tutte le viste (giorno, da confermare, filtri, dettaglio, modulo, conferme); mockup statico identico al prototipo a 1280 px (0,0 % in chiaro e in scuro).
+
+## 5. Verifiche tecniche fatte in questa sessione
 
 - Sorgenti dei componenti: repository `shadcn-ui/ui`, commit `2d3f1cd` (2026-10-09), cartelle `apps/v4/registry/bases/base/ui` e `styles/style-nova.css`. **`base-nova` poggia su `@base-ui/react`, non su Radix.** Le classi `cn-*` dei componenti si risolvono con `style-nova.css`: 422 blocchi, tutti `@apply` semplici.
 - Mockup costruiti con i componenti reali (non con HTML che li imita) e i token di `app-ui.css`; Playwright e Chromium funzionano sui componenti shadcn veri (screenshot a 390 e 1280 px, misure di altezza e di scorrimento orizzontale a 360 px).
 - **Confronto visivo**: su telefono due acquisizioni a pagina intera dello stesso prototipo differiscono del 6,6 % (rumore di rendering dell'emulazione mobile); su notebook la differenza è 0,0 %. Il confronto con le implementazioni si fa quindi con misure geometriche (`getBoundingClientRect`, dimensioni, posizioni), non con la differenza di pixel; le misure del mockup statico coincidono con quelle del prototipo al decimo di pixel.
 - Nessuno scorrimento orizzontale a 360 px (con tocco simulato) su elenco prenotazioni nel layout scelto, filtri a foglio e home «Oggi». Da ripetere sulle schermate vere.
 
-## 5. Punti aperti
+## 6. Punti aperti
 
 - Verifica delle sottoaree del Menù con `fase-6-menu-digitale.md`; nome definitivo di «Elenco».
 - Filtro per data e filtri di ogni lista (specifica per schermata).
@@ -163,17 +191,16 @@ Mockup funzionante costruito con i componenti reali, le dimensioni di tocco di D
 - Tabelle su tablet touch: righe con azioni a 44 px, quindi meno righe visibili che con il mouse. Da verificare nelle schermate di dettaglio.
 - Selettore di data (celle del calendario a 44 px su touch): da adattare quando si installa.
 - Se la scelta del tema debba valere per account invece che per dispositivo.
-- Larghezza delle pagine con tabelle (elenco prenotazioni), da definire con quella schermata.
 - Componenti di composizione di progetto (P2) e loro elenco.
 - Come gestire il tema rispetto a `next-themes` e al `Toaster` (A6).
 
-## 6. Impatto sul piano
+## 7. Impatto sul piano
 
-I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da D1, D2 e D3. Questo documento non modifica la fase 8: la voce di §8.2 e la sua checklist (navigazione e home verificate su telefono e desktop per ogni ruolo) vanno allineate quando si prepara l'implementazione. Aggiunte di cui la 8.2 dovrà tener conto: tema (D4), dimensioni di tocco (D6), slot della barra di salvataggio nella shell (D7) e larghezza della colonna dei moduli (D8).
+I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da D1, D2 e D3. Questo documento non modifica la fase 8: la voce di §8.2 e la sua checklist (navigazione e home verificate su telefono e desktop per ogni ruolo) vanno allineate quando si prepara l'implementazione. Aggiunte di cui la 8.2 dovrà tener conto: tema (D4), dimensioni di tocco (D6), slot della barra di salvataggio nella shell (D7), larghezza della colonna (D8) e il modello degli elenchi di record (D9).
 
-## 7. Prossimi passi
+## 8. Prossimi passi
 
-1. Provare le decisioni su tre schermate: Orari (§8.5, chiusa e confezionata in `schermate/orari/`), elenco prenotazioni, modifica di un piatto.
+1. Provare le decisioni su tre schermate: Orari (§8.5, chiusa e confezionata in `schermate/orari/`), elenco prenotazioni (chiusa e confezionata in `schermate/prenotazioni/`), modifica di un piatto.
 2. Mockup HTML finali annotati con `data-component`, `data-variant`, `data-size`.
 3. Regola UI di progetto `.cursor/rules/ui/…mdc`, modello di specifica per schermata, script `pnpm ui:check`.
 4. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi.

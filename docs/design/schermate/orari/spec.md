@@ -152,7 +152,7 @@ Tutti in italiano. I testi con `{…}` sono dinamici. I messaggi marcati (lib) v
 
 ## 9. Checklist di accettazione
 
-I controlli 1–22 valgono nei due temi e in tutti gli stati dove sensato. Si verifica con Playwright (viewport e, per il tocco, `is_mobile` e `has_touch`) salvo dove indicato. Sul telefono i confronti si fanno con **misure geometriche**, non con la differenza di pixel (vedi `decisioni-layout-app.md`, sezione 4).
+I controlli 1–22 valgono nei due temi e in tutti gli stati dove sensato. Si verifica con Playwright (viewport e, per il tocco, `is_mobile` e `has_touch`) salvo dove indicato. Sul telefono i confronti si fanno con **misure geometriche**, non con la differenza di pixel (vedi `decisioni-layout-app.md`, sezione 5).
 
 1. **Nessuno scorrimento orizzontale** a 360, 390 e 1280 px: larghezza del documento uguale a quella della finestra e nessun elemento oltre il bordo destro.
 2. **Aree di tocco** a 390 px con tocco simulato: nessun elemento interattivo con lato minore sotto 44 px, in tutti gli stati (iniziale: 30 elementi).

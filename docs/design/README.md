@@ -20,4 +20,4 @@ Design UI/UX dell'Area App `(app)`. L'Admin è quello standard di Payload e non 
 - I PNG sono riferimenti per il confronto visivo. Sul telefono il confronto si fa con misure geometriche, non con la differenza di pixel (due acquisizioni dello stesso prototipo differiscono del 6,6 %).
 - Il mockup statico è identico al prototipo su notebook (differenza 0,0 % a 1280 px, in chiaro e in scuro).
 
-**Pacchetti presenti**: `schermate/orari/`.
+**Pacchetti presenti**: `schermate/orari/`, `schermate/prenotazioni/`.

@@ -1,6 +1,6 @@
 # Prenotazioni, elenco — specifica di schermata (`/app/reservations`)
 
-**Stato**: design confermato il 2026-10-10 (struttura a due schede confermata da Mirko). Le assunzioni sul dominio della sezione 10 sono **da confermare** prima di consegnare la schermata a Cursor.
+**Stato**: chiusa il 2026-10-10. Struttura a due schede e assunzioni sul dominio della sezione 10 confermate da Mirko.
 
 **Si implementa in**: `fase-5` sottofase 5.5 (backoffice `(app)` prenotazioni; non ancora nel repo). Dipende da 8.2 (shell), 8.3 (guardia) e dalle Fasi 5.3 (Collection `Prenotazioni`) e 5.4 (calendario).
 
@@ -198,7 +198,7 @@ Si verifica con Playwright (viewport e, per il tocco, `is_mobile` e `has_touch`)
 
 ## 10. Assunzioni da confermare e punti aperti
 
-**Assunzioni sul dominio** (l'`ADR` non le chiude; il design le usa, vanno confermate):
+**Assunzioni sul dominio** (l'`ADR` non le chiude; **confermate da Mirko il 2026-10-10**; se la Fase 5.3 stabilisce altro, si rivede la schermata):
 
 - **Modifica** consentita solo su Confermata e In attesa, non sulle finali né sulle anonimizzate. `ADR-106` dice solo che la modifica di una confermata non cambia lo stato.
 - **Inserimento manuale**: canali Telefono, Di persona, TheFork (non Sito).
