@@ -30,10 +30,11 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 8.2: patch `app-ui.css` (`overflow-x: clip`, `color-scheme`, token destructive/sidebar); `tsconfig.json` esclude `**/*.test.ts` dal typecheck Next.
 
 - Fase 8.3: etichette/descrizioni campi `adminRole` e `appRole` in `collections/Users.ts`; checklist 2.6 con controllo login locale App e `adminRole`.
+- Regola `.cursor/rules/ui/01-ui-app-invarianti.mdc`: sezione «Insidie note» (Base UI / App Router) e criterio di chiusura passo.
 
 ### Fixed
 
-- Fase 8.2 (dev): navigazione con `iconKey` + `AppNavIcon` (niente Lucide server→client); menu utente `DropdownMenuGroup` e `nativeButton` Base UI; logout da voce menu senza `Button` annidato.
+- Fase 8.2 (dev): navigazione con `iconKey` + `AppNavIcon` (niente Lucide server→client); menu utente `DropdownMenuGroup` e `nativeButton` Base UI; logout da voce menu senza `Button` annidato; accesso Google e `AppAuthLink` con `buttonVariants` su `<a>`/`Link` (non `Button render`); script tema in `<head>` del layout server; `use-mobile` con `useSyncExternalStore` (lint).
 
 ### Tests
 

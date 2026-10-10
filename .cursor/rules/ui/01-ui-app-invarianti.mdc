@@ -71,6 +71,16 @@ Se serve un componente che non c'è in `components/ui`, o un comportamento che i
 - Reinstallare o aggiornare un componente **sovrascrive** le deviazioni: dopo ogni `shadcn add` o aggiornamento, ripetere il controllo.
 - Non si modifica un file di `components/ui` per un'esigenza di una singola schermata. Una nuova deviazione si propone (nome del componente, classi, motivo) e, se approvata, si aggiunge al registro e al controllo di `ui:check`.
 
+## Insidie note (Base UI e App Router)
+
+- **`nativeButton`**: non usare `Button` con `render={<a>}` o `render={<Link>}` per collegamenti che sembrano pulsanti — imposta `nativeButton={false}` solo se inevitabile (aggiunge `role="button"`). Preferire `<a>` o `Link` con `buttonVariants` da `@/components/ui/button`.
+- **`DropdownMenuLabel`**: va sempre dentro `DropdownMenuGroup` (o contesto `RadioGroup`), altrimenti «MenuGroupContext is missing».
+- **Server → client**: non passare componenti React (es. icone `lucide-react`) nei dati di navigazione; usare chiavi stringa (`iconKey`) e mappare lato client (`AppNavIcon`).
+- **Tema anti-lampo**: script inline nel layout **server** di `(app)`, in `<head>`, con `suppressHydrationWarning` su `<html>` — non in un componente client né come `<script>` nel body senza pattern documentato.
+- **Voce menu che invia un form** (es. «Esci»): `DropdownMenuItem` con `onClick` + `requestSubmit()` sul form, non `render={<Button type="submit">}`.
+
+**Chiusura di un passo**: `pnpm typecheck`, `pnpm lint`, `pnpm ui:check`; pagine toccate aperte in `pnpm dev` con console senza errori né avvisi Base UI; esito in chat/CHANGELOG.
+
 ## Verifica
 
 - `pnpm ui:check` fallisce (uscita 1) su R1–R10, sulle deviazioni D6 mancanti nei componenti installati, sui testi inglesi rimasti nei componenti (T1) e su `app-ui.css` non allineato (C1, C2).

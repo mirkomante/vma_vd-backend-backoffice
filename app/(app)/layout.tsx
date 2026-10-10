@@ -1,7 +1,6 @@
 // Route group Area App: URL `/app` (vedi `app/(app)/app/`). Distinto dalla cartella App Router `app/`.
 import type { Metadata } from 'next'
 import type React from 'react'
-import Script from 'next/script'
 import { Geist, Geist_Mono } from 'next/font/google'
 
 import { APP_THEME_COOKIE, DEFAULT_APP_THEME } from '@/lib/app/theme'
@@ -31,11 +30,15 @@ type AppAreaLayoutProps = {
 
 export default function AppAreaLayout({ children }: AppAreaLayoutProps) {
   return (
-    <html lang="it" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="it"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: appThemeInitScript }} />
+      </head>
       <body className="flex min-h-dvh w-full flex-col bg-background font-sans text-foreground">
-        <Script id="app-theme-init" strategy="beforeInteractive">
-          {appThemeInitScript}
-        </Script>
         {children}
       </body>
     </html>

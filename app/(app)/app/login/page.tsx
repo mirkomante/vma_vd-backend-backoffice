@@ -1,7 +1,8 @@
 import { AppAuthAlert } from '@/components/app/auth/app-auth-alert'
 import { AppAuthLink } from '@/components/app/auth/app-auth-link'
 import { AppAuthPage } from '@/components/app/auth/app-auth-page'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
@@ -40,14 +41,12 @@ export default async function AppLoginPage({ searchParams }: AppLoginPageProps) 
       {authFailed ? <AppAuthAlert variant="error">{GENERIC_LOGIN_FAILURE_MESSAGE}</AppAuthAlert> : null}
       {resetOk ? <AppAuthAlert variant="success">{RESET_SUCCESS_MESSAGE}</AppAuthAlert> : null}
 
-      <Button
-        nativeButton={false}
-        size="lg"
-        className="w-full"
-        render={<a href={googleOAuthAppAuthorizeHref()} />}
+      <a
+        href={googleOAuthAppAuthorizeHref()}
+        className={cn(buttonVariants({ size: 'lg' }), 'w-full')}
       >
         Accedi con Google
-      </Button>
+      </a>
 
       <div className="flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
         <Separator className="flex-1" />
