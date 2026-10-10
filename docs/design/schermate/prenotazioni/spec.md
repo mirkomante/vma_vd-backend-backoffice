@@ -79,7 +79,7 @@ La shell (barra laterale, menu utente, tema) è quella di D1–D4 e non fa parte
 | Ricerca e Filtri | Una riga: ricerca (si allarga) e «Filtri» | Una riga |
 | Elenco | Schede (alte 60 px) | Tabella (sei colonne) con menu azioni in riga |
 | Azioni di una riga | Si apre il dettaglio con un tocco | Nome cliccabile e menu «⋯» |
-| Foglio (filtri, dettaglio, modulo) | Dal basso, altezza massima 90 % dello schermo con scorrimento | Da destra |
+| Foglio (filtri, dettaglio, modulo) | Dal basso, altezza massima 90 % dello schermo con scorrimento; **pulsanti agganciati in fondo** (affiancati se sono due) | Da destra; pulsanti agganciati in fondo |
 | Dimensioni dei controlli | Dispositivo touch (`pointer-coarse`): ≥ 44 px (D6) | Con mouse: misure standard di Nova |
 
 Nessuno scorrimento orizzontale a 360, 390 e 1280 px. Le barre agganciate richiedono `overflow-x: clip` in `app-ui.css` (P1 di `decisioni-layout-app.md`).

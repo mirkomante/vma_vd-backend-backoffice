@@ -101,11 +101,12 @@ Ogni elemento interattivo ha un'area di tocco di almeno **44 × 44 px** sui disp
 | `sidebar` | `pointer-coarse:h-11` su `SidebarMenuButton` (`default`, `sm`), sulla sotto-voce e su `SidebarInput` | D6 |
 | `dropdown-menu` | `pointer-coarse:py-3` su voci, voci con spunta, voci radio e sotto-menu | D6 |
 | `tabs` | Lista `pointer-coarse:group-data-horizontal/tabs:h-auto`; scheda `pointer-coarse:h-11` | D6 (la scheda era alta 37 px) |
-| `breadcrumb` | `BreadcrumbLink`: area di tocco estesa (`pointer-coarse:after:absolute pointer-coarse:after:-inset-y-3.5 pointer-coarse:after:inset-x-0`) | D6 (il collegamento era alto 20 px) |
-| `sheet` | `overflow-y-auto` e `data-[side=bottom]:max-h-[90svh]` | I moduli più alti dello schermo devono scorrere |
-| `checkbox` | `relative` e `pointer-coarse:after:absolute pointer-coarse:after:-inset-3.5` | D6: casella da 16 px con area di tocco da 44 px |
+| `breadcrumb` | `BreadcrumbLink`: area di tocco estesa (`pointer-coarse:relative pointer-coarse:after:absolute pointer-coarse:after:-inset-3.5`) | D6 (il collegamento era alto 20 px e, se corto, largo 36) |
+| `sheet` | Contenuto: `overflow-y-auto` e `data-[side=bottom]:max-h-[90svh]`. `SheetFooter`: `sticky bottom-0 border-t bg-popover` | I moduli più alti dello schermo scorrono e i pulsanti restano in vista |
+| `checkbox` | `relative` e `pointer-coarse:after:absolute pointer-coarse:after:-inset-4` | D6: casella da 16 px con area di tocco da 46 px (l'estensione parte dal bordo interno: `-inset-3.5` dava solo 42 px) |
+| `switch` | `pointer-coarse:after:-inset-y-3.5` (si aggiunge a `after:-inset-x-3 after:-inset-y-2`) | D6: area di tocco da 54 × 44 px |
 
-Non ancora adattati perché non usati finora: interruttore, radio, calendario, paginazione, link nel testo. Si adattano nello stesso passo in cui si installano.
+Non ancora adattati perché non usati finora: radio, calendario, paginazione, link nel testo. Si adattano nello stesso passo in cui si installano.
 
 **Eccezioni** (da compilare solo con decisione esplicita): nessuna.
 
@@ -140,6 +141,13 @@ Il salvataggio con barra unica (D7) vale per le **pagine-modulo** (Orari, impost
 - **Scorciatoie su notebook**: menu «⋯» di riga con le stesse azioni del dettaglio.
 - **Cose che richiedono attenzione** (es. prenotazioni da confermare) hanno una scheda propria con il conteggio e le azioni in vista, invece di restare sparse nell'elenco.
 - **Righe non attive** attenuate e escluse dai totali; **righe anonimizzate** con «Dati anonimizzati» in corsivo e senza azioni.
+- **Azioni rapide dall'elenco** (piatti: «Terminato» con un interruttore, abilita/disabilita dal menu «⋯»): un tocco, effetto immediato, avviso con il testo di che cosa succede sul menù pubblico.
+- **Foglio con modulo lungo**: i pulsanti restano agganciati in fondo (bordo superiore, sfondo pieno) e, se sono due, affiancati (77 px di altezza invece di 130). Vale per tutti i fogli (`SheetFooter`).
+- **Azione di pagina principale in alto su telefono**: nelle intestazioni con più pulsanti, «Nuovo …» sta sopra l'azione secondaria (su notebook l'azione principale è a destra).
+
+### D10 — Due lingue nei moduli: italiano sempre in vista, inglese a scomparsa
+
+Per i campi localizzati (oggi nome e descrizione dei piatti; poi vini, bevande, menù fissi) il modulo mostra sempre i campi italiani, obbligatori; sotto, una riga «Traduzione inglese (facoltativa)» con un badge «Manca» o «Presente» che si apre per scrivere in inglese. Si apre da sola se la traduzione esiste. Se l'inglese resta vuoto, il menù pubblico usa l'italiano (ripiego di `fase-6` §6.6). Scelta di Mirko tra tre alternative (schede, inglese a scomparsa, tutti i campi in vista).
 
 ## 3. Prova su Orari (§8.5), 2026-10-10
 
@@ -162,9 +170,11 @@ Mockup funzionante costruito con i componenti reali, le dimensioni di tocco di D
 - **A8 — Elenco lungo:** con più anni le chiusure crescono di 13 righe all'anno. Il mockup le raggruppa per anno; da verificare con molti dati.
 - **A9 — Stati completati (2026-10-10):** salvataggio in corso, errore del server, orari non configurati, errore di caricamento e uscita con modifiche non salvate sono ora nel mockup e nella specifica di Orari. Punto tecnico aperto: intercettare i collegamenti con l'App Router per la conferma di uscita (fallback: solo `beforeunload`).
 
-## 4. Prova sull'elenco prenotazioni (§5.5), 2026-10-10
+## 4. Prove sull'elenco prenotazioni (§5.5) e sui piatti (§6.6), 2026-10-10
 
 Prototipo con i componenti reali, dati di esempio, le regole di `ADR-106` e `ADR-107`, due schede (Giorno, Da confermare; struttura confermata da Mirko), foglio per filtri, dettaglio e modulo, conferme, e gli stati di caricamento, errore, vuoto, nessun risultato e anonimizzate. Specifica e screenshot: `schermate/prenotazioni/`.
+
+### Prenotazioni
 
 **Rilievi**
 - **P3 — Due elementi interattivi sotto 44 px, mai emersi in Orari perché lì non c'erano**: la scheda di `Tabs` (37 px) e il collegamento della briciola di pane (20 px). Corretti nei componenti (registro D6). La misura va fatta sull'**area cliccabile reale** (si campionano punti intorno al centro con `elementFromPoint`), non solo sul riquadro, escludendo gli elementi coperti dal velo di un foglio o di una finestra.
@@ -174,6 +184,19 @@ Prototipo con i componenti reali, dati di esempio, le regole di `ADR-106` e `ADR
 - **A13 — Assunzioni sul dominio** (modifica solo su Confermata e In attesa, canali dell'inserimento manuale, casella dell'informativa, capienza e soglia nell'inserimento manuale, prenotazioni in attesa con data passata): elencate in `schermate/prenotazioni/spec.md`, sezione 10; **confermate da Mirko il 2026-10-10**.
 
 **Misure**: nessuno scorrimento orizzontale a 390 px; aree di tocco a posto in tutte le viste (giorno, da confermare, filtri, dettaglio, modulo, conferme); mockup statico identico al prototipo a 1280 px (0,0 % in chiaro e in scuro).
+
+### Piatti (elenco e modulo)
+
+Prototipo con elenco per categoria, interruttore «Terminato», menu «⋯», filtri, modulo con traduzione a scomparsa, allergeni a scelta multipla, caratteristiche e disponibilità, ricompilazione del menù pubblico, e gli stati di caricamento, errore, vuoto e nessun risultato. Specifica e screenshot: `schermate/piatti/`. Il piatto non ha varianti (`riepilogo-sessione-varianti-porzione-piatto.md`): la quantità vive nella composizione del menu fisso.
+
+- **P4 — Due difetti reali nelle aree di tocco, trovati con una misura più severa**: la casella di spunta aveva un'area di 42 × 42 px, non 44 (l'estensione parte dal bordo interno e il bordo di 1 px per lato ne toglie due), e il collegamento corto della briciola di pane era largo 36 px. Corretti (`-inset-4` per la casella, `-inset-3.5` su tutti i lati per il collegamento; registro D6). La misura ora prova a 21,5 px dal centro nelle quattro direzioni, porta ogni elemento al centro dello schermo e salta quelli coperti dal velo.
+- **P5 — Pulsanti di un modulo lungo fuori vista**: nel modulo del piatto «Salva» era a oltre 1800 px da scorrere. Ora il footer del foglio è agganciato in fondo, per tutti i fogli (D9). Con i due pulsanti affiancati occupa 77 px invece di 130. Gli screenshot di Orari (foglio della chiusura) e di Prenotazioni (fogli) sono stati rigenerati.
+- **A14 — Stato «Disponibile»**: con quasi tutti i piatti disponibili, un badge scuro su ciascuno nascondeva le eccezioni. Ora Disponibile è un testo discreto (nessun badge su telefono) e il badge resta per Terminato e Disabilitato.
+- **A15 — Ordine dei pulsanti su telefono**: nell'intestazione, l'azione principale va sopra la secondaria. L'ordine visivo e quello della tastiera sono invertiti su telefono (accettato).
+- **A16 — Reset di «terminato»**: il testo «si azzera da solo al cambio di servizio» è provvisorio; il momento del confine è una decisione aperta in 6.4.
+- **A17 — Ordine nel gruppo, paginazione, piatti nei menù fissi disabilitati**: non definiti (sezione 10 della specifica).
+
+**Misure**: nessuno scorrimento orizzontale a 390 px; nessun elemento sotto 44 px in elenco, filtri, modulo, nuovo piatto e conferma; mockup statico identico al prototipo a 1280 px (0,0 % in chiaro e in scuro).
 
 ## 5. Verifiche tecniche fatte in questa sessione
 
@@ -196,11 +219,11 @@ Prototipo con i componenti reali, dati di esempio, le regole di `ADR-106` e `ADR
 
 ## 7. Impatto sul piano
 
-I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da D1, D2 e D3. Questo documento non modifica la fase 8: la voce di §8.2 e la sua checklist (navigazione e home verificate su telefono e desktop per ogni ruolo) vanno allineate quando si prepara l'implementazione. Aggiunte di cui la 8.2 dovrà tener conto: tema (D4), dimensioni di tocco (D6), slot della barra di salvataggio nella shell (D7), larghezza della colonna (D8) e il modello degli elenchi di record (D9).
+I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da D1, D2 e D3. Questo documento non modifica la fase 8: la voce di §8.2 e la sua checklist (navigazione e home verificate su telefono e desktop per ogni ruolo) vanno allineate quando si prepara l'implementazione. Aggiunte di cui la 8.2 dovrà tener conto: tema (D4), dimensioni di tocco (D6), slot della barra di salvataggio nella shell (D7), larghezza della colonna (D8) il modello degli elenchi di record (D9) e la gestione delle due lingue nei moduli (D10).
 
 ## 8. Prossimi passi
 
-1. Provare le decisioni su tre schermate: Orari (§8.5, chiusa e confezionata in `schermate/orari/`), elenco prenotazioni (chiusa e confezionata in `schermate/prenotazioni/`), modifica di un piatto.
+1. Provare le decisioni su tre schermate: Orari (§8.5, chiusa e confezionata in `schermate/orari/`), elenco prenotazioni (chiusa e confezionata in `schermate/prenotazioni/`), piatti (design chiuso e confezionato in `schermate/piatti/`, assunzioni da confermare).
 2. Mockup HTML finali annotati con `data-component`, `data-variant`, `data-size`.
 3. Regola UI di progetto `.cursor/rules/ui/…mdc`, modello di specifica per schermata, script `pnpm ui:check`.
 4. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi.

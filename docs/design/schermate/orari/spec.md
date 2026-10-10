@@ -68,7 +68,7 @@ La shell (barra laterale, menu utente, tema) è quella di D1–D4 e non fa parte
 | Giorni di riposo | Sette voci che riempiono la riga (47 px a 390 px) | Gruppo compatto da 392 px, voci da 56 px |
 | Pulsanti delle festività | Uno sotto l'altro, a tutta larghezza | Affiancati |
 | Barra di salvataggio | Testo sopra, due pulsanti affiancati; 97 px di altezza | Allineata alla colonna; testo a sinistra, pulsanti a destra |
-| Foglio di modifica | Dal basso | Da destra |
+| Foglio di modifica | Dal basso; pulsanti agganciati in fondo, affiancati | Da destra; pulsanti agganciati in fondo, affiancati |
 | Dimensioni dei controlli | Dispositivo touch (`pointer-coarse`): ≥ 44 px (D6) | Con mouse: misure standard di Nova |
 
 Nessuno scorrimento orizzontale a 360, 390 e 1280 px. La barra in alto e la barra di salvataggio restano agganciate durante lo scorrimento (richiede `overflow-x: clip` in `app-ui.css`, P1 di `decisioni-layout-app.md`).
