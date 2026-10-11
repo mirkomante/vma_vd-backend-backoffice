@@ -2,123 +2,24 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-11",
-    "commit": "af472456fe1a",
-    "launcherVersion": "3.1.1",
-    "launcherHeader": "3.1.1 (L1)",
+    "commit": "94b566d635bf",
+    "launcherVersion": "3.1.2",
+    "launcherHeader": "3.1.2 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-8.5.json",
     "livelloEseguito": "L1",
     "controlliVersion": 3,
-    "durataMs": 23201,
+    "durataMs": 23109,
     "invalidRun": false
   },
   "counts": {
-    "OK": 13,
+    "OK": 4,
     "FALLITO": 0,
     "AVVISO": 0,
-    "NON PROVATO": 21
+    "NON PROVATO": 0
   },
-  "distinctControls": 24,
+  "distinctControls": 3,
   "rows": [
-    {
-      "id": "webkit-giro-essenziale",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/menu (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/hours (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/reservations (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/menu (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/hours (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/reservations (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "webkit-giro-essenziale",
-      "schermata": "shell/home",
-      "profiloTema": "telefono-390/chiaro/WebKit 26.0",
-      "esito": "OK",
-      "misurato": "login→/app OK (http://localhost:3000/app)",
-      "atteso": "login, home, menu, menu utente (locale-dev)",
-      "evidenza": "26.0",
-      "pacchetto": "shell"
-    },
     {
       "id": "orari-console",
       "schermata": "/app/hours",
@@ -158,293 +59,50 @@
       "atteso": "solo avviso e Riprova",
       "evidenza": "localhost:3200",
       "pacchetto": "orari"
-    },
-    {
-      "id": "orari-annulla",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-barra-misure",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-campi-ora",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-chiusure-foglio",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-colonna",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-dati",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-errore-validazione",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-festivita",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-giorni-riposo",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-giorno-selezionato",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-intestazione-anno",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-modificato-barra",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-nomi-accessibili",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-non-configurato",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-permessi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-salvataggio-in-corso",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-salvataggio-ok",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-stato-iniziale",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-testi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-validazione-server",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "orari",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "nonProvato": [
+  "nonProvato": [],
+  "anomalie": [],
+  "screenshotHashes": [
     {
-      "id": "orari-annulla",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-server-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "a5555d8e2fa9f0661c5008908e8ccd98d65ae09058845a2e092335fbbd74d4d3"
     },
     {
-      "id": "orari-barra-misure",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-caricamento-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "eef8dfb89ad921965b6abd13d3ded6ebe7a64c942e30c2dedb8848b1797dfce6"
     },
     {
-      "id": "orari-campi-ora",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-server-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "a5555d8e2fa9f0661c5008908e8ccd98d65ae09058845a2e092335fbbd74d4d3"
     },
     {
-      "id": "orari-chiusure-foglio",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-caricamento-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "eef8dfb89ad921965b6abd13d3ded6ebe7a64c942e30c2dedb8848b1797dfce6"
     },
     {
-      "id": "orari-colonna",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-server-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "a5555d8e2fa9f0661c5008908e8ccd98d65ae09058845a2e092335fbbd74d4d3"
     },
     {
-      "id": "orari-dati",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-caricamento-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "eef8dfb89ad921965b6abd13d3ded6ebe7a64c942e30c2dedb8848b1797dfce6"
     },
     {
-      "id": "orari-errore-validazione",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-server-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5a7043c59919563f4a7d09d9c67ef70e5cba847481aaeb15979dffa716849f2b"
     },
     {
-      "id": "orari-festivita",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-giorni-riposo",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-giorno-selezionato",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-intestazione-anno",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-modificato-barra",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-nomi-accessibili",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-non-configurato",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-permessi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-salvataggio-in-corso",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-salvataggio-ok",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-stato-iniziale",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-testi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-validazione-server",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "name": "orari-errore-caricamento-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "eef8dfb89ad921965b6abd13d3ded6ebe7a64c942e30c2dedb8848b1797dfce6"
     }
-  ],
-  "anomalie": [
-    "Tempo massimo ambiente scaduto (3 min, configurabile con UI_VERIFY_TIMEOUT_MS o UI_VERIFY_TIMEOUT_<AMBIENTE>_MS): esecuzione interrotta.",
-    "runOrariDevSimulations: Tempo massimo ambiente scaduto"
-  ],
-  "screenshotHashes": []
+  ]
 }

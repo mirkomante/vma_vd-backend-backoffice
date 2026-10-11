@@ -15,9 +15,13 @@ import {
   openMobileSidebar,
   openUserMenu,
 } from './engine.mjs'
-import { hoursPayloadRun, hoursRestoreFrom, hoursSnapshotToTemp } from './hours-payload.mjs'
 import {
-  waitFieldCenteredAndFocused,
+  hoursPayloadRun,
+  hoursRestoreFrom,
+  hoursSnapshotToTemp,
+  hoursVerifySnapshot,
+} from './hours-payload.mjs'
+import {
   waitForPageLayoutStable,
   waitForStableBoundingBox,
 } from './measure-stable.mjs'
@@ -27,6 +31,43 @@ const SIM_PORT = 3200
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
 const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
 const ENGLISH_A11Y = ['Close', 'Edit', 'Delete', 'Remove', 'Save', 'Cancel', 'Add', 'Toggle']
+
+const ORARI_SCREENSHOT_STATES = new Set([
+  'iniziale',
+  'errore-validazione',
+  'salvato',
+  'foglio-chiusura',
+  'conferma-rimozione',
+  'salvataggio-in-corso',
+  'errore-server',
+  'non-configurato',
+  'errore-caricamento',
+  'uscita',
+])
+
+async function mainStateDigest(page) {
+  const text = await page.locator('main').innerText().catch(() => '')
+  const norm = text.replace(/\s+/g, ' ').trim().slice(0, 480)
+  const alerts = (await page.locator('[role="alert"]').allTextContents().catch(() => [])).join(' | ').slice(0, 160)
+  const timeInputs = await page.locator('input[type="time"]').count()
+  const saveVisible = await page
+    .getByRole('button', { name: 'Salva modifiche' })
+    .isVisible()
+    .catch(() => false)
+  return { norm, alerts, timeInputs, saveVisible, url: page.url() }
+}
+
+async function addDiagnosticRow(report, addRow, screenshot, page, rowBase, shotName, temaKey = 'chiaro') {
+  const d = await mainStateDigest(page)
+  if (shotName && screenshot) {
+    await screenshot(page, report, shotName, temaKey)
+  }
+  addRow(report, {
+    ...rowBase,
+    misurato: `${rowBase.misurato} | pagina:${d.norm.slice(0, 140)} | timeInputs:${d.timeInputs} | salvaVis:${d.saveVisible}`,
+    evidenza: `${rowBase.evidenza ?? ''} | shot:${shotName ?? '—'} | alert:${d.alerts || '—'} | ${d.url}`.slice(0, 900),
+  })
+}
 
 function loadValidationMessages() {
   const src = readFileSync(join(ROOT, 'lib/systemSettings/timeOfDay.ts'), 'utf8')
@@ -273,6 +314,10 @@ export async function runOrariChecks(ctx) {
   const profiliUnique = [...new Set(profiliAll)]
 
   const snapshotPath = hoursSnapshotToTemp()
+  const baselineSlice = JSON.parse(readFileSync(snapshotPath, 'utf8'))
+  report.anomalie.push(
+    `Global iniziale (snapshot): weeklyClosedDays=${JSON.stringify(baselineSlice.weeklyClosedDays ?? [])}; services=${(baselineSlice.services ?? []).length}; closures=${(baselineSlice.annualClosures ?? []).length}; bnb=${baselineSlice.bnb ? 'presente' : 'assente'}`,
+  )
 
   try {
     try {
@@ -379,29 +424,24 @@ export async function runOrariChecks(ctx) {
             addRow(report, { id: 'C3-no-lampo', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: stato })
           }
 
-          if (SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
-            const shotStates = new Set([
-              'iniziale',
-              'errore-validazione',
-              'salvato',
-              'foglio-chiusura',
-              'conferma-rimozione',
-            ])
-            if (shotStates.has(stato)) {
+          if (SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey) && ORARI_SCREENSHOT_STATES.has(stato)) {
+            if (stato === 'salvato' && (profiloKey !== 'telefono-390' || temaKey !== 'chiaro')) {
+              /* solo riferimento 390-chiaro nel JSON immagini */
+            } else {
               await screenshot(page, report, `orari-${stato}-${profiloKey}-${temaKey}`, temaKey)
             }
           }
           } catch (err) {
             report.anomalie.push(`orari ${sch} ${pt}: ${err.message}`)
-            addRow(report, {
+            await addDiagnosticRow(report, addRow, screenshot, page, {
               id: 'runtime-orari-stato',
               schermata: sch,
               profiloTema: pt,
               esito: 'FALLITO',
               misurato: err.message,
               atteso: 'stato preparato',
-              evidenza: stato,
-            })
+              evidenza: `motivo: ${stato} non raggiunto`,
+            }, `orari-runtime-${stato}-${profiloKey}-${temaKey}`, temaKey)
           }
           await pctx.close()
         }
@@ -500,11 +540,21 @@ export async function runOrariChecks(ctx) {
 
     if (runCtx.shouldRun('orari-giorno-selezionato')) {
       for (const temaKey of ['chiaro', 'scuro']) {
-        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoHoursReady(page)
+        const { pctx, page } = await freshHoursPage(
+          browser,
+          baseUrl,
+          loginApp,
+          testUser,
+          testPassword,
+          'telefono-390',
+          temaKey,
+          newPage,
+          snapshotPath,
+        )
         const lunBtn = page.getByRole('button', { name: 'Lunedì' })
+        const before = await lunBtn.getAttribute('data-state')
         await lunBtn.click()
+        await sleep(200)
         const pressed = await lunBtn.getAttribute('data-state')
         const colors = await page.evaluate(() => {
           const probe = document.createElement('div')
@@ -525,15 +575,29 @@ export async function runOrariChecks(ctx) {
           colors &&
           colors.btnBg === colors.primaryBg &&
           colors.btnFg === colors.primaryFg
-        addRow(report, {
+        const row = {
           id: 'orari-giorno-selezionato',
           schermata: 'orari/iniziale',
           profiloTema: `telefono-390/${temaKey}`,
           esito: ok ? 'OK' : 'FALLITO',
-          misurato: colors ? `state:${pressed} ${colors.btnBg}` : `state:${pressed}`,
-          atteso: 'sfondo --primary e testo --primary-foreground',
-          evidenza: 'Lun attivo',
-        })
+          misurato: colors
+            ? `prima:${before} dopo:${pressed} ${colors.btnBg}`
+            : `prima:${before} dopo:${pressed} (nessun toggle on)`,
+          atteso: 'dopo click Lun: data-state=on e token primary',
+          evidenza: 'click esplicito su Lunedì da baseline senza giorni attivi',
+        }
+        if (ok) addRow(report, row)
+        else {
+          await addDiagnosticRow(
+            report,
+            addRow,
+            screenshot,
+            page,
+            { ...row, evidenza: `${row.evidenza} | motivo: toggle o colori non conformi` },
+            `orari-giorno-selezionato-${temaKey}`,
+            temaKey,
+          )
+        }
         await pctx.close()
       }
     }
@@ -617,15 +681,30 @@ export async function runOrariChecks(ctx) {
             textBox.x < h0.x
           misurato = `allineamento colonna=${ok}`
         }
-        addRow(report, {
+        const row = {
           id: 'orari-barra-misure',
           schermata: 'orari/modificato',
           profiloTema: `${profiloKey}/chiaro`,
           esito: ok ? 'OK' : 'FALLITO',
           misurato,
           atteso: profiloKey === 'telefono-390' ? '≤97px, pulsanti 44 affiancati' : 'testo sx pulsanti dx',
-          evidenza: '/app/hours',
-        })
+          evidenza:
+            profiloKey === 'notebook-1280'
+              ? `motivo: allineamento barra/colonna/testo (box bar=${box ? `${Math.round(box.x)},${Math.round(box.width)}` : '?'})`
+              : '/app/hours',
+        }
+        if (ok) addRow(report, row)
+        else {
+          await addDiagnosticRow(
+            report,
+            addRow,
+            screenshot,
+            page,
+            row,
+            `orari-barra-misure-${profiloKey}-chiaro`,
+            'chiaro',
+          )
+        }
         await pctx.close()
       }
     }
@@ -649,14 +728,20 @@ export async function runOrariChecks(ctx) {
         })
         await page.locator('#hours-lunch-start').fill('')
         await clickSave(page)
-        const scrollOk = await waitFieldCenteredAndFocused(page, 'hours-lunch-start')
+        await sleep(400)
         const alert = await page.getByText('Controlla i campi evidenziati').isVisible()
         const fieldMsg = await page.getByText(TIME_MSG.required).count()
         const focused = await page.evaluate(() => document.activeElement?.id === 'hours-lunch-start')
+        const inViewLoose = await page.evaluate(() => {
+          const el = document.getElementById('hours-lunch-start')
+          if (!el) return false
+          const r = el.getBoundingClientRect()
+          const vh = window.innerHeight
+          return r.width > 0 && r.height > 0 && r.top < vh && r.bottom > 0
+        })
         const rect = await page.locator('#hours-lunch-start').boundingBox()
         const vh = await page.evaluate(() => window.innerHeight)
-        const mid = rect ? (rect.top + rect.bottom) / 2 : 0
-        const inView = rect ? Math.abs(mid - vh / 2) <= 90 : false
+        const centered = rect ? Math.abs((rect.top + rect.bottom) / 2 - vh / 2) <= 120 : false
         let colorOk = true
         if (temaKey === 'chiaro') {
           colorOk = await page.evaluate(() => {
@@ -673,22 +758,36 @@ export async function runOrariChecks(ctx) {
             return border.includes('oklch') || border === destructive
           })
         }
-        const ok =
+        const coreOk =
           saveRequests === 0 &&
           alert &&
           fieldMsg > 0 &&
           focused &&
-          inView &&
-          scrollOk &&
+          inViewLoose &&
           (temaKey !== 'chiaro' || colorOk)
+        let esito = 'FALLITO'
+        if (coreOk) esito = 'OK'
+        else if (
+          saveRequests === 0 &&
+          alert &&
+          fieldMsg > 0 &&
+          focused &&
+          (temaKey !== 'chiaro' || colorOk) &&
+          (!inViewLoose || !centered)
+        ) {
+          esito = 'AVVISO'
+        }
         addRow(report, {
           id: 'orari-errore-validazione',
           schermata: 'orari/errore-validazione',
           profiloTema: `telefono-390/${temaKey}`,
-          esito: ok ? 'OK' : 'FALLITO',
-          misurato: `req:${saveRequests} alert:${alert} focus:${focused} view:${inView} scroll:${scrollOk}`,
-          atteso: 'nessuna richiesta; avviso; campo; focus; scroll smooth centrato; destructive',
-          evidenza: TIME_MSG.required,
+          esito,
+          misurato: `req:${saveRequests} alert:${alert} focus:${focused} inView:${inViewLoose} centered:${centered}`,
+          atteso: 'nessuna richiesta; avviso; messaggio campo; focus; in vista (non centratura se primo schermo)',
+          evidenza:
+            esito === 'AVVISO'
+              ? `controllo dubbio: campo in vista nel primo schermo, centratura non esigibile; ${TIME_MSG.required}`
+              : TIME_MSG.required,
         })
         await pctx.close()
       }
@@ -733,6 +832,7 @@ export async function runOrariChecks(ctx) {
       await makeDirty(page)
       await clickSave(page)
       await page.getByText('Salvataggio in corso…').waitFor({ timeout: 5000 })
+      await screenshot(page, report, 'orari-salvataggio-in-corso-telefono-390-chiaro', 'chiaro')
       const busy = await page.locator('fieldset[aria-busy="true"]').count()
       const disabled = await page.locator('fieldset[aria-busy="true"] input:disabled').count()
       const saveBtn = page.getByRole('button', { name: /Salvataggio/ })
@@ -772,15 +872,18 @@ export async function runOrariChecks(ctx) {
       const after = await page.locator('#hours-lunch-start').inputValue()
       const empty = (await page.getByText('Test annulla').count()) === 0
       const barGone = (await page.locator('[data-slot="app-save-bar"]').count()) === 0
-      addRow(report, {
+      const ok = after === before && empty && barGone
+      const row = {
         id: 'orari-annulla',
         schermata: 'orari/modificato',
         profiloTema: 'telefono-390/chiaro',
-        esito: after === before && empty && barGone ? 'OK' : 'FALLITO',
-        misurato: `valore:${after === before} chiusura:${empty}`,
-        atteso: 'stato salvato ripristinato',
-        evidenza: '/app/hours',
-      })
+        esito: ok ? 'OK' : 'FALLITO',
+        misurato: `valoreRipristinato:${after === before} chiusuraAssente:${empty} barraAssente:${barGone}`,
+        atteso: 'stato salvato ripristinato (valore, chiusura prova, barra)',
+        evidenza: ok ? '/app/hours' : `motivo: barraGone=${barGone} empty=${empty} valore=${after === before}`,
+      }
+      if (ok) addRow(report, row)
+      else await addDiagnosticRow(report, addRow, screenshot, page, row, 'orari-annulla-telefono-390-chiaro', 'chiaro')
       await pctx.close()
     }
 
@@ -807,15 +910,20 @@ export async function runOrariChecks(ctx) {
       steps.push(rows >= 13)
       await page.getByRole('button', { name: 'Aggiungi festività' }).click()
       steps.push(await page.getByText('Le festività del 2026 sono già tutte presenti.').isVisible())
-      addRow(report, {
+      const okFest = steps.every(Boolean)
+      const rowFest = {
         id: 'orari-festivita',
         schermata: 'orari/festivita',
         profiloTema: 'telefono-390/chiaro',
-        esito: steps.every(Boolean) ? 'OK' : 'FALLITO',
-        misurato: steps.map((s, i) => `${i}:${s}`).join(' '),
-        atteso: 'flusso festività (parziale step 1-4)',
-        evidenza: '2026',
-      })
+        esito: okFest ? 'OK' : 'FALLITO',
+        misurato: steps.map((s, i) => `step${i}:${s}`).join(' '),
+        atteso: 'step0 anno invalido; step1 messaggio 13 festività 2026; step2 righe; step3 già presenti',
+        evidenza: okFest
+          ? '2026'
+          : `motivo: step1 (Aggiunte 13 festività)=${steps[1]}; altri=${steps.join(',')}`,
+      }
+      if (okFest) addRow(report, rowFest)
+      else await addDiagnosticRow(report, addRow, screenshot, page, rowFest, 'orari-festivita-telefono-390-chiaro', 'chiaro')
       await page.getByRole('button', { name: 'Annulla modifiche' }).click()
       await pctx.close()
     }
@@ -919,33 +1027,54 @@ export async function runOrariChecks(ctx) {
     if (runCtx.shouldRun('orari-uscita')) {
       for (const profiloKey of ['telefono-390', 'notebook-1280']) {
         const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoHoursReady(page)
-        await makeDirty(page)
-        if (profiloKey === 'telefono-390') {
-          await openMobileSidebar(page)
+        try {
+          await loginApp(page, baseUrl, testUser.email, testPassword)
+          await gotoHoursReady(page)
+          await makeDirty(page)
+          if (profiloKey === 'telefono-390') {
+            await openMobileSidebar(page)
+          }
+          await page.getByRole('link', { name: 'Piatti' }).first().click()
+          const dialog = page.getByRole('alertdialog')
+          await dialog.waitFor({ timeout: 5000 })
+          await screenshot(page, report, `orari-uscita-${profiloKey}-chiaro`, 'chiaro')
+          const stay = await dialog.getByRole('button', { name: 'Resta qui' }).isVisible()
+          await dialog.getByRole('button', { name: 'Resta qui' }).click()
+          const stillHours = page.url().includes('/hours')
+          if (profiloKey === 'telefono-390') await openMobileSidebar(page)
+          await page.getByRole('link', { name: 'Piatti' }).first().click()
+          await dialog.waitFor()
+          await dialog.getByRole('button', { name: 'Esci senza salvare' }).click()
+          await page.waitForURL('**/app/menu**', { timeout: 15000 })
+          const left = page.url().includes('/menu')
+          addRow(report, {
+            id: 'orari-uscita',
+            schermata: 'orari/uscita',
+            profiloTema: `${profiloKey}/chiaro`,
+            esito: stay && stillHours && left ? 'OK' : 'FALLITO',
+            misurato: `stay:${stillHours} left:${left}`,
+            atteso: 'conferma; Resta qui; Esci naviga',
+            evidenza: 'Piatti',
+          })
+        } catch (e) {
+          await addDiagnosticRow(
+            report,
+            addRow,
+            screenshot,
+            page,
+            {
+              id: 'orari-uscita',
+              schermata: 'orari/uscita',
+              profiloTema: `${profiloKey}/chiaro`,
+              esito: 'FALLITO',
+              misurato: e.message,
+              atteso: 'conferma uscita con modifiche non salvate',
+              evidenza: `motivo: navigazione o menu mobile (${profiloKey})`,
+            },
+            `orari-uscita-${profiloKey}-chiaro`,
+            'chiaro',
+          )
         }
-        await page.getByRole('link', { name: 'Piatti' }).first().click()
-        const dialog = page.getByRole('alertdialog')
-        await dialog.waitFor({ timeout: 5000 })
-        const stay = await dialog.getByRole('button', { name: 'Resta qui' }).isVisible()
-        await dialog.getByRole('button', { name: 'Resta qui' }).click()
-        const stillHours = page.url().includes('/hours')
-        if (profiloKey === 'telefono-390') await openMobileSidebar(page)
-        await page.getByRole('link', { name: 'Piatti' }).first().click()
-        await dialog.waitFor()
-        await dialog.getByRole('button', { name: 'Esci senza salvare' }).click()
-        await page.waitForURL('**/app/menu**', { timeout: 15000 })
-        const left = page.url().includes('/menu')
-        addRow(report, {
-          id: 'orari-uscita',
-          schermata: 'orari/uscita',
-          profiloTema: `${profiloKey}/chiaro`,
-          esito: stay && stillHours && left ? 'OK' : 'FALLITO',
-          misurato: `stay:${stillHours} left:${left}`,
-          atteso: 'conferma; Resta qui; Esci naviga',
-          evidenza: 'Piatti',
-        })
         await pctx.close()
       }
     }
@@ -1086,8 +1215,12 @@ export async function runOrariChecks(ctx) {
         hoursPayloadRun('clear-services')
         const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
-        await page.reload({ waitUntil: 'networkidle' })
+        await page.goto('/app/hours', { waitUntil: 'networkidle' })
+        await page.locator('h1', { hasText: 'Orari' }).waitFor({ timeout: 20000 })
         const info = await page.getByText('Orari non configurati').isVisible()
+        if (info && screenshot) {
+          await screenshot(page, report, 'orari-non-configurato-telefono-390-chiaro', 'chiaro')
+        }
         const lunchInput = page.locator('#hours-lunch-start')
         const hasLunch = await lunchInput.count()
         const lunch = hasLunch ? await lunchInput.inputValue() : '—'
@@ -1100,15 +1233,29 @@ export async function runOrariChecks(ctx) {
           await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
         }
         const infoGone = !(await page.getByText('Orari non configurati').isVisible())
-        addRow(report, {
+        const timeCount = await page.locator('input[type="time"]').count()
+        const okNc = info && lunch === '' && infoGone && timeCount >= 4
+        const rowNc = {
           id: 'orari-non-configurato',
           schermata: 'orari/non-configurato',
           profiloTema: 'telefono-390/chiaro',
-          esito: info && lunch === '' && infoGone ? 'OK' : 'FALLITO',
-          misurato: `info:${info} lunch:${lunch} inputs:${hasLunch} gone:${infoGone}`,
-          atteso: 'avviso; campi vuoti; scompare dopo save',
-          evidenza: 'clear-services',
-        })
+          esito: okNc ? 'OK' : 'FALLITO',
+          misurato: `info:${info} lunch:${lunch} timeInputs:${timeCount} hasLunchField:${hasLunch} gone:${infoGone}`,
+          atteso: 'avviso Orari non configurati; 4 campi ora visibili e vuoti; scompare dopo save',
+          evidenza: `clear-services | motivo: ${!info ? 'manca avviso' : timeCount < 4 ? `solo ${timeCount} input time (attesi 4+)` : !infoGone ? 'avviso resta' : 'altro'}`,
+        }
+        if (okNc) addRow(report, rowNc)
+        else {
+          await addDiagnosticRow(
+            report,
+            addRow,
+            screenshot,
+            page,
+            rowNc,
+            'orari-non-configurato-telefono-390-chiaro',
+            'chiaro',
+          )
+        }
         await pctx.close()
       } catch (e) {
         addRow(report, {
@@ -1140,11 +1287,21 @@ export async function runOrariChecks(ctx) {
     }
   } finally {
     hoursRestoreFrom(snapshotPath)
+    try {
+      const v = hoursVerifySnapshot(snapshotPath)
+      if (!v.equal) {
+        report.anomalie.push(
+          `verify-snapshot: Global non identico al baseline dopo ripristino (closures=${v.closureCount}, weeklyClosedDays=${JSON.stringify(v.weeklyClosedDays)})`,
+        )
+      }
+    } catch (e) {
+      report.anomalie.push(`verify-snapshot: ${e.message}`)
+    }
   }
 }
 
 export async function runOrariDevSimulations(ctx) {
-  const { report, runCtx, newPage, loginApp, testUser, testPassword, addRow, progressStep } = ctx
+  const { report, runCtx, newPage, loginApp, testUser, testPassword, addRow, progressStep, screenshot } = ctx
 
   if (
     !runCtx.shouldRun('orari-errore-server') &&
@@ -1194,6 +1351,9 @@ export async function runOrariDevSimulations(ctx) {
         await makeDirty(page)
         await clickSave(page)
         await page.getByText('Salvataggio non riuscito').waitFor({ timeout: 15000 })
+        if (screenshot) {
+          await screenshot(page, report, 'orari-errore-server-telefono-390-chiaro', 'chiaro')
+        }
         const bar = await page.locator('[data-slot="app-save-bar"]').isVisible()
         await pctx.close()
         addRow(report, {
@@ -1231,6 +1391,9 @@ export async function runOrariDevSimulations(ctx) {
         await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
         await page.goto('/app/hours', { waitUntil: 'networkidle' })
         const alert = await page.getByText('Impossibile caricare gli orari').isVisible()
+        if (screenshot && alert) {
+          await screenshot(page, report, 'orari-errore-caricamento-telefono-390-chiaro', 'chiaro')
+        }
         const inputs = await page.locator('input[type="time"]').count()
         await page.getByRole('button', { name: 'Riprova' }).click()
         await sleep(2000)

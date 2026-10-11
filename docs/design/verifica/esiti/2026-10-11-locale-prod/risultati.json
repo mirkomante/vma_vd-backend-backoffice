@@ -2,33 +2,24 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-11",
-    "commit": "af472456fe1a",
-    "launcherVersion": "3.1.1",
-    "launcherHeader": "3.1.1 (L1)",
+    "commit": "94b566d635bf",
+    "launcherVersion": "3.1.2",
+    "launcherHeader": "3.1.2 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-8.5.json",
     "livelloEseguito": "L1",
     "controlliVersion": 3,
-    "durataMs": 246687,
+    "durataMs": 193173,
     "invalidRun": false
   },
   "counts": {
-    "OK": 92,
-    "FALLITO": 13,
+    "OK": 351,
+    "FALLITO": 7,
     "AVVISO": 0,
-    "NON PROVATO": 9
+    "NON PROVATO": 17
   },
   "distinctControls": 29,
   "rows": [
-    {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—"
-    },
     {
       "id": "C9",
       "schermata": "—",
@@ -39,9 +30,20 @@
       "evidenza": "pnpm ui:check"
     },
     {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
       "id": "verify-link-valido",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "completo",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -51,10 +53,2571 @@
       "id": "shell-admin-link",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "completo",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun avviso in pagina",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "358 px",
+      "atteso": "358 px (min(384, 390-2*16))",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-margine",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-testi",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"sep\":true,\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "atteso": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-gerarchia",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Google lab(7.78201 -0.0000149012 0), Accedi lab(100 0 0), primary≈Google:true",
+      "atteso": "sfondi Google e Accedi diversi; Google ≈ primary",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-link-destinazioni",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"Accedi con Google\":\"/api/users/oauth/google-app\",\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "atteso": "{\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-campi",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "form /api/users/login/app",
+      "atteso": "email/password + POST /api/users/login/app",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (4 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "nessun avviso in pagina",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "384 px",
+      "atteso": "384 px (min(384, 1280-2*24))",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-testi",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"sep\":true,\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "atteso": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-gerarchia",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "Google lab(7.78201 -0.0000149012 0), Accedi lab(100 0 0), primary≈Google:true",
+      "atteso": "sfondi Google e Accedi diversi; Google ≈ primary",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-link-destinazioni",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"Accedi con Google\":\"/api/users/oauth/google-app\",\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "atteso": "{\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-campi",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "form /api/users/login/app",
+      "atteso": "email/password + POST /api/users/login/app",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun avviso in pagina",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "358 px",
+      "atteso": "358 px (min(384, 390-2*16))",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-margine",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-testi",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"sep\":true,\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "atteso": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-gerarchia",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "Google lab(90.952 0 -0.0000119209), Accedi oklab(0.999998 -0.00000980496 0.0000234246 / 0.045), primary≈Google:true",
+      "atteso": "sfondi Google e Accedi diversi; Google ≈ primary",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-link-destinazioni",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "{\"Accedi con Google\":\"/api/users/oauth/google-app\",\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "atteso": "{\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-campi",
+      "schermata": "login/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "form /api/users/login/app",
+      "atteso": "email/password + POST /api/users/login/app",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (4 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "nessun avviso in pagina",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "384 px",
+      "atteso": "384 px (min(384, 1280-2*24))",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-testi",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"sep\":true,\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "atteso": "{\"h1\":\"Area App\",\"desc\":\"Accedi con Google oppure con email e password.\",\"google\":\"Accedi con Google\",\"accedi\":\"Accedi\",\"labels\":[\"Email\",\"Password\"],\"textLinks\":[\"Password dimenticata?\",\"Torna al sito\"]}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-gerarchia",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "Google lab(90.952 0 -0.0000119209), Accedi oklab(0.999998 -0.00000980496 0.0000234246 / 0.045), primary≈Google:true",
+      "atteso": "sfondi Google e Accedi diversi; Google ≈ primary",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-link-destinazioni",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "{\"Accedi con Google\":\"/api/users/oauth/google-app\",\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "atteso": "{\"Password dimenticata?\":\"/app/login/forgot\",\"Torna al sito\":\"/\"}",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-campi",
+      "schermata": "login/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "form /api/users/login/app",
+      "atteso": "email/password + POST /api/users/login/app",
+      "evidenza": "/app/login",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "358 px",
+      "atteso": "358 px (min(384, 390-2*16))",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-margine",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-rifiutato",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Accesso non riuscito. Se ritieni di dover avere ac",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (4 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "384 px",
+      "atteso": "384 px (min(384, 1280-2*24))",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-rifiutato",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Accesso non riuscito. Se ritieni di dover avere ac",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "358 px",
+      "atteso": "358 px (min(384, 390-2*16))",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-margine",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-rifiutato",
+      "schermata": "login/rifiutato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Accesso non riuscito. Se ritieni di dover avere ac",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (4 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "384 px",
+      "atteso": "384 px (min(384, 1280-2*24))",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-rifiutato",
+      "schermata": "login/rifiutato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Accesso non riuscito. Se ritieni di dover avere ac",
+      "evidenza": "/app/login?authFailed=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "358 px",
+      "atteso": "358 px (min(384, 390-2*16))",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-margine",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-password-aggiornata",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Password aggiornata. Puoi accedere con le nuove cr",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (4 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "384 px",
+      "atteso": "384 px (min(384, 1280-2*24))",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-password-aggiornata",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Password aggiornata. Puoi accedere con le nuove cr",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "358 px",
+      "atteso": "358 px (min(384, 390-2*16))",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-margine",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-password-aggiornata",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Password aggiornata. Puoi accedere con le nuove cr",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (4 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-fuori-shell",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "0 elementi shell",
+      "atteso": "0",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-collegamenti-sottolineati",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "underline, underline",
+      "atteso": "underline su tutti i collegamenti sotto la scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-avvisi",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1 avvisi, 0 senza svg/role",
+      "atteso": "role alert/status + icona svg",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-colonna",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "384 px",
+      "atteso": "384 px (min(384, 1280-2*24))",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-icona",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "40×40",
+      "atteso": "40×40",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-spazi-16",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "header→card 16px; card→link 16px",
+      "atteso": "16 px entrambe",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-padding-scheda",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px padding scheda",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "acc-centratura",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "|sopra-sotto|=0 px",
+      "atteso": "differenza assoluta <= 2*48 px",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "login-titolo-documento",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "Accesso · Area App",
+      "atteso": "Accesso · Area App",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "avviso-login-password-aggiornata",
+      "schermata": "login/password-aggiornata",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "testo presente",
+      "atteso": "Password aggiornata. Puoi accedere con le nuove cr",
+      "evidenza": "/app/login?reset=1",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/home (menu aperto)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/home (menu utente)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "home-testi",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h1\":\"Area App\",\"desc\":\"Scegli una sezione.\",\"cards\":[{\"titolo\":\"Prenotazioni\",\"desc\":\"Elenco, eccezioni giorno, impostazioni\",\"href\":\"/app/reservations\"},{\"titolo\":\"Menù\",\"desc\":\"Piatti, vini, bevande, distillati, menù fissi\",\"href\":\"/app/menu\"},{\"titolo\":\"Orari\",\"desc\":\"Ristorante, B&B, giorni di riposo, chiusure\",\"href\":\"/app/hours\"}]}",
+      "atteso": "[{\"titolo\":\"Prenotazioni\",\"desc\":\"Elenco, eccezioni giorno, impostazioni\",\"href\":\"/app/reservations\"},{\"titolo\":\"Menù\",\"desc\":\"Piatti, vini, bevande, distillati, menù fissi\",\"href\":\"/app/menu\"},{\"titolo\":\"Orari\",\"desc\":\"Ristorante, B&B, giorni di riposo, chiusure\",\"href\":\"/app/hours\"}]",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "home-nessuna-riga-di-stato",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "solo titolo+descrizione",
+      "atteso": "nessuna riga di stato",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "home-colonne",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "1 colonne",
+      "atteso": "1",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "home-testi",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h1\":\"Area App\",\"desc\":\"Scegli una sezione.\",\"cards\":[{\"titolo\":\"Prenotazioni\",\"desc\":\"Elenco, eccezioni giorno, impostazioni\",\"href\":\"/app/reservations\"},{\"titolo\":\"Menù\",\"desc\":\"Piatti, vini, bevande, distillati, menù fissi\",\"href\":\"/app/menu\"},{\"titolo\":\"Orari\",\"desc\":\"Ristorante, B&B, giorni di riposo, chiusure\",\"href\":\"/app/hours\"}]}",
+      "atteso": "[{\"titolo\":\"Prenotazioni\",\"desc\":\"Elenco, eccezioni giorno, impostazioni\",\"href\":\"/app/reservations\"},{\"titolo\":\"Menù\",\"desc\":\"Piatti, vini, bevande, distillati, menù fissi\",\"href\":\"/app/menu\"},{\"titolo\":\"Orari\",\"desc\":\"Ristorante, B&B, giorni di riposo, chiusure\",\"href\":\"/app/hours\"}]",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "home-nessuna-riga-di-stato",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "solo titolo+descrizione",
+      "atteso": "nessuna riga di stato",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "home-colonne",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "3 colonne",
+      "atteso": "3",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/home (menu aperto)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/home (menu utente)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-menu (menu aperto)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-menu (menu utente)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-menu (menu aperto)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-menu (menu utente)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-menu",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-hours (menu aperto)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-hours (menu utente)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (28 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-hours (menu aperto)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-hours (menu utente)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (28 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-hours",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/hours",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu aperto)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu aperto)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "shell",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
       "id": "AMBIENTE",
@@ -95,6 +2658,16 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "C3-cambio-sistema",
+      "schermata": "login",
+      "profiloTema": "notebook-1280/sistema",
+      "esito": "OK",
+      "misurato": "dopo emulate dark: true; con cookie light ignore OS: true",
+      "atteso": "dark con system+OS scuro; no cambio con cookie light/dark fisso",
+      "evidenza": "emulateMedia prefers-color-scheme",
+      "pacchetto": "accesso"
     },
     {
       "id": "AMBIENTE",
@@ -161,7 +2734,7 @@
       "schermata": "orari/iniziale",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "saveBar:1 alert:1 status:",
+      "misurato": "saveBar:0 alert:1 status:",
       "atteso": "nessuna barra né avviso su pagina appena caricata",
       "evidenza": "/app/hours",
       "pacchetto": "orari"
@@ -827,12 +3400,32 @@
       "pacchetto": "orari"
     },
     {
-      "id": "runtime-orari-stato",
+      "id": "C1",
       "schermata": "orari/conferma-rimozione",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "FALLITO",
-      "misurato": "page.waitForFunction: Timeout 30000ms exceeded.",
-      "atteso": "stato preparato",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "orari/conferma-rimozione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (30 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C3",
+      "schermata": "orari/conferma-rimozione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
       "evidenza": "conferma-rimozione",
       "pacchetto": "orari"
     },
@@ -877,12 +3470,32 @@
       "pacchetto": "orari"
     },
     {
-      "id": "runtime-orari-stato",
+      "id": "C1",
       "schermata": "orari/conferma-rimozione",
       "profiloTema": "notebook-1280/scuro",
-      "esito": "FALLITO",
-      "misurato": "page.waitForFunction: Timeout 30000ms exceeded.",
-      "atteso": "stato preparato",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "orari/conferma-rimozione",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (30 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C3",
+      "schermata": "orari/conferma-rimozione",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
       "evidenza": "conferma-rimozione",
       "pacchetto": "orari"
     },
@@ -931,9 +3544,9 @@
       "schermata": "orari/iniziale",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "state:null",
-      "atteso": "sfondo --primary e testo --primary-foreground",
-      "evidenza": "Lun attivo",
+      "misurato": "prima:null dopo:null (nessun toggle on) | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:true",
+      "atteso": "dopo click Lun: data-state=on e token primary",
+      "evidenza": "click esplicito su Lunedì da baseline senza giorni attivi | motivo: toggle o colori non conformi | shot:orari-giorno-selezionato-chiaro | alert:— | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
@@ -941,17 +3554,17 @@
       "schermata": "orari/iniziale",
       "profiloTema": "telefono-390/scuro",
       "esito": "FALLITO",
-      "misurato": "state:null",
-      "atteso": "sfondo --primary e testo --primary-foreground",
-      "evidenza": "Lun attivo",
+      "misurato": "prima:null dopo:null (nessun toggle on) | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:true",
+      "atteso": "dopo click Lun: data-state=on e token primary",
+      "evidenza": "click esplicito su Lunedì da baseline senza giorni attivi | motivo: toggle o colori non conformi | shot:orari-giorno-selezionato-scuro | alert:— | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
       "id": "orari-modificato-barra",
       "schermata": "orari/modificato",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "compare:true scompare:false",
+      "esito": "OK",
+      "misurato": "compare:true scompare:true",
       "atteso": "barra con testi attesi poi assente",
       "evidenza": "/app/hours",
       "pacchetto": "orari"
@@ -960,8 +3573,8 @@
       "id": "orari-modificato-barra",
       "schermata": "orari/modificato",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "FALLITO",
-      "misurato": "compare:true scompare:false",
+      "esito": "OK",
+      "misurato": "compare:true scompare:true",
       "atteso": "barra con testi attesi poi assente",
       "evidenza": "/app/hours",
       "pacchetto": "orari"
@@ -981,18 +3594,18 @@
       "schermata": "orari/modificato",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "FALLITO",
-      "misurato": "allineamento colonna=false",
+      "misurato": "allineamento colonna=false | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:true",
       "atteso": "testo sx pulsanti dx",
-      "evidenza": "/app/hours",
+      "evidenza": "motivo: allineamento barra/colonna/testo (box bar=256,1024) | shot:orari-barra-misure-notebook-1280-chiaro | alert:— | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
       "id": "orari-errore-validazione",
       "schermata": "orari/errore-validazione",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "req:0 alert:true focus:true view:false scroll:true",
-      "atteso": "nessuna richiesta; avviso; campo; focus; scroll smooth centrato; destructive",
+      "esito": "OK",
+      "misurato": "req:0 alert:true focus:true inView:true centered:false",
+      "atteso": "nessuna richiesta; avviso; messaggio campo; focus; in vista (non centratura se primo schermo)",
       "evidenza": "Orario obbligatorio.",
       "pacchetto": "orari"
     },
@@ -1000,9 +3613,9 @@
       "id": "orari-errore-validazione",
       "schermata": "orari/errore-validazione",
       "profiloTema": "telefono-390/scuro",
-      "esito": "FALLITO",
-      "misurato": "req:0 alert:true focus:true view:false scroll:true",
-      "atteso": "nessuna richiesta; avviso; campo; focus; scroll smooth centrato; destructive",
+      "esito": "OK",
+      "misurato": "req:0 alert:true focus:true inView:true centered:false",
+      "atteso": "nessuna richiesta; avviso; messaggio campo; focus; in vista (non centratura se primo schermo)",
       "evidenza": "Orario obbligatorio.",
       "pacchetto": "orari"
     },
@@ -1031,9 +3644,9 @@
       "schermata": "orari/modificato",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "valore:true chiusura:true",
-      "atteso": "stato salvato ripristinato",
-      "evidenza": "/app/hours",
+      "misurato": "valoreRipristinato:true chiusuraAssente:true barraAssente:false | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:true",
+      "atteso": "stato salvato ripristinato (valore, chiusura prova, barra)",
+      "evidenza": "motivo: barraGone=false empty=true valore=true | shot:orari-annulla-telefono-390-chiaro | alert:— | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
@@ -1041,9 +3654,9 @@
       "schermata": "orari/festivita",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "0:true 1:false 2:true 3:true",
-      "atteso": "flusso festività (parziale step 1-4)",
-      "evidenza": "2026",
+      "misurato": "step0:true step1:false step2:true step3:true | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Le festività del 2026 sono già tutte presenti. Servizi del  | timeInputs:6 | salvaVis:true",
+      "atteso": "step0 anno invalido; step1 messaggio 13 festività 2026; step2 righe; step3 già presenti",
+      "evidenza": "motivo: step1 (Aggiunte 13 festività)=false; altri=true,false,true,true | shot:orari-festivita-telefono-390-chiaro | alert:Le festività del 2026 sono già tutte presenti. |  | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
@@ -1091,7 +3704,7 @@
       "schermata": "orari/dati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "{\"id\":\"6acba1f494373d598252014d\",\"name\":\"dinner\",\"startTime\":\"20:00\",\"endTime\":\"22:30\"}",
+      "misurato": "{\"id\":\"6acbc783409ed33f03640323\",\"name\":\"dinner\",\"startTime\":\"20:00\",\"endTime\":\"22:30\"}",
       "atteso": "dinner 20:00-22:30 nel Global",
       "evidenza": "Local API manager",
       "pacchetto": "orari"
@@ -1141,9 +3754,9 @@
       "schermata": "orari/non-configurato",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "info:false lunch:— inputs:0 gone:true",
-      "atteso": "avviso; campi vuoti; scompare dopo save",
-      "evidenza": "clear-services",
+      "misurato": "info:false lunch:12:30 timeInputs:6 hasLunchField:1 gone:true | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Orari salvati Servizi del ristorante Orario di inizio e fin | timeInputs:6 | salvaVis:false",
+      "atteso": "avviso Orari non configurati; 4 campi ora visibili e vuoti; scompare dopo save",
+      "evidenza": "clear-services | motivo: manca avviso | shot:orari-non-configurato-telefono-390-chiaro | alert:Orari salvati |  | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
@@ -1180,11 +3793,7 @@
     }
   ],
   "anomalie": [
-    "orari orari/salvato notebook-1280/chiaro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-    "orari orari/salvato telefono-390/scuro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-    "orari orari/salvato notebook-1280/scuro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-    "orari orari/conferma-rimozione notebook-1280/chiaro: page.waitForFunction: Timeout 30000ms exceeded.",
-    "orari orari/conferma-rimozione notebook-1280/scuro: page.waitForFunction: Timeout 30000ms exceeded."
+    "Global iniziale (snapshot): weeklyClosedDays=[]; services=2; closures=3; bnb=presente"
   ],
   "screenshotHashes": [
     {
@@ -1376,6 +3985,586 @@
       "name": "orari-conferma-rimozione-telefono-390-scuro",
       "temaKey": "scuro",
       "hash": "8eda506d1aa85e068cb3482cbb9c27e55d16f036afed506c2224fa951c29def1"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f8e5466ae9c30000218df5dcdb06b7437ab8ef6f81bb0fc6af9dabf5d4fdf04e"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f70c9626999b2f9dcdaa410c5242c02d4a1438ccb845bda1b5e1183f7d76ccb4"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "a36551e1957870e4d72298bdb33e7f2c824ac172595e459c0af780a62ef10cb1"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "ff0bafee7bdbda892542660d2cc98952ffd2bf0ea4de4770e137fea0c9692519"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "99fa7b2d5d6d8a2897fae4c9c91d96c3db0e97321a0160f4aba0c209d6462e4d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "dd9c034706fb037c198bbd0d57b284710c818b7d855c88f7ddd13c5ea6ad7c87"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "5ee1b2f1863426cc0d70d70fa503ba14c3852cc5cc49cfd6d20556fa549934fe"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "afaac3428ce65444be9123f10cc7e490bff52e03fee0cc6ca5eab1294d429670"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f32fe1871544dfbb6de879936a68ef9ecf34da0dfd9cc0d81e4bf7bc56515f96"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "e6cf43558c35ccb88a457f7de1d43476213d9ea0ab6c67d4aa8c11d8440b8428"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "4fa28c333b6d19fd66caa2d125d404883cdb0d1e66dfa0ea199b7583875b5e0e"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "19c24c02964d3400723c2a50ce2c9e812dd429c7eea40f051c4836576fc58251"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "c4c5a5b3b4a807dd1ce65fa3bee5ad91a193bba9051933076b86f1093d2d1ae6"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "94155d837e6df5ea65911472595c02483e92ae5980ec98982c9c9dac0a0017ab"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "984741babd4892e7c6e503900c5b9b028bb503ae67a04377ec00b4c5ec979fc3"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "c1cd7f49e71e212e974161a14e9ea16a3ef5f66b4947b991370dcf1cfe182c00"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "032fb851eff187e557c0866ac65eda49cc0daf2a75534c963332fe9855385159"
+    },
+    {
+      "name": "orari-giorno-selezionato-chiaro",
+      "temaKey": "chiaro",
+      "hash": "3f4a40952079144b1feedb256919da1752c8ec502e066d2ab77c329bfa3d43dc"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d3483f500ec86ba5237619ba8c2e68575ea32c11d55e69cf0f7efefbbdbf6d87"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "62c88637e2a446a4d6a21c18d679dd32f2758812ddfa845b705dc190e5e97e61"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "febf80c108fd0c5fb805e16aca2ae688d9d831f0ce2fbae10668e9fcbc108271"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "5ef7b8a0097f4342e2b2b13aead731641299d28c88824769a3750214d4d29f6d"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "bb6560611803b30437b801149bfb91db9370326e63e4c5ba98b2d215d445397d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "46d2d7864458fc068b91e34fb1b264a412348492d1f96293159ec480b5728809"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "5ee1b2f1863426cc0d70d70fa503ba14c3852cc5cc49cfd6d20556fa549934fe"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "abdbf863510974c7cf98ddcb8793d05fd8a2ffb4656e3bfdb563ab7936ff5422"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f32fe1871544dfbb6de879936a68ef9ecf34da0dfd9cc0d81e4bf7bc56515f96"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "8ab9bf970f468e0e8b4c5014fb9d141b7a258f5971f50b07e16f431cc3e1a076"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c67c4f29cfce9ae845a618c2c15dab3466ebe3eb8ad9c22263dc62ec8921e615"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "19c24c02964d3400723c2a50ce2c9e812dd429c7eea40f051c4836576fc58251"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "f1bfdafd3d5b0ad25ce7037fa66c6d7b670862bb6ece1495c40f84da8833dba9"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "94155d837e6df5ea65911472595c02483e92ae5980ec98982c9c9dac0a0017ab"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "839ff1d96be54046a17a161f49d67b0d81e9fc83d43eac0086163ffc9952a3e0"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "c1cd7f49e71e212e974161a14e9ea16a3ef5f66b4947b991370dcf1cfe182c00"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "99f7039b20668b84c22cfb0ff08400367ffb75379331018cbe6044de62e61b32"
+    },
+    {
+      "name": "orari-giorno-selezionato-chiaro",
+      "temaKey": "chiaro",
+      "hash": "00734224ba498c49e4f1506746f2eecb65e155d5212aef95042c8e75ba53675a"
+    },
+    {
+      "name": "orari-giorno-selezionato-scuro",
+      "temaKey": "scuro",
+      "hash": "f6c087fc63bc43edbf53e3da980031f28f716b2a0ff1eea9770d4333825e27a4"
+    },
+    {
+      "name": "orari-barra-misure-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "a0ab1b196e6b630517b8e453b69639465179d1477d7a27938bcbe2c14b98b442"
+    },
+    {
+      "name": "orari-salvataggio-in-corso-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f370f7b2d88e3a8a8998d60f96346e6eae1efadcf7530211eec0bdf5969d4b66"
+    },
+    {
+      "name": "orari-annulla-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "270abdadef6101eff71402ae05469f7740d7aebbcc473ac383879054e29a2432"
+    },
+    {
+      "name": "orari-festivita-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "10d8f1aebf2115ea2c9ef4ffc776c7b04b0d06cb60edb433f35c5752cfd46376"
+    },
+    {
+      "name": "orari-non-configurato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c0290d2b03195d6aeb4cca6a2a2ca2699695359f3ec63d47d2954a698fa1b3e5"
+    },
+    {
+      "name": "login-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d1ab03225744f2770a9079c0d04da28eebf9b8f1d8aadb03e2f7210fd03ec8ff"
+    },
+    {
+      "name": "login-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "4151cd005a1ca884050da124bb5e034acdf7973683b57d50e864ce47cec003ff"
+    },
+    {
+      "name": "login-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "eaea64bc9b2c07ac582659c4d178f5ef0fcecd5646fa1ec1a28c7accc48bf100"
+    },
+    {
+      "name": "login-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "e8c209f9d93a311830b30938fd4ff25dcf980c7d87006dfa0bf6b2672061e34a"
+    },
+    {
+      "name": "login-rifiutato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "4ac082328c57048a608ba60c15e66f87408eae76f2c1af0ecd54cdf642e6406c"
+    },
+    {
+      "name": "login-rifiutato-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "69b178b5e11470bf39d697be94efec079bd1fdcb5f602c3f36b9cd7d3aa0a9af"
+    },
+    {
+      "name": "login-rifiutato-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "8de828e53a481a3ccffa3a4f203dc8e76729d29564d742f93707c3413280399d"
+    },
+    {
+      "name": "login-rifiutato-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "e0f85a549b3673d985510acff48dfdb41e30d7dfa9d4fc64f251580d2baa44ba"
+    },
+    {
+      "name": "login-password-aggiornata-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f24de3ee69df4e3ee4e1b778f921ea6a223df6a6a8a406a5718070bb0645ea4a"
+    },
+    {
+      "name": "login-password-aggiornata-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5b79aa0ebeb2268bc963051d4d4708e2a8f8addcc6bd4f545019543c4bc67d21"
+    },
+    {
+      "name": "login-password-aggiornata-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "e551fa72d6fdee7af7ddea42c6c9880f3abef66183675e1eab83d566ab590097"
+    },
+    {
+      "name": "login-password-aggiornata-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "836ee2790fdf6965a415c5de5fc690779f33b846954927cf7578605a22e8b51f"
+    },
+    {
+      "name": "shell-home-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c0290d2b03195d6aeb4cca6a2a2ca2699695359f3ec63d47d2954a698fa1b3e5"
+    },
+    {
+      "name": "shell-home-menu-aperto-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d784bf7d6c3b550b9452b2b612a23d6a195ef0b3873bdb33781d2a137d2bc61f"
+    },
+    {
+      "name": "shell-home-menu-utente-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "664502bbb5d157c984077e21e0befde5ac830fa89b83f8eaa05937509096cde9"
+    },
+    {
+      "name": "shell-home-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "be656ce32a08f2ebe2448603456adfaea2917ff147d3f96093d51cbb360251d3"
+    },
+    {
+      "name": "shell-home-menu-utente-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5b90261dad99b4b5c24f45afce68ff28a782259c661bee2cde19abe9db27145b"
+    },
+    {
+      "name": "shell-home-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "07d0550a126efd8665bb7a4d0c171b1c32de7bc23821d34e9df1e64b1d3722b2"
+    },
+    {
+      "name": "shell-home-menu-aperto-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "0b0a200dbcdb05450885fceee8e5ccea405daad718b781bee71747ce275b3fc2"
+    },
+    {
+      "name": "shell-home-menu-utente-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "d27c378b2f1e447a522fcfffb6b797c1098807114aac9b1253eb6ea233e9e578"
+    },
+    {
+      "name": "shell-home-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "de45e4d7956120fd065f834feb01c2f92d4c70edf4b5a89c94fd9dd5046ab3bb"
+    },
+    {
+      "name": "shell-home-menu-utente-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "25ea968122060ba98df96fdf78eebae3f8933651c5cd938d075fa58d04c5720b"
+    },
+    {
+      "name": "shell-segnaposto-menu-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "9b1c30d0f3f6c4231c85aa7573d01afc439518fd2e799ccd34e8518eb93acbc6"
+    },
+    {
+      "name": "shell-segnaposto-menu-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "de0a769878aa629c4d5a25db7cba822f1f28c1da726550147080985bdf4928fe"
+    },
+    {
+      "name": "shell-segnaposto-menu-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "5315e071e87f2c61442d50ac6bb3f58528a2e76f112845efaeb06e2a1fa9add0"
+    },
+    {
+      "name": "shell-segnaposto-menu-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "c282e6c010e9b0e89a3b33d762437730e3bc96320fc7c8f91a2c3fce2b7806ec"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "6f66d06203b68d486c252887127449528e5c132b41022d8bdbdf0283f85fb45b"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c0d6cec0fe85bb6d613ac17869287260ba86e9ed948714d759a22f68b976399a"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "febf80c108fd0c5fb805e16aca2ae688d9d831f0ce2fbae10668e9fcbc108271"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "f93f6cb7a4951fb24a12fd0ba8923f20f629267ed7d2af9bdc3b404f3d949834"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "bb6560611803b30437b801149bfb91db9370326e63e4c5ba98b2d215d445397d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "1bd93d379c78b3e4f48a802ef0f051120286c042a09c156a3f50036ffcc35877"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "d0c906bb0b07387ce863d319ae77879e9933dc3de319e7414455ecf22edab4dc"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "f93ee259b88d58ccf9c3dce5adc9e19b6930e0350557a30c0403940faeccb048"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f32fe1871544dfbb6de879936a68ef9ecf34da0dfd9cc0d81e4bf7bc56515f96"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "8ab9bf970f468e0e8b4c5014fb9d141b7a258f5971f50b07e16f431cc3e1a076"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5fa2246dc2f06a9473d74b9dda5a24f2f6473d4e79361ff5f5eca47eab1b44df"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "3fc930bdd2ecf635e5b313c07095b30be2bc449571121aa2f8614bb9a2fda632"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "67fe403233e7151e8fe75fb593cfc19abd53d23da6b595c13f8ce67908fc4e71"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "e38e9a453fc8a5f163da13516f56b3afff56c04184d4a2ec4ddc344bbb6ccb31"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "7dd2f6c03db9da6d381be339222147e9566d5ce6f505842ffe6c2faa4c6dd3b1"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "4950f7069a1c7eba5f99bc08336dbc6614ce51e125e04c56bd5f6b2c548f96d7"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "086dea70d62ec9000ac0919d6726154123d4636b5919bfab8ba4cb1833df0eb1"
+    },
+    {
+      "name": "orari-giorno-selezionato-chiaro",
+      "temaKey": "chiaro",
+      "hash": "df49cdaf48f82f9585c6a635e31ba4c550aabca08de74d1462302dc2b18ae4d1"
+    },
+    {
+      "name": "orari-giorno-selezionato-scuro",
+      "temaKey": "scuro",
+      "hash": "a5739f17a8005ecf1e7b43ff752e725c6de9f8493ee8f7b0da9df7bfb5b23084"
+    },
+    {
+      "name": "orari-barra-misure-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c022dda2d0e2dc3bba94da6552dcf48933b6b903f8bc0d41b827411c6ba38440"
+    },
+    {
+      "name": "orari-salvataggio-in-corso-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f370f7b2d88e3a8a8998d60f96346e6eae1efadcf7530211eec0bdf5969d4b66"
+    },
+    {
+      "name": "orari-annulla-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "270abdadef6101eff71402ae05469f7740d7aebbcc473ac383879054e29a2432"
+    },
+    {
+      "name": "orari-festivita-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "10d8f1aebf2115ea2c9ef4ffc776c7b04b0d06cb60edb433f35c5752cfd46376"
+    },
+    {
+      "name": "orari-uscita-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "1e99fa468139979eba63852bd3fba5ec2c008296182b005848afc43aab06fb9b"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "9aacf011384a82b411700c020b3cf3aca2e3724db9db3a8a1eecfc54e2507b88"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "eb9ed749f691ba56c550b1eba905f381e3a730a948ae1d0685d0f6eae32a01be"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "a36551e1957870e4d72298bdb33e7f2c824ac172595e459c0af780a62ef10cb1"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "fe2cf2dee7f14be6afb4c6675ddf2aa67d66875ca13c200e73e4e6afa2ae64bc"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "b4213356e1299d8a05613933960fd047195e205b1c97b52e241dfe82de2035df"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5e778a09885acda49d9f21ed3f8ad03c93cddcc94beccdca00091e7a01c6fa1b"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "5ee1b2f1863426cc0d70d70fa503ba14c3852cc5cc49cfd6d20556fa549934fe"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "b6392887429b6179197418adba9028b4ef324a39429ac7db604d1635c76f177a"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "96110a1c31adfd30e65b941c3c88707dc4f303528aafa954ceeed75854eb4c40"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "8ab9bf970f468e0e8b4c5014fb9d141b7a258f5971f50b07e16f431cc3e1a076"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "7cd5c339dee931349116449200cc6cb36ba16ee9c70c5760222829ce9e478280"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "19c24c02964d3400723c2a50ce2c9e812dd429c7eea40f051c4836576fc58251"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "6eb60c8c6cf92f6c0ec6453afc39a2cb378475bfb91e24c024bb5ca9166d2141"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "94155d837e6df5ea65911472595c02483e92ae5980ec98982c9c9dac0a0017ab"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "74bdb966428a1d01b80b44c98381b7511e21de5fbc1ff251e10eabe6213cc857"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "c1cd7f49e71e212e974161a14e9ea16a3ef5f66b4947b991370dcf1cfe182c00"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "b08c96a9d89126f17390c76a6d5956c5271dcb33e6385bb051cf16d3739a4826"
+    },
+    {
+      "name": "orari-giorno-selezionato-chiaro",
+      "temaKey": "chiaro",
+      "hash": "3f4a40952079144b1feedb256919da1752c8ec502e066d2ab77c329bfa3d43dc"
+    },
+    {
+      "name": "orari-giorno-selezionato-scuro",
+      "temaKey": "scuro",
+      "hash": "bca170629efb869351b27f85e815a386cdec70b3a8c416165c9d384c5d3fd157"
+    },
+    {
+      "name": "orari-barra-misure-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "fff13eef0990fcfef164907f53189374b54e05d89b1a59e01b7310152f355e24"
+    },
+    {
+      "name": "orari-salvataggio-in-corso-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f370f7b2d88e3a8a8998d60f96346e6eae1efadcf7530211eec0bdf5969d4b66"
+    },
+    {
+      "name": "orari-annulla-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "270abdadef6101eff71402ae05469f7740d7aebbcc473ac383879054e29a2432"
+    },
+    {
+      "name": "orari-festivita-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "10d8f1aebf2115ea2c9ef4ffc776c7b04b0d06cb60edb433f35c5752cfd46376"
+    },
+    {
+      "name": "orari-non-configurato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "3020c8cad25eb97e9d26f88cce674c40b97e445c09dfd37acde7e296bd249937"
     }
   ]
 }

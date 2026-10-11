@@ -40,6 +40,10 @@ export function hoursRestoreFrom(path) {
   hoursPayloadRun('restore', [], { UI_VERIFY_HOURS_SNAPSHOT: path })
 }
 
+export function hoursVerifySnapshot(path) {
+  return hoursPayloadRun('verify-snapshot', [], { UI_VERIFY_HOURS_SNAPSHOT: path })
+}
+
 export function withHoursBackup(fn) {
   const path = hoursSnapshotToTemp()
   try {

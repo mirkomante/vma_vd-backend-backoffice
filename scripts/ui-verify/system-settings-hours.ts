@@ -136,6 +136,27 @@ async function main(): Promise<void> {
     return
   }
 
+  if (action === 'verify-snapshot') {
+    const path = process.env.UI_VERIFY_HOURS_SNAPSHOT
+    if (!path) throw new Error('UI_VERIFY_HOURS_SNAPSHOT mancante')
+    const expected = JSON.parse(readFileSync(path, 'utf8')) as HoursSlice
+    const doc = await payload.findGlobal({
+      slug: SYSTEM_SETTINGS_SLUG,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const current = hoursSlice(doc as ImpostazioniSistema)
+    const equal = JSON.stringify(current) === JSON.stringify(expected)
+    process.stdout.write(
+      JSON.stringify({
+        equal,
+        weeklyClosedDays: current.weeklyClosedDays ?? [],
+        closureCount: (current.annualClosures ?? []).length,
+      }),
+    )
+    return
+  }
+
   if (action === 'clear-services') {
     const doc = await payload.findGlobal({
       slug: SYSTEM_SETTINGS_SLUG,

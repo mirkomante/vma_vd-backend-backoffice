@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.1.1'
+export const LAUNCHER_VERSION = '3.1.2'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',

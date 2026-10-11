@@ -998,6 +998,7 @@ async function runAmbienteWithBudget(ambiente, fn) {
   budget = new RunBudget(timeoutMsForAmbiente(ambiente), report)
   const t0 = Date.now()
   try {
+    report.anomalie = []
     await fn(report, budget)
   } catch (e) {
     if (!(e instanceof RunTimeoutError)) throw e
@@ -1040,6 +1041,10 @@ async function main() {
       await runAmbienteWithBudget('locale-dev', async (report) => {
         const devBrowser = await chromium.launch()
         if (runCtx.screenIncluded('orari')) {
+          if (runCtx.livello === 1 && runCtx.schermate?.size === 1 && runCtx.schermate.has('orari')) {
+            report.replacePacchetto('shell')
+            report.replacePacchetto('completo')
+          }
           report.replacePacchetto('orari')
           report.pacchettoDefault = 'orari'
           await runOrariConsole({

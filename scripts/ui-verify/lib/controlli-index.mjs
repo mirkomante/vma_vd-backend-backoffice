@@ -15,14 +15,28 @@ export function allControlIds(controlli, ambiente, opts = {}) {
     if (orariScreen && orariInScope) {
       for (const c of orariScreen.controlli ?? []) {
         if (!levelOk(c.id)) continue
-        if (c.ambienti && !c.ambienti.includes('locale-dev')) continue
+        // Su locale-dev contano solo i controlli esplicitamente assegnati a questo ambiente (es. console, simulazioni).
+        if (!c.ambienti?.includes('locale-dev')) continue
         ids.push(c.id)
       }
     } else if (levelOk('CONSOLE')) {
       ids.push('CONSOLE')
     }
-    if (levelOk('webkit-giro-essenziale')) ids.push('webkit-giro-essenziale')
-    return [...new Set(ids)].sort()
+    if (livello != null && livello >= 2 && levelOk('webkit-giro-essenziale')) {
+      ids.push('webkit-giro-essenziale')
+    }
+    let out = [...new Set(ids)].sort()
+    // L1 su locale-dev per Orari: solo console e simulazioni (policy controlli-8.5 livelli.1).
+    if (orariInScope && schermate?.size === 1 && schermate.has('orari')) {
+      const devOrariScope = new Set([
+        'orari-console',
+        'orari-errore-server',
+        'orari-errore-caricamento',
+        ...(livello != null && livello >= 2 ? ['webkit-giro-essenziale'] : []),
+      ])
+      out = out.filter((id) => devOrariScope.has(id))
+    }
+    return out
   }
 
   if (ambiente === 'online') {
