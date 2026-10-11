@@ -9,6 +9,7 @@ Design UI/UX dell'Area App `(app)`. L'Admin è quello standard di Payload e non 
 | `installazione-componenti-ui.md` | Come installare i componenti shadcn e le deviazioni D6 da applicare subito dopo |
 | `patch-app-ui-css.md` | Le correzioni da applicare a `app/(app)/app-ui.css` all'inizio della 8.2 |
 | `schermate/<nome>/` | Un pacchetto per ogni schermata approvata (vedi sotto) |
+| `prototipo-sorgenti.zip` | Sorgenti e script con cui si producono prototipi, mockup statici e screenshot (non è codice dell'app; non si estrae nel repo: le istruzioni di ripristino sono nel `README-ripristino.md` dentro lo zip) |
 | `assets/` | `mockup.css` (generato) e il font Geist, usati dai mockup statici |
 
 **Pacchetto di una schermata** (`schermate/<nome>/`):
