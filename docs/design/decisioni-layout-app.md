@@ -59,7 +59,7 @@ Una scheda per ogni sezione consentita (Prenotazioni, Menù, Orari): icona, tito
 
 ### D3 — Collegamento a `/admin`
 
-Voce **«Vai all'Admin»** nel menu utente (quello che si apre dal blocco con l'email in fondo alla barra), con icona di collegamento esterno. Visibile solo se `canAccessAdminPanel(user)`. Motivo: l'Admin è pensato soprattutto per l'uso da web e i contenuti dei siti, dopo l'inserimento iniziale, si aggiornano di rado.
+Voce **«Vai all'Admin»** nel menu utente (quello che si apre dal blocco con l'email in fondo alla barra), con icona di collegamento esterno. Visibile solo se `canAccessAdminPanel(user)`. **Si apre in una nuova scheda** (`target="_blank"`, `rel="noopener"`; scelta di Mirko, 2026-10-11): l'App resta aperta con quello che c'è dentro (nessuna conferma di uscita con modifiche non salvate) e l'Admin è un'altra applicazione. Motivo: l'Admin è pensato soprattutto per l'uso da web e i contenuti dei siti, dopo l'inserimento iniziale, si aggiornano di rado.
 
 ### D4 — Tema chiaro, scuro, sistema
 
@@ -224,6 +224,32 @@ Prototipo della shell (barra laterale, menu utente, tema), della home con e senz
 - **A22 — Descrizioni delle schede della home**: parlano anche di sottovoci non ancora abilitate; restano quelle definitive.
 - **Verificato**: i marcatori D6 e T1 di `ui:check` passano sui venti componenti modificati del prototipo e falliscono su quelli stock; mockup statici identici ai prototipi a 1280 px (0,0 % in chiaro e in scuro) per tutte le sei schermate; nessuno scorrimento orizzontale e nessun elemento sotto 44 px nelle dieci pagine di accesso.
 
+### Verifica visiva della 8.2 (2026-10-11)
+
+Screenshot di Mirko sulla versione su Cloud Run (revisione `vma-vd-backend-backoffice-git-00086-ndp`, commit `27227a7`), Safari su Mac in modalità responsive (iPhone) e in finestra normale, più i log del server. Confronto a coppie con i PNG di `schermate/shell/` e `schermate/accesso/`, e lettura del codice (classi dei componenti, sorgente di Payload 3.90.2). L'app non è stata eseguita nella chat di design.
+
+**Cosa gli screenshot non dimostrano**
+- **D6 (aree di tocco)**: i controlli risultano alti circa 32 px, il valore che hanno senza `pointer-coarse:`. Non è provato che la modalità responsive di Safari su Mac non simuli il puntatore touch, ma il risultato è quello atteso senza di esso. Né conferma né smentisce D6: serve un iPhone vero.
+- **Larghezza «1280»**: le finestre sono molto più larghe di 1280 px (stima dalla scheda di accesso, larga al massimo 384 px ma resa circa 217 px nell'immagine: circa 2300 px di larghezza CSS). D8 e il passaggio a 768 px non sono verificati a 1280.
+- **Non verificati**: assenza di lampo del tema, console del browser (i log caricati sono del server), riga `logout` nel registro attività, sessione dell'Admin dopo «Esci».
+- **Screenshot mancanti**: segnaposto `/app/menu`, forgot «inviata», verify riuscita, menu aperto scuro a 1280.
+
+**Verificato in linea con il mockup**: login (chiaro e scuro, 390 e 1280), con errore e con «Password aggiornata»; forgot; reset iniziale e senza token; verify con e senza token; home e menu a 390 (chiaro e scuro); home e menu utente a 1280. Struttura, testi, ordine, ruolo e iniziali sono quelli previsti. I log del server non hanno errori né avvisi (solo righe `INFO` e l'avvio di Next).
+
+**Da correggere (P)**
+- **P10 — Errore nella specifica dell'accesso**: dava `LoginFailureNotice` da eliminare, ma lo importano `AdminGoogleLoginBefore.tsx` e `app/(payload)/admin/login/local/page.tsx` (Admin). Cursor lo ha tenuto, giustamente. Specifica corretta.
+- **P11 — `AppAuthPage` si discosta dal mockup** (`components/app/auth/app-auth-page.tsx` contro `prototipo-sorgenti/src/accesso.tsx`): icona `size-12` con glifo `size-6` invece di `size-10` e `size-5`; `gap-6` invece di `gap-4` tra intestazione, scheda e collegamenti; `CardContent` con `pt-6` che si somma a `--card-spacing` (16 px): 40 px sopra il primo elemento della scheda invece di 16. Si vede in tutte le pagine di accesso (circa 22 px in più sopra «Accedi con Google»). Le misure sono ora nella specifica dell'accesso (sezione 8).
+- **P12 — Reset: con `resetFailed=1` e token il modulo sparisce.** Nel codice la pagina mostra solo l'avviso; la versione precedente alla 8.2 (`de5a7fd^`) e la specifica (`390-reset-fallito-chiaro.png`) mostrano avviso e modulo. `resetFailed=1` con il token non vuol dire solo «link scaduto»: `lib/auth/localEmail/resetPasswordEndpoint.ts` reindirizza così anche quando la password non rispetta la regola (maiuscola, minuscola, cifra) e il link è ancora valido. Senza modulo, chi sbaglia la password non può riprovare. Esito: è una regressione, non una scelta di design (D11: i flussi non cambiano); si ripristina il modulo, come nella specifica. Osservazione, da non cambiare qui: il messaggio generico di `lib/auth` dice «link non valido o scaduto» anche per una password debole.
+- **P13 — «Esci» porta a `https://0.0.0.0:8080/app/login` su Cloud Run.** Il server risponde 303 senza errori (due POST nei log) e il cookie viene scaduto (dopo il POST, `/app` risponde 307 al login). Causa probabile, dal codice e non provata: `new URL('/app/login', request.url)` in `app/(app)/app/logout/route.ts`; dietro Cloud Run `request.url` ha l'host interno del contenitore (Next ascolta su `0.0.0.0:8080`, come dicono i log). Correzione: reindirizzamento relativo (`Location: /app/login`, come `lib/auth/localEmail/resetPasswordEndpoint.ts`) oppure URL costruito da `getAppPublicURL()`; mai da `request.url`. Prova: su Cloud Run «Esci» deve portare a `/app/login` sul dominio pubblico.
+- **P14 — La cartella `docs/design/prototipo-sorgenti/` nel repo** (commit `27227a7`) sembra lo zip estratto invece che committato. `tsconfig.json` include `**/*.tsx` senza esclusioni e `eslint.config.mjs` non ignora `docs`; i sorgenti importano da `@/components/ui/` dieci componenti che nell'app non esistono (`table`, `tabs`, `select`, `switch`, `checkbox`, `badge`, `textarea`, `toggle`, `toggle-group`, `alert-dialog`). Quindi `pnpm typecheck` e `pnpm lint` probabilmente falliscono (non provato: dipendenze non installate). Cloud Run non è toccato, perché `.dockerignore` esclude `docs`. Correzione: togliere la cartella e committare `docs/design/prototipo-sorgenti.zip` (nello zip di consegna), come dicono i README.
+
+**Non bloccanti (A)**
+- **A23 — Tema «Sistema» senza ascolto**: `matchMedia` è letto una volta sola; se il sistema passa a scuro a pagina aperta, l'App non segue finché non si ricarica.
+- **A24 — Menu utente diverso dal mockup, senza cambi di comportamento**: intestazione con avatar ed email in più (l'email è già nel blocco sotto), voci del tema senza icone (sole, luna, schermo), «Vai all'Admin» con una sola icona (D3 la prevede così; il mockup ne ha due), un separatore in più prima di «Esci». Da decidere se allineare il codice o il mockup.
+- **A25 — CHANGELOG e codice non coincidono**: il CHANGELOG dice `next/script`, il layout usa un `<script>` in `<head>` (tecnica standard anti-lampo). Correggere il CHANGELOG.
+- **A26 — Home senza larghezza massima** su schermi molto larghi: non è specificata.
+- **A27 — «Torna al sito» porta a `/`**: dai log risulta una pagina che carica `next.svg` e `vercel.svg`, cioè probabilmente quella di esempio di Next (non vista). Fuori dal design.
+
 ## 5. Verifiche tecniche fatte in questa sessione
 
 - Sorgenti dei componenti: repository `shadcn-ui/ui`, commit `2d3f1cd` (2026-10-09), cartelle `apps/v4/registry/bases/base/ui` e `styles/style-nova.css`. **`base-nova` poggia su `@base-ui/react`, non su Radix.** Le classi `cn-*` dei componenti si risolvono con `style-nova.css`: 422 blocchi, tutti `@apply` semplici.
@@ -244,7 +270,7 @@ Prototipo della shell (barra laterale, menu utente, tema), della home con e senz
 - Come gestire il tema rispetto a `next-themes` e al `Toaster` (A6).
 - **Debito: paginazione delle liste oltre 100 voci** (oggi i piatti sono 44). Predisposta: ricerca, filtri e ordine nella richiesta, avviso di elenco parziale; da aggiungere «Mostra altri piatti» quando serve.
 - **Debito: casella «solo per menu fisso» sui piatti** (`soloMenuFissi`): migrazione additiva, da aggiungere quando il frontend pubblico la leggerà e se esisterà un piatto che non va alla carta.
-- **Uscita («Esci»)** da implementare in 8.2, con la verifica sulla sessione dell'Admin.
+- **Uscita («Esci»)**: implementata in 8.2 (`POST /app/logout`). Da correggere il reindirizzamento (P13). Restano da verificare la sessione dell'Admin (stesso cookie: uscendo dall'App si dovrebbe uscire anche dall'Admin) e la riga `logout` nel registro attività. Con `useSessions: false` il logout scade solo il cookie, non invalida il token lato server (nota per la revisione).
 - **Utente già autenticato su `/app/login`**: oggi vede la pagina; si può reindirizzare a `/app`. Non deciso.
 - **Percorsi delle sottovoci del menu**: da fissare con le sottofasi 5.5 e 6.6.
 
@@ -261,4 +287,4 @@ I tre «passaggi da confermare» di `fase-8-shell-app.md` §8.2 sono risolti da 
 
 **Da fare**
 4. Le altre schermate quando arriva la loro fase: Eccezioni giorno e Impostazioni (5.x); Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali e Messaggio globale (6.6).
-5. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi, con i controlli comuni del modello di specifica.
+5. Verifica visiva delle implementazioni di Cursor a 390 e 1280 px, in tutti e due i temi, con i controlli comuni del modello di specifica. **Fatta in parte il 2026-10-11 per la 8.2** (vedi §4): restano le correzioni P10–P14, la prova su un iPhone vero (D6), gli screenshot mancanti e la riverifica dopo le correzioni.
