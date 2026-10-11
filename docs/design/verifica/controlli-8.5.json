@@ -1,0 +1,879 @@
+{
+ "versione": 3,
+ "fase": "8.5",
+ "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato.",
+ "fonti": [
+  "docs/design/schermate/orari/spec.md",
+  "docs/design/decisioni-layout-app.md",
+  "docs/design/modello-specifica-schermata.md",
+  "docs/piano-sviluppo/fase-8-shell-app.md (8.5)"
+ ],
+ "ambienti": {
+  "locale-dev": {
+   "avvio": "pnpm dev",
+   "url": "http://localhost:3000",
+   "database": "sviluppo",
+   "serve_per": "console senza avvisi di Base UI (la produzione non li stampa)"
+  },
+  "locale-prod": {
+   "avvio": "pnpm build && pnpm start",
+   "url": "http://localhost:3000",
+   "database": "sviluppo",
+   "serve_per": "misure, tema senza lampo, flussi (più vicino a Cloud Run)"
+  },
+  "online": {
+   "avvio": "nessuno",
+   "url": "valore di BASE_URL (dominio pubblico di Cloud Run)",
+   "database": "produzione: MAI credenziali, MAI utenti di prova",
+   "serve_per": "solo i controlli di 'online-senza-credenziali'"
+  }
+ },
+ "profili": {
+  "telefono-360": {
+   "larghezza": 360,
+   "altezza": 800,
+   "scala": 3,
+   "tocco": true
+  },
+  "telefono-390": {
+   "larghezza": 390,
+   "altezza": 844,
+   "scala": 3,
+   "tocco": true
+  },
+  "soglia-767": {
+   "larghezza": 767,
+   "altezza": 1000,
+   "scala": 2,
+   "tocco": true
+  },
+  "soglia-768": {
+   "larghezza": 768,
+   "altezza": 1000,
+   "scala": 2,
+   "tocco": true
+  },
+  "tablet-820": {
+   "larghezza": 820,
+   "altezza": 1180,
+   "scala": 2,
+   "tocco": true
+  },
+  "notebook-1280": {
+   "larghezza": 1280,
+   "altezza": 900,
+   "scala": 1,
+   "tocco": false
+  }
+ },
+ "temi": {
+  "chiaro": {
+   "cookie_app-theme": "light",
+   "colorScheme": "light",
+   "html_dark": false
+  },
+  "scuro": {
+   "cookie_app-theme": "dark",
+   "colorScheme": "light",
+   "html_dark": true
+  },
+  "sistema-chiaro": {
+   "cookie_app-theme": "system",
+   "colorScheme": "light",
+   "html_dark": false
+  },
+  "sistema-scuro": {
+   "cookie_app-theme": "system",
+   "colorScheme": "dark",
+   "html_dark": true
+  }
+ },
+ "livelli": {
+  "1": {
+   "descrizione": "Mirato: a fine di ogni passaggio che tocca una schermata",
+   "profili": [
+    "telefono-390",
+    "notebook-1280"
+   ],
+   "temi": [
+    "chiaro",
+    "scuro"
+   ],
+   "webkit": false,
+   "schermate": "solo quelle indicate con --schermata",
+   "ambienti": [
+    "locale-prod",
+    "locale-dev (solo CONSOLE della schermata)"
+   ],
+   "durata_obiettivo": "2 minuti"
+  },
+  "2": {
+   "descrizione": "Esteso: solo ai trigger di docs/design/verifica/policy-test.md sezione 4",
+   "profili": "tutti",
+   "temi": "tutti",
+   "webkit": true,
+   "schermate": "tutte",
+   "ambienti": [
+    "locale-prod",
+    "locale-dev",
+    "online"
+   ],
+   "durata_obiettivo": "10 minuti"
+  },
+  "S": {
+   "descrizione": "Smoke dopo ogni deploy",
+   "ambienti": [
+    "online"
+   ],
+   "controlli": "online-senza-credenziali",
+   "durata_obiettivo": "1 minuto"
+  }
+ },
+ "comuni": [
+  {
+   "id": "AMBIENTE",
+   "tipo": "assenza",
+   "ambienti": [
+    "locale-prod",
+    "online"
+   ],
+   "selettore": "indicatore di sviluppo di Next (cerchio «N» in basso a sinistra; di norma l'elemento <nextjs-portal>: verifica sul DOM e riporta il selettore usato)",
+   "atteso": "assente",
+   "se_fallisce": "l'ambiente NON è di produzione: tutti gli esiti di misura di quell'esecuzione sono NON VALIDI e vanno rifatti con `pnpm build && pnpm start` su una porta libera",
+   "nota": "Eseguire prima di ogni altro controllo. La prima esecuzione di 'locale-prod' mostrava l'indicatore nei suoi screenshot.",
+   "fonte": "README sezione 4",
+   "livello": 1
+  },
+  {
+   "id": "C1",
+   "tipo": "scroll-orizzontale",
+   "profili": [
+    "telefono-360",
+    "telefono-390",
+    "notebook-1280"
+   ],
+   "atteso": "document.documentElement.scrollWidth <= window.innerWidth",
+   "si_applica_a": "ogni stato di ogni schermata",
+   "fonte": "modello C1",
+   "livello": 1
+  },
+  {
+   "id": "C2",
+   "tipo": "tocco-minimo",
+   "profili": [
+    "telefono-390",
+    "tablet-820"
+   ],
+   "minimo_px": 44,
+   "algoritmo": "docs/design/verifica/misura-tocco.md",
+   "atteso": "nessun elemento in elenco",
+   "fonte": "modello C2, decisioni D6",
+   "livello": 1
+  },
+  {
+   "id": "C2-mouse",
+   "tipo": "altezza-mouse",
+   "profili": [
+    "notebook-1280"
+   ],
+   "min_px": 28,
+   "max_px": 48,
+   "gravita": "avviso",
+   "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto.",
+   "fonte": "decisioni D6",
+   "elementi": "button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
+   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?» e «Torna al sito») e gli elementi nascosti",
+   "livello": 1
+  },
+  {
+   "id": "C3",
+   "tipo": "tema-classe",
+   "temi": [
+    "chiaro",
+    "scuro",
+    "sistema-chiaro",
+    "sistema-scuro"
+   ],
+   "atteso": "<html> ha la classe 'dark' se e solo se html_dark è vero",
+   "fonte": "modello C3, decisioni D4",
+   "livello": 1
+  },
+  {
+   "id": "C3-no-lampo",
+   "tipo": "tema-no-lampo",
+   "temi": [
+    "scuro",
+    "sistema-scuro"
+   ],
+   "atteso": "nessuna variazione della classe di <html> dopo DOMContentLoaded (osservare con MutationObserver installato prima della pagina)",
+   "fonte": "decisioni D4",
+   "livello": 2
+  },
+  {
+   "id": "C3-cambio-sistema",
+   "tipo": "tema-cambio-sistema",
+   "passi": "con cookie app-theme=system e colorScheme chiaro, cambia a scuro a pagina aperta (emulateMedia) senza ricaricare",
+   "atteso": "la classe 'dark' compare; con cookie 'light' o 'dark' non cambia",
+   "fonte": "A23",
+   "livello": 2
+  },
+  {
+   "id": "CONSOLE",
+   "tipo": "console-pulita",
+   "ambienti": [
+    "locale-dev"
+   ],
+   "atteso": "zero messaggi console di livello error o warning, zero pageerror, zero richieste fallite (4xx/5xx non attesi)",
+   "nota": "Gli avvisi di Base UI compaiono solo in sviluppo.",
+   "fonte": "regola UI 01, sezione Insidie note",
+   "passi": "oltre al caricamento di ogni pagina: nelle pagine della shell apri il pannello del menu (telefono), apri il menu utente, scegli Chiaro, Scuro e Sistema, poi richiudi; gli avvisi di Base UI compaiono proprio all'apertura dei menu. Profili: notebook-1280 e telefono-390. Non visitare mai indirizzi con segnaposto (per esempio <token reale>).",
+   "livello": 1
+  },
+  {
+   "id": "C9",
+   "tipo": "comando",
+   "comando": "pnpm ui:check",
+   "atteso": "codice di uscita 0",
+   "fonte": "modello C9",
+   "livello": 1
+  }
+ ],
+ "dati_e_sicurezza": {
+  "database": "solo sviluppo; il lanciatore salva lo stato originale del Global impostazioni-sistema (tab Orari e chiusure) prima di ogni scrittura e lo ripristina in try/finally",
+  "utenti_di_prova": {
+   "manager": "appRole manager, adminRole none, login locale, email verificata (come per le schermate della shell)",
+   "senza_ruolo": "appRole none, adminRole none",
+   "admin_e_super_admin": "non hanno login locale: si provano con la Local API passando il documento utente (sso, active) come 'user' e overrideAccess false, sul modello di scripts/verify-roles-8_3.ts"
+  },
+  "simulazioni": {
+   "errore_server": "intercettare la richiesta di salvataggio e rispondere con un errore 500",
+   "salvataggio_lento": "intercettare la richiesta di salvataggio e ritardarla di 1500 ms",
+   "errore_caricamento": "l'implementazione deve offrire un modo documentato in sviluppo per far fallire la lettura (intercettazione o interruttore dichiarato nel CHANGELOG); se non esiste: NON PROVATO",
+   "non_configurato": "togliere 'services' dal Global con la Local API (dopo il backup) e ricaricare"
+  }
+ },
+ "schermate": [
+  {
+   "id": "orari",
+   "percorso": "/app/hours",
+   "auth": "manager di prova",
+   "stati": [
+    {
+     "id": "iniziale",
+     "nota": "valori salvati completi, nessuna barra, nessun avviso"
+    },
+    {
+     "id": "modificato",
+     "come": "cambiare un orario"
+    },
+    {
+     "id": "errore-validazione",
+     "come": "svuotare un orario e premere Salva"
+    },
+    {
+     "id": "salvato",
+     "come": "valori validi, Salva"
+    },
+    {
+     "id": "foglio-chiusura",
+     "come": "premere «Aggiungi chiusura»"
+    },
+    {
+     "id": "conferma-rimozione",
+     "come": "«Rimuovi festività di un anno» con anno valido"
+    },
+    {
+     "id": "salvataggio-in-corso",
+     "come": "salvataggio ritardato"
+    },
+    {
+     "id": "errore-server",
+     "come": "salvataggio con 500"
+    },
+    {
+     "id": "non-configurato",
+     "come": "Global senza services"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "lettura fallita (simulata)"
+    },
+    {
+     "id": "uscita",
+     "come": "modifiche non salvate e clic su un collegamento del menu"
+    }
+   ],
+   "controlli": [
+    {
+     "id": "orari-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 6",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Orari",
+      "descrizione": "Orari di vietnamonamour.com: ristorante e B&B.",
+      "schede": [
+       {
+        "titolo": "Servizi del ristorante",
+        "descrizione": "Orario di inizio e fine di Pranzo e Cena (HH:mm, 24 ore).",
+        "gruppi": [
+         "Pranzo",
+         "Cena"
+        ],
+        "campi_per_gruppo": [
+         "Inizio",
+         "Fine"
+        ]
+       },
+       {
+        "titolo": "Giorni di riposo settimanali",
+        "descrizione": "Giorni della settimana in cui il ristorante è chiuso.",
+        "giorni": [
+         "Lun",
+         "Mar",
+         "Mer",
+         "Gio",
+         "Ven",
+         "Sab",
+         "Dom"
+        ],
+        "nomi_accessibili": [
+         "Lunedì",
+         "Martedì",
+         "Mercoledì",
+         "Giovedì",
+         "Venerdì",
+         "Sabato",
+         "Domenica"
+        ]
+       },
+       {
+        "titolo": "Chiusure annuali",
+        "descrizione": "Giorni di chiusura eccezionali (festività, ferie, ecc.).",
+        "festivita": [
+         "Festività predefinite",
+         "13 festività: nazionali e Sant’Ambrogio.",
+         "Anno",
+         "Aggiungi festività",
+         "Rimuovi festività di un anno"
+        ],
+        "aggiunta": "Aggiungi chiusura"
+       },
+       {
+        "titolo": "B&B (vietnamonamour.com)",
+        "descrizione": "Orari di check-in e check-out. L’indicazione sulla colazione è contenuto del sito.",
+        "campi": [
+         "Check-in",
+         "Check-out"
+        ]
+       }
+      ]
+     },
+     "nota": "Testi carattere per carattere (apostrofi tipografici compresi). Nessun segnaposto nei campi dell'ora."
+    },
+    {
+     "id": "orari-stato-iniziale",
+     "tipo": "assenza",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 5, checklist 8",
+     "selettore": "barra di salvataggio, avvisi (role=status con testo, role=alert)",
+     "atteso": "nessuna barra e nessun avviso nello stato iniziale"
+    },
+    {
+     "id": "orari-campi-ora",
+     "tipo": "attributi",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 2 e 6",
+     "atteso": {
+      "input_ora": {
+       "numero": 6,
+       "type": "time",
+       "nomi": [
+        "Inizio",
+        "Fine",
+        "Inizio",
+        "Fine",
+        "Check-in",
+        "Check-out"
+       ],
+       "valore": "HH:mm a 24 ore uguale a quello letto dal Global con la Local API"
+      }
+     },
+     "nota": "Il valore mostrato per le ore viene dal dato; il formato visualizzato segue il dispositivo e non si controlla."
+    },
+    {
+     "id": "orari-colonna",
+     "tipo": "misura",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 4, checklist 3",
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": {
+       "contenitore-form": "larghezza 576 px, centrato nell'area del contenuto",
+       "gruppo-giorni": "larghezza 392 px",
+       "voce-giorno": "larghezza 56 px"
+      },
+      "telefono-390": {
+       "contenitore-form": "tutta la larghezza meno 16 px per lato",
+       "gruppo-giorni": "occupa la riga",
+       "voce-giorno": "circa 47 px"
+      }
+     }
+    },
+    {
+     "id": "orari-giorno-selezionato",
+     "tipo": "misura",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 4",
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "profili": [
+      "telefono-390"
+     ],
+     "atteso": "sfondo del giorno attivo uguale al colore del token --primary e testo uguale a --primary-foreground (confronto con un elemento sonda che usa var(--primary))"
+    },
+    {
+     "id": "orari-giorni-riposo",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.5",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "attiva Lun e Mer",
+      "disattiva Lun",
+      "salva con tutti i giorni disattivati"
+     ],
+     "atteso": [
+      "ogni voce cambia da sola",
+      "dopo il salvataggio weeklyClosedDays è vuoto e la pagina non mostra giorni attivi"
+     ]
+    },
+    {
+     "id": "orari-modificato-barra",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.1 e 5",
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "cambia un orario",
+      "riporta lo stesso valore"
+     ],
+     "atteso": [
+      "con la modifica compare la barra: «Modifiche non salvate», «Annulla modifiche», «Salva modifiche»",
+      "tornando al valore salvato la barra scompare"
+     ]
+    },
+    {
+     "id": "orari-barra-misure",
+     "tipo": "misura",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 8 e sezione 4",
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "telefono-390": "altezza della barra non superiore a 97 px; due pulsanti affiancati, alti 44 px (tocco); testo sopra",
+      "notebook-1280": "barra allineata alla colonna del modulo; testo a sinistra, pulsanti a destra"
+     }
+    },
+    {
+     "id": "orari-barre-agganciate",
+     "tipo": "misura",
+     "livello": 2,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 7 (P1)",
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "dopo uno scorrimento di 600 px (inserendo un elemento alto se la pagina è corta) la barra in alto ha top 0 e, con modifiche, la barra di salvataggio ha bottom uguale all'altezza della finestra",
+     "tolleranza_px": 0.5
+    },
+    {
+     "id": "orari-errore-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.3, checklist 6",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "svuota Inizio di Pranzo",
+      "premi «Salva modifiche»"
+     ],
+     "atteso": [
+      "nessuna richiesta di salvataggio parte (nessuna richiesta di rete verso il server)",
+      "avviso rosso «Controlla i campi evidenziati» / «Alcuni orari non sono validi: non è stato salvato nulla.»",
+      "sul campo il messaggio «Orario obbligatorio.»",
+      "il primo campo non valido (nell'ordine della pagina) è in vista, circa al centro dello schermo, e ha il focus",
+      "colore dell'errore uguale a --destructive (oklch(0.505 0.21 22) in tema chiaro)"
+     ]
+    },
+    {
+     "id": "orari-salvataggio-ok",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.3, checklist 9",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "modifica gli orari con valori validi",
+      "salva",
+      "ricarica la pagina"
+     ],
+     "atteso": [
+      "compare l'avviso «Orari salvati» (area role=status) e la barra scompare",
+      "dopo il ricaricamento la pagina mostra gli stessi valori",
+      "lo stato salvato si aggiorna dal server (non dallo stato locale)"
+     ]
+    },
+    {
+     "id": "orari-salvataggio-in-corso",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.11, checklist 17",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "salvataggio_lento",
+     "atteso": [
+      "durante l'attesa: fieldset disabilitato con aria-busy, campi, giorni, pulsanti delle righe e i due pulsanti della barra :disabled",
+      "la barra dice «Salvataggio in corso…», «Annulla modifiche» è disabilitato, il pulsante dice «Salvataggio…» con uno Spinner",
+      "a salvataggio finito si passa a «Salvato»"
+     ]
+    },
+    {
+     "id": "orari-errore-server",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.12, checklist 18",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server",
+     "atteso": [
+      "avviso rosso «Salvataggio non riuscito» / «Non è stato salvato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» senza dettagli tecnici",
+      "le modifiche restano nel modulo e la barra resta",
+      "tolta la simulazione un nuovo salvataggio riesce"
+     ]
+    },
+    {
+     "id": "orari-non-configurato",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.13, checklist 19",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "non_configurato",
+     "atteso": [
+      "avviso informativo «Orari non configurati» / «Pranzo e Cena non hanno ancora orari: compila i quattro campi e salva.»",
+      "i quattro campi dei servizi sono vuoti, nessun valore proposto",
+      "dopo un salvataggio con valori validi l'avviso scompare",
+      "il Global originale viene ripristinato a fine controllo"
+     ]
+    },
+    {
+     "id": "orari-errore-caricamento",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.14, checklist 20",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_caricamento",
+     "stato_prova": "non provato se l'implementazione non offre un modo documentato per simulare la lettura fallita",
+     "atteso": [
+      "compaiono solo l'avviso «Impossibile caricare gli orari» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "nessun campo nella pagina",
+      "«Riprova» ripete la lettura"
+     ]
+    },
+    {
+     "id": "orari-annulla",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.2, checklist 12",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "cambia un orario, elimina una chiusura, aggiungi una chiusura",
+      "premi «Annulla modifiche»"
+     ],
+     "atteso": [
+      "tutti i valori tornano all'ultimo stato salvato, comprese le righe eliminate",
+      "errori e avvisi chiusi",
+      "la barra scompare"
+     ]
+    },
+    {
+     "id": "orari-festivita",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.7, checklist 11",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "anno 1899, premi «Aggiungi festività»",
+      "anno 2026, «Aggiungi festività»",
+      "di nuovo «Aggiungi festività»",
+      "elimina una riga predefinita e premi «Aggiungi festività»",
+      "cambia l'etichetta di una predefinita, «Rimuovi festività di un anno»: conferma",
+      "«Rimuovi festività di un anno» quando non ce ne sono"
+     ],
+     "atteso": [
+      "«Inserisci un anno valido (1900–2100).»",
+      "«Aggiunte 13 festività del 2026» e «Salva le modifiche per renderle effettive.»; le righe sono 13 senza duplicati",
+      "«Le festività del 2026 sono già tutte presenti.»",
+      "«Aggiunta 1 festività del 2026» (singolare)",
+      "finestra «Rimuovere le festività del 2026?» con «Verranno tolte 13 chiusure…» (con 1: «Verrà tolta 1 chiusura»); dopo «Rimuovi» spariscono le righe la cui data coincide con una predefinita, anche con etichetta cambiata, le altre restano; «Rimosse 13 festività del 2026» (con 1: «Rimossa 1 festività del 2026»)",
+      "«Nessuna festività predefinita da rimuovere per il 2026.»"
+     ],
+     "nota": "Le 13 date attese si calcolano con lib/systemSettings/italianPublicHolidays.ts, non si scrivono a mano. Coincidenza con i risultati dei pulsanti dell'Admin: confronto con le stesse funzioni di lib."
+    },
+    {
+     "id": "orari-chiusure-foglio",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.6",
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "«Aggiungi chiusura»",
+      "compila solo la data",
+      "compila anche l'etichetta e premi «Applica»",
+      "apri la matita della riga",
+      "premi il cestino della riga",
+      "«Annulla modifiche»"
+     ],
+     "atteso": [
+      "il foglio arriva dal basso sotto 768 px e da destra da 768 px; titolo «Nuova chiusura», testo «Poi premi «Salva modifiche» nella pagina per renderla effettiva.», campi «Data» ed «Etichetta», pulsanti «Applica» e «Annulla»",
+      "«Applica» è disabilitato finché data ed etichetta non sono entrambe compilate",
+      "la riga compare ordinata per data, con data gg/mm/aaaa",
+      "la matita apre «Modifica chiusura»; nomi accessibili «Modifica chiusura {etichetta}» e «Elimina chiusura {etichetta}»",
+      "il cestino toglie la riga senza conferma; «Annulla modifiche» la ripristina",
+      "con più anni compare l'intestazione dell'anno",
+      "senza chiusure compare «Nessuna chiusura annuale.»"
+     ]
+    },
+    {
+     "id": "orari-intestazione-anno",
+     "tipo": "misura",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 5",
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "intestazione dell'anno: dimensione 16 px, peso 600, colore del testo pieno (foreground)"
+    },
+    {
+     "id": "orari-uscita",
+     "tipo": "flusso",
+     "livello": 2,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 7.15, checklist 21",
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "cambia un orario",
+      "clicca «Piatti» nel menu",
+      "premi «Resta qui»",
+      "clicca di nuovo e premi «Esci senza salvare»",
+      "con modifiche, ricarica la pagina"
+     ],
+     "atteso": [
+      "si apre «Uscire senza salvare?» / «Hai modifiche non salvate: se esci le perdi.» con «Resta qui» e «Esci senza salvare»; su telefono l'azione sta sopra e l'annulla sotto",
+      "«Resta qui» non cambia nulla",
+      "«Esci senza salvare» scarta le modifiche e va alla pagina scelta",
+      "alla chiusura o al ricaricamento il browser mostra l'avviso nativo (beforeunload)"
+     ],
+     "nota": "Se l'intercettazione dei collegamenti con l'App Router non è affidabile, la spec accetta come minimo beforeunload: in quel caso la parte del clic su un collegamento è NON PROVATA e va dichiarata (spec sezione 10)."
+    },
+    {
+     "id": "orari-dati",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 9",
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "salva valori validi dalla pagina",
+      "leggi il Global con la Local API (overrideAccess false, utente manager)"
+     ],
+     "atteso": "gli stessi services (lunch e dinner), weeklyClosedDays, annualClosures ordinate per data con data a mezzogiorno UTC, bnb.checkInTime e bnb.checkOutTime"
+    },
+    {
+     "id": "orari-validazione-server",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 10",
+     "passi": [
+      "scrivi con la Local API services con startTime «25:99»",
+      "poi «9:30»"
+     ],
+     "atteso": "entrambe le scritture rifiutate con i messaggi di lib/systemSettings (Formato non valido: usa HH:mm in 24 ore (es. 09:30).); i testi si leggono da lib, non si copiano"
+    },
+    {
+     "id": "orari-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md checklist 9 e 15",
+     "passi": [
+      "manager: legge e salva dalla pagina",
+      "admin e super-admin: leggono e scrivono il Global con la Local API passando il documento utente",
+      "utente senza ruolo: apre /app/hours e prova a scrivere il Global"
+     ],
+     "atteso": [
+      "manager, admin e super-admin riescono",
+      "l'utente senza ruolo non raggiunge /app/hours dall'URL (reindirizzamento) e la scrittura è rifiutata",
+      "admin e super-admin sono provati a livello di Local API: la sessione dell'Admin e il login su /app/login sono prove di L3"
+     ]
+    },
+    {
+     "id": "orari-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "fonte": "docs/design/schermate/orari/spec.md sezione 6 e shell checklist 8",
+     "atteso": "nomi accessibili in italiano per giorni, righe e pulsanti; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle"
+    },
+    {
+     "id": "orari-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "fonte": "modello C7 e regola UI 01",
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri il foglio, la finestra di conferma, premi Salva, apri il menu utente; zero error e warning, compresi quelli di Base UI"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome orari-<stato>-<profilo>-<tema>.png; nello stesso tema del confronto",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "iniziale": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "errore-validazione": [
+      "390-errore-chiaro.png"
+     ],
+     "salvato": [
+      "390-salvato-chiaro.png"
+     ],
+     "foglio-chiusura": [
+      "390-foglio-chiusura-chiaro.png"
+     ],
+     "conferma-rimozione": [
+      "390-conferma-rimozione-chiaro.png"
+     ],
+     "salvataggio-in-corso": [
+      "390-salvataggio-chiaro.png"
+     ],
+     "errore-server": [
+      "390-errore-server-chiaro.png"
+     ],
+     "non-configurato": [
+      "390-non-configurato-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "uscita": [
+      "390-uscita-chiaro.png"
+     ]
+    },
+    "nota": "I riferimenti stanno in docs/design/schermate/orari/. Il confronto visivo lo fa la chat di design sugli screenshot; l'agente non giudica l'aspetto."
+   }
+  }
+ ]
+}
