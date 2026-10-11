@@ -261,18 +261,24 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
   if (loadError) {
     return (
       <AppFormColumn>
-        <div role="alert">
-          <Alert variant="destructive">
-            <CircleAlert />
-            <AlertTitle>Impossibile caricare gli orari</AlertTitle>
-            <AlertDescription>
-              Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.
-            </AlertDescription>
-          </Alert>
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight">Orari</h1>
+          <p className="text-sm text-muted-foreground">
+            Orari di vietnamonamour.com: ristorante e B&amp;B.
+          </p>
         </div>
-        <Button type="button" variant="outline" onClick={() => void handleRetryLoad()}>
-          Riprova
-        </Button>
+        <Alert variant="destructive">
+          <CircleAlert />
+          <AlertTitle>Impossibile caricare gli orari</AlertTitle>
+          <AlertDescription>
+            Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.
+          </AlertDescription>
+          <div className="col-start-2 mt-2">
+            <Button type="button" variant="outline" onClick={() => void handleRetryLoad()}>
+              Riprova
+            </Button>
+          </div>
+        </Alert>
       </AppFormColumn>
     )
   }

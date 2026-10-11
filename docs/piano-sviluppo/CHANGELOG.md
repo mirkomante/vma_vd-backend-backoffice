@@ -18,6 +18,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Fase 8.5 (A31–A32): stato errore di caricamento Orari — titolo e descrizione pagina sopra l’avviso; pulsante «Riprova» dentro l’`Alert`, sotto il testo (compatto).
+
 - Fase 8.5 (P18, A28–A30): slot save bar — `setSaveBar(null)` se non ci sono modifiche né salvataggio in corso (prima il componente restituiva `null` ma l’elemento React era sempre truthy e restava visibile il `border-t`); avviso «Orari salvati» con `CircleCheck`; foglio chiusura pulsanti «Applica» poi «Annulla»; conferma rimozione festività con «Rimuovi» primario (non destructive). Nessun altro uso di `useAppSaveBar` nel repo.
 
 - Fase 8.5: altezza barra di salvataggio a 390 px — slot `pb-0` (prima `pb-4`) e colonna modulo `gap-2` (prima `gap-3`) per rientrare in 97 px (bordo 1 + `py-3` + testo + gap + pulsanti 44 + `py-3`); desktop invariato (`md:pb-6`, `md:gap-3`). **Nota design**: su iPhone il `pb-4` dello slot poteva fungere da respiro sopra il bordo sicuro; con `pb-0` non c’è `env(safe-area-inset-bottom)` — da decidere in design/L2 se serve padding o classe dedicata. Chiusure annuali: `clientId` sempre generato lato client (`newClosureClientId`); `payloadId` separato per il salvataggio; `sortFormClosures` non riallinea più per data+etichetta (evita chiavi React duplicate e cestino che rimuove più righe).
@@ -37,6 +39,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 8.5 (correzioni barra + chiusure): `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` OK. Altezza 97 px a 390 px e cestino con `id` Payload duplicati: **non provati** a runtime (L2 / dev).
 
 - Fase 8.5 (P18, A28–A30): `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` OK. Rilievi mockup (linea save bar, icone, ordine pulsanti): **non provati** a runtime / confronto PNG.
+
+- Fase 8.5 (A31–A32): `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` OK. Layout errore caricamento vs `390-errore-caricamento-chiaro.png`: **non provato** (confronto visivo).
 
 - Fase 8.4 (fix skip per documento): `pnpm typecheck`, `pnpm lint` OK; `pnpm payload run scripts/verify-users-8_4.ts` OK incluso caso due SSO attivati con lo stesso `req` (due invii e timestamp; riattivazione senza reinvio).
 
