@@ -233,7 +233,7 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 
 ## 8.5 — Sezione Orari
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (implementazione 2026-10-11; chiusura dopo L2 e conferma umana)
 
 **Dipende da**: 8.2, 8.3, e da Fase 7 (campi 7.2, permessi 7.4; `arco-34`, `arco-35`).
 
@@ -255,6 +255,9 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 - [ ] Un valore non `HH:mm` viene rifiutato; le righe del pulsante festività corrispondono a quelle dell'Admin.
 - [ ] Le modifiche si vedono nell'Admin (admin e super-admin) e viceversa.
 - [ ] CHANGELOG.
+- [ ] L2 in chat pulita (primo modulo con campi; vedi CHANGELOG 8.5) e conferma umana prima di ✅.
+
+**Implementazione (2026-10-11)**: `/app/hours` con modulo completo (stati della specifica), componenti `toggle`, `toggle-group`, `alert-dialog` + composizione in `components/app/hours/` e `components/app/form/app-form-column.tsx`. Nessuna migrazione.
 
 ---
 

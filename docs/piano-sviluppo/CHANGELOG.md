@@ -12,6 +12,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 8.5 (in corso): schermata `/app/hours` — modulo Orari e chiusure su Global `impostazioni-sistema` (Local API, `overrideAccess: false`, sessione utente); server actions `loadHoursSettingsAction` / `saveHoursSettingsAction`; componenti shadcn `toggle`, `toggle-group`, `alert-dialog` (deviazioni D6 su `toggle`); composizione `components/app/form/app-form-column.tsx`, `components/app/hours/*`; helper `lib/app/hours/` e `lib/app/payloadAppRequest.ts`. **Simulazione errori solo dev** (mai in production): `APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1` (errore di caricamento), `APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1` (errore del server). **Nessuna migrazione** in questa sottofase. **L2 richiesto**: primo modulo con campi (`components/app/hours/hours-form.tsx`) — serve L2 in chat pulita prima di marcare 8.5 ✅.
+
 - Fase 8.4: email «Account creato» per utenti `loginMethod: sso` (create con `active` o prima attivazione), campo `accountCreatedEmailSentAt` (sola lettura staff Admin, scrittura hook con `overrideAccess`); skip per seed/bootstrap (`bootstrapCredential*` / `req.context`); endpoint `POST /api/users/resend-activation` e componente Admin `ResendActivationEmailUi` (`@payloadcms/ui`); migrazione `20261011_133256_add_account_created_email_sent_at`. `sendAppAuthEmail` restituisce `boolean` per tracciare l’invio riuscito.
 
 ### Fixed
@@ -19,6 +21,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 8.4: skip email «Account creato» legato al singolo `userId` in `req.context` (Set), non più globale per tutta la richiesta — evita salti su attivazioni multiple SSO con `req` condiviso (lista Admin).
 
 ### Tests
+
+- Fase 8.5 — L0: `pnpm typecheck`, `pnpm lint` (0 errori sui file nuovi), `pnpm ui:check`, `pnpm build` OK. **L1 Orari**: non eseguito (`controlli-8.5.json` non ancora nel lanciatore; istruzione esplicita di non lanciare `ui:verify` per Orari). **L2**: richiesto (primo modulo con campi).
+
+- Fase 8.5 — prove per ruolo (manager / admin / senza ruolo): **non provate** in questa sessione (`scripts/verify-system-settings-7_4.ts` richiede `DATABASE_URL` su `vma_vd_migr`; stesso perimetro permessi 7.4). Guardia pagina: `requireAppSection(user, 'hours')` su `/app/hours`.
+
+- Fase 8.5 — decisioni §10 specifica Orari: **Uscita con modifiche** — intercettazione in fase capture dei link same-origin (menu, home, voci sidebar) con `AlertDialog`; chiusura/ricarica scheda con `beforeunload`. Non verificato su ogni collegamento a runtime. **Errori server sui campi** — `ValidationError.data.errors` mappati con `mapServerValidationPath` (indici `services.0`/`1` = Pranzo/Cena nell’ordine inviato). **Dopo salvataggio** — `findGlobal` ripetuto (non si fidano solo i valori inviati).
+
+- Fase 8.5 — checklist accettazione `schermate/orari/spec.md` §9 (esito per punto): 1 non provato · 2 non provato · 3 non provato · 4 non provato · 5 non provato · 6 non provato · 7 non provato · 8 non provato · 9 non provato · 10 non provato · 11 non provato · 12 non provato · 13 verificato (testi da tabella §6 nel codice) · 14 non provato · 15 non provato · 16 verificato (`pnpm ui:check`) · 17 non provato · 18 non provato (simulazione `APP_HOURS_DEV_SIMULATE_SAVE_ERROR` documentata, non eseguita) · 19 non provato · 20 non provato (simulazione `APP_HOURS_DEV_SIMULATE_LOAD_ERROR` documentata, non eseguita) · 21 non provato · 22 non provato (confronto PNG / L2).
 
 - Fase 8.4 (fix skip per documento): `pnpm typecheck`, `pnpm lint` OK; `pnpm payload run scripts/verify-users-8_4.ts` OK incluso caso due SSO attivati con lo stesso `req` (due invii e timestamp; riattivazione senza reinvio).
 
