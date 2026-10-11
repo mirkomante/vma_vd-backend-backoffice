@@ -250,6 +250,25 @@ Screenshot di Mirko sulla versione su Cloud Run (revisione `vma-vd-backend-backo
 - **A26 — Home senza larghezza massima** su schermi molto larghi: non è specificata.
 - **A27 — «Torna al sito» porta a `/`**: dai log risulta una pagina che carica `next.svg` e `vercel.svg`, cioè probabilmente quella di esempio di Next (non vista). Fuori dal design.
 
+### Seconda verifica della 8.2: lanciatore automatico v2.0.0 (2026-10-11)
+
+Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` (porta 3000), `locale-prod` (build di produzione, porta 3100) e `online` (Cloud Run). Esiti in `docs/design/verifica/esiti/2026-10-11-*`. Giudizio sugli esiti e sugli screenshot (home e menu aperto a 390 px confrontati con i mockup).
+
+**Ambiente**: il controllo `AMBIENTE` passa su `locale-prod` e su `online` (nessun indicatore di sviluppo di Next; nelle immagini il cerchio «N» non c'è più). La prima esecuzione aveva misurato il server di sviluppo perché `pnpm dev` e `pnpm start` erano entrambi sulla porta 3000. Gli esiti di misura di questa esecuzione sono validi.
+
+**Verificato su build di produzione**: spazi e icona dell'accesso (P11) in tutte le combinazioni (`acc-spazi-16` 160/160), assenza di lampo del tema (80/80), cambio del sistema a pagina aperta, barra in alto agganciata dopo 600 px (8/8), margini del contenuto (48/48), voci del menu, blocco in cima e blocco utente, campi e testi di accesso, forgot e verify, avvisi in tutti gli stati, aree di tocco a 44 px, scorrimento orizzontale. `locale-dev`: 28 controlli di console, con apertura dei menu e cambio tema, senza errori né avvisi. `online`: AMBIENTE e `on1`–`on6` OK.
+
+**Da correggere (P)**
+- **P15 — Il pannello del menu su telefono è largo più di 18 rem.** Misurato a 767 px: 384 px, atteso 288. Causa dal codice: `components/ui/sheet.tsx` dà al lato sinistro `data-[side=left]:w-3/4` e `data-[side=left]:sm:max-w-sm`, e i selettori con attributo vincono su `w-(--sidebar-width)` che `components/ui/sidebar.tsx` passa al pannello. Risultato: 75 % della larghezza, con tetto a 384 px da 640 px in su. A 390 px non si vede (292 contro 288), ma su un telefono da 430 px il pannello è largo circa 322 px e su un tablet in verticale 384 px. Correzione: nel `SheetContent` mobile di `sidebar.tsx` aggiungere `data-[side=left]:w-(--sidebar-width) data-[side=left]:sm:max-w-(--sidebar-width)`; poi registrarla nel registro D6 (`sidebar`, pannello mobile) e in `deviazioni.json`.
+
+**Difetti del lanciatore (non dell'app)**: `acc-padding-scheda` su `reset/iniziale` (valori negativi), `reset-testi` (la descrizione non viene letta), `home-nessuna-riga-di-stato` (contava come «righe di testo» il titolo e la descrizione a capo), `shell-percorso-voce-attiva` a 767 px (testi duplicati nel DOM e pannello chiuso), `shell-menu-utente` a 390 px (il menu non viene aperto: l'immagine `shell-home-menu-utente-telefono-390-chiaro.png` mostra la home senza menu), `shell-tema-scelta` (mai eseguito per un timeout).
+
+**Ipotesi da provare (non verificate)**
+- **WebKit non completa il login su `locale-prod`**: `collections/Users.ts` imposta il cookie `Secure` quando `NODE_ENV` è `production`, e WebKit rifiuta i cookie `Secure` su `http://localhost`, mentre Chromium li accetta. Prova: lo stesso giro WebKit su `locale-dev`. Se è così, non è un difetto dell'app.
+- **Il clic forzato** aggiunto per `menuitemradio «Chiaro»` può nascondere un problema reale: se Playwright non riesce a cliccare per elemento coperto, instabile o fuori vista, anche un utente potrebbe non riuscirci. Serve il registro completo della chiamata.
+
+**Limiti dell'esecuzione**: gli esiti committati di `locale-prod` sono precedenti alle correzioni del lanciatore (intestazione «Browser: —», `CONSOLE` e `on1`–`on6` elencati come non provati), quindi vanno rigenerati. Mancano gli screenshot a 1280 px in chiaro di home e menu utente.
+
 ## 5. Verifiche tecniche fatte in questa sessione
 
 - Sorgenti dei componenti: repository `shadcn-ui/ui`, commit `2d3f1cd` (2026-10-09), cartelle `apps/v4/registry/bases/base/ui` e `styles/style-nova.css`. **`base-nova` poggia su `@base-ui/react`, non su Radix.** Le classi `cn-*` dei componenti si risolvono con `style-nova.css`: 422 blocchi, tutti `@apply` semplici.
