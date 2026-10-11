@@ -1,7 +1,7 @@
 {
- "versione": 2,
+ "versione": 3,
  "fase": "8.2",
- "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto.",
+ "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri.",
  "fonti": [
   "docs/design/decisioni-layout-app.md",
   "docs/design/schermate/shell/spec.md",
@@ -100,7 +100,8 @@
    "atteso": "assente",
    "se_fallisce": "l'ambiente NON è di produzione: tutti gli esiti di misura di quell'esecuzione sono NON VALIDI e vanno rifatti con `pnpm build && pnpm start` su una porta libera",
    "nota": "Eseguire prima di ogni altro controllo. La prima esecuzione di 'locale-prod' mostrava l'indicatore nei suoi screenshot.",
-   "fonte": "README sezione 4"
+   "fonte": "README sezione 4",
+   "livello": 1
   },
   {
    "id": "C1",
@@ -112,7 +113,8 @@
    ],
    "atteso": "document.documentElement.scrollWidth <= window.innerWidth",
    "si_applica_a": "ogni stato di ogni schermata",
-   "fonte": "modello C1"
+   "fonte": "modello C1",
+   "livello": 1
   },
   {
    "id": "C2",
@@ -124,7 +126,8 @@
    "minimo_px": 44,
    "algoritmo": "docs/design/verifica/misura-tocco.md",
    "atteso": "nessun elemento in elenco",
-   "fonte": "modello C2, decisioni D6"
+   "fonte": "modello C2, decisioni D6",
+   "livello": 1
   },
   {
    "id": "C2-mouse",
@@ -138,7 +141,8 @@
    "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto.",
    "fonte": "decisioni D6",
    "elementi": "button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
-   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?» e «Torna al sito») e gli elementi nascosti"
+   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?» e «Torna al sito») e gli elementi nascosti",
+   "livello": 1
   },
   {
    "id": "C3",
@@ -150,7 +154,8 @@
     "sistema-scuro"
    ],
    "atteso": "<html> ha la classe 'dark' se e solo se html_dark è vero",
-   "fonte": "modello C3, decisioni D4"
+   "fonte": "modello C3, decisioni D4",
+   "livello": 1
   },
   {
    "id": "C3-no-lampo",
@@ -160,14 +165,16 @@
     "sistema-scuro"
    ],
    "atteso": "nessuna variazione della classe di <html> dopo DOMContentLoaded (osservare con MutationObserver installato prima della pagina)",
-   "fonte": "decisioni D4"
+   "fonte": "decisioni D4",
+   "livello": 2
   },
   {
    "id": "C3-cambio-sistema",
    "tipo": "tema-cambio-sistema",
    "passi": "con cookie app-theme=system e colorScheme chiaro, cambia a scuro a pagina aperta (emulateMedia) senza ricaricare",
    "atteso": "la classe 'dark' compare; con cookie 'light' o 'dark' non cambia",
-   "fonte": "A23"
+   "fonte": "A23",
+   "livello": 2
   },
   {
    "id": "CONSOLE",
@@ -178,14 +185,16 @@
    "atteso": "zero messaggi console di livello error o warning, zero pageerror, zero richieste fallite (4xx/5xx non attesi)",
    "nota": "Gli avvisi di Base UI compaiono solo in sviluppo.",
    "fonte": "regola UI 01, sezione Insidie note",
-   "passi": "oltre al caricamento di ogni pagina: nelle pagine della shell apri il pannello del menu (telefono), apri il menu utente, scegli Chiaro, Scuro e Sistema, poi richiudi; gli avvisi di Base UI compaiono proprio all'apertura dei menu. Profili: notebook-1280 e telefono-390. Non visitare mai indirizzi con segnaposto (per esempio <token reale>)."
+   "passi": "oltre al caricamento di ogni pagina: nelle pagine della shell apri il pannello del menu (telefono), apri il menu utente, scegli Chiaro, Scuro e Sistema, poi richiudi; gli avvisi di Base UI compaiono proprio all'apertura dei menu. Profili: notebook-1280 e telefono-390. Non visitare mai indirizzi con segnaposto (per esempio <token reale>).",
+   "livello": 1
   },
   {
    "id": "C9",
    "tipo": "comando",
    "comando": "pnpm ui:check",
    "atteso": "codice di uscita 0",
-   "fonte": "modello C9"
+   "fonte": "modello C9",
+   "livello": 1
   }
  ],
  "schermate": [
@@ -221,7 +230,8 @@
      "id": "login-titolo-documento",
      "tipo": "testo",
      "cosa": "document.title",
-     "atteso": "Accesso · Area App"
+     "atteso": "Accesso · Area App",
+     "livello": 1
     },
     {
      "id": "login-testi",
@@ -244,7 +254,8 @@
      "solo_su": [
       "login"
      ],
-     "nota": "«Accedi con Google» è un collegamento con l'aspetto di un pulsante: NON va nell'elenco dei collegamenti di testo."
+     "nota": "«Accedi con Google» è un collegamento con l'aspetto di un pulsante: NON va nell'elenco dei collegamenti di testo.",
+     "livello": 1
     },
     {
      "id": "login-link-destinazioni",
@@ -256,7 +267,8 @@
       "Torna al sito": {
        "href": "/"
       }
-     }
+     },
+     "livello": 1
     },
     {
      "id": "login-campi",
@@ -277,7 +289,8 @@
        "action": "/api/users/login/app"
       }
      },
-     "fonte": "accesso/spec.md sezione 2 e checklist 6"
+     "fonte": "accesso/spec.md sezione 2 e checklist 6",
+     "livello": 1
     },
     {
      "id": "login-gerarchia",
@@ -287,7 +300,8 @@
      "nota": "Confronta il colore di sfondo calcolato dei due elementi: devono essere diversi e il primo uguale al colore di sfondo del token primary.",
      "solo_su": [
       "login"
-     ]
+     ],
+     "livello": 1
     }
    ]
   },
@@ -325,13 +339,15 @@
       "collegamenti": [
        "Torna al login"
       ]
-     }
+     },
+     "livello": 1
     },
     {
      "id": "forgot-titolo-documento",
      "tipo": "testo",
      "cosa": "document.title",
-     "atteso": "Accesso · Area App"
+     "atteso": "Accesso · Area App",
+     "livello": 1
     }
    ]
   },
@@ -381,7 +397,8 @@
        "Torna al login"
       ]
      },
-     "nota": "Etichetta, campo e pulsante solo negli stati con modulo."
+     "nota": "Etichetta, campo e pulsante solo negli stati con modulo.",
+     "livello": 1
     },
     {
      "id": "reset-campi",
@@ -405,7 +422,8 @@
        "method": "post",
        "action": "/api/users/reset-password/app"
       }
-     }
+     },
+     "livello": 1
     },
     {
      "id": "reset-senza-token-vuoto",
@@ -413,7 +431,8 @@
      "stato": "senza-token",
      "selettore": "main input:not([type=hidden]), main button, main form",
      "atteso": 0,
-     "fonte": "accesso/spec.md checklist 4"
+     "fonte": "accesso/spec.md checklist 4",
+     "livello": 1
     }
    ]
   },
@@ -459,7 +478,8 @@
       "collegamenti": [
        "Vai al login"
       ]
-     }
+     },
+     "livello": 1
     }
    ]
   },
@@ -476,20 +496,23 @@
      "id": "acc-fuori-shell",
      "tipo": "assenza",
      "selettore": "[data-slot=sidebar], [data-slot=sidebar-trigger], nav[aria-label=Percorso]",
-     "fonte": "accesso/spec.md checklist 3"
+     "fonte": "accesso/spec.md checklist 3",
+     "livello": 1
     },
     {
      "id": "acc-collegamenti-sottolineati",
      "tipo": "misura",
      "misura": "text-decoration-line calcolato dei collegamenti sotto la scheda",
      "atteso": "contiene underline, senza passaggio del mouse",
-     "fonte": "accesso/spec.md checklist 5"
+     "fonte": "accesso/spec.md checklist 5",
+     "livello": 1
     },
     {
      "id": "acc-avvisi",
      "tipo": "presenza",
      "atteso": "ogni avviso ha role=alert (errori) o role=status (conferme) e contiene un'icona svg",
-     "fonte": "accesso/spec.md checklist 7"
+     "fonte": "accesso/spec.md checklist 7",
+     "livello": 1
     },
     {
      "id": "acc-colonna",
@@ -502,7 +525,8 @@
       "tablet-820",
       "notebook-1280"
      ],
-     "fonte": "accesso/spec.md sezione 4"
+     "fonte": "accesso/spec.md sezione 4",
+     "livello": 1
     },
     {
      "id": "acc-margine",
@@ -514,7 +538,8 @@
       "telefono-360",
       "telefono-390"
      ],
-     "fonte": "accesso/spec.md sezione 4"
+     "fonte": "accesso/spec.md sezione 4",
+     "livello": 1
     },
     {
      "id": "acc-icona",
@@ -522,7 +547,8 @@
      "misura": "quadrato dell'icona sopra il titolo",
      "atteso": "40 x 40 px",
      "tolleranza_px": 1,
-     "fonte": "accesso/spec.md sezione 8 (P11)"
+     "fonte": "accesso/spec.md sezione 8 (P11)",
+     "livello": 1
     },
     {
      "id": "acc-spazi-16",
@@ -530,7 +556,8 @@
      "misura": "distanza dal fondo del blocco intestazione (icona, titolo, descrizione) alla cima della scheda, e dal fondo della scheda ai collegamenti",
      "atteso": "16 px entrambe",
      "tolleranza_px": 1.5,
-     "fonte": "accesso/spec.md sezione 8 (P11)"
+     "fonte": "accesso/spec.md sezione 8 (P11)",
+     "livello": 1
     },
     {
      "id": "acc-padding-scheda",
@@ -538,7 +565,8 @@
      "misura": "distanza dalla cima della scheda al primo elemento al suo interno (avviso o primo controllo)",
      "atteso": "16 px",
      "tolleranza_px": 1.5,
-     "fonte": "accesso/spec.md sezione 8 (P11)"
+     "fonte": "accesso/spec.md sezione 8 (P11)",
+     "livello": 1
     },
     {
      "id": "acc-centratura",
@@ -546,7 +574,8 @@
      "misura": "con contenuto più basso della finestra: spazio sopra il blocco meno spazio sotto",
      "atteso": "differenza assoluta <= 2*48 px (py-12 simmetrico)",
      "nota": "Verifica solo che la colonna sia centrata in verticale, non il valore esatto.",
-     "fonte": "accesso/spec.md sezione 4"
+     "fonte": "accesso/spec.md sezione 4",
+     "livello": 1
     }
    ]
   },
@@ -560,7 +589,8 @@
      "da": "/app",
      "senza_sessione": true,
      "a": "/app/login",
-     "fonte": "shell/spec.md checklist 1"
+     "fonte": "shell/spec.md checklist 1",
+     "livello": 2
     },
     {
      "id": "g2",
@@ -572,7 +602,8 @@
      ],
      "senza_sessione": true,
      "a": "/app/login",
-     "fonte": "shell/spec.md checklist 1"
+     "fonte": "shell/spec.md checklist 1",
+     "livello": 2
     }
    ],
    "stati": [
@@ -620,13 +651,15 @@
       ]
      },
      "fonte": "shell/spec.md sezione 6, decisioni D2",
-     "nota": "Leggere da ogni scheda titolo, descrizione e href (non solo l'href) e confrontarli con l'atteso, nell'ordine."
+     "nota": "Leggere da ogni scheda titolo, descrizione e href (non solo l'href) e confrontarli con l'atteso, nell'ordine.",
+     "livello": 1
     },
     {
      "id": "home-nessuna-riga-di-stato",
      "tipo": "presenza",
      "atteso": "le schede hanno solo titolo e descrizione (nessuna riga di stato) nella 8.2",
-     "fonte": "shell/spec.md checklist 7"
+     "fonte": "shell/spec.md checklist 7",
+     "livello": 1
     },
     {
      "id": "home-colonne",
@@ -638,7 +671,8 @@
       "tablet-820": 2,
       "notebook-1280": 3
      },
-     "fonte": "shell/spec.md sezione 4"
+     "fonte": "shell/spec.md sezione 4",
+     "livello": 1
     },
     {
      "id": "shell-margine-contenuto",
@@ -651,7 +685,8 @@
      },
      "tolleranza_px": 2,
      "gravita": "avviso",
-     "fonte": "shell/spec.md sezione 4"
+     "fonte": "shell/spec.md sezione 4",
+     "livello": 2
     },
     {
      "id": "shell-barra-alta",
@@ -664,7 +699,8 @@
       "soglia-768",
       "notebook-1280"
      ],
-     "fonte": "shell/spec.md sezione 4"
+     "fonte": "shell/spec.md sezione 4",
+     "livello": 2
     },
     {
      "id": "shell-passaggio-768",
@@ -675,7 +711,8 @@
       "soglia-767",
       "soglia-768"
      ],
-     "fonte": "shell/spec.md sezione 4, decisioni D1"
+     "fonte": "shell/spec.md sezione 4, decisioni D1",
+     "livello": 2
     },
     {
      "id": "shell-sticky",
@@ -687,7 +724,8 @@
       "telefono-390",
       "notebook-1280"
      ],
-     "fonte": "modello C8, decisioni P1 (overflow-x: clip)"
+     "fonte": "modello C8, decisioni P1 (overflow-x: clip)",
+     "livello": 2
     },
     {
      "id": "shell-menu-voci",
@@ -712,7 +750,8 @@
       "collegamenti_navigazione": 3
      },
      "nota": "Esattamente tre voci abilitate nella 8.2.",
-     "fonte": "shell/spec.md checklist 11, decisioni D12"
+     "fonte": "shell/spec.md checklist 11, decisioni D12",
+     "livello": 2
     },
     {
      "id": "shell-blocco-in-cima",
@@ -722,7 +761,8 @@
       "ruolo": "Manager",
       "href": "/app"
      },
-     "fonte": "decisioni D12"
+     "fonte": "decisioni D12",
+     "livello": 2
     },
     {
      "id": "shell-blocco-utente",
@@ -731,7 +771,8 @@
       "mostra": "email intera o troncata con puntini",
       "iniziali": "prime lettere delle prime due parti della parte locale separata da . _ - ; senza separatori le prime due lettere; maiuscole"
      },
-     "fonte": "shell/spec.md sezione 2, checklist 4"
+     "fonte": "shell/spec.md sezione 2, checklist 4",
+     "livello": 2
     },
     {
      "id": "shell-menu-utente",
@@ -746,19 +787,22 @@
       ],
       "nota_admin": "«Vai all'Admin» compare solo con canAccessAdminPanel: con l'utente di prova solo App deve essere ASSENTE"
      },
-     "fonte": "shell/spec.md checklist 5, decisioni D3"
+     "fonte": "shell/spec.md checklist 5, decisioni D3",
+     "livello": 2
     },
     {
      "id": "shell-nomi-accessibili",
      "tipo": "testo",
      "atteso": "Nomi accessibili in italiano: «Apri o chiudi il menu», «Chiudi», «Percorso», «Menu». Nessuno di questi testi inglesi nella pagina o negli aria-label: Toggle Sidebar, Close, Sidebar, breadcrumb, More, Displays the mobile sidebar.",
-     "fonte": "shell/spec.md checklist 8, decisioni T1"
+     "fonte": "shell/spec.md checklist 8, decisioni T1",
+     "livello": 2
     },
     {
      "id": "shell-tema-scelta",
      "tipo": "tema-persistenza",
      "passi": "dal menu utente scegli Scuro, poi Chiaro, poi Sistema; dopo ognuno la classe di <html> è quella attesa, il cookie app-theme vale dark, light, system, e dopo il ricaricamento la scelta resta e il radio selezionato è lo stesso",
-     "fonte": "shell/spec.md checklist 5"
+     "fonte": "shell/spec.md checklist 5",
+     "livello": 2
     },
     {
      "id": "shell-segnaposto",
@@ -773,13 +817,15 @@
       "h1": "titolo come nella tabella Testi di shell/spec.md"
      },
      "nota": "Dentro la shell: barra laterale e barra in alto presenti.",
-     "fonte": "shell/spec.md checklist 11"
+     "fonte": "shell/spec.md checklist 11",
+     "livello": 2
     },
     {
      "id": "shell-percorso-voce-attiva",
      "tipo": "testo",
      "atteso": "per ogni pagina il percorso (breadcrumb) e la voce evidenziata coincidono con la sezione 7 di shell/spec.md; nella home nessuna voce evidenziata",
-     "fonte": "shell/spec.md checklist 6, 1"
+     "fonte": "shell/spec.md checklist 6, 1",
+     "livello": 2
     },
     {
      "id": "shell-uscita",
@@ -796,7 +842,8 @@
       "GET /app porta di nuovo a /app/login",
       "(solo locale) nel registro attività c'è una riga con eventType logout, area app, method local per quell'utente"
      ],
-     "fonte": "shell/spec.md checklist 10, rilievo P13"
+     "fonte": "shell/spec.md checklist 10, rilievo P13",
+     "livello": 2
     },
     {
      "id": "shell-admin-link",
@@ -807,7 +854,8 @@
       "apri il menu utente: la voce «Vai all'Admin» c'è, con icona di collegamento esterno",
       "è un <a href=/admin target=_blank rel contiene noopener>; il clic apre una nuova scheda su /admin e la scheda dell'App resta su /app"
      ],
-     "fonte": "decisioni D3 (nuova scheda, 2026-10-11)"
+     "fonte": "decisioni D3 (nuova scheda, 2026-10-11)",
+     "livello": 2
     }
    ]
   }
@@ -822,7 +870,8 @@
    "atteso": [
     "200",
     "h1 «Area App»"
-   ]
+   ],
+   "livello": "S"
   },
   {
    "id": "on2",
@@ -830,7 +879,8 @@
    "da": "/app",
    "senza_sessione": true,
    "a": "/app/login",
-   "atteso": "la destinazione ha l'origine di BASE_URL, MAI 0.0.0.0 o localhost"
+   "atteso": "la destinazione ha l'origine di BASE_URL, MAI 0.0.0.0 o localhost",
+   "livello": "S"
   },
   {
    "id": "on3",
@@ -843,14 +893,16 @@
     "Location relativo /app/login oppure con l'origine di BASE_URL (MAI 0.0.0.0)",
     "Set-Cookie payload-token con scadenza passata"
    ],
-   "fonte": "rilievo P13"
+   "fonte": "rilievo P13",
+   "livello": "S"
   },
   {
    "id": "on4",
    "tipo": "conteggio",
    "percorso": "/app/login/reset",
    "selettore": "main input:not([type=hidden]), main button, main form",
-   "atteso": 0
+   "atteso": 0,
+   "livello": "S"
   },
   {
    "id": "on5",
@@ -861,7 +913,8 @@
    "atteso": [
     "l'HTML contiene l'avviso E il campo input[name=password]"
    ],
-   "fonte": "rilievo P12"
+   "fonte": "rilievo P12",
+   "livello": "S"
   },
   {
    "id": "on6",
@@ -872,7 +925,8 @@
    "atteso": [
     "200",
     "avviso con la costante GENERIC_VERIFY_FAILURE_MESSAGE"
-   ]
+   ],
+   "livello": "S"
   }
  ],
  "online-con-sessione-reale": {
@@ -921,5 +975,46 @@
     "nota": "una per segnaposto basta in chiaro e scuro"
    }
   ]
+ },
+ "livelli": {
+  "1": {
+   "descrizione": "Mirato: a fine di ogni passaggio che tocca una schermata",
+   "profili": [
+    "telefono-390",
+    "notebook-1280"
+   ],
+   "temi": [
+    "chiaro",
+    "scuro"
+   ],
+   "webkit": false,
+   "schermate": "solo quelle indicate con --schermata",
+   "ambienti": [
+    "locale-prod",
+    "locale-dev (solo CONSOLE della schermata)"
+   ],
+   "durata_obiettivo": "2 minuti"
+  },
+  "2": {
+   "descrizione": "Esteso: solo ai trigger di docs/design/verifica/policy-test.md sezione 4",
+   "profili": "tutti",
+   "temi": "tutti",
+   "webkit": true,
+   "schermate": "tutte",
+   "ambienti": [
+    "locale-prod",
+    "locale-dev",
+    "online"
+   ],
+   "durata_obiettivo": "10 minuti"
+  },
+  "S": {
+   "descrizione": "Smoke dopo ogni deploy",
+   "ambienti": [
+    "online"
+   ],
+   "controlli": "online-senza-credenziali",
+   "durata_obiettivo": "1 minuto"
+  }
  }
 }

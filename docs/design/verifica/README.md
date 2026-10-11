@@ -129,3 +129,19 @@ Non li fa l'agente di verifica (niente credenziali di produzione). Li fa la chat
 3. L'agente non corregge l'app: riporta.
 4. Ogni misura riporta il valore trovato, quello atteso e come è stato ottenuto.
 5. Dopo ogni esecuzione: l'utente di prova non esiste più, i file temporanei sono spariti, `git status` mostra solo i file attesi.
+
+## 11. Come si lancia
+
+```
+pnpm ui:verify locale-prod --livello 1 --schermata orari --controlli controlli-8.5.json
+pnpm ui:verify locale-prod --livello 2
+pnpm ui:verify locale-dev                   # console, e WebKit essenziale
+pnpm ui:verify online                       # smoke, senza credenziali
+```
+
+- `--livello 1|2`: perimetro dalla sezione `livelli` del JSON; un controllo gira se il suo `livello` è minore o uguale a quello richiesto.
+- `--schermata <id>[,<id>]`: solo quelle schermate (id del JSON).
+- `--profili` e `--temi`: restringono il perimetro del livello (di norma non servono).
+- `--controlli <file>`: il file dei controlli (predefinito: l'ultimo `controlli-*.json`).
+- Durante l'esecuzione una riga di avanzamento per stato e un tempo massimo per ambiente: un lanciatore fermo si riconosce dopo pochi minuti.
+- I flag sono un lavoro del lanciatore (policy, sezione 9, passo 3): finché mancano vale la clausola di transizione di `ui/03-ui-test-policy.mdc`.

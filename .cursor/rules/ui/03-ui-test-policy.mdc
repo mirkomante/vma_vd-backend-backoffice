@@ -1,0 +1,52 @@
+---
+description: Policy dei test dell'Area App (app): verifiche automatiche a fine passaggio (L0, L1), quando fermarsi e chiedere la verifica estesa (L2), cosa non dichiarare mai fatto senza prova
+globs: app/*app*/**, components/**, lib/app/**, lib/auth/**, collections/Users.ts
+alwaysApply: false
+stato: in vigore, provvisoria (da validare dopo le prime due schermate nuove)
+---
+
+# Policy dei test dell'Area App
+
+Regola **solo di questo progetto**. Fonte completa: `docs/design/verifica/policy-test.md`. Qui l'essenziale per chi implementa.
+
+## Livelli e chi li esegue
+
+| Livello | Quando | Cosa | Chi |
+|---|---|---|---|
+| **L0** | A ogni passaggio | Rilettura, `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` | Tu (già previsto da `core/03`) |
+| **L1** | Fine di ogni passaggio che tocca una schermata o un componente di `(app)` | `pnpm ui:verify locale-prod --livello 1 --schermata <id> --controlli <file>` | **Tu**, da solo: non serve l'umano |
+| **L2** | Solo ai trigger della tabella sotto | Verifica estesa in una chat pulita | **Non tu**: dillo a Mirko e fermati (vedi «Trigger») |
+| **L3** | Fine fase e prima del primo uso reale | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko |
+| **S** | Dopo ogni deploy | `pnpm ui:verify online` | Mirko o chiunque |
+
+## Cosa fai a fine di ogni passaggio che tocca la UI
+
+1. L0 senza errori.
+2. **L1 sulla schermata toccata** con i controlli della sua fase (`docs/design/verifica/controlli-<fase>.json`). Se il file dei controlli **non esiste**, fermati e chiedi alla chat di design: una schermata senza i suoi controlli non si implementa.
+3. Esito di L1 nel CHANGELOG, voce `Tests`: livello eseguito, commit, percorso del rapporto, **ogni FALLITO e ogni NON PROVATO** (anche se non li hai corretti).
+4. Un **FALLITO** di livello 1 **blocca** la chiusura del passaggio. Correggi e rilancia solo i controlli falliti. Massimo **due giri**: al terzo fermati e chiedi alla chat di design. Un AVVISO non blocca.
+5. Se un controllo ti sembra sbagliato, **non toccarlo**: scrivilo come «controllo dubbio» nel CHANGELOG e nella risposta. Il lanciatore (`scripts/ui-verify/**`) e i file `controlli-*.json` non si modificano da una chat di implementazione.
+
+## Trigger del livello 2: quando fermarti e dirlo
+
+Se nel passaggio hai modificato **uno** di questi percorsi, la sottofase **non si marca ✅**: scrivi in chat «serve L2 in chat pulita» e nel CHANGELOG «L2 richiesto: <percorso>», poi completa comunque L1.
+
+- `components/ui/**`, `components.json`, il tema in `app/(app)/app-ui.css`
+- `app/(app)/layout.tsx`, `components/app/shell/**`, `lib/app/theme.ts`
+- `lib/auth/**`, endpoint di login e logout, `collections/Users.ts`
+- versione di Next, React, Base UI, shadcn, Tailwind o Payload in `package.json`
+- primo esemplare di un **tipo** di schermata (primo elenco, primo modulo, primo foglio)
+- chiusura di una fase del piano
+
+Una modifica solo a documenti non attiva nulla oltre L0. Una modifica solo al backend (`collections/**` diverso da `Users.ts`, hook, `lib/**` non UI) attiva L0 e gli script `verify-*.ts`, non L1.
+
+## Divieti
+
+- Mai dichiarare fatta una verifica che non hai eseguito: distingui sempre **verificato**, **fallito**, **non provato**.
+- Mai credenziali di produzione, mai `scripts/prod-db.sh` per i test, mai utenti di prova su Cloud SQL.
+- Mai `force: true` nei clic del lanciatore e mai cambiare soglie o attesi per far passare un controllo.
+- Mai git push.
+
+## Transizione (finché il lanciatore non ha i flag)
+
+Controlla se `scripts/ui-verify/run.mjs` supporta `--livello`, `--schermata` e `--controlli`. Se **non** li supporta, L1 = `pnpm ui:verify locale-prod` completo (circa 5 minuti) **a fine sottofase**, non a ogni passaggio, e lo dichiari nel CHANGELOG.

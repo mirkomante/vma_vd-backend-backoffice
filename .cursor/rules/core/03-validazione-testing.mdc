@@ -30,6 +30,10 @@ Diverso dalla validazione di codice: qui si tratta di avviare davvero l'applicaz
 - Quando si propone un test, fornire sempre una **checklist concreta e puntuale** di cosa verificare e come (es. "apri questo URL, dovresti vedere X, prova questa azione, il risultato atteso è Y") — non limitarsi a dire genericamente "prova ad avviare l'app e vedi se funziona".
 - Se il test in ambiente dev rivela un problema, tornare al livello di validazione codice per la correzione, poi ripetere il test mirato solo sulla parte corretta, non necessariamente tutto da capo.
 
+## Estensione per la UI dell'Area App `(app)`
+
+Per le schermate e i componenti dell'Area App il test a runtime **non richiede l'umano**: lo sostituiscono i livelli L1 e L2 di `ui/03-ui-test-policy.mdc` (lanciatore `pnpm ui:verify`). L'umano interviene solo per la prova su dispositivo reale e per le decisioni. Per tutto il resto di questa regola non cambia nulla.
+
 ## Perché la distinzione conta
 
 Confondere i due livelli porta a due rischi opposti: interrompere continuamente l'umano per verifiche che l'agente può fare da solo (validazione codice), oppure dichiarare "fatto" un pezzo di funzionalità senza che nessuno l'abbia mai visto funzionare davvero a runtime (mancato test dev). Tenerli separati evita entrambi.

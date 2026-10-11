@@ -1,20 +1,20 @@
 # Policy dei test dell'Area App
 
-**Stato**: proposta del 2026-10-11, da validare dopo la prima esecuzione corretta del lanciatore e dopo le prime due schermate (sezione 9).
+**Stato**: **in vigore, provvisoria** dal 2026-10-11. Si segna «validata» dopo le prime due schermate nuove (sezione 9). Regola operativa per chi implementa: `.cursor/rules/ui/03-ui-test-policy.mdc`.
 
-**Principio**: la verifica automatica costa poco e non ferma nessuno; la verifica estesa costa di più e si fa solo quando il raggio d'impatto è largo; l'umano interviene solo dove nessun automatismo arriva. Questa policy integra `core/03-validazione-testing.mdc` e `core/04-changelog-commit.mdc`, non le sostituisce (sezione 8).
+**Principio**: la verifica automatica costa poco e non ferma nessuno; la verifica estesa costa di più e si fa solo quando il raggio d'impatto è largo; l'umano interviene solo dove nessun automatismo arriva. Questa policy integra `core/03-validazione-testing.mdc` e `core/04-changelog-commit.mdc`, non le sostituisce (sezione 8). `core/03` ha un paragrafo di rinvio per la UI dell'Area App.
 
 ## 1. Livelli
 
 | Livello | Quando | Cosa | Chi lo esegue | Durata obiettivo |
 |---|---|---|---|---|
 | **L0** Validazione di codice | A ogni passaggio, anche piccolo | Rilettura, `pnpm typecheck`, `pnpm lint`, `pnpm ui:check`, test unitari di `lib/` (è il primo livello di `03`) | Agente di implementazione | meno di 2 minuti |
-| **L1** Mirato | Fine di ogni passaggio che tocca una schermata o un componente | `pnpm ui:verify --livello 1 --schermata <id>`: solo le schermate toccate, `telefono-390` e `notebook-1280`, temi `chiaro` e `scuro`, solo i controlli di livello 1 (sezione 3) | Agente di implementazione: lancia, non modifica i controlli | 5 minuti |
-| **L2** Esteso | Solo ai trigger della sezione 4 | `pnpm ui:verify --livello 2`: tutte le schermate, tutti i profili e i temi, WebKit, tema, guardie, flussi; più i controlli online senza credenziali dopo il deploy; giudizio visivo della chat di design (C10, rilievi P e A) | **Agente di verifica in chat pulita** (indipendente da chi ha scritto il codice) | 30 minuti |
+| **L1** Mirato | Fine di ogni passaggio che tocca una schermata o un componente | `pnpm ui:verify --livello 1 --schermata <id>`: solo le schermate toccate, `telefono-390` e `notebook-1280`, temi `chiaro` e `scuro`, solo i controlli di livello 1 (sezione 3) | Agente di implementazione: lancia, non modifica i controlli | 2 minuti |
+| **L2** Esteso | Solo ai trigger della sezione 4 | `pnpm ui:verify --livello 2`: tutte le schermate, tutti i profili e i temi, WebKit, tema, guardie, flussi; più i controlli online senza credenziali dopo il deploy; giudizio visivo della chat di design (C10, rilievi P e A) | **Agente di verifica in chat pulita** (indipendente da chi ha scritto il codice) | 10 minuti |
 | **L3** Sessione reale | Fine fase e prima del primo uso reale | Controlli con sessione reale su Cloud Run (Esci, Admin, ruoli admin e super-admin, registro attività) fatti dalla chat di design con il browser di Mirko; giro su iPhone vero (tocco, tastiera, campo ora nativo) fatto da Mirko | Chat di design + Mirko | un'ora, di cui 15 minuti di Mirko |
 | **S** Smoke post-deploy | Dopo ogni deploy | `pnpm ui:verify online`: i controlli senza credenziali, solo richieste HTTP | Chiunque, anche Mirko | 1 minuto |
 
-Le durate sono **obiettivi**: la durata reale va misurata e scritta nell'intestazione di ogni rapporto (sezione 9).
+Le durate sono **obiettivi rivisti sui dati della quarta esecuzione** (2026-10-11): `locale-prod` completo 5 min 30 s, `locale-dev` con WebKit 44 s, `online` circa 1 minuto. Il rapporto riporta la durata di ogni esecuzione; si ricalibrano dopo la prima fase completa.
 
 ## 2. Chi fa che cosa, per non bloccare nessuno
 
@@ -80,18 +80,17 @@ La chat di design scrive i controlli **insieme alla specifica** di ogni schermat
 
 ## 8. Integrazione con le regole esistenti
 
-- **`03-validazione-testing.mdc`**: L0 è la sua «validazione di codice»; il «test in ambiente dev con l'umano» per la **UI** viene sostituito da L1 e L2. *Proposta di modifica a una regola validata: serve la conferma di Mirko prima di scriverla.* Per le funzioni non UI resta com'è.
+- **`03-validazione-testing.mdc`**: L0 è la sua «validazione di codice». Per la **UI** dell'Area App il «test in ambiente dev con l'umano» è sostituito da L1 e L2: la regola ha ora un paragrafo di rinvio a `ui/03-ui-test-policy.mdc`. Per le funzioni non UI non cambia nulla.
 - **`04-changelog-commit.mdc`**: la voce `Tests` del CHANGELOG riporta il livello eseguito, il percorso del rapporto, gli esiti negativi e i NON PROVATO.
 - **`00-come-eseguire-il-piano.md`**: una chat per sottofase e un commit per sottofase restano; L1 si fa dentro la chat di sottofase prima del commit, L2 in una chat pulita a parte.
 - **`01-ui-app-invarianti.mdc`** (passi 5 e 6, oggi «`pnpm ui:check` e consegnare gli screenshot»): diventano «`pnpm ui:check` e L1 sulla schermata; gli screenshot li produce il lanciatore».
 
-## 9. Messa in opera (in quest'ordine)
+## 9. Messa in opera
 
-1. Chiudere la prima esecuzione corretta (Cursor la sta correggendo).
-2. Aggiungere al lanciatore `--livello`, `--schermata`, `--profili`, `--temi` e la **durata** nell'intestazione del rapporto; aggiungere `livello` ai controlli (`controlli-8.2.json` v3).
-3. Misurare le durate reali di L1 e L2 e fissare i budget della sezione 1 su quelle misure.
-4. Aggiornare `01` (passi 5 e 6); proporre a Mirko la modifica a `03`.
-5. Validare la policy dopo le prime due schermate nuove (Orari e il primo elenco), e solo allora segnare lo stato «validato».
+1. ~~Chiudere la prima esecuzione corretta~~ Fatto (quarta esecuzione, 2026-10-11: un solo FALLITO, instabile).
+2. ~~Scrivere la regola operativa e aggiornare `01` e `03`~~ Fatto: `ui/03-ui-test-policy.mdc`, passi 5 e 6 e chiusura di un passo in `01`, paragrafo di rinvio in `core/03`. Controlli v3 con il campo `livello`.
+3. **Da fare (Cursor)**: i flag del lanciatore `--livello`, `--schermata`, `--profili`, `--temi`, `--controlli`, la riga di avanzamento e il tempo massimo per ambiente. Finché mancano vale la clausola di transizione della regola.
+4. Dopo le prime due schermate nuove (Orari e il primo elenco): ricalibrare i tempi, rivedere i trigger e segnare lo stato «validata».
 
 ## 10. Punti aperti
 

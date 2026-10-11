@@ -23,8 +23,8 @@ Il design è nel repo e **non si reinterpreta**:
 2. Se specifica e mockup si contraddicono, o la specifica non copre un caso: **fermarsi e chiedere**.
 3. Implementare tutti gli stati della tabella «Stati» della specifica (caricamento, errore, vuoto, nessun risultato, errore dell'azione, ...): nessuno si omette, nessuno si aggiunge.
 4. I testi sono quelli della tabella «Testi»: italiano, singolare e plurale compresi. Nessun testo inventato.
-5. Prima del commit: `pnpm ui:check` senza errori e la checklist di accettazione della specifica, punto per punto, con l'esito di ciascun punto riportato nel CHANGELOG (anche gli esiti negativi, come in `core/04`).
-6. Consegnare gli screenshot a 390 e a 1280 px, in tema chiaro e scuro, per il confronto con il mockup.
+5. Prima del commit: `pnpm ui:check` senza errori, **L1 senza FALLITO** (`ui/03-ui-test-policy.mdc`) e la checklist di accettazione della specifica, punto per punto, con l'esito di ciascun punto riportato nel CHANGELOG (anche gli esiti negativi, come in `core/04`).
+6. Gli screenshot a 390 e a 1280 px, in tema chiaro e scuro, li produce il lanciatore (`docs/design/verifica/esiti/`): non si consegnano a mano.
 
 ## Divieti (li controlla `pnpm ui:check`)
 
@@ -79,9 +79,9 @@ Se serve un componente che non c'è in `components/ui`, o un comportamento che i
 - **Tema anti-lampo**: script inline nel layout **server** di `(app)`, in `<head>`, con `suppressHydrationWarning` su `<html>` — non in un componente client né come `<script>` nel body senza pattern documentato.
 - **Voce menu che invia un form** (es. «Esci»): `DropdownMenuItem` con `onClick` + `requestSubmit()` sul form, non `render={<Button type="submit">}`.
 
-**Chiusura di un passo**: `pnpm typecheck`, `pnpm lint`, `pnpm ui:check`; pagine toccate aperte in `pnpm dev` con console senza errori né avvisi Base UI; esito in chat/CHANGELOG.
+**Chiusura di un passo**: `pnpm typecheck`, `pnpm lint`, `pnpm ui:check`; L1 della schermata toccata (che include la console in sviluppo senza errori né avvisi Base UI); esito in chat/CHANGELOG. Se il passo tocca un percorso della tabella dei trigger di `ui/03-ui-test-policy.mdc`, serve anche L2 (lo chiede la chat di design, non si esegue qui).
 
 ## Verifica
 
 - `pnpm ui:check` fallisce (uscita 1) su R1–R10, sulle deviazioni D6 mancanti nei componenti installati, sui testi inglesi rimasti nei componenti (T1) e su `app-ui.css` non allineato (C1, C2).
-- Il confronto visivo con il mockup lo fa la chat di design, sugli screenshot consegnati: i rilievi sono etichettati **P** (da correggere prima della fase successiva) e **A** (non bloccanti). Su telefono il confronto è sulle misure geometriche, non sulla differenza di pixel.
+- Il confronto visivo con il mockup lo fa la chat di design, sugli screenshot prodotti dal lanciatore (`docs/design/verifica/esiti/`): i rilievi sono etichettati **P** (da correggere prima della fase successiva) e **A** (non bloccanti). Su telefono il confronto è sulle misure geometriche, non sulla differenza di pixel.

@@ -32,6 +32,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Policy dei test dell'Area App in vigore (provvisoria, 2026-10-11; nessuna modifica al codice dell'applicazione). Nuova regola `.cursor/rules/ui/03-ui-test-policy.mdc` (L0 e L1 a fine passaggio da parte dell'agente, trigger del livello 2 con richiesta di chat pulita, divieti, clausola di transizione finché il lanciatore non ha `--livello` e `--schermata`); `ui/01-ui-app-invarianti.mdc` aggiornata (passi 5 e 6, chiusura di un passo); paragrafo di rinvio in `core/03-validazione-testing.mdc` (regola validata, modifica additiva: per la UI dell'Area App il test con l'umano è sostituito da L1 e L2); `docs/design/verifica/policy-test.md` con tempi rivisti sui dati della quarta esecuzione (livello 1 in 2 minuti, livello 2 in 10); `controlli-8.2.json` v3 con campo `livello`; sezione 11 nel README della procedura. **Non provata**: i flag del lanciatore (`--livello`, `--schermata`, `--profili`, `--temi`, `--controlli`) non esistono ancora.
+
 - Lanciatore verifica UI **v2.2.0** (`scripts/ui-verify/`): `acc-padding-scheda` dal bordo della scheda al primo figlio di `card-content`; `shell-tema-scelta` con menu riaperto a ogni giro e contesto browser isolato; guardia tema su screenshot e audit hash tra temi; percorso breadcrumb solo da `nav[aria-label="Percorso"]` + pannello menu sotto 768 px; rapporto FALLITO raggruppati per controllo.
 
 - Lanciatore verifica UI **v2.1.0** (`scripts/ui-verify/`): menu utente su telefono con pannello aperto prima; click tema senza `force` e diagnostica timeout; WebKit essenziale su **locale-dev**; diagnosi cookie `payload-token` WebKit su prod; durata in intestazione rapporto; screenshot shell notebook-1280 chiaro.
