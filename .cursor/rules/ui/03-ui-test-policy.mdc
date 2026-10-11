@@ -25,7 +25,8 @@ Regola **solo di questo progetto**. Fonte completa: `docs/design/verifica/policy
 2. **L1 sulla schermata toccata** con i controlli della sua fase (`docs/design/verifica/controlli-<fase>.json`). Se il file dei controlli **non esiste**, fermati e chiedi alla chat di design: una schermata senza i suoi controlli non si implementa.
 3. Esito di L1 nel CHANGELOG, voce `Tests`: livello eseguito, commit, percorso del rapporto, **ogni FALLITO e ogni NON PROVATO** (anche se non li hai corretti).
 4. Un **FALLITO** di livello 1 **blocca** la chiusura del passaggio. Correggi e rilancia solo i controlli falliti. Massimo **due giri**: al terzo fermati e chiedi alla chat di design. Un AVVISO non blocca.
-5. Se un controllo ti sembra sbagliato, **non toccarlo**: scrivilo come «controllo dubbio» nel CHANGELOG e nella risposta. Il lanciatore (`scripts/ui-verify/**`) e i file `controlli-*.json` non si modificano da una chat di implementazione.
+5. Se il lanciatore **non implementa ancora** i controlli di quella schermata (il rapporto li elenca NON PROVATO, o il file dei controlli esiste ma `ui:verify` non li esegue), L1 **non è eseguibile da te**: scrivilo nel CHANGELOG («L1 da eseguire dall'agente di verifica») e nella risposta. **Non chiedere all'umano di provare a mano** nessuna parte della checklist: le prove manuali non fanno parte della policy (l'umano interviene solo per L3 e per le decisioni).
+6. Se un controllo ti sembra sbagliato, **non toccarlo**: scrivilo come «controllo dubbio» nel CHANGELOG e nella risposta. Il lanciatore (`scripts/ui-verify/**`) e i file `controlli-*.json` non si modificano da una chat di implementazione.
 
 ## Trigger del livello 2: quando fermarti e dirlo
 

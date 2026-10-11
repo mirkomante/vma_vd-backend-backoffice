@@ -72,6 +72,14 @@ Una modifica solo a documenti non attiva nessun livello oltre L0. Una modifica s
 
 La chat di design scrive i controlli **insieme alla specifica** di ogni schermata (specifica, mockup e controlli sono un unico pacchetto). Una schermata senza i suoi controlli non si implementa: Composer si ferma e chiede, come per un componente mancante. Così Composer sa in anticipo come verrà misurato.
 
+**Ordine per ogni schermata nuova** (aggiunto il 2026-10-11 dopo la 8.5, dove L1 non era eseguibile perché il lanciatore non implementava ancora i controlli di Orari):
+1. La chat di design consegna specifica, mockup e `controlli-<fase>.json`.
+2. L'**agente di verifica implementa i controlli nel lanciatore** (chat pulita), **prima** che parta la chat di implementazione.
+3. La chat di implementazione fa L0 e **L1** con i controlli già pronti.
+4. Se la schermata attiva un trigger di L2, l'agente di verifica fa L2 in chat pulita.
+
+Se, nonostante questo, un controllo non è implementato quando l'implementazione finisce, **L1 non è eseguibile da chi implementa**: lo dichiara e lo passa all'agente di verifica. **Mai** una prova manuale chiesta all'umano al suo posto: l'umano interviene solo per L3 e per le decisioni.
+
 ## 7. Cosa la policy non fa
 
 - Nessun confronto pixel per pixel e nessun giudizio estetico automatico: l'aspetto lo giudica la chat di design guardando gli screenshot.

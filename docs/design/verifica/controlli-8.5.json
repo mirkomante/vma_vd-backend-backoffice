@@ -1,7 +1,7 @@
 {
  "versione": 3,
  "fase": "8.5",
- "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato.",
+ "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato. Revisione 2026-10-11b: simulazioni degli errori con le variabili di sviluppo dichiarate da Composer nella 8.5 (APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1 e APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1); l'uscita con modifiche è implementata con beforeunload e intercettazione dei collegamenti.",
  "fonti": [
   "docs/design/schermate/orari/spec.md",
   "docs/design/decisioni-layout-app.md",
@@ -246,10 +246,11 @@
    "admin_e_super_admin": "non hanno login locale: si provano con la Local API passando il documento utente (sso, active) come 'user' e overrideAccess false, sul modello di scripts/verify-roles-8_3.ts"
   },
   "simulazioni": {
-   "errore_server": "intercettare la richiesta di salvataggio e rispondere con un errore 500",
+   "errore_server": "avviare un server di SVILUPPO separato (porta 3200, mai in production) con APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1 e puntarlo al database di sviluppo; solo per questo controllo",
    "salvataggio_lento": "intercettare la richiesta di salvataggio e ritardarla di 1500 ms",
-   "errore_caricamento": "l'implementazione deve offrire un modo documentato in sviluppo per far fallire la lettura (intercettazione o interruttore dichiarato nel CHANGELOG); se non esiste: NON PROVATO",
-   "non_configurato": "togliere 'services' dal Global con la Local API (dopo il backup) e ricaricare"
+   "errore_caricamento": "avviare un server di SVILUPPO separato (porta 3200, mai in production) con APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1; solo per questo controllo",
+   "non_configurato": "togliere 'services' dal Global con la Local API (dopo il backup) e ricaricare",
+   "nota": "Le variabili APP_HOURS_DEV_SIMULATE_* non agiscono con NODE_ENV=production: i due controlli girano su locale-dev, non su locale-prod. Il salvataggio lento si simula con l'intercettazione della richiesta (Next server action) e funziona su entrambi."
   }
  },
  "schermate": [
@@ -602,6 +603,9 @@
       "avviso rosso «Salvataggio non riuscito» / «Non è stato salvato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» senza dettagli tecnici",
       "le modifiche restano nel modulo e la barra resta",
       "tolta la simulazione un nuovo salvataggio riesce"
+     ],
+     "ambienti": [
+      "locale-dev"
      ]
     },
     {
@@ -635,11 +639,13 @@
       "chiaro"
      ],
      "simulazione": "errore_caricamento",
-     "stato_prova": "non provato se l'implementazione non offre un modo documentato per simulare la lettura fallita",
      "atteso": [
       "compaiono solo l'avviso «Impossibile caricare gli orari» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
       "nessun campo nella pagina",
       "«Riprova» ripete la lettura"
+     ],
+     "ambienti": [
+      "locale-dev"
      ]
     },
     {
@@ -761,7 +767,7 @@
       "«Esci senza salvare» scarta le modifiche e va alla pagina scelta",
       "alla chiusura o al ricaricamento il browser mostra l'avviso nativo (beforeunload)"
      ],
-     "nota": "Se l'intercettazione dei collegamenti con l'App Router non è affidabile, la spec accetta come minimo beforeunload: in quel caso la parte del clic su un collegamento è NON PROVATA e va dichiarata (spec sezione 10)."
+     "nota": "Implementato con beforeunload e intercettazione in fase di cattura dei collegamenti verso la stessa origine (dichiarato da Composer, 8.5): si prova sia il clic su un collegamento sia beforeunload. Se il clic su un collegamento non apre la conferma, FALLITO (non più 'non provato')."
     },
     {
      "id": "orari-dati",
