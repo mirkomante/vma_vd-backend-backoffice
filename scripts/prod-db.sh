@@ -23,6 +23,12 @@ if [[ "$1" != "--" ]]; then
 fi
 shift
 
+if [[ -n "${NODE_ENV:-}" && "${NODE_ENV}" != "production" ]]; then
+  echo "Errore: NODE_ENV è impostato a «${NODE_ENV}»; per comandi su Cloud SQL di produzione deve essere «production» o non impostato." >&2
+  echo "Rimuovi NODE_ENV dalla shell oppure imposta esplicitamente NODE_ENV=production." >&2
+  exit 1
+fi
+
 if ! command -v nc >/dev/null 2>&1; then
   echo "Attenzione: 'nc' non trovato; salto il controllo porta ${PROXY_PORT}." >&2
 else
@@ -34,4 +40,6 @@ else
 fi
 
 cd "${ROOT}"
+export NODE_ENV=production
+echo "NODE_ENV=production (push disattivato)"
 exec "$@"

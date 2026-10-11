@@ -36,7 +36,7 @@ Il `.env` di sviluppo resta su **5432 / dev**. Per prod passare `DATABASE_URL` *
 
 Payload carica `.env` e `payload.config.ts`. Per `migrate:create` / `generate:types`, se usi plugin OAuth, servono in ambiente `APP_PUBLIC_URL`, `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` (altrimenti la config differisce).
 
-Per migrate su prod conviene anche `NODE_ENV=production` (disabilita `push` in config).
+Su **produzione**, ogni comando che carica Payload (`pnpm migrate`, `migrate:status`, seed, `migrate:down`, …) passa da **`./scripts/prod-db.sh -- …`** (imposta `NODE_ENV=production` automaticamente) **oppure** include `NODE_ENV=production` inline — obbligatorio per disabilitare `push` in `payload.config.ts` (~riga 54).
 
 ---
 
@@ -177,11 +177,10 @@ Dalla root del repo (`.env` ancora su dev va bene):
 
 ```bash
 DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
-  NODE_ENV=production \
   ./scripts/prod-db.sh -- pnpm migrate:status
 ```
 
-`scripts/prod-db.sh` controlla che qualcosa ascolti su `5433`, poi esegue il comando dopo `--`.
+`scripts/prod-db.sh` rifiuta `NODE_ENV` ≠ `production`, controlla che qualcosa ascolti su `5433`, esporta `NODE_ENV=production`, poi esegue il comando dopo `--`. (`NODE_ENV=production` inline prima dello script è ridondante ma ammesso.)
 
 **Atteso:** le migrazioni già applicate in prod risultano OK; quella del commit corrente risulta **pendente**.
 
@@ -189,21 +188,19 @@ DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice
 
 ```bash
 DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
-  NODE_ENV=production \
   ./scripts/prod-db.sh -- pnpm payload migrate
 ```
 
-In output deve comparire la migrazione nuova (nome file coerente con `migrations/`).
+In output devono comparire `NODE_ENV=production (push disattivato)` e la migrazione nuova (nome file coerente con `migrations/`).
 
 ### C.5 — Verifica
 
 ```bash
 DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
-  NODE_ENV=production \
   ./scripts/prod-db.sh -- pnpm migrate:status
 ```
 
-Tutte le migrazioni del repo devono risultare applicate. Opzionale:
+Tutte le migrazioni del repo devono risultare applicate. Opzionale (solo `psql`, senza Payload — `NODE_ENV` non richiesto):
 
 ```bash
 DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
@@ -244,7 +241,7 @@ Esempio di riferimento: migrazione `20261006_091528_add_impostazioni_sistema_ora
 | Proxy: `failed to get instance metadata` / `refresh error` | Come sopra (ADC) | Stessa procedura; verificare `gcloud auth application-default print-access-token` |
 | Proxy: `instance closed the connection` | Postgres ha chiuso (spesso auth) | Controllare password `vma-vd-user`; provare `psql` interattivo |
 | `password authentication failed for user "vma-vd-user"` | Password errata, segnaposto `PASSWORD` nell’URL, o URL Cloud Run copiato così com’è | Password dal secret `DATABASE_URL` (C.1); URL locale con `127.0.0.1:5433` e `sslmode=disable`; encoding caratteri speciali nell’URL |
-| Prompt «dev mode … data loss» | `DATABASE_URL` punta a `vma_vd_dev` (schema da push) | Usare DB vuoto `vma_vd_migr` per B; per prod usare `5433` e `vma-vd-backoffice` |
+| Prompt «dev mode … data loss» | `DATABASE_URL` su dev (`push`); **oppure** su prod esiste riga `batch = -1` in `payload_migrations` (Payload avviato in passato con `push`, `NODE_ENV` ≠ `production`) | Per B: DB vuoto `vma_vd_migr`. Per prod: `5433`, `vma-vd-backoffice`, sempre `prod-db.sh` o `NODE_ENV=production`. Controllo: `SELECT id, name, batch, created_at FROM payload_migrations ORDER BY id;` — vedi anche [`cloud-sql-produzione.md`](../operativo/cloud-sql-produzione.md) |
 | Migrate su prod non fa nulla / DB sbagliato | Porta `5432` o database dev | Controllare utente `vma-vd-user` e porta **5433** |
 | `prod-db.sh` esce subito | Nessuno in ascolto su 5433 | Avviare il proxy |
 | Errore IAM / credential GCP | ADC scaduta o permessi | `gcloud auth login` + `gcloud auth application-default login`; ruolo Cloud SQL Client |
@@ -259,7 +256,6 @@ Esempio di riferimento: migrazione `20261006_091528_add_impostazioni_sistema_ora
 
 ```bash
 DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
-  NODE_ENV=production \
   ./scripts/prod-db.sh -- pnpm payload migrate:down
 ```
 

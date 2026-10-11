@@ -52,17 +52,30 @@ postgresql://vma-vd-user:PASSWORD@/vma-vd-backoffice?host=/cloudsql/vma-vd:europ
 ## Migrate / seed su produzione
 
 1. Proxy in ascolto su `5433`.
-2. **Preferito:** lasciare `.env` con credenziali **locali** (5432 / `vma_vd_dev`) e passare `DATABASE_URL` prod **solo al comando** (porta **5433**, utente Cloud SQL — non 5432):
+2. **Preferito:** lasciare `.env` con credenziali **locali** (5432 / `vma_vd_dev`) e passare `DATABASE_URL` prod **solo al comando** (porta **5433**, utente Cloud SQL — non 5432). Ogni comando che carica Payload (`pnpm migrate`, `migrate:status`, seed, ecc.) deve usare **`./scripts/prod-db.sh -- …`** (imposta `NODE_ENV=production` e disattiva `push` in `payload.config.ts`) **oppure** avere `NODE_ENV=production` inline sullo stesso comando — mai migrate/seed prod senza uno dei due.
 
 ```bash
-DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' pnpm migrate
-DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' pnpm migrate:status
+DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
+  ./scripts/prod-db.sh -- pnpm migrate
+
+DATABASE_URL='postgresql://vma-vd-user:PASSWORD@127.0.0.1:5433/vma-vd-backoffice?sslmode=disable' \
+  ./scripts/prod-db.sh -- pnpm migrate:status
 ```
 
-3. Alternativa (file di fase): backup `.env` → sovrascrivere `DATABASE_URL` → `pnpm migrate` → ripristino immediato.
+3. Alternativa sconsigliata (file di fase): backup `.env` → sovrascrivere `DATABASE_URL` → comando con `NODE_ENV=production` e `./scripts/prod-db.sh` → ripristino immediato.
 
 Su Cloud SQL **vuoto** non compare il prompt “dev mode / data loss”. Su **`vma_vd_dev` locale** (già allineato con `push`) il migrate fallisce o chiede conferma — non usare 5432 per prod.
 
+### Riga `batch = -1` in `payload_migrations`
+
+Se Payload è stato avviato almeno una volta su quel database con **`push` attivo** (`NODE_ENV` ≠ `production`, riga ~54 di `payload.config.ts`), in `payload_migrations` compare una riga di **sviluppo** con **`batch = -1`**. In quel caso `pnpm migrate` su produzione può chiedere conferma «dev mode / data loss» anche con `DATABASE_URL` e porta corretti. Controllo:
+
+```sql
+SELECT id, name, batch, created_at FROM payload_migrations ORDER BY id;
+```
+
+Con `push` disattivato (`NODE_ENV=production` via `prod-db.sh` o inline) non si aggiungono nuove righe batch −1; la riga storica può restare finché non si decide un intervento manuale (fuori scope di questo documento).
+
 ## Helper
 
-`scripts/prod-db.sh` verifica che il proxy risponda su `5433`, poi esegue il comando passato dopo `--` (es. `./scripts/prod-db.sh -- pnpm migrate:status` con `DATABASE_URL` prod già in ambiente o inline).
+`scripts/prod-db.sh` rifiuta un `NODE_ENV` già impostato a un valore diverso da `production`, verifica che il proxy risponda su `5433`, esporta `NODE_ENV=production` (messaggio «push disattivato»), poi esegue il comando dopo `--` (es. `./scripts/prod-db.sh -- pnpm migrate:status` con `DATABASE_URL` prod inline o in ambiente).
