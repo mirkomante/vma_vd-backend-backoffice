@@ -24,7 +24,9 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## Ordine di dipendenza reale
 
-**8.1 → 8.3 → 8.2 → 8.4 → 8.5**, con **8.6 bloccata**. Gli identificativi non indicano l'ordine di esecuzione: la navigazione della 8.2 mostra le sezioni consentite da `canAccessSection`, che la 8.3 implementa (`arco-38`). 8.3 e 8.4 modificano entrambe la collection `users`: si eseguono in sequenza, una chat Composer per sottofase. Fuori fase: 8.5 dipende da 7.2 e 7.4 (`arco-35`, campi e permessi); 6.6 e 5.5 dipendono da questa fase (`arco-30`, `arco-31`); 4.1 dipende dalla 8.3 (`arco-33`).
+**8.1 → 8.3 → 8.2 → 8.4 → 8.5 ✅**, con **8.6 bloccata**. Gli identificativi non indicano l'ordine di esecuzione: la navigazione della 8.2 mostra le sezioni consentite da `canAccessSection`, che la 8.3 implementa (`arco-38`). 8.3 e 8.4 modificano entrambe la collection `users`: si eseguono in sequenza, una chat Composer per sottofase. Fuori fase: 8.5 dipende da 7.2 e 7.4 (`arco-35`, campi e permessi); 6.6 e 5.5 dipendono da questa fase (`arco-30`, `arco-31`); 4.1 dipende dalla 8.3 (`arco-33`).
+
+**Prossimo passo nella Fase 8**: solo **8.6** — verifica in produzione di login locale ed email (⏸ bloccata fino alla sottofase **6.6** Menù, oltre al perimetro già sbloccato con la chiusura di 8.5).
 
 ## Principi trasversali per questa fase
 
@@ -233,7 +235,7 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 
 ## 8.5 — Sezione Orari
 
-**Stato**: 🔶 in corso (implementazione 2026-10-11; chiusura dopo L2 e conferma umana)
+**Stato**: ✅ fatto (2026-10-11)
 
 **Dipende da**: 8.2, 8.3, e da Fase 7 (campi 7.2, permessi 7.4; `arco-34`, `arco-35`).
 
@@ -251,13 +253,13 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 **Pubblicazione sul menù** (decisione del 2026-10-04, `po-06`): orari, chiusure e giorni speciali non entrano in `disponibilita.json`; una loro modifica richiede il rebuild del menù, dal pulsante «Ricompila il menù pubblico» (sottofase 6.5). Questa sezione non ricompila il menù da sola.
 
 **Checklist di chiusura sottofase**:
-- [ ] Prova per ruolo: il manager modifica e salva; l'admin pure; un utente senza ruolo è rifiutato. La prova dell'admin si fa sia dopo un login su `/app/login` sia con la sessione aperta dall'Admin: `canAccessSection` è l'unica guardia, nessuna rotta richiede una strategia di login specifica.
-- [ ] Un valore non `HH:mm` viene rifiutato; le righe del pulsante festività corrispondono a quelle dell'Admin.
-- [ ] Le modifiche si vedono nell'Admin (admin e super-admin) e viceversa.
-- [ ] CHANGELOG.
-- [ ] L2 in chat pulita (primo modulo con campi; vedi CHANGELOG 8.5) e conferma umana prima di ✅.
+- [ ] Prova per ruolo: il manager modifica e salva; l'admin pure; un utente senza ruolo è rifiutato. La prova dell'admin si fa sia dopo un login su `/app/login` sia con la sessione aperta dall'Admin: `canAccessSection` è l'unica guardia, nessuna rotta richiede una strategia di login specifica. *(Non eseguita in sessione implementazione; guardia pagina `requireAppSection(user, 'hours')` — debito in CHANGELOG chiusura 8.5.)*
+- [ ] Un valore non `HH:mm` viene rifiutato; le righe del pulsante festività corrispondono a quelle dell'Admin. *(Validazione client/server e controlli automatici Orari OK su `locale-prod`; parità righe festività con Admin non ripetuta a mano.)*
+- [ ] Le modifiche si vedono nell'Admin (admin e super-admin) e viceversa. *(Non provata esplicitamente in questa sottofase.)*
+- [x] CHANGELOG.
+- [x] L2 in chat pulita (primo modulo con campi; vedi CHANGELOG 8.5) e conferma umana prima di ✅.
 
-**Implementazione (2026-10-11)**: `/app/hours` con modulo completo (stati della specifica), componenti `toggle`, `toggle-group`, `alert-dialog` + composizione in `components/app/hours/` e `components/app/form/app-form-column.tsx`. Nessuna migrazione.
+**Implementazione (2026-10-11)**: `/app/hours` con modulo completo (stati della specifica), componenti `toggle`, `toggle-group`, `alert-dialog` + composizione in `components/app/hours/` e `components/app/form/app-form-column.tsx`. Nessuna migrazione. **Chiusura documentale (2026-10-11)**: esiti `ui:verify` in `docs/design/verifica/esiti/2026-10-11-locale-{prod,dev}/`; rilievi design P15–P18 e A28–A32; debiti NON PROVATO e L3 in CHANGELOG voce «Fase 8.5 — chiusura».
 
 ---
 
