@@ -45,6 +45,8 @@ export type UserAccessFields = {
   loginMethod?: LoginMethod | null
   /** Assente sui record precedenti all’introduzione del campo: trattato come verificato. */
   emailVerified?: boolean | null
+  /** Email «Account creato» inviata (solo SSO); scritto dal server dopo invio riuscito. */
+  accountCreatedEmailSentAt?: string | null
   /** Credenziali route emergenza /admin/login/local; non esposte in Admin né via API. */
   bootstrapCredentialHash?: string | null
   bootstrapCredentialSalt?: string | null

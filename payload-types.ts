@@ -181,6 +181,10 @@ export interface User {
    * Gestito da hook (attivazione email App). Non modificare manualmente salvo casi eccezionali.
    */
   emailVerified?: boolean | null;
+  /**
+   * Data e ora dell’ultima email «Account creato» inviata con successo (utenti SSO).
+   */
+  accountCreatedEmailSentAt?: string | null;
   password?: string | null;
   /**
    * Ripetere la password per conferma.
@@ -300,6 +304,7 @@ export interface UsersSelect<T extends boolean = true> {
   loginMethod?: T;
   active?: T;
   emailVerified?: T;
+  accountCreatedEmailSentAt?: T;
   password?: T;
   passwordConfirm?: T;
   emailVerificationToken?: T;

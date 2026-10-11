@@ -12,6 +12,12 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- Fase 8.4: email «Account creato» per utenti `loginMethod: sso` (create con `active` o prima attivazione), campo `accountCreatedEmailSentAt` (sola lettura staff Admin, scrittura hook con `overrideAccess`); skip per seed/bootstrap (`bootstrapCredential*` / `req.context`); endpoint `POST /api/users/resend-activation` e componente Admin `ResendActivationEmailUi` (`@payloadcms/ui`); migrazione `20261011_133256_add_account_created_email_sent_at`. `sendAppAuthEmail` restituisce `boolean` per tracciare l’invio riuscito.
+
+### Tests
+
+- Fase 8.4: `pnpm typecheck`, `pnpm lint`, `pnpm build` OK; `pnpm payload run scripts/verify-users-8_4.ts` OK (matrice tabella email, invio fallito simulato, SSO attivo/inattivo/riattivazione senza doppio invio, local solo attivazione, bootstrap senza account creato, reinvio attivazione admin con invalidazione token precedente, manager 403). Invio reale Resend verificato dallo script dove `isResendConfigured()`. **Non provato**: `pnpm migrate` su DB dev già allineato con `push` (fallimento atteso su initial schema); `pnpm seed:super-admin` non rieseguito; visibilità pulsante Admin per ogni combinazione login/`emailVerified` (solo logica componente); migrazione su Cloud SQL prod (umano prima del push).
+
 - Controlli della schermata Orari (8.5) per la verifica automatica (2026-10-11; nessuna modifica al codice dell'applicazione): `docs/design/verifica/controlli-8.5.json`, 25 controlli (23 di livello 1, 2 di livello 2) ricavati da `docs/design/schermate/orari/spec.md`; le prove che scrivono sul Global lavorano solo sul database di sviluppo e ripristinano lo stato originale. **Non provati**: il lanciatore non implementa ancora questi controlli; la simulazione dell'errore di caricamento e l'intercettazione dei collegamenti per la conferma di uscita dipendono dall'implementazione della 8.5.
 
 - Verifica UI Area App: `@playwright/test` (devDependency), lanciatore `scripts/ui-verify/run.mjs` e script `pnpm ui:verify` (legge `controlli-8.2.json`, scrive esiti in `docs/design/verifica/esiti/`).

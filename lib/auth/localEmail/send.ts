@@ -16,7 +16,7 @@ export async function sendAppAuthEmail(args: {
   to: string
   subject: string
   html: string
-}): Promise<void> {
+}): Promise<boolean> {
   const { payload, to, subject, html } = args
   try {
     await payload.sendEmail({
@@ -24,11 +24,13 @@ export async function sendAppAuthEmail(args: {
       subject,
       html,
     })
+    return true
   } catch (error) {
     payload.logger.error({
       err: error,
       msg: 'Invio email transazionale non riuscito',
     })
+    return false
   }
 }
 

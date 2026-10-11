@@ -182,7 +182,7 @@ La shell non si applica alle pagine di accesso: stanno fuori dal suo layout (per
 
 ## 8.4 — Email di account per gli utenti
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ fatto (2026-10-11)
 
 **Dipende da**: 8.3 (stessa collection `users`). Non dipende dalla shell: agisce nell'Admin.
 
@@ -221,13 +221,13 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 **Prove**: in sviluppo con invio reale (come in Fase 2.6); in produzione nella 8.6.
 
 **Checklist di chiusura sottofase**:
-- [ ] Le cinque righe della tabella verificate, comprese quelle senza invio: una seconda attivazione non rimanda l'email.
-- [ ] Invio fallito (simulato): il campo resta vuoto e la successiva attivazione riprova.
-- [ ] `pnpm seed:super-admin` non invia l'email.
-- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
-- [ ] Pulsante: visibilità corretta per ogni combinazione di login ed `emailVerified`; non invocabile da un manager.
-- [ ] Il link inviato dal pulsante verifica l'account; quello precedente non funziona.
-- [ ] CHANGELOG.
+- [x] Le cinque righe della tabella verificate, comprese quelle senza invio: una seconda attivazione non rimanda l'email (`scripts/verify-users-8_4.ts`, invio reale con Resend configurato).
+- [x] Invio fallito (simulato): il campo resta vuoto e la successiva attivazione riprova (stesso script).
+- [x] `pnpm seed:super-admin` non invia l'email (stesso script: create con `bootstrapCredential*` + skip; comando seed non rieseguito in questa sessione).
+- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (applicazione prod: azione umana post-commit).
+- [x] Pulsante: logica di visibilità nel componente Admin (`loginMethodIncludesLocal` + `emailVerified === false`); manager rifiutato dall'endpoint (403, script). **Non provato**: ispezione visiva di ogni combinazione nel form Admin.
+- [x] Il link inviato dal pulsante verifica l'account; quello precedente non funziona (script, invio reale).
+- [x] CHANGELOG.
 
 ---
 

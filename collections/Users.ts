@@ -14,8 +14,11 @@ import {
 import { purgeActivityLogForUserBeforeDelete } from '@/lib/activityLog/purgeForUserBeforeDelete'
 import { logAuthLoginHook, logAuthLogoutHook } from '@/lib/activityLog/userAuthHooks'
 import { localEmailEndpoints } from '@/lib/auth/localEmail/endpoints'
+import { setSkipAccountCreatedEmail } from '@/lib/auth/accountEmail/context'
+import { sendAccountCreatedAfterChange } from '@/lib/auth/accountEmail/sendAccountCreatedAfterChange'
 import { prepareActivationBeforeChange } from '@/lib/auth/localEmail/prepareActivationBeforeChange'
 import { sendActivationAfterChange } from '@/lib/auth/localEmail/sendActivationAfterChange'
+import { staffAdminOnlyUserFieldAccess } from '@/lib/auth/usersFieldAccess'
 import { hashLocalCredentialsBeforeChange } from '@/lib/auth/localCredentials/hashLocalCredentialsBeforeChange'
 import { localLoginEndpoints } from '@/lib/auth/localLogin/endpoints'
 import { googleOAuthUserCallbackEndpoints } from '@/lib/auth/googleOAuth/callbackEndpoints'
@@ -117,6 +120,28 @@ export const Users: CollectionConfig = {
         hidden: true,
         description:
           'Gestito da hook (attivazione email App). Non modificare manualmente salvo casi eccezionali.',
+      },
+    },
+    {
+      name: 'accountCreatedEmailSentAt',
+      type: 'date',
+      access: staffAdminOnlyUserFieldAccess,
+      admin: {
+        readOnly: true,
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        description:
+          'Data e ora dell’ultima email «Account creato» inviata con successo (utenti SSO).',
+      },
+    },
+    {
+      name: 'resendActivationEmail',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/payload/ResendActivationEmailUi#ResendActivationEmailUi',
+        },
       },
     },
     {
@@ -298,8 +323,22 @@ export const Users: CollectionConfig = {
         return data
       },
     ],
-    beforeChange: [prepareActivationBeforeChange, hashLocalCredentialsBeforeChange],
-    afterChange: [sendActivationAfterChange],
+    beforeChange: [
+      async ({ data, operation, req }) => {
+        if (operation === 'create' && data && typeof data === 'object') {
+          const writeData = data as UserWriteData & {
+            bootstrapCredentialHash?: string | null
+          }
+          if (writeData.bootstrapCredentialHash) {
+            setSkipAccountCreatedEmail(req)
+          }
+        }
+        return data
+      },
+      prepareActivationBeforeChange,
+      hashLocalCredentialsBeforeChange,
+    ],
+    afterChange: [sendActivationAfterChange, sendAccountCreatedAfterChange],
     afterLogin: [logAuthLoginHook],
     afterLogout: [logAuthLogoutHook],
     beforeDelete: [

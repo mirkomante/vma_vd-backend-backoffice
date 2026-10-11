@@ -1,3 +1,4 @@
+import { ResendActivationEmailUi as ResendActivationEmailUi_e4b406a944fe5becae95f93574be29f1 } from '@/components/payload/ResendActivationEmailUi'
 import { AppLocalPasswordField as AppLocalPasswordField_5fb73528d5840656fb80eb18f3113532 } from '@/components/payload/AppLocalPasswordField'
 import { ServiceRowLabel as ServiceRowLabel_66a0b960641110b6202c07b844c7d7c7 } from '@/components/payload/ServiceRowLabel'
 import { ItalianPublicHolidaysUi as ItalianPublicHolidaysUi_305c05cc61a151715a91d9612539e1bd } from '@/components/payload/ItalianPublicHolidaysUi'
@@ -9,6 +10,7 @@ import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } f
 
 /** @type import('payload').ImportMap */
 export const importMap = {
+  "@/components/payload/ResendActivationEmailUi#ResendActivationEmailUi": ResendActivationEmailUi_e4b406a944fe5becae95f93574be29f1,
   "@/components/payload/AppLocalPasswordField#AppLocalPasswordField": AppLocalPasswordField_5fb73528d5840656fb80eb18f3113532,
   "@/components/payload/ServiceRowLabel#ServiceRowLabel": ServiceRowLabel_66a0b960641110b6202c07b844c7d7c7,
   "@/components/payload/ItalianPublicHolidaysUi#ItalianPublicHolidaysUi": ItalianPublicHolidaysUi_305c05cc61a151715a91d9612539e1bd,
