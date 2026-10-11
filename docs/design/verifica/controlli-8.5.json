@@ -1,7 +1,7 @@
 {
  "versione": 3,
  "fase": "8.5",
- "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato. Revisione 2026-10-11b: simulazioni degli errori con le variabili di sviluppo dichiarate da Composer nella 8.5 (APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1 e APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1); l'uscita con modifiche è implementata con beforeunload e intercettazione dei collegamenti.",
+ "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato. Revisione 2026-10-11b: simulazioni degli errori con le variabili di sviluppo dichiarate da Composer nella 8.5 (APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1 e APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1); l'uscita con modifiche è implementata con beforeunload e intercettazione dei collegamenti. Revisione 2026-10-11c: durate dei livelli riviste (L1 3 min, L2 15 min).",
  "fonti": [
   "docs/design/schermate/orari/spec.md",
   "docs/design/decisioni-layout-app.md",
@@ -105,7 +105,7 @@
     "locale-prod",
     "locale-dev (solo CONSOLE della schermata)"
    ],
-   "durata_obiettivo": "2 minuti"
+   "durata_obiettivo": "3 minuti"
   },
   "2": {
    "descrizione": "Esteso: solo ai trigger di docs/design/verifica/policy-test.md sezione 4",
@@ -118,7 +118,7 @@
     "locale-dev",
     "online"
    ],
-   "durata_obiettivo": "10 minuti"
+   "durata_obiettivo": "15 minuti"
   },
   "S": {
    "descrizione": "Smoke dopo ogni deploy",

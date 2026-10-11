@@ -74,6 +74,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Controlli di verifica (2026-10-11, revisione c; nessuna modifica al codice dell'applicazione): `/app/hours` tolta dai segnaposto di `controlli-8.2.json` (ora è Orari, 8.5); durate dei livelli riviste sui dati misurati (L1 3 minuti, L2 15 minuti) in `controlli-*.json` e `policy-test.md`.
+
 - Policy dei test (2026-10-11, dopo la 8.5): ordine per ogni schermata nuova (controlli, l'agente di verifica li implementa nel lanciatore, poi implementazione con L1, poi eventuale L2); se un controllo non è implementato L1 lo esegue l'agente di verifica e non si chiede all'umano nessuna prova manuale (`ui/03-ui-test-policy.mdc`). `controlli-8.5.json` rivisto per le variabili `APP_HOURS_DEV_SIMULATE_*` e la conferma di uscita implementata. Nessuna modifica al codice dell'applicazione.
 
 - Operativo: `scripts/prod-db.sh` imposta `NODE_ENV=production` (push disattivato) prima del comando dopo `--` e termina con errore se `NODE_ENV` è già diverso da `production`; documentazione migrate prod (`cloud-sql-produzione.md`, `migrazioni-payload-postgres.md`) allineata.

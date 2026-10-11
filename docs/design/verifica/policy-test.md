@@ -9,12 +9,12 @@
 | Livello | Quando | Cosa | Chi lo esegue | Durata obiettivo |
 |---|---|---|---|---|
 | **L0** Validazione di codice | A ogni passaggio, anche piccolo | Rilettura, `pnpm typecheck`, `pnpm lint`, `pnpm ui:check`, test unitari di `lib/` (è il primo livello di `03`) | Agente di implementazione | meno di 2 minuti |
-| **L1** Mirato | Fine di ogni passaggio che tocca una schermata o un componente | `pnpm ui:verify --livello 1 --schermata <id>`: solo le schermate toccate, `telefono-390` e `notebook-1280`, temi `chiaro` e `scuro`, solo i controlli di livello 1 (sezione 3) | Agente di implementazione: lancia, non modifica i controlli | 2 minuti |
-| **L2** Esteso | Solo ai trigger della sezione 4 | `pnpm ui:verify --livello 2`: tutte le schermate, tutti i profili e i temi, WebKit, tema, guardie, flussi; più i controlli online senza credenziali dopo il deploy; giudizio visivo della chat di design (C10, rilievi P e A) | **Agente di verifica in chat pulita** (indipendente da chi ha scritto il codice) | 10 minuti |
+| **L1** Mirato | Fine di ogni passaggio che tocca una schermata o un componente | `pnpm ui:verify --livello 1 --schermata <id>`: solo le schermate toccate, `telefono-390` e `notebook-1280`, temi `chiaro` e `scuro`, solo i controlli di livello 1 (sezione 3) | Agente di implementazione: lancia, non modifica i controlli | 3 minuti |
+| **L2** Esteso | Solo ai trigger della sezione 4 | `pnpm ui:verify --livello 2`: tutte le schermate, tutti i profili e i temi, WebKit, tema, guardie, flussi; più i controlli online senza credenziali dopo il deploy; giudizio visivo della chat di design (C10, rilievi P e A) | **Agente di verifica in chat pulita** (indipendente da chi ha scritto il codice) | 15 minuti |
 | **L3** Sessione reale | Fine fase e prima del primo uso reale | Controlli con sessione reale su Cloud Run (Esci, Admin, ruoli admin e super-admin, registro attività) fatti dalla chat di design con il browser di Mirko; giro su iPhone vero (tocco, tastiera, campo ora nativo) fatto da Mirko | Chat di design + Mirko | un'ora, di cui 15 minuti di Mirko |
 | **S** Smoke post-deploy | Dopo ogni deploy | `pnpm ui:verify online`: i controlli senza credenziali, solo richieste HTTP | Chiunque, anche Mirko | 1 minuto |
 
-Le durate sono **obiettivi rivisti sui dati della quarta esecuzione** (2026-10-11): `locale-prod` completo 5 min 30 s, `locale-dev` con WebKit 44 s, `online` circa 1 minuto. Il rapporto riporta la durata di ogni esecuzione; si ricalibrano dopo la prima fase completa.
+Le durate sono **obiettivi rivisti sui dati della quarta esecuzione** (2026-10-11): `locale-prod` completo 5 min 30 s, `locale-dev` con WebKit 44 s, `online` circa 1 minuto. Il rapporto riporta la durata di ogni esecuzione; si ricalibrano dopo la prima fase completa. Misure della 8.5 (2026-10-11): L1 su Orari in `locale-prod` 3 min 13 s; L2 in `locale-prod` (Orari con tutti i profili e i temi più regressione della shell) 12 min 1 s; di conseguenza i budget sono ora 3 e 15 minuti.
 
 ## 2. Chi fa che cosa, per non bloccare nessuno
 

@@ -1,7 +1,7 @@
 {
  "versione": 3,
  "fase": "8.2",
- "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri.",
+ "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri. Revisione 2026-10-11c: /app/hours tolta dai segnaposto (ora Orari); durate di L1 e L2 riviste sui dati misurati.",
  "fonti": [
   "docs/design/decisioni-layout-app.md",
   "docs/design/schermate/shell/spec.md",
@@ -616,10 +616,6 @@
      "percorso": "/app/menu"
     },
     {
-     "id": "segnaposto-hours",
-     "percorso": "/app/hours"
-    },
-    {
      "id": "segnaposto-reservations",
      "percorso": "/app/reservations"
     }
@@ -686,7 +682,8 @@
      "tolleranza_px": 2,
      "gravita": "avviso",
      "fonte": "shell/spec.md sezione 4",
-     "livello": 2
+     "livello": 2,
+     "nota": "Si misura su /app (home) e sui segnaposto /app/menu e /app/reservations; /app/hours ha la colonna centrata del modulo e non va misurata qui."
     },
     {
      "id": "shell-barra-alta",
@@ -809,14 +806,13 @@
      "tipo": "testo",
      "percorsi": [
       "/app/menu",
-      "/app/hours",
       "/app/reservations"
      ],
      "atteso": {
       "descrizione": "Questa sezione sarà disponibile a breve.",
       "h1": "titolo come nella tabella Testi di shell/spec.md"
      },
-     "nota": "Dentro la shell: barra laterale e barra in alto presenti.",
+     "nota": "Dentro la shell: barra laterale e barra in alto presenti. Dal 2026-10-11 /app/hours è la schermata Orari (8.5), non più un segnaposto: si prova con controlli-8.5.json.",
      "fonte": "shell/spec.md checklist 11",
      "livello": 2
     },
@@ -993,7 +989,7 @@
     "locale-prod",
     "locale-dev (solo CONSOLE della schermata)"
    ],
-   "durata_obiettivo": "2 minuti"
+   "durata_obiettivo": "3 minuti"
   },
   "2": {
    "descrizione": "Esteso: solo ai trigger di docs/design/verifica/policy-test.md sezione 4",
@@ -1006,7 +1002,7 @@
     "locale-dev",
     "online"
    ],
-   "durata_obiettivo": "10 minuti"
+   "durata_obiettivo": "15 minuti"
   },
   "S": {
    "descrizione": "Smoke dopo ogni deploy",
