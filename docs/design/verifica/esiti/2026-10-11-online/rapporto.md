@@ -1,21 +1,48 @@
 # Esito verifica — online — 2026-10-11
-Commit: 2ca023005c5a · Lanciatore: 1.0.0 · Browser: fetch · Controlli: controlli-8.2.json v1
+Commit: 240651befe85 · Lanciatore: 2.0.0 · Browser: fetch; AMBIENTE Chromium 140.0.7339.186 · Controlli: controlli-8.2.json v2
 
 ## Riepilogo
-OK: 6 · FALLITO: 0 · AVVISO: undefined · NON PROVATO: 0
+OK: 7 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 1 · Controlli distinti nel JSON: 8
 
-## Esiti
+## Esiti compatti
+
+### OK (raggruppati)
+- **AMBIENTE**: OK in 1/1 combinazioni
+- **on1**: OK in 1/1 combinazioni
+- **on2**: OK in 1/1 combinazioni
+- **on3**: OK in 1/1 combinazioni
+- **on4**: OK in 1/1 combinazioni
+- **on5**: OK in 1/1 combinazioni
+- **on6**: OK in 1/1 combinazioni
+
+### FALLITO
+- (nessuno)
+
+### AVVISO
+- (nessuno)
+
+### NON PROVATO
+- **verify-link-valido** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
+
+## Tabella controlli distinti (JSON)
+| Id | Esito sintetico (OK/totale combinazioni) |
+|---|---|
+| AMBIENTE | OK (1/1) |
+| on1 | OK (1/1) |
+| on2 | OK (1/1) |
+| on3 | OK (1/1) |
+| on4 | OK (1/1) |
+| on5 | OK (1/1) |
+| on6 | OK (1/1) |
+| verify-link-valido | NON PROVATO (0/1) |
+
+## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
 |---|---|---|---|---|---|---|
-| on1 | /app/login | — | OK | 200, h1 true | 200 + h1 Area App | https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app |
-| on2 | /app | — | OK | 307 → /app/login | redirect a /app/login su origine pubblica | https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app |
-| on3 | POST /app/logout | — | OK | 303 Location:/app/login Set-Cookie:payload-token=; Expires=Sun, 11 Oct 2026 09:25:13 GMT; Path=… | 303, Location ok, Set-Cookie payload-token | https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app |
-| on4 | /app/login/reset | — | OK | 0 controlli in main | 0 | https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app |
-| on5 | reset token+resetFailed | — | OK | alert+password: true | avviso e campo password | https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app |
-| on6 | /app/login/verify | — | OK | 200, messaggio:true | 200 + GENERIC_VERIFY_FAILURE_MESSAGE | https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app |
+| verify-link-valido | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
-- (nessuno)
+- verify-link-valido: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
 - (nessuna)

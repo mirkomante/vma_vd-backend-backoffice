@@ -2,58 +2,24 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-11",
-    "commit": "2ca023005c5a",
-    "launcherVersion": "1.0.0",
-    "browsers": "Chromium (Playwright)",
-    "controlliVersion": 1
+    "commit": "240651befe85",
+    "launcherVersion": "2.0.0",
+    "browsers": "—",
+    "controlliVersion": 2,
+    "invalidRun": false
   },
   "counts": {
-    "OK": 15,
+    "OK": 28,
     "FALLITO": 0,
     "AVVISO": 0,
     "NON PROVATO": 0
   },
+  "distinctControls": 1,
   "rows": [
     {
       "id": "CONSOLE",
-      "schermata": "/app (shell)",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/menu (shell)",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/hours (shell)",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/reservations (shell)",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
       "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -62,7 +28,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login?authFailed=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -71,7 +37,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login?reset=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -80,7 +46,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/forgot",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -89,7 +55,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/forgot?sent=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -98,7 +64,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/reset?token=prova",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -107,7 +73,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/reset?token=prova&resetFailed=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -116,7 +82,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/reset",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -125,7 +91,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/verify",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -134,7 +100,7 @@
     {
       "id": "CONSOLE",
       "schermata": "/app/login/verify?token=prova",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
@@ -142,8 +108,161 @@
     },
     {
       "id": "CONSOLE",
-      "schermata": "/app/login/verify?token=<token reale>",
-      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "schermata": "/app (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/hours (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/reservations (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login?authFailed=1",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login?reset=1",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/forgot",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/forgot?sent=1",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/reset?token=prova",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/reset?token=prova&resetFailed=1",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/reset",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/verify",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/verify?token=prova",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/hours (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/reservations (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
       "esito": "OK",
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",

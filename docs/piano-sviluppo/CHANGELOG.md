@@ -32,6 +32,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Lanciatore verifica UI **v2.0.0** (`scripts/ui-verify/`): controllo **AMBIENTE** (`nextjs-portal`) prima delle misure; dev su porta **3000** e prod su **3100**; rapporto compatto v2; controlli JSON v2 (ambito `login-testi`/`login-gerarchia`, C2-mouse senza link di testo, CONSOLE con menu/temi, screenshot distinti).
+
 - Fase 8.2: patch `app-ui.css` (`overflow-x: clip`, `color-scheme`, token destructive/sidebar); `tsconfig.json` esclude `**/*.test.ts` dal typecheck Next.
 
 - Fase 8.3: etichette/descrizioni campi `adminRole` e `appRole` in `collections/Users.ts`; checklist 2.6 con controllo login locale App e `adminRole`.
@@ -43,6 +45,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 8.2 (verifica visiva Cloud Run 2026-10-11): **P13** redirect `POST /app/logout` con `Location` relativo `/app/login` (niente `request.url` dietro proxy); **P12** modulo reset visibile con `token` anche se `resetFailed=1`; **P11** spaziature/icona accesso in `AppAuthPage`; «Vai all'Admin» in nuova scheda (`<a target="_blank">`, non `Link`); **A23** listener `prefers-color-scheme` nello script tema quando preferenza «Sistema».
 
 ### Tests
+
+- Verifica UI Area App (lanciatore **2.0.0**, 2026-10-11): **locale-dev** CONSOLE 28/28 OK; **online** AMBIENTE + on1–on6 OK; **locale-prod** AMBIENTE OK (`nextjs-portal` assente su `:3100`), 2608 OK / 72 FALLITO / 11 NON PROVATO — fallimenti residui su shell (percorso/voce attiva, passaggio 768, menu utente), `acc-padding-scheda` (misura corretta nel lanciatore post-run), `shell-tema-scelta` (timeout click tema), WebKit essenziale; esiti in `docs/design/verifica/esiti/2026-10-11-*`.
 
 - Verifica UI Area App (prima esecuzione 2026-10-11, `pnpm ui:verify`): **locale-dev** CONSOLE 15/15 OK; **online** (Cloud Run, senza credenziali) on1–on6 6/6 OK; **locale-prod** 1620 OK, 85 FALLITO e 52 AVVISO nel rapporto — molti FALLITI su `login-testi`/`login-gerarchia`/`home-testi` attribuibili al lanciatore v1.0.0 (non all’app); controlli del JSON non ancora implementati nel runner dichiarati nel rapporto § Anomalie; `shell-uscita`, C2 tocco, C9 `ui:check`, guardie g1/g2 OK. `pnpm lint` e `pnpm typecheck` OK prima del commit del lanciatore.
 
