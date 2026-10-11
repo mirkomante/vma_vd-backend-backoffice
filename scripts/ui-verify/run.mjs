@@ -6,12 +6,12 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
 import { createHash, randomBytes } from 'node:crypto'
-import net from 'node:net'
 import { chromium, webkit } from '@playwright/test'
 
 import { loadAuthMessages } from './lib/messages.mjs'
 import { auditScreenshotThemeHashes, initReport } from './lib/report.mjs'
 import { DEV_PORT, PROD_PORT, devBaseUrl, prodBaseUrl } from './lib/ports.mjs'
+import { ensurePortsFree, SIM_PORT } from './lib/ensure-ports.mjs'
 import {
   parseCli,
   loadControlli,
@@ -106,15 +106,6 @@ function parsePayloadStdout(stdout) {
   const line = stdout.trim().split('\n').find((l) => l.startsWith('{'))
   if (!line) throw new Error(`Output JSON mancante: ${stdout.slice(0, 120)}`)
   return JSON.parse(line)
-}
-
-async function isPortFree(port) {
-  return new Promise((resolve) => {
-    const s = net.createServer()
-    s.once('error', () => resolve(false))
-    s.once('listening', () => s.close(() => resolve(true)))
-    s.listen(port, '127.0.0.1')
-  })
 }
 
 async function waitForUrl(baseUrl, ms = 180000) {
@@ -482,12 +473,14 @@ async function runAmbienteCheck(baseUrl, report, browserVersion) {
   return r.ok
 }
 
-async function runLocaleProd(baseUrl, report) {
+async function runLocaleProd(baseUrl, report, opts = {}) {
   const browser = await chromium.launch()
   const browserVersion = await browser.version()
   report.meta.browsers = `Chromium ${browserVersion}`
 
-  await runAmbienteCheck(baseUrl, report, browserVersion)
+  if (!opts.skipAmbienteCheck) {
+    await runAmbienteCheck(baseUrl, report, browserVersion)
+  }
 
   const c9 = spawnSync('pnpm', ['ui:check'], { cwd: ROOT, encoding: 'utf8' })
   addRow(report, {
@@ -610,7 +603,7 @@ async function runLocaleProd(baseUrl, report) {
     report.replacePacchetto('shell')
     report.pacchettoDefault = 'shell'
   }
-  if (!runCtx.screenIncluded('shell')) {
+  if (!runCtx.screenIncluded('shell') || !shell) {
     await browser.close()
     report.meta.browsers = `Chromium ${browserVersion}`
     return
@@ -1019,8 +1012,9 @@ async function main() {
   runCtx = createRunContext(CONTROLLI, cli)
 
   const mode = cli.mode
+  const hasShellInControlli = CONTROLLI.schermate?.some((s) => s.id === 'shell')
   const needsShellRegression =
-    cli.livello === 2 && controlliBasename.includes('8.5') && !runCtx.screenIncluded('shell')
+    cli.livello === 2 && controlliBasename.includes('8.5') && (!hasShellInControlli || !runCtx.screenIncluded('shell'))
   let devChild = null
   let prodChild = null
 
@@ -1029,10 +1023,17 @@ async function main() {
       await provisionUser()
     }
 
-    if (mode === 'all' || mode === 'locale-dev') {
-      if (!(await isPortFree(DEV_PORT))) {
-        throw new Error(`Porta ${DEV_PORT} occupata: liberare prima di locale-dev`)
+    const portsToFree = []
+    if (mode === 'all' || mode === 'locale-dev') portsToFree.push(DEV_PORT, SIM_PORT)
+    if (mode === 'all' || mode === 'locale-prod') portsToFree.push(PROD_PORT)
+    if (portsToFree.length) {
+      const freed = await ensurePortsFree([...new Set(portsToFree)])
+      if (freed.length) {
+        process.stderr.write(`[ui:verify] porte liberate: ${freed.join(', ')}\n`)
       }
+    }
+
+    if (mode === 'all' || mode === 'locale-dev') {
       devChild = startProcess('pnpm', ['dev'], { PORT: String(DEV_PORT) })
       await waitForUrl(devBaseUrl())
       const browser = await chromium.launch()
@@ -1040,7 +1041,29 @@ async function main() {
       await browser.close()
       await runAmbienteWithBudget('locale-dev', async (report) => {
         const devBrowser = await chromium.launch()
-        if (runCtx.screenIncluded('orari')) {
+        const devL2Combined =
+          runCtx.livello === 2 && controlliBasename.includes('8.5') && !runCtx.schermate?.size
+
+        if (devL2Combined) {
+          const shellLoaded = loadControlli('controlli-8.2.json')
+          const saved = { c: CONTROLLI, b: controlliBasename, r: runCtx, cli: { ...cli } }
+          CONTROLLI = shellLoaded.controlli
+          controlliBasename = shellLoaded.controlliBasename
+          runCtx = createRunContext(CONTROLLI, {
+            ...cli,
+            schermate: new Set(['shell']),
+            livello: 2,
+          })
+          report.anomalie.push('locale-dev L2: regressione shell 8.2 (stesso rapporto)')
+          report.replacePacchetto('shell')
+          report.pacchettoDefault = 'shell'
+          await runLocaleProd(devBaseUrl(), report, { skipAmbienteCheck: true })
+          CONTROLLI = saved.c
+          controlliBasename = saved.b
+          runCtx = createRunContext(CONTROLLI, saved.cli)
+        }
+
+        if (runCtx.screenIncluded('orari') || devL2Combined) {
           if (runCtx.livello === 1 && runCtx.schermate?.size === 1 && runCtx.schermate.has('orari')) {
             report.replacePacchetto('shell')
             report.replacePacchetto('completo')
@@ -1077,9 +1100,9 @@ async function main() {
               SHOT_PROFILES,
             })
           } catch (e) {
-            report.anomalie.push(`runOrariDevSimulations: ${e.message}`)
+            report.anomalie.push(`runOrariDevSimulations: ${e.stack ?? e.message}`)
           }
-        } else {
+        } else if (!devL2Combined) {
           await runConsoleClean(devBaseUrl(), report, browserVersion)
         }
         await devBrowser.close()
@@ -1094,9 +1117,6 @@ async function main() {
     }
 
     if (mode === 'all' || mode === 'locale-prod') {
-      if (!(await isPortFree(PROD_PORT))) {
-        throw new Error(`Porta ${PROD_PORT} occupata: liberare prima di locale-prod`)
-      }
       const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
       if (build.status !== 0) throw new Error('pnpm build fallito')
       prodChild = startProcess('pnpm', ['start'], { PORT: String(PROD_PORT) })
