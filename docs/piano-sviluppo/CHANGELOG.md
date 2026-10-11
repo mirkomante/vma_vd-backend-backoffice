@@ -32,6 +32,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Lanciatore verifica UI **v2.2.0** (`scripts/ui-verify/`): `acc-padding-scheda` dal bordo della scheda al primo figlio di `card-content`; `shell-tema-scelta` con menu riaperto a ogni giro e contesto browser isolato; guardia tema su screenshot e audit hash tra temi; percorso breadcrumb solo da `nav[aria-label="Percorso"]` + pannello menu sotto 768 px; rapporto FALLITO raggruppati per controllo.
+
 - Lanciatore verifica UI **v2.1.0** (`scripts/ui-verify/`): menu utente su telefono con pannello aperto prima; click tema senza `force` e diagnostica timeout; WebKit essenziale su **locale-dev**; diagnosi cookie `payload-token` WebKit su prod; durata in intestazione rapporto; screenshot shell notebook-1280 chiaro.
 
 - Lanciatore verifica UI **v2.0.0** (`scripts/ui-verify/`): controllo **AMBIENTE** (`nextjs-portal`) prima delle misure; dev su porta **3000** e prod su **3100**; rapporto compatto v2; controlli JSON v2 (ambito `login-testi`/`login-gerarchia`, C2-mouse senza link di testo, CONSOLE con menu/temi, screenshot distinti).
@@ -48,6 +50,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 8.2 (verifica visiva 2026-10-11): **P15** pannello menu mobile su `Sheet` laterale: larghezza fissa 18 rem (288 px) con `data-[side=left]:w-(--sidebar-width)` e `data-[side=left]:sm:max-w-(--sidebar-width)` su `Sidebar` mobile, perché le classi predefinite di `sheet` (`w-3/4`, `sm:max-w-sm`) portavano il pannello a 384 px a 767 px; deviazione registrata in D6 e in `prototipo-sorgenti.zip` (`deviazioni.json`).
 
 ### Tests
+
+- Verifica UI Area App (lanciatore **2.2.0**, quarta esecuzione 2026-10-11, post-**P15** commit `a6d9b3c`): **locale-prod** rigenerato (5 min 30 s, Chromium 140): 2680 OK / 1 FALLITO / 2 NON PROVATO; `acc-padding-scheda`, `shell-passaggio-768` (pannello 288 px), `shell-tema-scelta`, `shell-percorso-voce-attiva` OK; screenshot chiaro/scuro distinti (md5); unico FALLITO `shell-menu-utente` su telefono-390/chiaro (menu utente non stabile nel DOM); esiti in `docs/design/verifica/esiti/2026-10-11-locale-prod/`.
 
 - Correzione **P15** (2026-10-11): `pnpm ui:check`, `pnpm lint` (solo warning migrations), `pnpm typecheck` OK; Playwright su `/app` con menu aperto — larghezza pannello **288 px** a viewport 767, 430 e 390 px.
 

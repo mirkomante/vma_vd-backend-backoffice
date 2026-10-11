@@ -13,6 +13,7 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
   const rows = []
   const nonProvato = []
   const anomalie = []
+  const screenshotHashes = []
   const expectedIds = allControlIds(controlli, ambiente)
 
   return {
@@ -22,6 +23,7 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
     rows,
     nonProvato,
     anomalie,
+    screenshotHashes,
     expectedIds,
     invalidRun: false,
     add(row) {
@@ -62,6 +64,8 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
       const falliti = rows.filter((r) => r.esito === 'FALLITO')
       const avvisi = rows.filter((r) => r.esito === 'AVVISO')
       const nonPr = rows.filter((r) => r.esito === 'NON PROVATO')
+
+      const fallitiGrouped = formatFallitiGrouped(falliti)
 
       const okLines = [...okById.entries()]
         .filter(([id, g]) => g.ok === g.total && g.total > 0)
@@ -107,7 +111,7 @@ OK: ${counts.OK} · FALLITO: ${counts.FALLITO} · AVVISO: ${counts.AVVISO} · NO
 ${okLines.length ? okLines.join('\n') : '- (nessuno)'}
 
 ### FALLITO
-${falliti.length ? falliti.map((r) => lineDetail(r)).join('\n') : '- (nessuno)'}
+${falliti.length ? fallitiGrouped : '- (nessuno)'}
 
 ### AVVISO
 ${avvisi.length ? avvisi.map((r) => lineDetail(r)).join('\n') : '- (nessuno)'}
@@ -167,6 +171,40 @@ ${anomalie.length ? anomalie.map((a) => `- ${a}`).join('\n') : '- (nessuna)'}
 
 function lineDetail(r) {
   return `- **${r.id}** (${r.schermata}, ${r.profiloTema}): misurato \`${escapeInline(r.misurato)}\` · atteso \`${escapeInline(r.atteso)}\`${r.evidenza && r.evidenza !== '—' ? ` · ${r.evidenza}` : ''}`
+}
+
+function formatFallitiGrouped(falliti) {
+  const byId = new Map()
+  for (const r of falliti) {
+    const g = byId.get(r.id) ?? { id: r.id, count: 0, example: null, combos: [] }
+    g.count += 1
+    if (!g.example) g.example = r
+    g.combos.push(`${r.schermata} · ${r.profiloTema}`)
+    byId.set(r.id, g)
+  }
+  return [...byId.values()]
+    .sort((a, b) => a.id.localeCompare(b.id))
+    .map((g) => {
+      const ex = g.example
+      const comboList = g.combos.join('; ')
+      return `- **${g.id}** (${g.count} combinazioni): es. \`${escapeInline(ex.misurato)}\` · atteso \`${escapeInline(ex.atteso)}\` · ${comboList}`
+    })
+    .join('\n')
+}
+
+/** Dopo gli screenshot: stesso hash con tema diverso → anomalia. */
+export function auditScreenshotThemeHashes(report) {
+  const byHash = new Map()
+  for (const entry of report.screenshotHashes) {
+    const prev = byHash.get(entry.hash)
+    if (prev && prev.temaKey !== entry.temaKey) {
+      report.anomalie.push(
+        `screenshot: hash identico tra temi diversi (${prev.temaKey} vs ${entry.temaKey}): ${prev.name} e ${entry.name}`,
+      )
+    } else if (!prev) {
+      byHash.set(entry.hash, entry)
+    }
+  }
 }
 
 function escapeCell(s) {

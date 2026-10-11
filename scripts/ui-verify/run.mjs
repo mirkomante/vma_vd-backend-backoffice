@@ -5,12 +5,12 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
-import { randomBytes } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
 import net from 'node:net'
 import { chromium, webkit } from '@playwright/test'
 
 import { loadAuthMessages } from './lib/messages.mjs'
-import { initReport } from './lib/report.mjs'
+import { auditScreenshotThemeHashes, initReport } from './lib/report.mjs'
 import { DEV_PORT, PROD_PORT, devBaseUrl, prodBaseUrl } from './lib/ports.mjs'
 import {
   LAUNCHER_VERSION,
@@ -161,9 +161,18 @@ function resultToEsito(r, gravitaAvviso = false) {
   return r.ok ? 'OK' : 'FALLITO'
 }
 
-async function screenshot(page, report, name) {
+async function screenshot(page, report, name, temaKey) {
+  const expectedDark = CONTROLLI.temi[temaKey].html_dark
+  const hasDark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
+  if (hasDark !== expectedDark) {
+    report.anomalie.push(
+      `screenshot ${name}: html.dark=${hasDark} ma combinazione ${temaKey} richiede dark=${expectedDark}`,
+    )
+  }
   const path = join(report.imgDir, `${name}.png`)
   await page.screenshot({ path, fullPage: true })
+  const hash = createHash('sha256').update(readFileSync(path)).digest('hex')
+  report.screenshotHashes.push({ name, temaKey, hash })
 }
 
 function messageFromAvviso(testoDa) {
@@ -488,7 +497,7 @@ async function runLocaleProd(baseUrl, report) {
           const pt = `${profiloKey}/${temaKey}`
           await runAccessScreenChecks(page, report, screen.id, stato.id, sch, pt, path, profiloKey, temaKey, stato)
           if (SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
-            await screenshot(page, report, `${screen.id}-${stato.id}-${profiloKey}-${temaKey}`)
+            await screenshot(page, report, `${screen.id}-${stato.id}-${profiloKey}-${temaKey}`, temaKey)
           }
           await ctx.close()
         }
@@ -545,8 +554,6 @@ async function runLocaleProd(baseUrl, report) {
       await ctx.close()
     }
   }
-
-  let temaSceltaDone = false
 
   for (const stato of shell.stati) {
     for (const temaKey of Object.keys(CONTROLLI.temi)) {
@@ -621,22 +628,6 @@ async function runLocaleProd(baseUrl, report) {
           r = await checkShellMenuUtente(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
           addRow(report, { id: 'shell-menu-utente', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }
-        if (!temaSceltaDone && profiloKey === 'notebook-1280' && stato.id === 'home' && temaKey === 'chiaro') {
-          r = await checkShellTemaScelta(page, baseUrl)
-          addRow(report, {
-            id: 'shell-tema-scelta',
-            schermata: sch,
-            profiloTema: pt,
-            esito: resultToEsito(r),
-            misurato: r.misurato,
-            atteso: r.atteso,
-            evidenza: r.evidenza ?? 'menu utente',
-          })
-          temaSceltaDone = true
-          await loginApp(page, baseUrl, testUser.email, testPassword)
-          await page.goto(stato.percorso, { waitUntil: 'networkidle' })
-        }
-
         r = await checkShellPercorsoVoceAttiva(page, stato.percorso)
         addRow(report, { id: 'shell-percorso-voce-attiva', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
 
@@ -661,19 +652,19 @@ async function runLocaleProd(baseUrl, report) {
         if (stato.id === 'home' && SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
           await page.goto(stato.percorso, { waitUntil: 'networkidle' })
           await page.keyboard.press('Escape')
-          await screenshot(page, report, `shell-${stato.id}-${profiloKey}-${temaKey}`)
+          await screenshot(page, report, `shell-${stato.id}-${profiloKey}-${temaKey}`, temaKey)
           if (profiloKey === 'telefono-390') {
             await openMobileSidebar(page)
-            await screenshot(page, report, `shell-home-menu-aperto-${profiloKey}-${temaKey}`)
+            await screenshot(page, report, `shell-home-menu-aperto-${profiloKey}-${temaKey}`, temaKey)
           }
           await openUserMenu(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
           await page.getByRole('menuitemradio', { name: 'Chiaro' }).waitFor({ state: 'visible', timeout: 10000 })
-          await screenshot(page, report, `shell-home-menu-utente-${profiloKey}-${temaKey}`)
+          await screenshot(page, report, `shell-home-menu-utente-${profiloKey}-${temaKey}`, temaKey)
           await page.keyboard.press('Escape')
           if (profiloKey === 'telefono-390') await page.keyboard.press('Escape')
         }
         if (stato.id === 'segnaposto-menu' && SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
-          await screenshot(page, report, `shell-segnaposto-menu-${profiloKey}-${temaKey}`)
+          await screenshot(page, report, `shell-segnaposto-menu-${profiloKey}-${temaKey}`, temaKey)
         }
         } catch (err) {
           report.anomalie.push(`shell ${sch} ${pt}: ${err.message}`)
@@ -691,6 +682,28 @@ async function runLocaleProd(baseUrl, report) {
       }
     }
   }
+
+  {
+    const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
+    try {
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await page.goto('/app', { waitUntil: 'networkidle' })
+      const r = await checkShellTemaScelta(page, baseUrl)
+      addRow(report, {
+        id: 'shell-tema-scelta',
+        schermata: 'shell/home',
+        profiloTema: 'notebook-1280/chiaro',
+        esito: resultToEsito(r),
+        misurato: r.misurato,
+        atteso: r.atteso,
+        evidenza: r.evidenza ?? 'menu utente (contesto isolato)',
+      })
+    } finally {
+      await ctx.close()
+    }
+  }
+
+  auditScreenshotThemeHashes(report)
 
   await probeWebKitProdLoginCookies(baseUrl, report)
 

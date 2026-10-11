@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '2.1.0'
+export const LAUNCHER_VERSION = '2.2.0'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -431,9 +431,9 @@ export async function checkAccPaddingScheda(page) {
     const card = document.querySelector('main [data-slot=card]')
     const inner = card?.querySelector('[data-slot=card-content]')
     if (!card || !inner) return null
-    const first = inner.querySelector('[role=alert], [role=status], label, input, button, a, form')
-    if (!first) return parseFloat(getComputedStyle(inner).paddingTop)
-    return first.getBoundingClientRect().top - inner.getBoundingClientRect().top
+    const first = inner.firstElementChild
+    if (!first) return null
+    return first.getBoundingClientRect().top - card.getBoundingClientRect().top
   })
   if (pad == null) return { ok: false, misurato: 'non misurato', atteso: '16 px' }
   return {
@@ -717,12 +717,12 @@ async function radioClickDiagnostics(page, locator, label) {
 }
 
 export async function checkShellTemaScelta(page, baseUrl) {
-  await openUserMenu(page)
   for (const [label, cookie, dark] of [
     ['Scuro', 'dark', true],
     ['Chiaro', 'light', false],
     ['Sistema', 'system', false],
   ]) {
+    await openUserMenu(page)
     const click = await clickMenuItemRadioNormal(page, label)
     if (!click.ok) {
       const diag = click.diag
@@ -762,11 +762,24 @@ async function openUserMenuAndGetChecked(page, label) {
 export async function checkShellPercorsoVoceAttiva(page, path) {
   const atteso = PERCORSO_ATTESO[path]
   if (!atteso) return { ok: false, misurato: `path ${path} sconosciuto`, atteso: '—' }
+  const w = page.viewportSize()?.width ?? 1280
+  const openedMobile = w < 768
+  if (openedMobile) {
+    await openMobileSidebar(page)
+    await page.waitForTimeout(350)
+  }
   const data = await page.evaluate(() => {
-    const crumbs = [...document.querySelectorAll('nav[aria-label="Percorso"] *')].map((e) => e.textContent?.trim()).filter(Boolean)
+    const nav = document.querySelector('nav[aria-label="Percorso"]')
+    const crumbs = nav
+      ? [...nav.querySelectorAll('[data-slot=breadcrumb-item]')].map((li) => li.textContent?.trim()).filter(Boolean)
+      : []
     const active = [...document.querySelectorAll('[data-sidebar="menu-button"][data-active] span')].map((s) => s.textContent?.trim())
     return { crumbs, active }
   })
+  if (openedMobile) {
+    await page.keyboard.press('Escape')
+    await page.waitForTimeout(200)
+  }
   const crumbOk = atteso.breadcrumb.every((p) => data.crumbs.join(' ').includes(p))
   const activeOk = atteso.active === null ? data.active.length === 0 : data.active.includes(atteso.active)
   return {
