@@ -99,6 +99,7 @@ Ogni elemento interattivo ha un'area di tocco di almeno **44 × 44 px** sui disp
 | `toggle` | `pointer-coarse:h-11` e `pointer-coarse:min-w-11` su tutte le dimensioni (anche per `toggle-group`) | D6 |
 | `toggle` | Stato selezionato con `bg-primary text-primary-foreground` (anche in hover) al posto di `bg-muted` | Il grigio chiaro di shadcn non si distingue dal non selezionato (giorni di riposo) |
 | `sidebar` | `pointer-coarse:h-11` su `SidebarMenuButton` (`default`, `sm`), sulla sotto-voce e su `SidebarInput` | D6 |
+| `sidebar` | Nel `SheetContent` mobile: `data-[side=left]:w-(--sidebar-width) data-[side=left]:sm:max-w-(--sidebar-width)` (oltre a `w-(--sidebar-width)` e `--sidebar-width: 18rem`) | Il `sheet` impone al lato sinistro `w-3/4` e `sm:max-w-sm` (384 px): il pannello menu resta 18 rem (288 px) su tutta la fascia mobile |
 | `dropdown-menu` | `pointer-coarse:py-3` su voci, voci con spunta, voci radio e sotto-menu | D6 |
 | `tabs` | Lista `pointer-coarse:group-data-horizontal/tabs:h-auto`; scheda `pointer-coarse:h-11` | D6 (la scheda era alta 37 px) |
 | `breadcrumb` | `BreadcrumbLink`: area di tocco estesa (`pointer-coarse:relative pointer-coarse:after:absolute pointer-coarse:after:-inset-3.5`) | D6 (il collegamento era alto 20 px e, se corto, largo 36) |

@@ -45,8 +45,11 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 - Fase 8.2 (dev): navigazione con `iconKey` + `AppNavIcon` (niente Lucide server→client); menu utente `DropdownMenuGroup` e `nativeButton` Base UI; logout da voce menu senza `Button` annidato; accesso Google e `AppAuthLink` con `buttonVariants` su `<a>`/`Link` (non `Button render`); script tema in `<head>` del layout server; `use-mobile` con `useSyncExternalStore` (lint).
 - Fase 8.2 (verifica visiva Cloud Run 2026-10-11): **P13** redirect `POST /app/logout` con `Location` relativo `/app/login` (niente `request.url` dietro proxy); **P12** modulo reset visibile con `token` anche se `resetFailed=1`; **P11** spaziature/icona accesso in `AppAuthPage`; «Vai all'Admin» in nuova scheda (`<a target="_blank">`, non `Link`); **A23** listener `prefers-color-scheme` nello script tema quando preferenza «Sistema».
+- Fase 8.2 (verifica visiva 2026-10-11): **P15** pannello menu mobile su `Sheet` laterale: larghezza fissa 18 rem (288 px) con `data-[side=left]:w-(--sidebar-width)` e `data-[side=left]:sm:max-w-(--sidebar-width)` su `Sidebar` mobile, perché le classi predefinite di `sheet` (`w-3/4`, `sm:max-w-sm`) portavano il pannello a 384 px a 767 px; deviazione registrata in D6 e in `prototipo-sorgenti.zip` (`deviazioni.json`).
 
 ### Tests
+
+- Correzione **P15** (2026-10-11): `pnpm ui:check`, `pnpm lint` (solo warning migrations), `pnpm typecheck` OK; Playwright su `/app` con menu aperto — larghezza pannello **288 px** a viewport 767, 430 e 390 px.
 
 - Verifica UI Area App (lanciatore **2.1.0**, terza esecuzione 2026-10-11): **locale-prod** rigenerato (intestazione con Chromium e durata 6 min 31 s, 48 controlli pertinenti); **locale-dev** WebKit essenziale OK (44 s); `shell-tema-scelta` FALLITO (click «Chiaro»: elemento non stabile / detached nel log Playwright); diagnosi WebKit su prod: `payload-token` con `secure=true` su `http://localhost:3100` ma URL resta `/app/login`.
 
