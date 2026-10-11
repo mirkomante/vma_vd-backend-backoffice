@@ -18,7 +18,7 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
   return {
     dir,
     imgDir,
-    meta: { ambiente, data, commit, launcherVersion, browsers, controlliVersion },
+    meta: { ambiente, data, commit, launcherVersion, browsers, controlliVersion, durataMs: null },
     rows,
     nonProvato,
     anomalie,
@@ -90,8 +90,13 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
         return `| ${id} | ${worst} (${detail}) |`
       })
 
+      const durata =
+        this.meta.durataMs != null
+          ? ` · Durata: ${this.meta.durataMs < 60000 ? `${Math.round(this.meta.durataMs / 1000)} s` : `${Math.floor(this.meta.durataMs / 60000)} min ${Math.round((this.meta.durataMs % 60000) / 1000)} s`}`
+          : ''
+
       const header = `# Esito verifica — ${ambiente} — ${data}
-Commit: ${commit} · Lanciatore: ${launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: controlli-8.2.json v${controlliVersion}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}
+Commit: ${commit} · Lanciatore: ${launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: controlli-8.2.json v${controlliVersion}${durata}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}
 
 ## Riepilogo
 OK: ${counts.OK} · FALLITO: ${counts.FALLITO} · AVVISO: ${counts.AVVISO} · NON PROVATO: ${counts['NON PROVATO']} · Controlli distinti nel JSON: ${distinctControls}
@@ -134,7 +139,16 @@ ${anomalie.length ? anomalie.map((a) => `- ${a}`).join('\n') : '- (nessuna)'}
         join(dir, 'risultati.json'),
         JSON.stringify(
           {
-            meta: { ambiente, data, commit, launcherVersion, browsers, controlliVersion, invalidRun: this.invalidRun },
+            meta: {
+              ambiente,
+              data,
+              commit,
+              launcherVersion,
+              browsers: this.meta.browsers ?? browsers,
+              controlliVersion,
+              durataMs: this.meta.durataMs,
+              invalidRun: this.invalidRun,
+            },
             counts,
             distinctControls,
             rows,

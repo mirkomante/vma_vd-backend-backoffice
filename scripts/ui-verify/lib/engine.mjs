@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '2.0.0'
+export const LAUNCHER_VERSION = '2.1.0'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -645,9 +645,9 @@ export async function checkShellBloccoUtente(page, email) {
   }
 }
 
-export async function checkShellMenuUtente(page) {
+export async function checkShellMenuUtente(page, { mobilePanelFirst = false } = {}) {
   try {
-    await openUserMenu(page)
+    await openUserMenu(page, { mobilePanelFirst })
   } catch (e) {
     return { ok: false, misurato: `menu non apribile: ${e.message}`, atteso: 'Tema+Esci, no Admin' }
   }
@@ -663,6 +663,59 @@ export async function checkShellMenuUtente(page) {
   return { ok, misurato: JSON.stringify(data.items), atteso: 'Tema+Esci, no Admin' }
 }
 
+/** Clic normale su voce tema con diagnostica completa se Playwright va in timeout. */
+export async function clickMenuItemRadioNormal(page, label) {
+  const locator = page.getByRole('menuitemradio', { name: label })
+  const callLog = []
+  try {
+    await locator.waitFor({ state: 'visible', timeout: 15000 })
+    callLog.push(`visible: sì (attesa esplicita 15s)`)
+  } catch (e) {
+    callLog.push(`visible: no dopo 15s (${e.message})`)
+    return { ok: false, callLog: callLog.join(' · '), diag: await radioClickDiagnostics(page, locator, label) }
+  }
+  try {
+    await locator.click({ timeout: 30000 })
+    return { ok: true, callLog: 'click completato (timeout 30s, senza force)' }
+  } catch (e) {
+    const diag = await radioClickDiagnostics(page, locator, label)
+    return {
+      ok: false,
+      callLog: `${e.message}`,
+      diag,
+    }
+  }
+}
+
+async function radioClickDiagnostics(page, locator, label) {
+  const visible = await locator.isVisible().catch(() => false)
+  const enabled = await locator.isEnabled().catch(() => false)
+  const box = await locator.boundingBox().catch(() => null)
+  let stable = 'non misurato'
+  try {
+    await locator.waitFor({ state: 'visible', timeout: 2000 })
+    await page.waitForTimeout(100)
+    stable = 'visibile (non verificato stabilità animazione)'
+  } catch {
+    stable = 'non stabile/visibile'
+  }
+  let covered = 'n/a'
+  if (box) {
+    const cx = box.x + box.width / 2
+    const cy = box.y + box.height / 2
+    covered = await page.evaluate(
+      ({ cx, cy, label }) => {
+        const top = document.elementFromPoint(cx, cy)
+        const radio = [...document.querySelectorAll('[role=menuitemradio]')].find((e) => e.textContent?.trim() === label)
+        const same = top === radio || radio?.contains(top) || top?.contains(radio)
+        return same ? 'punto centrale sul radio' : `coperto da ${top?.tagName}${top?.className ? '.' + String(top.className).split(' ')[0] : ''}`
+      },
+      { cx, cy, label },
+    )
+  }
+  return { label, visible, enabled, stable, box, covered }
+}
+
 export async function checkShellTemaScelta(page, baseUrl) {
   await openUserMenu(page)
   for (const [label, cookie, dark] of [
@@ -670,7 +723,12 @@ export async function checkShellTemaScelta(page, baseUrl) {
     ['Chiaro', 'light', false],
     ['Sistema', 'system', false],
   ]) {
-    await page.getByRole('menuitemradio', { name: label }).click({ force: true })
+    const click = await clickMenuItemRadioNormal(page, label)
+    if (!click.ok) {
+      const diag = click.diag
+      const mis = `click «${label}» fallito · log: ${click.callLog} · visibile=${diag?.visible} abilitato=${diag?.enabled} stabile=${diag?.stable} copertura=${diag?.covered}`
+      return { ok: false, misurato: mis, atteso: 'click normale su menuitemradio', evidenza: click.callLog }
+    }
     await page.waitForTimeout(150)
     const hasDark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
     const cookies = await page.context().cookies(baseUrl)
@@ -729,10 +787,10 @@ export async function checkShellNomiAccessibili(page) {
   return { ok: found.length === 0, misurato: found.join(', ') || 'nessuno', atteso: 'nessun testo inglese elencato' }
 }
 
-export async function openUserMenu(page) {
+export async function openUserMenu(page, { mobilePanelFirst = false } = {}) {
   const w = page.viewportSize()?.width ?? 1280
   const trigger = page.locator('[data-sidebar="footer"] [data-sidebar="menu-button"]').first()
-  if (w < 768) {
+  if (w < 768 || mobilePanelFirst) {
     const sheet = page.locator('[data-sidebar="sidebar"][data-mobile="true"]')
     if (!(await sheet.isVisible().catch(() => false))) {
       await openMobileSidebar(page)
@@ -743,7 +801,9 @@ export async function openUserMenu(page) {
     await page.waitForTimeout(350)
   }
   await trigger.waitFor({ state: 'visible', timeout: 15000 })
-  await trigger.click({ force: true })
+  await trigger.scrollIntoViewIfNeeded()
+  await trigger.click({ timeout: 30000 })
+  await page.getByRole('menuitemradio', { name: 'Chiaro' }).waitFor({ state: 'visible', timeout: 10000 }).catch(() => {})
   await page.waitForTimeout(200)
 }
 

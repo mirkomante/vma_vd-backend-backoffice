@@ -1,7 +1,7 @@
 /** Elenco degli id controllo attesi nel rapporto (v2), per ambiente. */
 export function allControlIds(controlli, ambiente) {
   if (ambiente === 'locale-dev') {
-    return ['CONSOLE']
+    return ['CONSOLE', 'webkit-giro-essenziale']
   }
   if (ambiente === 'online') {
     return ['AMBIENTE', 'on1', 'on2', 'on3', 'on4', 'on5', 'on6', 'verify-link-valido']
@@ -19,7 +19,6 @@ export function allControlIds(controlli, ambiente) {
     for (const c of s.controlli ?? []) ids.add(c.id)
     for (const g of s.guardia ?? []) ids.add(g.id)
   }
-  ids.add('webkit-giro-essenziale')
   ids.add('verify-link-valido')
   ids.add('shell-admin-link')
   return [...ids].sort()

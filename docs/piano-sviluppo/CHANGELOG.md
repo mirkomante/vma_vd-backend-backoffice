@@ -32,6 +32,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Lanciatore verifica UI **v2.1.0** (`scripts/ui-verify/`): menu utente su telefono con pannello aperto prima; click tema senza `force` e diagnostica timeout; WebKit essenziale su **locale-dev**; diagnosi cookie `payload-token` WebKit su prod; durata in intestazione rapporto; screenshot shell notebook-1280 chiaro.
+
 - Lanciatore verifica UI **v2.0.0** (`scripts/ui-verify/`): controllo **AMBIENTE** (`nextjs-portal`) prima delle misure; dev su porta **3000** e prod su **3100**; rapporto compatto v2; controlli JSON v2 (ambito `login-testi`/`login-gerarchia`, C2-mouse senza link di testo, CONSOLE con menu/temi, screenshot distinti).
 
 - Fase 8.2: patch `app-ui.css` (`overflow-x: clip`, `color-scheme`, token destructive/sidebar); `tsconfig.json` esclude `**/*.test.ts` dal typecheck Next.
@@ -45,6 +47,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - Fase 8.2 (verifica visiva Cloud Run 2026-10-11): **P13** redirect `POST /app/logout` con `Location` relativo `/app/login` (niente `request.url` dietro proxy); **P12** modulo reset visibile con `token` anche se `resetFailed=1`; **P11** spaziature/icona accesso in `AppAuthPage`; «Vai all'Admin» in nuova scheda (`<a target="_blank">`, non `Link`); **A23** listener `prefers-color-scheme` nello script tema quando preferenza «Sistema».
 
 ### Tests
+
+- Verifica UI Area App (lanciatore **2.1.0**, terza esecuzione 2026-10-11): **locale-prod** rigenerato (intestazione con Chromium e durata 6 min 31 s, 48 controlli pertinenti); **locale-dev** WebKit essenziale OK (44 s); `shell-tema-scelta` FALLITO (click «Chiaro»: elemento non stabile / detached nel log Playwright); diagnosi WebKit su prod: `payload-token` con `secure=true` su `http://localhost:3100` ma URL resta `/app/login`.
 
 - Verifica UI Area App (lanciatore **2.0.0**, 2026-10-11): **locale-dev** CONSOLE 28/28 OK; **online** AMBIENTE + on1–on6 OK; **locale-prod** AMBIENTE OK (`nextjs-portal` assente su `:3100`), 2608 OK / 72 FALLITO / 11 NON PROVATO — fallimenti residui su shell (percorso/voce attiva, passaggio 768, menu utente), `acc-padding-scheda` (misura corretta nel lanciatore post-run), `shell-tema-scelta` (timeout click tema), WebKit essenziale; esiti in `docs/design/verifica/esiti/2026-10-11-*`.
 

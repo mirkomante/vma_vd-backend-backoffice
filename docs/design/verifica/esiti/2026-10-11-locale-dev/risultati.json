@@ -2,19 +2,20 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-11",
-    "commit": "240651befe85",
-    "launcherVersion": "2.0.0",
+    "commit": "cd08bc51e18b",
+    "launcherVersion": "2.1.0",
     "browsers": "—",
     "controlliVersion": 2,
+    "durataMs": 44213,
     "invalidRun": false
   },
   "counts": {
-    "OK": 28,
+    "OK": 29,
     "FALLITO": 0,
     "AVVISO": 0,
     "NON PROVATO": 0
   },
-  "distinctControls": 1,
+  "distinctControls": 2,
   "rows": [
     {
       "id": "CONSOLE",
@@ -267,6 +268,15 @@
       "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror/richieste fallite",
       "evidenza": "—"
+    },
+    {
+      "id": "webkit-giro-essenziale",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro/WebKit 26.0",
+      "esito": "OK",
+      "misurato": "login→/app OK (http://localhost:3000/app)",
+      "atteso": "login, home, menu, menu utente (locale-dev)",
+      "evidenza": "26.0"
     }
   ],
   "nonProvato": [],

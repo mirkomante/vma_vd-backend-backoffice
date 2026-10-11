@@ -451,6 +451,7 @@ async function runAmbienteCheck(baseUrl, report, browserVersion) {
 async function runLocaleProd(baseUrl, report) {
   const browser = await chromium.launch()
   const browserVersion = await browser.version()
+  report.meta.browsers = `Chromium ${browserVersion}`
 
   await runAmbienteCheck(baseUrl, report, browserVersion)
 
@@ -617,12 +618,20 @@ async function runLocaleProd(baseUrl, report) {
           addRow(report, { id: 'shell-blocco-utente', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: testUser.email })
         }
         if (stato.id === 'home' && temaKey === 'chiaro' && ['notebook-1280', 'telefono-390'].includes(profiloKey)) {
-          r = await checkShellMenuUtente(page)
+          r = await checkShellMenuUtente(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
           addRow(report, { id: 'shell-menu-utente', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }
         if (!temaSceltaDone && profiloKey === 'notebook-1280' && stato.id === 'home' && temaKey === 'chiaro') {
           r = await checkShellTemaScelta(page, baseUrl)
-          addRow(report, { id: 'shell-tema-scelta', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: 'menu utente' })
+          addRow(report, {
+            id: 'shell-tema-scelta',
+            schermata: sch,
+            profiloTema: pt,
+            esito: resultToEsito(r),
+            misurato: r.misurato,
+            atteso: r.atteso,
+            evidenza: r.evidenza ?? 'menu utente',
+          })
           temaSceltaDone = true
           await loginApp(page, baseUrl, testUser.email, testPassword)
           await page.goto(stato.percorso, { waitUntil: 'networkidle' })
@@ -656,11 +665,12 @@ async function runLocaleProd(baseUrl, report) {
           if (profiloKey === 'telefono-390') {
             await openMobileSidebar(page)
             await screenshot(page, report, `shell-home-menu-aperto-${profiloKey}-${temaKey}`)
-            await page.keyboard.press('Escape')
           }
-          await openUserMenu(page)
+          await openUserMenu(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
+          await page.getByRole('menuitemradio', { name: 'Chiaro' }).waitFor({ state: 'visible', timeout: 10000 })
           await screenshot(page, report, `shell-home-menu-utente-${profiloKey}-${temaKey}`)
           await page.keyboard.press('Escape')
+          if (profiloKey === 'telefono-390') await page.keyboard.press('Escape')
         }
         if (stato.id === 'segnaposto-menu' && SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
           await screenshot(page, report, `shell-segnaposto-menu-${profiloKey}-${temaKey}`)
@@ -682,33 +692,7 @@ async function runLocaleProd(baseUrl, report) {
     }
   }
 
-  const wk = await webkit.launch()
-  const wkVer = await wk.version()
-  {
-    const { ctx, page } = await newPage(wk, 'telefono-390', 'chiaro', baseUrl)
-    let wkOk = false
-    let wkNote = ''
-    try {
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await page.goto('/app', { waitUntil: 'networkidle' })
-      await openMobileSidebar(page)
-      await openUserMenu(page)
-      wkOk = true
-    } catch (e) {
-      wkNote = e.message
-    }
-    addRow(report, {
-      id: 'webkit-giro-essenziale',
-      schermata: 'shell/home',
-      profiloTema: `telefono-390/chiaro/WebKit ${wkVer}`,
-      esito: wkOk ? 'OK' : 'FALLITO',
-      misurato: wkOk ? 'login, home, menu, menu utente' : wkNote,
-      atteso: 'flusso essenziale WebKit',
-      evidenza: wkVer,
-    })
-    await ctx.close()
-  }
-  await wk.close()
+  await probeWebKitProdLoginCookies(baseUrl, report)
 
   {
     const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
@@ -743,7 +727,72 @@ async function runLocaleProd(baseUrl, report) {
   }
 
   await browser.close()
-  report.meta.browsers = `Chromium ${browserVersion}; WebKit ${wkVer}`
+  report.meta.browsers = `Chromium ${browserVersion}`
+}
+
+async function probeWebKitProdLoginCookies(baseUrl, report) {
+  const wk = await webkit.launch()
+  const wkVer = await wk.version()
+  const setCookies = []
+  try {
+    const { ctx, page } = await newPage(wk, 'telefono-390', 'chiaro', baseUrl)
+    page.on('response', (res) => {
+      if (res.url().includes('/api/users/login') && res.request().method() === 'POST') {
+        const sc = res.headers()['set-cookie']
+        if (sc) setCookies.push(sc)
+      }
+    })
+    await page.goto('/app/login', { waitUntil: 'networkidle' })
+    await page.fill('input[name=email]', testUser.email)
+    await page.fill('input[name=password]', testPassword)
+    await page.getByRole('button', { name: 'Accedi' }).click()
+    await sleep(3000)
+    const finalUrl = page.url()
+    const cookies = await ctx.cookies()
+    const token = cookies.find((c) => c.name === 'payload-token')
+    const tokenDesc = token
+      ? `presente secure=${token.secure} httpOnly=${token.httpOnly} sameSite=${token.sameSite}`
+      : 'assente nel contesto browser'
+    const setDesc = setCookies.length ? setCookies.join(' | ') : '(nessun Set-Cookie catturato sulla risposta login)'
+    report.anomalie.push(
+      `WebKit ${wkVer} su ${baseUrl} (diagnosi login prod): URL finale=${finalUrl}; payload-token: ${tokenDesc}; Set-Cookie login: ${setDesc}`,
+    )
+    await ctx.close()
+  } catch (e) {
+    report.anomalie.push(`WebKit diagnosi login prod fallita: ${e.message}`)
+  }
+  await wk.close()
+}
+
+async function runWebkitEssential(baseUrl, report) {
+  const wk = await webkit.launch()
+  const wkVer = await wk.version()
+  const { ctx, page } = await newPage(wk, 'telefono-390', 'chiaro', baseUrl)
+  let wkOk = false
+  let misurato = ''
+  try {
+    await loginApp(page, baseUrl, testUser.email, testPassword)
+    const onApp = /\/app\/?$/.test(new URL(page.url()).pathname)
+    await page.goto('/app', { waitUntil: 'networkidle' })
+    await openMobileSidebar(page)
+    await openUserMenu(page, { mobilePanelFirst: true })
+    wkOk = onApp && page.url().includes('/app')
+    misurato = wkOk ? `login→/app OK (${page.url()})` : `URL dopo login: ${page.url()}`
+  } catch (e) {
+    misurato = e.message
+  }
+  addRow(report, {
+    id: 'webkit-giro-essenziale',
+    schermata: 'shell/home',
+    profiloTema: `telefono-390/chiaro/WebKit ${wkVer}`,
+    esito: wkOk ? 'OK' : 'FALLITO',
+    misurato,
+    atteso: 'login, home, menu, menu utente (locale-dev)',
+    evidenza: wkVer,
+  })
+  await ctx.close()
+  await wk.close()
+  return wkVer
 }
 
 async function runOnline(report) {
@@ -850,14 +899,17 @@ async function main() {
       if (!(await isPortFree(DEV_PORT))) {
         throw new Error(`Porta ${DEV_PORT} occupata: liberare prima di locale-dev`)
       }
+      const t0 = Date.now()
       devChild = startProcess('pnpm', ['dev'], { PORT: String(DEV_PORT) })
       await waitForUrl(devBaseUrl())
       const browser = await chromium.launch()
       const browserVersion = await browser.version()
       await browser.close()
       const report = makeReport('locale-dev', commit)
-      report.meta.browsers = `Chromium ${browserVersion}`
       await runConsoleClean(devBaseUrl(), report, browserVersion)
+      const wkVer = await runWebkitEssential(devBaseUrl(), report)
+      report.meta.browsers = `Chromium ${browserVersion}; WebKit ${wkVer}`
+      report.meta.durataMs = Date.now() - t0
       console.log(`Esiti locale-dev: ${report.write()}`)
       devChild.kill('SIGTERM')
       devChild = null
@@ -868,20 +920,24 @@ async function main() {
       if (!(await isPortFree(PROD_PORT))) {
         throw new Error(`Porta ${PROD_PORT} occupata: liberare prima di locale-prod`)
       }
+      const t0 = Date.now()
       const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
       if (build.status !== 0) throw new Error('pnpm build fallito')
       prodChild = startProcess('pnpm', ['start'], { PORT: String(PROD_PORT) })
       await waitForUrl(prodBaseUrl())
       const report = makeReport('locale-prod', commit)
       await runLocaleProd(prodBaseUrl(), report)
+      report.meta.durataMs = Date.now() - t0
       console.log(`Esiti locale-prod: ${report.write()}`)
       prodChild.kill('SIGTERM')
       prodChild = null
     }
 
     if (mode === 'all' || mode === 'online') {
+      const t0 = Date.now()
       const report = makeReport('online', commit)
       await runOnline(report)
+      report.meta.durataMs = Date.now() - t0
       console.log(`Esiti online: ${report.write()}`)
     }
   } finally {
