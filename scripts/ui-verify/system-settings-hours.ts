@@ -163,15 +163,20 @@ async function main(): Promise<void> {
       depth: 0,
       overrideAccess: true,
     })
-    const next = { ...doc } as Record<string, unknown>
-    delete next.services
+    const servicesBefore = Array.isArray(doc.services) ? doc.services.length : 0
     await payload.updateGlobal({
       slug: SYSTEM_SETTINGS_SLUG,
       depth: 0,
       overrideAccess: true,
-      data: next as Partial<ImpostazioniSistema>,
+      data: { services: [] } as Partial<ImpostazioniSistema>,
     })
-    process.stdout.write(JSON.stringify({ cleared: true }))
+    const after = await payload.findGlobal({
+      slug: SYSTEM_SETTINGS_SLUG,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const servicesAfter = Array.isArray(after.services) ? after.services.length : 0
+    process.stdout.write(JSON.stringify({ cleared: true, servicesBefore, servicesAfter }))
     return
   }
 

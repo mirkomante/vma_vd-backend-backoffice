@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.1.3'
+export const LAUNCHER_VERSION = '3.1.4'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -649,11 +649,72 @@ export async function checkShellBloccoUtente(page, email) {
   }
 }
 
-export async function checkShellMenuUtente(page, { mobilePanelFirst = false } = {}) {
+/** Conta quante volte il trigger menu mobile entra nel DOM (rimontaggi; possibile difetto app se dopo idratazione). */
+export async function probeMobileMenuTriggerRemounts(page, observeMs = 2800) {
+  const hydrationMs = 1200
+  return page.evaluate(
+    ({ ms, hydrationMs: hydrMs }) => {
+      const label = 'Apri o chiudi il menu'
+      let mountEvents = 0
+      let postHydrationMountEvents = 0
+      let hydrated = false
+      setTimeout(() => {
+        hydrated = true
+      }, hydrMs)
+      const findInNode = (root) => {
+        if (root.nodeType !== 1) return null
+        if (root.matches?.(`button[aria-label="${label}"]`)) return root
+        return root.querySelector?.(`button[aria-label="${label}"]`)
+      }
+      const onAdded = (el) => {
+        mountEvents += 1
+        if (hydrated) postHydrationMountEvents += 1
+      }
+      return new Promise((resolve) => {
+        const observer = new MutationObserver((mutations) => {
+          for (const m of mutations) {
+            for (const n of m.addedNodes) {
+              const btn = findInNode(n)
+              if (btn) onAdded(btn)
+            }
+          }
+        })
+        observer.observe(document.body, { childList: true, subtree: true })
+        const existing = document.querySelector(`button[aria-label="${label}"]`)
+        if (existing) onAdded(existing)
+        setTimeout(() => {
+          observer.disconnect()
+          resolve({
+            mountEvents,
+            remounts: Math.max(0, mountEvents - 1),
+            postHydrationRemounts: Math.max(0, postHydrationMountEvents - (hydrated ? 0 : 0)),
+            postHydrationMountEvents,
+            hydrationMs: hydrMs,
+            observeMs: ms,
+            triggerPresent: Boolean(document.querySelector(`button[aria-label="${label}"]`)),
+          })
+        }, ms)
+      })
+    },
+    { ms: observeMs, hydrationMs },
+  )
+}
+
+export async function waitForAppHydration(page, ms = 1500) {
+  await page.waitForLoadState('domcontentloaded')
+  await page.waitForFunction(
+    () => document.querySelector('header') && document.querySelector('main'),
+    { timeout: 20000 },
+  )
+  await page.waitForTimeout(ms)
+}
+
+export async function checkShellMenuUtente(page, { mobilePanelFirst = false, remountProbe = null } = {}) {
   try {
     await openUserMenu(page, { mobilePanelFirst })
   } catch (e) {
-    return { ok: false, misurato: `menu non apribile: ${e.message}`, atteso: 'Tema+Esci, no Admin' }
+    const probe = remountProbe ? ` remounts=${JSON.stringify(remountProbe)}` : ''
+    return { ok: false, misurato: `menu non apribile: ${e.message}${probe}`, atteso: 'Tema+Esci, no Admin' }
   }
   const data = await page.evaluate(() => {
     const items = [...document.querySelectorAll('[role=menuitem], [role=menuitemradio]')].map((e) => e.textContent?.trim())
@@ -664,7 +725,8 @@ export async function checkShellMenuUtente(page, { mobilePanelFirst = false } = 
   const hasTheme = data.items.some((t) => t === 'Chiaro') && data.items.some((t) => t === 'Scuro') && data.items.some((t) => t === 'Sistema')
   const hasEsci = data.items.some((t) => t === 'Esci')
   const ok = hasTheme && hasEsci && !data.admin
-  return { ok, misurato: JSON.stringify(data.items), atteso: 'Tema+Esci, no Admin' }
+  const probe = remountProbe ? ` remounts=${JSON.stringify(remountProbe)}` : ''
+  return { ok, misurato: JSON.stringify(data.items) + probe, atteso: 'Tema+Esci, no Admin' }
 }
 
 /** Clic normale su voce tema con diagnostica completa se Playwright va in timeout. */
@@ -824,8 +886,32 @@ export async function openUserMenu(page, { mobilePanelFirst = false } = {}) {
   await page.waitForTimeout(200)
 }
 
+export async function isMobileSidebarOpen(page) {
+  return page.locator('[data-sidebar="sidebar"][data-mobile="true"]').isVisible().catch(() => false)
+}
+
+/** Apre il pannello solo se chiuso e il trigger è visibile (es. non coperto da modal). */
 export async function openMobileSidebar(page) {
-  await page.getByRole('button', { name: 'Apri o chiudi il menu' }).click()
+  if (await isMobileSidebarOpen(page)) return { opened: false, reason: 'già aperto' }
+  const trigger = page.getByRole('button', { name: 'Apri o chiudi il menu' })
+  const visible = await trigger.isVisible().catch(() => false)
+  if (!visible) {
+    return { opened: false, reason: 'trigger non visibile (modal o barra?)' }
+  }
+  await trigger.click()
+  await page.waitForTimeout(200)
+  return { opened: true, reason: 'click' }
+}
+
+export async function closeMobileSidebarIfOpen(page) {
+  if (!(await isMobileSidebarOpen(page))) return
+  const trigger = page.getByRole('button', { name: 'Apri o chiudi il menu' })
+  if (await trigger.isVisible().catch(() => false)) {
+    await trigger.click()
+    await page.waitForTimeout(200)
+    return
+  }
+  await page.keyboard.press('Escape')
   await page.waitForTimeout(200)
 }
 

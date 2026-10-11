@@ -66,6 +66,8 @@ import {
   openUserMenu,
   openMobileSidebar,
   consoleShellInteractions,
+  probeMobileMenuTriggerRemounts,
+  waitForAppHydration,
 } from './lib/engine.mjs'
 import { runOrariChecks, runOrariDevSimulations, runOrariConsole } from './lib/run-orari.mjs'
 
@@ -701,7 +703,23 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
           addRow(report, { id: 'shell-blocco-utente', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: testUser.email })
         }
         if (stato.id === 'home' && temaKey === 'chiaro' && ['notebook-1280', 'telefono-390'].includes(profiloKey)) {
-          r = await checkShellMenuUtente(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
+          let remountProbe = null
+          if (profiloKey === 'telefono-390') {
+            await waitForAppHydration(page)
+            remountProbe = await probeMobileMenuTriggerRemounts(page)
+            report.anomalie.push(
+              `shell-menu trigger telefono-390: mountEvents=${remountProbe.mountEvents} remounts=${remountProbe.remounts} postHydration=${remountProbe.postHydrationMountEvents} (observe ${remountProbe.observeMs}ms, hydration ${remountProbe.hydrationMs}ms)`,
+            )
+            if (remountProbe.postHydrationMountEvents > 1) {
+              report.anomalie.push(
+                `shell-menu trigger: rimontato dopo idratazione (${remountProbe.postHydrationMountEvents} mount post-hydration) — possibile difetto app`,
+              )
+            }
+          }
+          r = await checkShellMenuUtente(page, {
+            mobilePanelFirst: profiloKey === 'telefono-390',
+            remountProbe,
+          })
           addRow(report, { id: 'shell-menu-utente', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }
         r = await checkShellPercorsoVoceAttiva(page, stato.percorso)

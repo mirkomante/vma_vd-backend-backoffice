@@ -2,21 +2,21 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-11",
-    "commit": "2be902544741",
-    "launcherVersion": "3.1.3",
-    "launcherHeader": "3.1.3 (L2)",
+    "commit": "b567624420e0",
+    "launcherVersion": "3.1.4",
+    "launcherHeader": "3.1.4 (L2)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-8.5.json",
     "livelloEseguito": "L2",
     "controlliVersion": 3,
-    "durataMs": 721104,
+    "durataMs": 722127,
     "invalidRun": false
   },
   "counts": {
-    "OK": 839,
-    "FALLITO": 7,
-    "AVVISO": 2,
-    "NON PROVATO": 18
+    "OK": 907,
+    "FALLITO": 9,
+    "AVVISO": 0,
+    "NON PROVATO": 20
   },
   "distinctControls": 35,
   "rows": [
@@ -1998,6 +1998,66 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "reset-senza-token-vuoto",
+      "schermata": "reset/senza-token",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "0",
+      "atteso": "0",
+      "evidenza": "/app/login/reset",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3-cambio-sistema",
+      "schermata": "login",
+      "profiloTema": "notebook-1280/sistema",
+      "esito": "OK",
+      "misurato": "dopo emulate dark: true; con cookie light ignore OS: true",
+      "atteso": "dark con system+OS scuro; no cambio con cookie light/dark fisso",
+      "evidenza": "emulateMedia prefers-color-scheme",
+      "pacchetto": "accesso"
     },
     {
       "id": "AMBIENTE",
@@ -5183,10 +5243,10 @@
       "id": "orari-barra-misure",
       "schermata": "orari/modificato",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "FALLITO",
-      "misurato": "allineamento colonna=false | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:true",
-      "atteso": "testo sx pulsanti dx",
-      "evidenza": "motivo: allineamento barra/colonna/testo (box bar=256,1024) | shot:orari-barra-misure-notebook-1280-chiaro | alert:— | http://localhost:3100/app/hours",
+      "esito": "OK",
+      "misurato": "allineamento max-w-xl=true inner=480×576 col=480×576",
+      "atteso": "testo sx pulsanti dx (contenitore max-w-xl)",
+      "evidenza": "motivo: barra vs main .max-w-xl (non slot esterno bar=1024×85)",
       "pacchetto": "orari"
     },
     {
@@ -5233,20 +5293,20 @@
       "id": "orari-annulla",
       "schermata": "orari/modificato",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "valoreRipristinato:true chiusuraAssente:true barraAssente:false | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:true",
+      "esito": "OK",
+      "misurato": "valoreRipristinato:true chiusuraAssente:true barraAssente:true",
       "atteso": "stato salvato ripristinato (valore, chiusura prova, barra)",
-      "evidenza": "motivo: barraGone=false empty=true valore=true | shot:orari-annulla-telefono-390-chiaro | alert:— | http://localhost:3100/app/hours",
+      "evidenza": "/app/hours",
       "pacchetto": "orari"
     },
     {
       "id": "orari-festivita",
       "schermata": "orari/festivita",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "step0:true step1:false step2:true step3:true | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Le festività del 2026 sono già tutte presenti. Servizi del  | timeInputs:6 | salvaVis:true",
+      "esito": "OK",
+      "misurato": "step0:true step1:true step2:true step3:true | msg1:Aggiunte 11 festività del 2026 | msg2:Le festività del 2026 sono già tutte presenti.",
       "atteso": "step0 anno invalido; step1 messaggio 13 festività 2026; step2 righe; step3 già presenti",
-      "evidenza": "motivo: step1 (Aggiunte 13 festività)=false; altri=true,false,true,true | shot:orari-festivita-telefono-390-chiaro | alert:Le festività del 2026 sono già tutte presenti. | Le festività del 2026 sono già tutte presenti. | http://localhost:3100/app/hours",
+      "evidenza": "2026 | Aggiunte 11 festività del 2026 → Le festività del 2026 sono già tutte presenti.",
       "pacchetto": "orari"
     },
     {
@@ -5313,10 +5373,10 @@
       "id": "orari-uscita",
       "schermata": "orari/uscita",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })\n\nlocator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })\n\n    at openMobileSidebar (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/lib/engine.mjs:828:69)\n    at runOrariChecks (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/lib/run-orari.mjs:1050:52)\n    at async runLocaleProd (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:598:5)\n    at async file:///Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:1125:9\n    at async runAmbienteWithBudget (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:995:5)\n    at async main (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:1124:7) | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:false",
-      "atteso": "conferma uscita con modifiche non salvate",
-      "evidenza": "motivo: navigazione o menu mobile (telefono-390) | shot:orari-uscita-telefono-390-chiaro | alert:— | http://localhost:3100/app/hours",
+      "esito": "OK",
+      "misurato": "stay:true left:true",
+      "atteso": "conferma; Resta qui; Esci naviga",
+      "evidenza": "Piatti",
       "pacchetto": "orari"
     },
     {
@@ -5334,7 +5394,7 @@
       "schermata": "orari/dati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "{\"id\":\"6acbcd68c878be6da81d9b0d\",\"name\":\"dinner\",\"startTime\":\"20:00\",\"endTime\":\"22:30\"}",
+      "misurato": "{\"id\":\"6acbdb59e9bfc469ec8feabd\",\"name\":\"dinner\",\"startTime\":\"20:00\",\"endTime\":\"22:30\"}",
       "atteso": "dinner 20:00-22:30 nel Global",
       "evidenza": "Local API manager",
       "pacchetto": "orari"
@@ -5384,9 +5444,9 @@
       "schermata": "orari/non-configurato",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "info:false lunch:12:30 dinnerStart:19:30 timeInputs:6 values:[\"12:30\",\"14:30\",\"19:30\",\"22:00\",\"14:00\",\"10:00\"] salvati:false | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:false",
-      "atteso": "dopo clear-services e reload: avviso «Orari non configurati» e campi ora vuoti",
-      "evidenza": "clear-services+reload | manca avviso | shot:orari-non-configurato-telefono-390-chiaro | alert:— | http://localhost:3100/app/hours",
+      "misurato": "services.length=2 dopo clear (atteso 0) | pagina:Apri o chiudi il menu Orari Orari Orari di vietnamonamour.com: ristorante e B&B. Servizi del ristorante Orario di inizio e fine di Pranzo e  | timeInputs:6 | salvaVis:false",
+      "atteso": "clear-services azzera services nel Global",
+      "evidenza": "clear:{\"cleared\":true,\"servicesBefore\":2,\"servicesAfter\":2} services.length=2 | serviziHTML:(sezione servizi non trovata) | avvisi main: 0 | shot:orari-non-configurato-telefono-390-chiaro | alert:— | http://localhost:3100/app/hours",
       "pacchetto": "orari"
     },
     {
@@ -5553,8 +5613,8 @@
       "id": "shell-menu-utente",
       "schermata": "shell/home",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "menu non apribile: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM\nCall log:\n  - attempting scroll into view action\n    - waiting for element to be stable\n",
+      "esito": "OK",
+      "misurato": "[\"Chiaro\",\"Scuro\",\"Sistema\",\"Esci\"] remounts={\"mountEvents\":0,\"remounts\":0,\"postHydrationRemounts\":0,\"postHydrationMountEvents\":0,\"hydrationMs\":1200,\"observeMs\":2800,\"triggerPresent\":false}",
       "atteso": "Tema+Esci, no Admin",
       "evidenza": "/app",
       "pacchetto": "shell"
@@ -5696,7 +5756,7 @@
       "esito": "OK",
       "misurato": "iniziali=VU, attese=VU",
       "atteso": "email visibile + iniziali corrette",
-      "evidenza": "verify-ui-1791740715360@test.local",
+      "evidenza": "verify-ui-1791744312280@test.local",
       "pacchetto": "shell"
     },
     {
@@ -7033,8 +7093,8 @@
       "id": "shell-percorso-voce-attiva",
       "schermata": "shell/segnaposto-menu",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "crumbs=Menù›Piatti; active=Piatti",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Menù›Piatti; active=",
       "atteso": "{\"breadcrumb\":[\"Menù\",\"Piatti\"],\"active\":\"Piatti\"}",
       "evidenza": "/app/menu",
       "pacchetto": "shell"
@@ -7333,8 +7393,8 @@
       "id": "shell-percorso-voce-attiva",
       "schermata": "shell/segnaposto-menu",
       "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "crumbs=Menù›Piatti; active=Piatti",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Menù›Piatti; active=",
       "atteso": "{\"breadcrumb\":[\"Menù\",\"Piatti\"],\"active\":\"Piatti\"}",
       "evidenza": "/app/menu",
       "pacchetto": "shell"
@@ -7623,8 +7683,8 @@
       "id": "shell-percorso-voce-attiva",
       "schermata": "shell/segnaposto-menu",
       "profiloTema": "telefono-390/sistema-chiaro",
-      "esito": "OK",
-      "misurato": "crumbs=Menù›Piatti; active=Piatti",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Menù›Piatti; active=",
       "atteso": "{\"breadcrumb\":[\"Menù\",\"Piatti\"],\"active\":\"Piatti\"}",
       "evidenza": "/app/menu",
       "pacchetto": "shell"
@@ -7913,8 +7973,8 @@
       "id": "shell-percorso-voce-attiva",
       "schermata": "shell/segnaposto-menu",
       "profiloTema": "telefono-390/sistema-scuro",
-      "esito": "OK",
-      "misurato": "crumbs=Menù›Piatti; active=Piatti",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Menù›Piatti; active=",
       "atteso": "{\"breadcrumb\":[\"Menù\",\"Piatti\"],\"active\":\"Piatti\"}",
       "evidenza": "/app/menu",
       "pacchetto": "shell"
@@ -8131,27 +8191,27 @@
     },
     {
       "id": "C1",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours (menu aperto)",
+      "schermata": "shell/segnaposto-reservations (menu aperto)",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "nessun elemento",
@@ -8161,7 +8221,7 @@
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours (menu utente)",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "nessun elemento",
@@ -8171,227 +8231,227 @@
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-barra-alta",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "56 px",
       "atteso": "56 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-margine-contenuto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "16 px",
       "atteso": "16 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-segnaposto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "Orari / Orari di vietnamonamour.com: ristorante ",
-      "atteso": "Orari + descrizione segnaposto",
-      "evidenza": "/app/hours",
+      "esito": "OK",
+      "misurato": "Prenotazioni / Questa sezione sarà disponibile a breve.",
+      "atteso": "Prenotazioni + descrizione segnaposto",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C1",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2-mouse",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (28 elementi)",
+      "misurato": "tutte in [28,48] (5 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-barra-alta",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
       "misurato": "56 px",
       "atteso": "56 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-margine-contenuto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "AVVISO",
-      "misurato": "224 px",
+      "esito": "OK",
+      "misurato": "24 px",
       "atteso": "24 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-767/chiaro",
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-767/chiaro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-767/chiaro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/chiaro",
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-barra-alta",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/chiaro",
       "esito": "OK",
       "misurato": "56 px",
       "atteso": "56 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-margine-contenuto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/chiaro",
       "esito": "OK",
       "misurato": "24 px",
       "atteso": "24 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/chiaro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/chiaro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "tablet-820/chiaro",
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours (menu utente)",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
       "profiloTema": "tablet-820/chiaro",
       "esito": "OK",
       "misurato": "nessun elemento",
@@ -8401,57 +8461,57 @@
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "tablet-820/chiaro",
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "tablet-820/chiaro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "tablet-820/chiaro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C1",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours (menu aperto)",
+      "schermata": "shell/segnaposto-reservations (menu aperto)",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "nessun elemento",
@@ -8461,7 +8521,7 @@
     },
     {
       "id": "C2",
-      "schermata": "shell/segnaposto-hours (menu utente)",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "nessun elemento",
@@ -8471,202 +8531,842 @@
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-barra-alta",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "56 px",
       "atteso": "56 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-margine-contenuto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "16 px",
       "atteso": "16 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "telefono-390/scuro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C1",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C2-mouse",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (28 elementi)",
+      "misurato": "tutte in [28,48] (5 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-barra-alta",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
       "misurato": "56 px",
       "atteso": "56 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-margine-contenuto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
-      "esito": "AVVISO",
-      "misurato": "224 px",
+      "esito": "OK",
+      "misurato": "24 px",
       "atteso": "24 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-767/scuro",
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-767/scuro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-767/scuro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "C3",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/scuro",
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-barra-alta",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/scuro",
       "esito": "OK",
       "misurato": "56 px",
       "atteso": "56 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-margine-contenuto",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/scuro",
       "esito": "OK",
       "misurato": "24 px",
       "atteso": "24 px",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-percorso-voce-attiva",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/scuro",
       "esito": "OK",
-      "misurato": "crumbs=Orari; active=Orari",
-      "atteso": "{\"breadcrumb\":[\"Orari\"],\"active\":\"Orari\"}",
-      "evidenza": "/app/hours",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
       "pacchetto": "shell"
     },
     {
       "id": "shell-nomi-accessibili",
-      "schermata": "shell/segnaposto-hours",
+      "schermata": "shell/segnaposto-reservations",
       "profiloTema": "soglia-768/scuro",
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessun testo inglese elencato",
-      "evidenza": "/app/hours",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "tablet-820/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/scuro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/scuro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu aperto)",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-barra-alta",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "56 px",
+      "atteso": "56 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-margine-contenuto",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-barra-alta",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "56 px",
+      "atteso": "56 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-margine-contenuto",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "24 px",
+      "atteso": "24 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-767/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-767/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-767/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-barra-alta",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "56 px",
+      "atteso": "56 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-margine-contenuto",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "24 px",
+      "atteso": "24 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "tablet-820/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-chiaro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu aperto)",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-barra-alta",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "56 px",
+      "atteso": "56 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-margine-contenuto",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "16 px",
+      "atteso": "16 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "FALLITO",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "telefono-390/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C1",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (5 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-barra-alta",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "56 px",
+      "atteso": "56 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-margine-contenuto",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "24 px",
+      "atteso": "24 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "notebook-1280/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-767/sistema-scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-767/sistema-scuro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-767/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-barra-alta",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-scuro",
+      "esito": "OK",
+      "misurato": "56 px",
+      "atteso": "56 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-margine-contenuto",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-scuro",
+      "esito": "OK",
+      "misurato": "24 px",
+      "atteso": "24 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-scuro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "soglia-768/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C2",
+      "schermata": "shell/segnaposto-reservations (menu utente)",
+      "profiloTema": "tablet-820/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "menu utente",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "C3",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-percorso-voce-attiva",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-scuro",
+      "esito": "OK",
+      "misurato": "crumbs=Prenotazioni›Elenco; active=Elenco",
+      "atteso": "{\"breadcrumb\":[\"Prenotazioni\",\"Elenco\"],\"active\":\"Elenco\"}",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-nomi-accessibili",
+      "schermata": "shell/segnaposto-reservations",
+      "profiloTema": "tablet-820/sistema-scuro",
+      "esito": "OK",
+      "misurato": "nessuno",
+      "atteso": "nessun testo inglese elencato",
+      "evidenza": "/app/reservations",
+      "pacchetto": "shell"
+    },
+    {
+      "id": "shell-tema-scelta",
+      "schermata": "shell/home",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "Scuro/Chiaro/Sistema ok",
+      "atteso": "classe html, cookie, persistenza",
+      "evidenza": "menu utente (contesto isolato)",
       "pacchetto": "shell"
     },
     {
@@ -8801,10 +9501,10 @@
     "orari/conferma-rimozione · telefono-390/sistema-scuro · avvisi main: 0",
     "orari/conferma-rimozione · notebook-1280/sistema-scuro · avvisi main: 0",
     "orari/conferma-rimozione · tablet-820/sistema-scuro · avvisi main: 0",
-    "orari-uscita telefono-390: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })\n\nlocator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })\n\n    at openMobileSidebar (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/lib/engine.mjs:828:69)\n    at runOrariChecks (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/lib/run-orari.mjs:1050:52)\n    at async runLocaleProd (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:598:5)\n    at async file:///Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:1125:9\n    at async runAmbienteWithBudget (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:995:5)\n    at async main (/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/scripts/ui-verify/run.mjs:1124:7)",
     "Regressione shell 8.2 (L2) nella stessa esecuzione locale-prod",
-    "Tempo massimo ambiente scaduto (12 min, configurabile con UI_VERIFY_TIMEOUT_MS o UI_VERIFY_TIMEOUT_<AMBIENTE>_MS): esecuzione interrotta.",
-    "shell shell/segnaposto-hours tablet-820/scuro: Tempo massimo ambiente scaduto"
+    "shell-menu trigger telefono-390: mountEvents=0 remounts=0 postHydration=0 (observe 2800ms, hydration 1200ms)",
+    "WebKit 26.0 su http://localhost:3100 (diagnosi login prod): URL finale=http://localhost:3100/app/login; payload-token: presente secure=true httpOnly=true sameSite=Lax; Set-Cookie login: (nessun Set-Cookie catturato sulla risposta login)",
+    "Tempo massimo ambiente scaduto (12 min, configurabile con UI_VERIFY_TIMEOUT_MS o UI_VERIFY_TIMEOUT_<AMBIENTE>_MS): esecuzione interrotta."
   ],
   "screenshotHashes": [
     {
@@ -9771,6 +10471,181 @@
       "name": "shell-segnaposto-menu-notebook-1280-scuro",
       "temaKey": "scuro",
       "hash": "dfbf69f7d6941912e97ee4cd3cc9026328481a1f347d23f3351ef486ba7c76a9"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d23172f5cba2fe360cb8ecc2dfe9f4b8df2c9e5eb65e8ac41b626a0884466119"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5d4d0261ad05cc9c843476a40b65ec7b6305eba4b006f240e776ebe7ed3364fc"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "febf80c108fd0c5fb805e16aca2ae688d9d831f0ce2fbae10668e9fcbc108271"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "9bda3a63b4ba6030f449b8e5501e5f61cd2207925d02d8fe77673e65644796c2"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "bb6560611803b30437b801149bfb91db9370326e63e4c5ba98b2d215d445397d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "948cd0b0373f564cfb2312642eec24558ec798e97677a8b9ed6c24b9df5e84d6"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "79c0a1e769d792684dd4e4227a5076cd6030efcebc67fb156d114d6acbb5e62d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "b2027c8895e00ed29e994f4dfc6c716090fc7d7112855cf1a8e06242a1e50452"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f32fe1871544dfbb6de879936a68ef9ecf34da0dfd9cc0d81e4bf7bc56515f96"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "8ab9bf970f468e0e8b4c5014fb9d141b7a258f5971f50b07e16f431cc3e1a076"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "6726d7797a8d456b545ba91f22487ad3f68a84a58c71fba16a0468604e140537"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "3fc930bdd2ecf635e5b313c07095b30be2bc449571121aa2f8614bb9a2fda632"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "0368e79414ef84275e6a4a8d489d6c4eb5d8662df2e9c2cd5cf1f287cd46c30d"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "94155d837e6df5ea65911472595c02483e92ae5980ec98982c9c9dac0a0017ab"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c5ab8b2cb4e51254f00b2d0ebe1901563e458c03ca2b996a14a26c7049c6a159"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "d5d0d5b0ff0e053180ba0a03ca005d6d57964562770692d168ad0f3b9eb37685"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "e016f66996c8e956db0548299266fdf8f6b837c200b3c09f6af4227cb456bb20"
+    },
+    {
+      "name": "orari-salvataggio-in-corso-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f370f7b2d88e3a8a8998d60f96346e6eae1efadcf7530211eec0bdf5969d4b66"
+    },
+    {
+      "name": "orari-uscita-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "b3e28fab02f5b560b07e75ec3ed4f6c29c11bbc1bb7d57cc352064228ceb4b34"
+    },
+    {
+      "name": "orari-uscita-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f9a0192dd953f069032a75f8c4e4b2ec029cf04231165bbd85cd9675d5ee81a1"
+    },
+    {
+      "name": "orari-non-configurato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "7f9a4b8a8fff1559a0f13c0cce7ff033cc9da745ff0029012ddbe40b97e4b937"
+    },
+    {
+      "name": "shell-home-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "c0290d2b03195d6aeb4cca6a2a2ca2699695359f3ec63d47d2954a698fa1b3e5"
+    },
+    {
+      "name": "shell-home-menu-aperto-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "7c454053258ae6c39e456f7073a24b7646289ef0fbc4e17c596b7ee57c44276e"
+    },
+    {
+      "name": "shell-home-menu-utente-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "8069f6095ae10255bc80db81076f316e4c97d306d9e3682c90ad95c9c92fba4e"
+    },
+    {
+      "name": "shell-home-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "230c183a71d92eb9e120b0df488d56bdb72a4ed1a4ce2f525de6e4ebc3a1657c"
+    },
+    {
+      "name": "shell-home-menu-utente-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "49c0fcfa9a40534a9fb36cb5ff008b469b2d2d8664a338c68e6044e59afd8f7c"
+    },
+    {
+      "name": "shell-home-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "07d0550a126efd8665bb7a4d0c171b1c32de7bc23821d34e9df1e64b1d3722b2"
+    },
+    {
+      "name": "shell-home-menu-aperto-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "122750222eb149c86ca18ebec968bc53ae9cd775d707e25adcf433fa78f98b23"
+    },
+    {
+      "name": "shell-home-menu-utente-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "bb9bc2863ca05fb4a69b482644fa9883f58fd081389cbced31513c54f5628d20"
+    },
+    {
+      "name": "shell-home-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "f91b7443eac30dd3e515493b06af06407777e909dfdb87613b7b246b7ee1e0d5"
+    },
+    {
+      "name": "shell-home-menu-utente-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "42b1aa8e45058664154fe48640099bf041f95e4f368d56f9b1d6382f0a8cdc6a"
+    },
+    {
+      "name": "shell-segnaposto-menu-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "edbfbb656c7acaeadb6cedbe3a96627b9f7eda881e5708cdbd029e4c0a566035"
+    },
+    {
+      "name": "shell-segnaposto-menu-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "b4bab65bf0c4626c1765e3fc0d1c5247981d3ec830e42e11f4616fad74017919"
+    },
+    {
+      "name": "shell-segnaposto-menu-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "e21599b049bb6efb669155ff6a2f10e66e120c19dc62dc59972b1d65ac4273bb"
+    },
+    {
+      "name": "shell-segnaposto-menu-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "a173f41ac47d062e77ae22a3e1bf2c3420af1060ed3b2921d25df26dc678ba51"
     }
   ]
 }
