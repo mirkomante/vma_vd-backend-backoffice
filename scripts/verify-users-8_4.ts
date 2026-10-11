@@ -222,6 +222,74 @@ async function main(): Promise<void> {
     console.log('SKIP: Resend non configurato — attivazione SSO (invio reale non verificato)')
   }
 
+  if (isResendConfigured()) {
+    const sharedReq = { context: {} } as PayloadRequest
+    const bulkA = await createUser({
+      email: `${TEST_EMAIL_PREFIX}bulk-a@test.local`,
+      adminRole: 'manager',
+      appRole: 'none',
+      loginMethod: 'sso',
+      active: false,
+    })
+    const bulkB = await createUser({
+      email: `${TEST_EMAIL_PREFIX}bulk-b@test.local`,
+      adminRole: 'manager',
+      appRole: 'none',
+      loginMethod: 'sso',
+      active: false,
+    })
+    sendEmailCalls = 0
+    await payload.update({
+      id: bulkA.id,
+      collection: 'users',
+      data: { active: true },
+      depth: 0,
+      overrideAccess: true,
+      req: sharedReq,
+    })
+    await payload.update({
+      id: bulkB.id,
+      collection: 'users',
+      data: { active: true },
+      depth: 0,
+      overrideAccess: true,
+      req: sharedReq,
+    })
+    if (sendEmailCalls !== 2) {
+      throw new Error(`attivazione bulk stesso req: attesi 2 invii, ottenuti ${sendEmailCalls}`)
+    }
+    const bulkAReload = await reloadUser(bulkA.id)
+    const bulkBReload = await reloadUser(bulkB.id)
+    if (!bulkAReload.accountCreatedEmailSentAt || !bulkBReload.accountCreatedEmailSentAt) {
+      throw new Error('attivazione bulk: timestamp mancante su uno dei due utenti')
+    }
+    sendEmailCalls = 0
+    await payload.update({
+      id: bulkA.id,
+      collection: 'users',
+      data: { active: false },
+      depth: 0,
+      overrideAccess: true,
+      req: sharedReq,
+    })
+    await payload.update({
+      id: bulkA.id,
+      collection: 'users',
+      data: { active: true },
+      depth: 0,
+      overrideAccess: true,
+      req: sharedReq,
+    })
+    if (sendEmailCalls !== 0) {
+      throw new Error('terza attivazione bulk (già inviata): atteso nessun nuovo invio')
+    }
+    console.log(
+      'OK: due SSO attivati con stesso req → due email e timestamp; riattivazione senza reinvio',
+    )
+  } else {
+    console.log('SKIP: Resend non configurato — attivazione bulk stesso req')
+  }
+
   sendEmailCalls = 0
   const localUser = await createUser({
     email: `${TEST_EMAIL_PREFIX}local@test.local`,

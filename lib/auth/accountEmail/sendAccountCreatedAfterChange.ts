@@ -16,7 +16,7 @@ export const sendAccountCreatedAfterChange: CollectionAfterChangeHook<User> = as
   previousDoc,
   req,
 }) => {
-  if (shouldSkipAccountCreatedEmail(req)) {
+  if (shouldSkipAccountCreatedEmail(req, doc.id)) {
     return
   }
 
@@ -44,7 +44,7 @@ export const sendAccountCreatedAfterChange: CollectionAfterChangeHook<User> = as
     return
   }
 
-  setSkipAccountCreatedEmail(req)
+  setSkipAccountCreatedEmail(req, doc.id)
   await req.payload.update({
     id: doc.id,
     collection: USERS_SLUG,

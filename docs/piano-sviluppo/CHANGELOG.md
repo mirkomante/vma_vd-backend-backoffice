@@ -14,7 +14,13 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 - Fase 8.4: email «Account creato» per utenti `loginMethod: sso` (create con `active` o prima attivazione), campo `accountCreatedEmailSentAt` (sola lettura staff Admin, scrittura hook con `overrideAccess`); skip per seed/bootstrap (`bootstrapCredential*` / `req.context`); endpoint `POST /api/users/resend-activation` e componente Admin `ResendActivationEmailUi` (`@payloadcms/ui`); migrazione `20261011_133256_add_account_created_email_sent_at`. `sendAppAuthEmail` restituisce `boolean` per tracciare l’invio riuscito.
 
+### Fixed
+
+- Fase 8.4: skip email «Account creato» legato al singolo `userId` in `req.context` (Set), non più globale per tutta la richiesta — evita salti su attivazioni multiple SSO con `req` condiviso (lista Admin).
+
 ### Tests
+
+- Fase 8.4 (fix skip per documento): `pnpm typecheck`, `pnpm lint` OK; `pnpm payload run scripts/verify-users-8_4.ts` OK incluso caso due SSO attivati con lo stesso `req` (due invii e timestamp; riattivazione senza reinvio).
 
 - Fase 8.4: `pnpm typecheck`, `pnpm lint`, `pnpm build` OK; `pnpm payload run scripts/verify-users-8_4.ts` OK (matrice tabella email, invio fallito simulato, SSO attivo/inattivo/riattivazione senza doppio invio, local solo attivazione, bootstrap senza account creato, reinvio attivazione admin con invalidazione token precedente, manager 403). Invio reale Resend verificato dallo script dove `isResendConfigured()`. **Non provato**: `pnpm migrate` su DB dev già allineato con `push` (fallimento atteso su initial schema); `pnpm seed:super-admin` non rieseguito; visibilità pulsante Admin per ogni combinazione login/`emailVerified` (solo logica componente); migrazione su Cloud SQL prod (umano prima del push).
 
