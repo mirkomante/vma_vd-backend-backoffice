@@ -2,283 +2,339 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-11",
-    "commit": "cd08bc51e18b",
-    "launcherVersion": "2.1.0",
+    "commit": "60356e92b7cd",
+    "launcherVersion": "3.1.0",
+    "launcherHeader": "3.1.0 (L1)",
     "browsers": "—",
-    "controlliVersion": 2,
-    "durataMs": 44213,
+    "controlliBasename": "controlli-8.5.json",
+    "livelloEseguito": "L1",
+    "controlliVersion": 3,
+    "durataMs": 249438,
     "invalidRun": false
   },
   "counts": {
-    "OK": 29,
-    "FALLITO": 0,
+    "OK": 0,
+    "FALLITO": 3,
     "AVVISO": 0,
-    "NON PROVATO": 0
+    "NON PROVATO": 22
   },
-  "distinctControls": 2,
+  "distinctControls": 24,
   "rows": [
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login?authFailed=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login?reset=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/forgot",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/forgot?sent=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/reset?token=prova",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/reset?token=prova&resetFailed=1",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/reset",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/verify",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login/verify?token=prova",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/menu (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/hours (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/reservations (shell+menu)",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
-    },
-    {
-      "id": "CONSOLE",
-      "schermata": "/app/login",
+      "id": "orari-console",
+      "schermata": "/app/hours",
       "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "esito": "FALLITO",
+      "misurato": "err:2 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e | Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login?authFailed=1",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-console",
+      "schermata": "/app/hours",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "FALLITO",
+      "misurato": "err:2 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e | Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login?reset=1",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-errore-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "FALLITO",
+      "misurato": "Server non raggiungibile: http://localhost:3200",
+      "atteso": "flusso simulazione",
+      "evidenza": "3200"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/forgot",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-annulla",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/forgot?sent=1",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-barra-misure",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/reset?token=prova",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-campi-ora",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/reset?token=prova&resetFailed=1",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-chiusure-foglio",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/reset",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-colonna",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/verify",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-dati",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/login/verify?token=prova",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-errore-caricamento",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-errore-validazione",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/menu (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-festivita",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/hours (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-giorni-riposo",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "CONSOLE",
-      "schermata": "/app/reservations (shell+menu)",
-      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "err:0 warn:0 http:0",
-      "atteso": "zero error/warning/pageerror/richieste fallite",
-      "evidenza": "—"
+      "id": "orari-giorno-selezionato",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-intestazione-anno",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-modificato-barra",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-nomi-accessibili",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-non-configurato",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-salvataggio-in-corso",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-salvataggio-ok",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-stato-iniziale",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-testi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-validazione-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
       "id": "webkit-giro-essenziale",
-      "schermata": "shell/home",
-      "profiloTema": "telefono-390/chiaro/WebKit 26.0",
-      "esito": "OK",
-      "misurato": "login→/app OK (http://localhost:3000/app)",
-      "atteso": "login, home, menu, menu utente (locale-dev)",
-      "evidenza": "26.0"
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "nonProvato": [],
+  "nonProvato": [
+    {
+      "id": "orari-annulla",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-barra-misure",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-campi-ora",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-chiusure-foglio",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-colonna",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-dati",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-errore-caricamento",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-errore-validazione",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-festivita",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-giorni-riposo",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-giorno-selezionato",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-intestazione-anno",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-modificato-barra",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-nomi-accessibili",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-non-configurato",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-permessi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-salvataggio-in-corso",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-salvataggio-ok",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-stato-iniziale",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-testi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "orari-validazione-server",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "webkit-giro-essenziale",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
   "anomalie": []
 }

@@ -67,6 +67,7 @@ import {
   openMobileSidebar,
   consoleShellInteractions,
 } from './lib/engine.mjs'
+import { runOrariChecks, runOrariDevSimulations, runOrariConsole } from './lib/run-orari.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
 const DATA = '2026-10-11'
@@ -568,6 +569,35 @@ async function runLocaleProd(baseUrl, report) {
     await ctx.close()
   }
 
+  if (runCtx.screenIncluded('orari')) {
+    for (const id of ['orari-errore-server', 'orari-errore-caricamento']) {
+      if (runCtx.shouldRun(id)) {
+        report.addNonProvato(
+          id,
+          'simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)',
+        )
+      }
+    }
+    const orariCtx = {
+      browser,
+      baseUrl,
+      report,
+      runCtx,
+      CONTROLLI,
+      newPage,
+      loginApp,
+      testUser,
+      testPassword,
+      addRow,
+      progressStep,
+      resultToEsito,
+      screenshot,
+      SHOT_PROFILES,
+      SHOT_TEMI,
+    }
+    await runOrariChecks(orariCtx)
+  }
+
   const shell = CONTROLLI.schermate.find((s) => s.id === 'shell')
   if (!runCtx.screenIncluded('shell')) {
     await browser.close()
@@ -977,6 +1007,8 @@ async function main() {
   runCtx = createRunContext(CONTROLLI, cli)
 
   const mode = cli.mode
+  const needsShellRegression =
+    cli.livello === 2 && controlliBasename.includes('8.5') && !runCtx.screenIncluded('shell')
   let devChild = null
   let prodChild = null
 
@@ -995,7 +1027,43 @@ async function main() {
       const browserVersion = await browser.version()
       await browser.close()
       await runAmbienteWithBudget('locale-dev', async (report) => {
-        await runConsoleClean(devBaseUrl(), report, browserVersion)
+        const devBrowser = await chromium.launch()
+        if (runCtx.screenIncluded('orari')) {
+          await runOrariConsole({
+            browser: devBrowser,
+            baseUrl: devBaseUrl(),
+            report,
+            runCtx,
+            newPage,
+            loginApp,
+            testUser,
+            testPassword,
+            addRow,
+            progressStep,
+            browserVersion,
+          })
+          try {
+            await runOrariDevSimulations({
+              browser: devBrowser,
+              baseUrl: devBaseUrl(),
+              report,
+              runCtx,
+              newPage,
+              loginApp,
+              testUser,
+              testPassword,
+              addRow,
+              progressStep,
+              screenshot,
+              SHOT_PROFILES,
+            })
+          } catch (e) {
+            report.anomalie.push(`runOrariDevSimulations: ${e.message}`)
+          }
+        } else {
+          await runConsoleClean(devBaseUrl(), report, browserVersion)
+        }
+        await devBrowser.close()
         const wkVer = await runWebkitEssential(devBaseUrl(), report)
         report.meta.browsers = wkVer
           ? `Chromium ${browserVersion}; WebKit ${wkVer}`
@@ -1016,6 +1084,22 @@ async function main() {
       await waitForUrl(prodBaseUrl())
       await runAmbienteWithBudget('locale-prod', async (report) => {
         await runLocaleProd(prodBaseUrl(), report)
+        if (needsShellRegression) {
+          const shellLoaded = loadControlli('controlli-8.2.json')
+          const saved = { c: CONTROLLI, b: controlliBasename, r: runCtx }
+          CONTROLLI = shellLoaded.controlli
+          controlliBasename = shellLoaded.controlliBasename
+          runCtx = createRunContext(CONTROLLI, {
+            ...cli,
+            schermate: new Set(['shell']),
+            livello: 2,
+          })
+          report.anomalie.push('Regressione shell 8.2 (L2) nella stessa esecuzione locale-prod')
+          await runLocaleProd(prodBaseUrl(), report)
+          CONTROLLI = saved.c
+          controlliBasename = saved.b
+          runCtx = saved.r
+        }
       })
       prodChild.kill('SIGTERM')
       prodChild = null

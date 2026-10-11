@@ -1,71 +1,45 @@
 # Esito verifica — locale-prod — 2026-10-11
-Commit: 4c5cda01d318 · Lanciatore: 3.0.0 (L2) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-8.2.json v3 · Durata: 5 min 47 s
+Commit: 60356e92b7cd · Lanciatore: 3.1.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-8.5.json v3 · Durata: 2 min 9 s
 
 ## Riepilogo
-OK: 2679 · FALLITO: 1 · AVVISO: 0 · NON PROVATO: 2 · Controlli distinti nel JSON: 48
+OK: 78 · FALLITO: 20 · AVVISO: 0 · NON PROVATO: 6 · Controlli distinti nel JSON: 29
 
 ## Esiti compatti
 
 ### OK (raggruppati)
-- **acc-avvisi**: OK in 160/160 combinazioni
-- **acc-centratura**: OK in 160/160 combinazioni
-- **acc-collegamenti-sottolineati**: OK in 160/160 combinazioni
-- **acc-colonna**: OK in 120/120 combinazioni
-- **acc-fuori-shell**: OK in 160/160 combinazioni
-- **acc-icona**: OK in 160/160 combinazioni
-- **acc-margine**: OK in 80/80 combinazioni
-- **acc-padding-scheda**: OK in 160/160 combinazioni
-- **acc-spazi-16**: OK in 160/160 combinazioni
 - **AMBIENTE**: OK in 1/1 combinazioni
-- **avviso-forgot-inviata**: OK in 16/16 combinazioni
-- **avviso-login-password-aggiornata**: OK in 16/16 combinazioni
-- **avviso-login-rifiutato**: OK in 16/16 combinazioni
-- **avviso-reset-link-scaduto**: OK in 16/16 combinazioni
-- **avviso-reset-senza-token**: OK in 16/16 combinazioni
-- **avviso-verify-senza-token**: OK in 16/16 combinazioni
-- **avviso-verify-token-non-valido**: OK in 16/16 combinazioni
-- **C1**: OK in 152/152 combinazioni
-- **C2**: OK in 160/160 combinazioni
-- **C2-mouse**: OK in 56/56 combinazioni
-- **C3**: OK in 240/240 combinazioni
-- **C3-cambio-sistema**: OK in 1/1 combinazioni
-- **C3-no-lampo**: OK in 80/80 combinazioni
+- **C1**: OK in 21/21 combinazioni
+- **C2-mouse**: OK in 10/10 combinazioni
+- **C3**: OK in 21/21 combinazioni
 - **C9**: OK in 1/1 combinazioni
-- **forgot-testi**: OK in 16/16 combinazioni
-- **forgot-titolo-documento**: OK in 32/32 combinazioni
-- **g1**: OK in 1/1 combinazioni
-- **g2**: OK in 3/3 combinazioni
-- **home-colonne**: OK in 5/5 combinazioni
-- **home-nessuna-riga-di-stato**: OK in 5/5 combinazioni
-- **home-testi**: OK in 5/5 combinazioni
-- **login-campi**: OK in 16/16 combinazioni
-- **login-gerarchia**: OK in 16/16 combinazioni
-- **login-link-destinazioni**: OK in 16/16 combinazioni
-- **login-testi**: OK in 16/16 combinazioni
-- **login-titolo-documento**: OK in 48/48 combinazioni
-- **reset-campi**: OK in 32/32 combinazioni
-- **reset-senza-token-vuoto**: OK in 1/1 combinazioni
-- **reset-testi**: OK in 32/32 combinazioni
-- **shell-barra-alta**: OK in 48/48 combinazioni
-- **shell-blocco-in-cima**: OK in 1/1 combinazioni
-- **shell-blocco-utente**: OK in 1/1 combinazioni
-- **shell-margine-contenuto**: OK in 48/48 combinazioni
-- **shell-menu-utente**: OK in 2/2 combinazioni
-- **shell-menu-voci**: OK in 1/1 combinazioni
-- **shell-nomi-accessibili**: OK in 79/79 combinazioni
-- **shell-passaggio-768**: OK in 8/8 combinazioni
-- **shell-percorso-voce-attiva**: OK in 79/79 combinazioni
-- **shell-segnaposto**: OK in 3/3 combinazioni
-- **shell-sticky**: OK in 8/8 combinazioni
-- **shell-tema-scelta**: OK in 1/1 combinazioni
-- **shell-uscita**: OK in 1/1 combinazioni
-- **verify-testi**: OK in 32/32 combinazioni
+- **orari-campi-ora**: OK in 1/1 combinazioni
+- **orari-chiusure-foglio**: OK in 2/2 combinazioni
+- **orari-dati**: OK in 1/1 combinazioni
+- **orari-giorni-riposo**: OK in 1/1 combinazioni
+- **orari-intestazione-anno**: OK in 2/2 combinazioni
+- **orari-nomi-accessibili**: OK in 1/1 combinazioni
+- **orari-permessi**: OK in 1/1 combinazioni
+- **orari-salvataggio-in-corso**: OK in 1/1 combinazioni
+- **orari-salvataggio-ok**: OK in 1/1 combinazioni
+- **orari-testi**: OK in 1/1 combinazioni
+- **C2**: OK in 11/15 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **orari-colonna**: OK in 1/2 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO
-- **runtime-shell** (1 combinazioni): es. `locator.click: Timeout 30000ms exceeded.
+- **C2** (4 combinazioni): es. `Annulla 274x42; Rimuovi 274x42` · atteso `nessun elemento sotto 44 px` · orari/conferma-rimozione · telefono-390/chiaro; orari/conferma-rimozione (dialog) · telefono-390/chiaro; orari/conferma-rimozione · telefono-390/scuro; orari/conferma-rimozione (dialog) · telefono-390/scuro
+- **orari-annulla** (1 combinazioni): es. `valore:true chiusura:true` · atteso `stato salvato ripristinato` · orari/modificato · telefono-390/chiaro
+- **orari-barra-misure** (2 combinazioni): es. `h=117 btn=44` · atteso `≤97px, pulsanti 44 affiancati` · orari/modificato · telefono-390/chiaro; orari/modificato · notebook-1280/chiaro
+- **orari-colonna** (1 combinazioni): es. `form 576px x=480; gruppo 392; voce 56` · atteso `576 centrato; gruppo 392; voce 56` · orari/iniziale · notebook-1280/chiaro
+- **orari-errore-validazione** (2 combinazioni): es. `req:0 alert:true focus:true view:false` · atteso `nessuna richiesta; avviso; campo; focus; destructive` · orari/errore-validazione · telefono-390/chiaro; orari/errore-validazione · telefono-390/scuro
+- **orari-festivita** (1 combinazioni): es. `0:true 1:false 2:true 3:true` · atteso `flusso festività (parziale step 1-4)` · orari/festivita · telefono-390/chiaro
+- **orari-giorno-selezionato** (2 combinazioni): es. `nessun giorno on` · atteso `sfondo --primary e testo --primary-foreground` · orari/iniziale · telefono-390/chiaro; orari/iniziale · telefono-390/scuro
+- **orari-modificato-barra** (2 combinazioni): es. `compare:true scompare:false` · atteso `barra con testi attesi poi assente` · orari/modificato · telefono-390/chiaro; orari/modificato · notebook-1280/chiaro
+- **orari-stato-iniziale** (1 combinazioni): es. `saveBar:1 alert:1` · atteso `nessuna barra né avviso` · orari/iniziale · telefono-390/chiaro
+- **orari-validazione-server** (1 combinazioni): es. `[{"value":"25:99","ok":false,"message":"The following field is invalid: services.0.startTime"},{"value":"9:30","ok":false,"message":"The following field is invalid: services.0.startTime"}]` · atteso `Formato non valido: usa HH:mm in 24 ore (es. 09:30).` · orari/server · —
+- **runtime-orari-stato** (3 combinazioni): es. `locator.waitFor: Timeout 10000ms exceeded.
 Call log:
-  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })
-` · atteso `iterazione completata` · shell/home · telefono-390/chiaro
+  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible
+` · atteso `stato preparato` · orari/salvato · notebook-1280/chiaro; orari/salvato · telefono-390/scuro; orari/salvato · notebook-1280/scuro
 
 ### AVVISO
 - (nessuno)
@@ -73,73 +47,92 @@ Call log:
 ### NON PROVATO
 - **verify-link-valido** (—, —): misurato `—` · atteso `—` · facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** (—, —): misurato `—` · atteso `—` · NON PROVABILE con utente solo App (adminRole none)
+- **orari-errore-server** (—, —): misurato `—` · atteso `—` · simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- **orari-errore-caricamento** (—, —): misurato `—` · atteso `—` · simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- **orari-console** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-non-configurato** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Tabella controlli distinti (JSON)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
 | AMBIENTE | OK (1/1) |
-| C1 | OK (152/152) |
-| C2 | OK (160/160) |
-| C2-mouse | OK (56/56) |
-| C3 | OK (240/240) |
-| C3-cambio-sistema | OK (1/1) |
-| C3-no-lampo | OK (80/80) |
+| C1 | OK (21/21) |
+| C2 | FALLITO (11/15) |
+| C2-mouse | OK (10/10) |
+| C3 | OK (21/21) |
 | C9 | OK (1/1) |
-| acc-avvisi | OK (160/160) |
-| acc-centratura | OK (160/160) |
-| acc-collegamenti-sottolineati | OK (160/160) |
-| acc-colonna | OK (120/120) |
-| acc-fuori-shell | OK (160/160) |
-| acc-icona | OK (160/160) |
-| acc-margine | OK (80/80) |
-| acc-padding-scheda | OK (160/160) |
-| acc-spazi-16 | OK (160/160) |
-| forgot-testi | OK (16/16) |
-| forgot-titolo-documento | OK (32/32) |
-| g1 | OK (1/1) |
-| g2 | OK (3/3) |
-| home-colonne | OK (5/5) |
-| home-nessuna-riga-di-stato | OK (5/5) |
-| home-testi | OK (5/5) |
-| login-campi | OK (16/16) |
-| login-gerarchia | OK (16/16) |
-| login-link-destinazioni | OK (16/16) |
-| login-testi | OK (16/16) |
-| login-titolo-documento | OK (48/48) |
-| reset-campi | OK (32/32) |
-| reset-senza-token-vuoto | OK (1/1) |
-| reset-testi | OK (32/32) |
-| shell-admin-link | NON PROVATO (0/1) |
-| shell-barra-alta | OK (48/48) |
-| shell-blocco-in-cima | OK (1/1) |
-| shell-blocco-utente | OK (1/1) |
-| shell-margine-contenuto | OK (48/48) |
-| shell-menu-utente | OK (2/2) |
-| shell-menu-voci | OK (1/1) |
-| shell-nomi-accessibili | OK (79/79) |
-| shell-passaggio-768 | OK (8/8) |
-| shell-percorso-voce-attiva | OK (79/79) |
-| shell-segnaposto | OK (3/3) |
-| shell-sticky | OK (8/8) |
-| shell-tema-scelta | OK (1/1) |
-| shell-uscita | OK (1/1) |
-| verify-link-valido | NON PROVATO (0/1) |
-| verify-testi | OK (32/32) |
+| orari-annulla | FALLITO (0/1) |
+| orari-barra-misure | FALLITO (0/2) |
+| orari-campi-ora | OK (1/1) |
+| orari-chiusure-foglio | OK (2/2) |
+| orari-colonna | FALLITO (1/2) |
+| orari-console | NON PROVATO (0/1) |
+| orari-dati | OK (1/1) |
+| orari-errore-caricamento | NON PROVATO (0/1) |
+| orari-errore-server | NON PROVATO (0/1) |
+| orari-errore-validazione | FALLITO (0/2) |
+| orari-festivita | FALLITO (0/1) |
+| orari-giorni-riposo | OK (1/1) |
+| orari-giorno-selezionato | FALLITO (0/2) |
+| orari-intestazione-anno | OK (2/2) |
+| orari-modificato-barra | FALLITO (0/2) |
+| orari-nomi-accessibili | OK (1/1) |
+| orari-non-configurato | NON PROVATO (0/1) |
+| orari-permessi | OK (1/1) |
+| orari-salvataggio-in-corso | OK (1/1) |
+| orari-salvataggio-ok | OK (1/1) |
+| orari-stato-iniziale | FALLITO (0/1) |
+| orari-testi | OK (1/1) |
+| orari-validazione-server | FALLITO (0/1) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
 |---|---|---|---|---|---|---|
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| runtime-shell | shell/home | telefono-390/chiaro | FALLITO | locator.click: Timeout 30000ms exceeded. Call log:   - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })  | iterazione completata | /app |
+| orari-errore-server | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
+| orari-errore-caricamento | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
+| runtime-orari-stato | orari/salvato | notebook-1280/chiaro | FALLITO | locator.waitFor: Timeout 10000ms exceeded. Call log:   - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible  | stato preparato | salvato |
+| runtime-orari-stato | orari/salvato | telefono-390/scuro | FALLITO | locator.waitFor: Timeout 10000ms exceeded. Call log:   - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible  | stato preparato | salvato |
+| runtime-orari-stato | orari/salvato | notebook-1280/scuro | FALLITO | locator.waitFor: Timeout 10000ms exceeded. Call log:   - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible  | stato preparato | salvato |
+| C2 | orari/conferma-rimozione | telefono-390/chiaro | FALLITO | Annulla 274x42; Rimuovi 274x42 | nessun elemento sotto 44 px | conferma-rimozione |
+| C2 | orari/conferma-rimozione (dialog) | telefono-390/chiaro | FALLITO | Annulla 274x42; Rimuovi 274x42 | nessun elemento sotto 44 px | dialog |
+| C2 | orari/conferma-rimozione | telefono-390/scuro | FALLITO | Annulla 274x42; Rimuovi 274x42 | nessun elemento sotto 44 px | conferma-rimozione |
+| C2 | orari/conferma-rimozione (dialog) | telefono-390/scuro | FALLITO | Annulla 274x42; Rimuovi 274x42 | nessun elemento sotto 44 px | dialog |
+| orari-stato-iniziale | orari/iniziale | telefono-390/chiaro | FALLITO | saveBar:1 alert:1 | nessuna barra né avviso | /app/hours |
+| orari-colonna | orari/iniziale | notebook-1280/chiaro | FALLITO | form 576px x=480; gruppo 392; voce 56 | 576 centrato; gruppo 392; voce 56 | /app/hours |
+| orari-giorno-selezionato | orari/iniziale | telefono-390/chiaro | FALLITO | nessun giorno on | sfondo --primary e testo --primary-foreground | Lun attivo |
+| orari-giorno-selezionato | orari/iniziale | telefono-390/scuro | FALLITO | nessun giorno on | sfondo --primary e testo --primary-foreground | Lun attivo |
+| orari-modificato-barra | orari/modificato | telefono-390/chiaro | FALLITO | compare:true scompare:false | barra con testi attesi poi assente | /app/hours |
+| orari-modificato-barra | orari/modificato | notebook-1280/chiaro | FALLITO | compare:true scompare:false | barra con testi attesi poi assente | /app/hours |
+| orari-barra-misure | orari/modificato | telefono-390/chiaro | FALLITO | h=117 btn=44 | ≤97px, pulsanti 44 affiancati | /app/hours |
+| orari-barra-misure | orari/modificato | notebook-1280/chiaro | FALLITO | allineamento colonna=false | testo sx pulsanti dx | /app/hours |
+| orari-errore-validazione | orari/errore-validazione | telefono-390/chiaro | FALLITO | req:0 alert:true focus:true view:false | nessuna richiesta; avviso; campo; focus; destructive | Orario obbligatorio. |
+| orari-errore-validazione | orari/errore-validazione | telefono-390/scuro | FALLITO | req:0 alert:true focus:true view:false | nessuna richiesta; avviso; campo; focus; destructive | Orario obbligatorio. |
+| orari-annulla | orari/modificato | telefono-390/chiaro | FALLITO | valore:true chiusura:true | stato salvato ripristinato | /app/hours |
+| orari-festivita | orari/festivita | telefono-390/chiaro | FALLITO | 0:true 1:false 2:true 3:true | flusso festività (parziale step 1-4) | 2026 |
+| orari-validazione-server | orari/server | — | FALLITO | [{"value":"25:99","ok":false,"message":"The following field is invalid: services.0.startTime"},{"value":"9:30","ok":false,"message":"The following field is invalid: services.0.startTime"}] | Formato non valido: usa HH:mm in 24 ore (es. 09:30). | Local API |
+| orari-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| orari-non-configurato | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
 - verify-link-valido: facoltativo: token reale monouso non ottenuto
 - shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
+- orari-errore-server: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- orari-errore-caricamento: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- orari-console: controllo non eseguito dal lanciatore in questa esecuzione
+- orari-non-configurato: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
-- shell shell/home telefono-390/chiaro: locator.click: Timeout 30000ms exceeded.
+- orari orari/salvato notebook-1280/chiaro: locator.waitFor: Timeout 10000ms exceeded.
 Call log:
-  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })
+  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible
 
-- WebKit 26.0 su http://localhost:3100 (diagnosi login prod): URL finale=http://localhost:3100/app/login; payload-token: presente secure=true httpOnly=true sameSite=Lax; Set-Cookie login: (nessun Set-Cookie catturato sulla risposta login)
+- orari orari/salvato telefono-390/scuro: locator.waitFor: Timeout 10000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible
+
+- orari orari/salvato notebook-1280/scuro: locator.waitFor: Timeout 10000ms exceeded.
+Call log:
+  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible
+

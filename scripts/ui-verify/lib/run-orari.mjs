@@ -1,0 +1,1140 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
+import { spawn, spawnSync } from 'node:child_process'
+import net from 'node:net'
+
+import {
+  checkScrollOrizzontale,
+  checkTemaClasse,
+  checkToccoMinimo,
+  checkAltezzaMouse,
+  installNoLampoObserver,
+  checkNoLampo,
+  checkTemaCambioSistema,
+  withinTolerance,
+  openMobileSidebar,
+  openUserMenu,
+} from './engine.mjs'
+import { hoursPayloadRun, withHoursBackup, hoursRestoreFrom, hoursSnapshotToTemp } from './hours-payload.mjs'
+
+const ROOT = join(import.meta.dirname, '../../..')
+const SIM_PORT = 3200
+const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
+const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
+const ENGLISH_A11Y = ['Close', 'Edit', 'Delete', 'Remove', 'Save', 'Cancel', 'Add', 'Toggle']
+
+function loadValidationMessages() {
+  const src = readFileSync(join(ROOT, 'lib/systemSettings/timeOfDay.ts'), 'utf8')
+  const required = src.match(/value === ''\) \{\s*return '([^']+)'/)?.[1]
+  const invalid = src.match(/!isValidTimeOfDay\(value\)\) \{\s*return '([^']+)'/)?.[1]
+  if (!required || !invalid) throw new Error('Messaggi timeOfDay non letti da lib')
+  return { required, invalid }
+}
+
+const TIME_MSG = loadValidationMessages()
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms))
+}
+
+async function isPortFree(port) {
+  return new Promise((resolve) => {
+    const s = net.createServer()
+    s.once('error', () => resolve(false))
+    s.once('listening', () => s.close(() => resolve(true)))
+    s.listen(port, '127.0.0.1')
+  })
+}
+
+async function waitForUrl(baseUrl, ms = 180000) {
+  const start = Date.now()
+  while (Date.now() - start < ms) {
+    try {
+      const res = await fetch(baseUrl, { redirect: 'manual' })
+      if (res.status < 500) return
+    } catch {
+      /* retry */
+    }
+    await sleep(600)
+  }
+  throw new Error(`Server non raggiungibile: ${baseUrl}`)
+}
+
+function startDevServer(port, extraEnv) {
+  const child = spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
+    cwd: ROOT,
+    env: { ...process.env, ...extraEnv },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+  child.stderr?.on('data', (chunk) => {
+    const t = String(chunk)
+    if (t.includes('Error') || t.includes('ready')) {
+      process.stderr.write(`[sim:${port}] ${t.slice(0, 120)}\n`)
+    }
+  })
+  return child
+}
+
+async function waitForPortFree(port, ms = 30000) {
+  const start = Date.now()
+  while (Date.now() - start < ms) {
+    if (await isPortFree(port)) return
+    await sleep(500)
+  }
+  throw new Error(`Porta ${port} ancora occupata dopo ${ms}ms`)
+}
+
+export async function gotoHoursReady(page, baseUrl) {
+  await page.goto('/app/hours', { waitUntil: 'networkidle' })
+  await page.locator('h1', { hasText: 'Orari' }).waitFor({ timeout: 20000 })
+}
+
+async function setTimeInput(page, id, value) {
+  await page.locator(`#${id}`).fill(value)
+}
+
+async function clickSave(page) {
+  await page.getByRole('button', { name: 'Salva modifiche' }).click()
+}
+
+async function makeDirty(page) {
+  const el = page.locator('#hours-lunch-start')
+  const v = await el.inputValue()
+  const next = v === '12:00' ? '12:01' : '12:00'
+  await el.fill(next)
+}
+
+function attachConsoleListeners(page) {
+  const bag = { errors: [], warnings: [], failed: [] }
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') bag.errors.push(msg.text())
+    if (msg.type() === 'warning') bag.warnings.push(msg.text())
+  })
+  page.on('pageerror', (e) => bag.errors.push(String(e)))
+  page.on('response', (res) => {
+    if (res.status() >= 400 && !res.url().includes('favicon')) bag.failed.push(`${res.status()} ${res.url()}`)
+  })
+  return bag
+}
+
+function consoleEsito(bag) {
+  const ok = bag.errors.length === 0 && bag.warnings.length === 0 && bag.failed.length === 0
+  return {
+    ok,
+    misurato: `err:${bag.errors.length} warn:${bag.warnings.length} http:${bag.failed.length}`,
+    evidenza: [...bag.errors, ...bag.warnings, ...bag.failed].slice(0, 3).join(' | ') || '—',
+  }
+}
+
+async function prepareState(page, stateId, profiloKey, temaKey) {
+  await gotoHoursReady(page)
+  switch (stateId) {
+    case 'iniziale':
+      return
+    case 'modificato':
+      await makeDirty(page)
+      return
+    case 'errore-validazione':
+      await page.locator('#hours-lunch-start').fill('')
+      await clickSave(page)
+      return
+    case 'salvato':
+      if (profiloKey !== 'telefono-390' || temaKey !== 'chiaro') return
+      await page.locator('#hours-lunch-start').fill('12:15')
+      await page.locator('#hours-lunch-end').fill('14:15')
+      await page.getByRole('button', { name: 'Salva modifiche' }).waitFor({ state: 'visible', timeout: 10000 })
+      await clickSave(page)
+      await page.getByText('Orari salvati').waitFor({ timeout: 15000 })
+      return
+    case 'foglio-chiusura':
+      await page.getByRole('button', { name: 'Aggiungi chiusura' }).click()
+      await page.getByRole('heading', { name: 'Nuova chiusura' }).waitFor()
+      return
+    case 'conferma-rimozione':
+      await page.locator('#hours-holiday-year').fill('2026')
+      await page.getByRole('button', { name: 'Rimuovi festività di un anno' }).click()
+      await page.getByRole('alertdialog').waitFor()
+      return
+    case 'salvataggio-in-corso':
+      await makeDirty(page)
+      return
+    case 'errore-server':
+    case 'errore-caricamento':
+    case 'non-configurato':
+    case 'uscita':
+      return
+    default:
+      return
+  }
+}
+
+async function measureFormColumn(page, profiloKey, tol) {
+  const col = page.locator('main .max-w-xl').first()
+  const box = await col.boundingBox()
+  if (!box) return { ok: false, misurato: 'colonna assente', atteso: 'presente' }
+  const vw = await page.evaluate(() => window.innerWidth)
+  if (profiloKey === 'notebook-1280') {
+    const wOk = withinTolerance(box.width, 576, tol)
+    const centerOk = withinTolerance(box.x + box.width / 2, vw / 2, tol + 8)
+    const toggle = page.locator('[aria-label="Giorni di riposo settimanali"] [data-state]')
+    const firstToggle = page.locator('[aria-label="Giorni di riposo settimanali"] button').first()
+    const groupBox = await page.locator('[aria-label="Giorni di riposo settimanali"]').boundingBox()
+    const itemBox = await firstToggle.boundingBox()
+    const gOk = groupBox ? withinTolerance(groupBox.width, 392, tol + 4) : false
+    const iOk = itemBox ? withinTolerance(itemBox.width, 56, tol + 4) : false
+    const ok = wOk && centerOk && gOk && iOk
+    return {
+      ok,
+      misurato: `form ${Math.round(box.width)}px x=${Math.round(box.x)}; gruppo ${groupBox ? Math.round(groupBox.width) : '?'}; voce ${itemBox ? Math.round(itemBox.width) : '?'}`,
+      atteso: '576 centrato; gruppo 392; voce 56',
+    }
+  }
+  const marginOk = withinTolerance(box.x, 16, tol + 2) && withinTolerance(vw - (box.x + box.width), 16, tol + 2)
+  const firstToggle = page.locator('[aria-label="Giorni di riposo settimanali"] button').first()
+  const itemBox = await firstToggle.boundingBox()
+  const iOk = itemBox ? withinTolerance(itemBox.width, 47, 3) : false
+  return {
+    ok: marginOk && iOk,
+    misurato: `margini ~${Math.round(box.x)}/${Math.round(vw - box.x - box.width)}; voce ${itemBox ? Math.round(itemBox.width) : '?'}`,
+    atteso: '16px margini; voce ~47px',
+  }
+}
+
+export async function runOrariChecks(ctx) {
+  const {
+    browser,
+    baseUrl,
+    report,
+    runCtx,
+    CONTROLLI,
+    newPage,
+    loginApp,
+    testUser,
+    testPassword,
+    addRow,
+    progressStep,
+    resultToEsito,
+    screenshot,
+    SHOT_PROFILES,
+    SHOT_TEMI,
+  } = ctx
+
+  const temiAll = runCtx.temiKeys()
+  const profiliAll = runCtx.profiliAccess().concat(
+    runCtx.profiliShell().filter((p) => !runCtx.profiliAccess().includes(p)),
+  )
+  const profiliUnique = [...new Set(profiliAll)]
+
+  const snapshotPath = hoursSnapshotToTemp()
+
+  try {
+    for (const stato of [
+      'iniziale',
+      'modificato',
+      'errore-validazione',
+      'salvato',
+      'foglio-chiusura',
+      'conferma-rimozione',
+    ]) {
+      for (const temaKey of temiAll) {
+        for (const profiloKey of profiliUnique) {
+          if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820' && profiloKey !== 'soglia-767') continue
+          if (['soglia-767', 'soglia-768'].includes(profiloKey)) continue
+          progressStep('orari', stato, profiloKey, temaKey)
+          const { ctx: pctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
+          const sch = `orari/${stato}`
+          const pt = `${profiloKey}/${temaKey}`
+          try {
+          await loginApp(page, baseUrl, testUser.email, testPassword)
+          await prepareState(page, stato, profiloKey, temaKey)
+
+          if (C1_PROFILES.has(profiloKey) && runCtx.shouldRun('C1')) {
+            const r = await checkScrollOrizzontale(page)
+            addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: '/app/hours' })
+          }
+          if (C2_PROFILES.has(profiloKey) && runCtx.shouldRun('C2')) {
+            let r = await checkToccoMinimo(page)
+            addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: stato })
+            if (stato === 'foglio-chiusura') {
+              r = await checkToccoMinimo(page)
+              addRow(report, { id: 'C2', schermata: `${sch} (foglio)`, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: 'foglio' })
+            }
+            if (stato === 'conferma-rimozione') {
+              r = await checkToccoMinimo(page)
+              addRow(report, { id: 'C2', schermata: `${sch} (dialog)`, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: 'dialog' })
+            }
+          }
+          if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
+            const r = await checkAltezzaMouse(page)
+            addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), ...r, evidenza: stato })
+          }
+          if (runCtx.shouldRun('C3')) {
+            const r = await checkTemaClasse(page, CONTROLLI.temi[temaKey].html_dark)
+            addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: stato })
+          }
+          if (['scuro', 'sistema-scuro'].includes(temaKey) && runCtx.shouldRun('C3-no-lampo')) {
+            await installNoLampoObserver(page)
+            await page.reload({ waitUntil: 'networkidle' })
+            await loginApp(page, baseUrl, testUser.email, testPassword)
+            await prepareState(page, stato, profiloKey, temaKey)
+            const r = await checkNoLampo(page)
+            addRow(report, { id: 'C3-no-lampo', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: stato })
+          }
+
+          if (SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
+            const shotStates = new Set([
+              'iniziale',
+              'errore-validazione',
+              'salvato',
+              'foglio-chiusura',
+              'conferma-rimozione',
+            ])
+            if (shotStates.has(stato)) {
+              await screenshot(page, report, `orari-${stato}-${profiloKey}-${temaKey}`, temaKey)
+            }
+          }
+          } catch (err) {
+            report.anomalie.push(`orari ${sch} ${pt}: ${err.message}`)
+            addRow(report, {
+              id: 'runtime-orari-stato',
+              schermata: sch,
+              profiloTema: pt,
+              esito: 'FALLITO',
+              misurato: err.message,
+              atteso: 'stato preparato',
+              evidenza: stato,
+            })
+          }
+          await pctx.close()
+        }
+      }
+    }
+
+    if (runCtx.shouldRun('orari-testi')) {
+      progressStep('orari', 'testi', 'telefono-390', 'chiaro')
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      const body = await page.locator('main').innerText()
+      const checks = [
+        'Orari',
+        'Orari di vietnamonamour.com: ristorante e B&B.',
+        'Servizi del ristorante',
+        'Giorni di riposo settimanali',
+        'Chiusure annuali',
+        'B&B (vietnamonamour.com)',
+        'Aggiungi chiusura',
+      ]
+      const missing = checks.filter((t) => !body.includes(t))
+      addRow(report, {
+        id: 'orari-testi',
+        schermata: 'orari/iniziale',
+        profiloTema: 'telefono-390/chiaro',
+        esito: missing.length === 0 ? 'OK' : 'FALLITO',
+        misurato: missing.length ? `mancano: ${missing.join(', ')}` : 'testi principali presenti',
+        atteso: 'testi sezione 6 spec',
+        evidenza: '/app/hours',
+      })
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-stato-iniziale')) {
+      hoursRestoreFrom(snapshotPath)
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      const saveBar = await page.locator('[data-slot="app-save-bar"]').count()
+      const alerts = await page.locator('[role="alert"]').count()
+      const statusText = await page.locator('[role="status"]').innerText().catch(() => '')
+      const ok = saveBar === 0 && alerts === 0 && !statusText.includes('Orari salvati')
+      addRow(report, {
+        id: 'orari-stato-iniziale',
+        schermata: 'orari/iniziale',
+        profiloTema: 'telefono-390/chiaro',
+        esito: ok ? 'OK' : 'FALLITO',
+        misurato: `saveBar:${saveBar} alert:${alerts}`,
+        atteso: 'nessuna barra né avviso',
+        evidenza: '/app/hours',
+      })
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-campi-ora')) {
+      const global = hoursPayloadRun('read-as', [testUser.email])
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      const count = await page.locator('input[type="time"]').count()
+      const lunch = global.services?.find((s) => s.name === 'lunch')
+      const dinner = global.services?.find((s) => s.name === 'dinner')
+      const vals = {
+        lunchStart: await page.locator('#hours-lunch-start').inputValue(),
+        lunchEnd: await page.locator('#hours-lunch-end').inputValue(),
+        dinnerStart: await page.locator('#hours-dinner-start').inputValue(),
+        dinnerEnd: await page.locator('#hours-dinner-end').inputValue(),
+        bnbIn: await page.locator('#hours-bnb-check-in').inputValue(),
+        bnbOut: await page.locator('#hours-bnb-check-out').inputValue(),
+      }
+      const match =
+        vals.lunchStart === lunch?.startTime &&
+        vals.lunchEnd === lunch?.endTime &&
+        vals.dinnerStart === dinner?.startTime &&
+        vals.dinnerEnd === dinner?.endTime &&
+        vals.bnbIn === global.bnb?.checkInTime &&
+        vals.bnbOut === global.bnb?.checkOutTime
+      addRow(report, {
+        id: 'orari-campi-ora',
+        schermata: 'orari/iniziale',
+        profiloTema: 'telefono-390/chiaro',
+        esito: count === 6 && match ? 'OK' : 'FALLITO',
+        misurato: `n=${count} match=${match}`,
+        atteso: '6 input time coerenti con Global',
+        evidenza: JSON.stringify(vals),
+      })
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-colonna')) {
+      for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        const r = await measureFormColumn(page, profiloKey, 2)
+        addRow(report, {
+          id: 'orari-colonna',
+          schermata: 'orari/iniziale',
+          profiloTema: `${profiloKey}/chiaro`,
+          esito: r.ok ? 'OK' : 'FALLITO',
+          misurato: r.misurato,
+          atteso: r.atteso,
+          evidenza: '/app/hours',
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-giorno-selezionato')) {
+      for (const temaKey of ['chiaro', 'scuro']) {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        const lunBtn = page.getByRole('button', { name: 'Lunedì' })
+        await lunBtn.click()
+        const pressed = await lunBtn.getAttribute('data-state')
+        const colors = await page.evaluate(() => {
+          const probe = document.createElement('div')
+          probe.className = 'bg-primary text-primary-foreground'
+          probe.style.position = 'absolute'
+          probe.style.visibility = 'hidden'
+          document.body.appendChild(probe)
+          const primaryBg = getComputedStyle(probe).backgroundColor
+          const primaryFg = getComputedStyle(probe).color
+          probe.remove()
+          const btn = document.querySelector('[aria-label="Giorni di riposo settimanali"] button[data-state="on"]')
+          if (!btn) return null
+          const cs = getComputedStyle(btn)
+          return { btnBg: cs.backgroundColor, btnFg: cs.color, primaryBg, primaryFg }
+        })
+        const ok =
+          pressed === 'on' &&
+          colors &&
+          colors.btnBg === colors.primaryBg &&
+          colors.btnFg === colors.primaryFg
+        addRow(report, {
+          id: 'orari-giorno-selezionato',
+          schermata: 'orari/iniziale',
+          profiloTema: `telefono-390/${temaKey}`,
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato: colors ? `state:${pressed} ${colors.btnBg}` : `state:${pressed}`,
+          atteso: 'sfondo --primary e testo --primary-foreground',
+          evidenza: 'Lun attivo',
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-modificato-barra')) {
+      for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        const original = await page.locator('#hours-lunch-start').inputValue()
+        await makeDirty(page)
+        const visible =
+          (await page.locator('[data-slot="app-save-bar"]').isVisible()) &&
+          (await page.getByText('Modifiche non salvate').isVisible())
+        await page.locator('#hours-lunch-start').fill(original)
+        await sleep(400)
+        const hidden = (await page.locator('[data-slot="app-save-bar"]').count()) === 0
+        addRow(report, {
+          id: 'orari-modificato-barra',
+          schermata: 'orari/modificato',
+          profiloTema: `${profiloKey}/chiaro`,
+          esito: visible && hidden ? 'OK' : 'FALLITO',
+          misurato: `compare:${visible} scompare:${hidden}`,
+          atteso: 'barra con testi attesi poi assente',
+          evidenza: '/app/hours',
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-barra-misure')) {
+      for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await makeDirty(page)
+        const bar = page.locator('[data-slot="app-save-bar"]')
+        const box = await bar.boundingBox()
+        const buttons = bar.locator('button')
+        const h0 = await buttons.nth(0).boundingBox()
+        const h1 = await buttons.nth(1).boundingBox()
+        let ok = Boolean(box)
+        let misurato = 'barra assente'
+        if (box && profiloKey === 'telefono-390') {
+          ok =
+            box.height <= 97 &&
+            h0 &&
+            h1 &&
+            withinTolerance(h0.height, 44, 2) &&
+            withinTolerance(h1.height, 44, 2) &&
+            h0.y === h1.y
+          misurato = `h=${Math.round(box.height)} btn=${h0 ? Math.round(h0.height) : '?'}`
+        } else if (box && profiloKey === 'notebook-1280') {
+          const col = await page.locator('main .max-w-xl').first().boundingBox()
+          const text = bar.locator('p').first()
+          const textBox = await text.boundingBox()
+          ok =
+            col &&
+            withinTolerance(box.x, col.x, 4) &&
+            withinTolerance(box.width, col.width, 4) &&
+            textBox &&
+            h0 &&
+            textBox.x < h0.x
+          misurato = `allineamento colonna=${ok}`
+        }
+        addRow(report, {
+          id: 'orari-barra-misure',
+          schermata: 'orari/modificato',
+          profiloTema: `${profiloKey}/chiaro`,
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato,
+          atteso: profiloKey === 'telefono-390' ? '≤97px, pulsanti 44 affiancati' : 'testo sx pulsanti dx',
+          evidenza: '/app/hours',
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-errore-validazione')) {
+      for (const temaKey of ['chiaro', 'scuro']) {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        let saveRequests = 0
+        page.on('request', (req) => {
+          if (req.method() === 'POST' && req.url().includes('hours')) saveRequests += 1
+        })
+        await page.locator('#hours-lunch-start').fill('')
+        await clickSave(page)
+        await sleep(500)
+        const alert = await page.getByText('Controlla i campi evidenziati').isVisible()
+        const fieldMsg = await page.getByText(TIME_MSG.required).count()
+        const focused = await page.evaluate(() => document.activeElement?.id === 'hours-lunch-start')
+        const rect = await page.locator('#hours-lunch-start').boundingBox()
+        const vh = await page.evaluate(() => window.innerHeight)
+        const inView = rect ? rect.top >= 0 && rect.bottom <= vh : false
+        let colorOk = true
+        if (temaKey === 'chiaro') {
+          colorOk = await page.evaluate(() => {
+            const err = document.querySelector('[data-invalid="true"]')
+            if (!err) return false
+            const el = err.querySelector('input') ?? err
+            const border = getComputedStyle(el).borderColor
+            const probe = document.createElement('div')
+            probe.className = 'text-destructive'
+            probe.style.visibility = 'hidden'
+            document.body.appendChild(probe)
+            const destructive = getComputedStyle(probe).color
+            probe.remove()
+            return border.includes('oklch') || border === destructive
+          })
+        }
+        const ok = saveRequests === 0 && alert && fieldMsg > 0 && focused && inView && (temaKey !== 'chiaro' || colorOk)
+        addRow(report, {
+          id: 'orari-errore-validazione',
+          schermata: 'orari/errore-validazione',
+          profiloTema: `telefono-390/${temaKey}`,
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato: `req:${saveRequests} alert:${alert} focus:${focused} view:${inView}`,
+          atteso: 'nessuna richiesta; avviso; campo; focus; destructive',
+          evidenza: TIME_MSG.required,
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-salvataggio-ok')) {
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      await page.locator('#hours-lunch-start').fill('11:00')
+      await page.locator('#hours-lunch-end').fill('13:30')
+      await clickSave(page)
+      await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+      const after = await page.locator('#hours-lunch-start').inputValue()
+      await page.reload({ waitUntil: 'networkidle' })
+      await page.locator('h1', { hasText: 'Orari' }).waitFor()
+      const reloaded = await page.locator('#hours-lunch-start').inputValue()
+      addRow(report, {
+        id: 'orari-salvataggio-ok',
+        schermata: 'orari/salvato',
+        profiloTema: 'telefono-390/chiaro',
+        esito: after === '11:00' && reloaded === '11:00' ? 'OK' : 'FALLITO',
+        misurato: `save:${after} reload:${reloaded}`,
+        atteso: '11:00 persistito',
+        evidenza: '/app/hours',
+      })
+      await pctx.close()
+      hoursRestoreFrom(snapshotPath)
+    }
+
+    if (runCtx.shouldRun('orari-salvataggio-in-corso')) {
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      await page.route('**/*', async (route) => {
+        const req = route.request()
+        if (req.method() === 'POST' && req.url().includes('hours')) {
+          await sleep(1500)
+        }
+        await route.continue()
+      })
+      await makeDirty(page)
+      await clickSave(page)
+      await page.getByText('Salvataggio in corso…').waitFor({ timeout: 5000 })
+      const busy = await page.locator('fieldset[aria-busy="true"]').count()
+      const disabled = await page.locator('fieldset[aria-busy="true"] input:disabled').count()
+      const saveBtn = page.getByRole('button', { name: /Salvataggio/ })
+      const spinner = await saveBtn.locator('[data-slot="spinner"], svg').count()
+      addRow(report, {
+        id: 'orari-salvataggio-in-corso',
+        schermata: 'orari/salvataggio-in-corso',
+        profiloTema: 'telefono-390/chiaro',
+        esito: busy > 0 && disabled > 0 && spinner > 0 ? 'OK' : 'FALLITO',
+        misurato: `busy:${busy} disabled:${disabled} spinner:${spinner}`,
+        atteso: 'fieldset disabilitato; testo in corso; spinner',
+        evidenza: 'route delay 1500ms',
+      })
+      await page.unroute('**/*')
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-annulla')) {
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      const before = await page.locator('#hours-lunch-start').inputValue()
+      await makeDirty(page)
+      await page.getByRole('button', { name: 'Aggiungi chiusura' }).click()
+      await page.getByLabel('Etichetta').fill('Test annulla')
+      await page.getByLabel('Data').fill('2030-06-15')
+      await page.getByRole('button', { name: 'Applica' }).click()
+      await page.getByRole('button', { name: 'Annulla modifiche' }).click()
+      const after = await page.locator('#hours-lunch-start').inputValue()
+      const empty = (await page.getByText('Test annulla').count()) === 0
+      const barGone = (await page.locator('[data-slot="app-save-bar"]').count()) === 0
+      addRow(report, {
+        id: 'orari-annulla',
+        schermata: 'orari/modificato',
+        profiloTema: 'telefono-390/chiaro',
+        esito: after === before && empty && barGone ? 'OK' : 'FALLITO',
+        misurato: `valore:${after === before} chiusura:${empty}`,
+        atteso: 'stato salvato ripristinato',
+        evidenza: '/app/hours',
+      })
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-festivita')) {
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      const steps = []
+      await page.locator('#hours-holiday-year').fill('1899')
+      await page.getByRole('button', { name: 'Aggiungi festività' }).click()
+      steps.push(await page.getByText('Inserisci un anno valido (1900–2100).').isVisible())
+      await page.locator('#hours-holiday-year').fill('2026')
+      await page.getByRole('button', { name: 'Aggiungi festività' }).click()
+      steps.push(await page.getByText(/Aggiunte 13 festività del 2026/).isVisible())
+      const rows = await page.locator('[aria-label^="Modifica chiusura"]').count()
+      steps.push(rows >= 13)
+      await page.getByRole('button', { name: 'Aggiungi festività' }).click()
+      steps.push(await page.getByText('Le festività del 2026 sono già tutte presenti.').isVisible())
+      addRow(report, {
+        id: 'orari-festivita',
+        schermata: 'orari/festivita',
+        profiloTema: 'telefono-390/chiaro',
+        esito: steps.every(Boolean) ? 'OK' : 'FALLITO',
+        misurato: steps.map((s, i) => `${i}:${s}`).join(' '),
+        atteso: 'flusso festività (parziale step 1-4)',
+        evidenza: '2026',
+      })
+      await page.getByRole('button', { name: 'Annulla modifiche' }).click()
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-chiusure-foglio')) {
+      for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await page.getByRole('button', { name: 'Aggiungi chiusura' }).click()
+        const sheet = page.getByRole('dialog')
+        await sheet.waitFor()
+        const box = await sheet.boundingBox()
+        const vw = await page.evaluate(() => window.innerWidth)
+        const fromSide = box && box.x > vw / 4
+        const fromBottom = box && box.y > (await page.evaluate(() => window.innerHeight)) / 3
+        const sideOk = profiloKey === 'notebook-1280' ? fromSide : fromBottom
+        const applyDisabled = await page.getByRole('button', { name: 'Applica' }).isDisabled()
+        await page.getByLabel('Data').fill('2031-03-10')
+        const stillDisabled = await page.getByRole('button', { name: 'Applica' }).isDisabled()
+        await page.getByLabel('Etichetta').fill('Prova foglio')
+        const enabled = !(await page.getByRole('button', { name: 'Applica' }).isDisabled())
+        await page.getByRole('button', { name: 'Applica' }).click()
+        const rowVisible = await page.getByText('Prova foglio').isVisible()
+        addRow(report, {
+          id: 'orari-chiusure-foglio',
+          schermata: 'orari/foglio-chiusura',
+          profiloTema: `${profiloKey}/chiaro`,
+          esito: sideOk && applyDisabled && stillDisabled && enabled && rowVisible ? 'OK' : 'FALLITO',
+          misurato: `sheet:${sideOk} apply:${enabled} row:${rowVisible}`,
+          atteso: 'foglio; Applica disabilitato finché incompleto',
+          evidenza: profiloKey,
+        })
+        await page.getByRole('button', { name: 'Annulla modifiche' }).click()
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-intestazione-anno')) {
+      for (const temaKey of ['chiaro', 'scuro']) {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await page.locator('#hours-holiday-year').fill('2026')
+        await page.getByRole('button', { name: 'Aggiungi festività' }).click()
+        const yearHead = page.locator('main').getByText('2026', { exact: true }).first()
+        const font = await yearHead.evaluate((el) => {
+          const cs = getComputedStyle(el)
+          return { size: cs.fontSize, weight: cs.fontWeight, color: cs.color }
+        })
+        const fg = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--foreground'))
+        const ok =
+          font.size === '16px' &&
+          (font.weight === '600' || font.weight === 'semibold') &&
+          font.color
+        addRow(report, {
+          id: 'orari-intestazione-anno',
+          schermata: 'orari/iniziale',
+          profiloTema: `telefono-390/${temaKey}`,
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato: JSON.stringify(font),
+          atteso: '16px peso 600 foreground',
+          evidenza: 'intestazione anno',
+        })
+        await page.getByRole('button', { name: 'Annulla modifiche' }).click()
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-barre-agganciate')) {
+      for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await page.evaluate(() => {
+          const spacer = document.createElement('div')
+          spacer.id = 'ui-verify-scroll-spacer'
+          spacer.style.height = '600px'
+          document.querySelector('main')?.prepend(spacer)
+        })
+        await makeDirty(page)
+        await page.evaluate(() => window.scrollTo(0, 600))
+        await sleep(200)
+        const topbar = await page.locator('header').first().boundingBox()
+        const saveBar = await page.locator('[data-slot="app-save-bar"]').boundingBox()
+        const vh = await page.evaluate(() => window.innerHeight)
+        const ok = topbar && withinTolerance(topbar.y, 0, 1) && saveBar && withinTolerance(saveBar.y + saveBar.height, vh, 2)
+        addRow(report, {
+          id: 'orari-barre-agganciate',
+          schermata: 'orari/modificato',
+          profiloTema: `${profiloKey}/chiaro`,
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato: `top:${topbar?.y} saveBottom:${saveBar ? saveBar.y + saveBar.height : '?'} vh:${vh}`,
+          atteso: 'topbar 0; save bar bottom=vh',
+          evidenza: 'scroll 600px',
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-uscita')) {
+      for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await makeDirty(page)
+        if (profiloKey === 'telefono-390') {
+          await openMobileSidebar(page)
+        }
+        await page.getByRole('link', { name: 'Piatti' }).first().click()
+        const dialog = page.getByRole('alertdialog')
+        await dialog.waitFor({ timeout: 5000 })
+        const stay = await dialog.getByRole('button', { name: 'Resta qui' }).isVisible()
+        await dialog.getByRole('button', { name: 'Resta qui' }).click()
+        const stillHours = page.url().includes('/hours')
+        if (profiloKey === 'telefono-390') await openMobileSidebar(page)
+        await page.getByRole('link', { name: 'Piatti' }).first().click()
+        await dialog.waitFor()
+        await dialog.getByRole('button', { name: 'Esci senza salvare' }).click()
+        await page.waitForURL('**/app/menu**', { timeout: 15000 })
+        const left = page.url().includes('/menu')
+        addRow(report, {
+          id: 'orari-uscita',
+          schermata: 'orari/uscita',
+          profiloTema: `${profiloKey}/chiaro`,
+          esito: stay && stillHours && left ? 'OK' : 'FALLITO',
+          misurato: `stay:${stillHours} left:${left}`,
+          atteso: 'conferma; Resta qui; Esci naviga',
+          evidenza: 'Piatti',
+        })
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('orari-dati')) {
+      const path = hoursSnapshotToTemp()
+      try {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await page.locator('#hours-dinner-start').fill('20:00')
+        await page.locator('#hours-dinner-end').fill('22:30')
+        await clickSave(page)
+        await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+        const global = hoursPayloadRun('read-as', [testUser.email])
+        const dinner = global.services?.find((s) => s.name === 'dinner')
+        const ok = dinner?.startTime === '20:00' && dinner?.endTime === '22:30'
+        addRow(report, {
+          id: 'orari-dati',
+          schermata: 'orari/dati',
+          profiloTema: 'telefono-390/chiaro',
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato: JSON.stringify(dinner),
+          atteso: 'dinner 20:00-22:30 nel Global',
+          evidenza: 'Local API manager',
+        })
+        await pctx.close()
+      } finally {
+        hoursRestoreFrom(path)
+      }
+    }
+
+    if (runCtx.shouldRun('orari-validazione-server')) {
+      const path = hoursSnapshotToTemp()
+      try {
+        const out = hoursPayloadRun('invalid-times', [], { UI_VERIFY_MANAGER_EMAIL: testUser.email })
+        const ok = out.results?.every((r) => r.ok || /invalid|Formato non valido/i.test(r.message ?? ''))
+        addRow(report, {
+          id: 'orari-validazione-server',
+          schermata: 'orari/server',
+          profiloTema: '—',
+          esito: ok ? 'OK' : 'FALLITO',
+          misurato: JSON.stringify(out.results),
+          atteso: TIME_MSG.invalid,
+          evidenza: 'Local API',
+        })
+      } finally {
+        hoursRestoreFrom(path)
+      }
+    }
+
+    if (runCtx.shouldRun('orari-permessi')) {
+      const perm = hoursPayloadRun('permissions')
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await page.goto('/app/hours', { waitUntil: 'networkidle' })
+      const redirected = page.url().includes('/login')
+      const ok =
+        perm.admin.read &&
+        perm.admin.write &&
+        perm.superAdmin.read &&
+        perm.superAdmin.write &&
+        !perm.noRole.read &&
+        !perm.noRole.write &&
+        redirected
+      addRow(report, {
+        id: 'orari-permessi',
+        schermata: 'orari/permessi',
+        profiloTema: '—',
+        esito: ok ? 'OK' : 'FALLITO',
+        misurato: JSON.stringify({ perm, redirected }),
+        atteso: 'staff OK; noRole negato; URL senza sessione→login',
+        evidenza: 'Local API + GET /hours anon',
+      })
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-nomi-accessibili')) {
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      const labels = await page.evaluate(() => {
+        const texts = []
+        document.querySelectorAll('[aria-label]').forEach((el) => texts.push(el.getAttribute('aria-label') ?? ''))
+        return texts.join('\n')
+      })
+      const body = await page.locator('main').innerText()
+      const found = ENGLISH_A11Y.filter((w) => labels.includes(w) || body.includes(w))
+      addRow(report, {
+        id: 'orari-nomi-accessibili',
+        schermata: 'orari/iniziale',
+        profiloTema: 'telefono-390/chiaro',
+        esito: found.length === 0 ? 'OK' : 'FALLITO',
+        misurato: found.join(', ') || 'nessuno',
+        atteso: 'nessuna stringa inglese vietata',
+        evidenza: '/app/hours',
+      })
+      await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-giorni-riposo')) {
+      const path = hoursSnapshotToTemp()
+      try {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await page.getByRole('button', { name: 'Lunedì' }).click()
+        await page.getByRole('button', { name: 'Mercoledì' }).click()
+        await page.getByRole('button', { name: 'Lunedì' }).click()
+        await clickSave(page)
+        await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+        const global = hoursPayloadRun('read-as', [testUser.email])
+        const days = global.weeklyClosedDays ?? []
+        const onlyWed = days.length === 1 && days[0] === 'wednesday'
+        await page.getByRole('button', { name: 'Mercoledì' }).click()
+        await clickSave(page)
+        await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+        const global2 = hoursPayloadRun('read-as', [testUser.email])
+        const empty = (global2.weeklyClosedDays ?? []).length === 0
+        addRow(report, {
+          id: 'orari-giorni-riposo',
+          schermata: 'orari/giorni',
+          profiloTema: 'telefono-390/chiaro',
+          esito: onlyWed && empty ? 'OK' : 'FALLITO',
+          misurato: `wed:${onlyWed} empty:${empty}`,
+          atteso: 'toggle e weeklyClosedDays vuoto',
+          evidenza: JSON.stringify(global2.weeklyClosedDays),
+        })
+        await pctx.close()
+      } finally {
+        hoursRestoreFrom(path)
+      }
+    }
+
+    if (runCtx.shouldRun('orari-non-configurato')) {
+      progressStep('orari', 'non-configurato', 'telefono-390', 'chiaro')
+      const pathNc = hoursSnapshotToTemp()
+      try {
+        hoursPayloadRun('clear-services')
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await page.reload({ waitUntil: 'networkidle' })
+        const info = await page.getByText('Orari non configurati').isVisible()
+        const lunch = await page.locator('#hours-lunch-start').inputValue()
+        await page.locator('#hours-lunch-start').fill('12:00')
+        await page.locator('#hours-lunch-end').fill('14:00')
+        await page.locator('#hours-dinner-start').fill('19:00')
+        await page.locator('#hours-dinner-end').fill('22:00')
+        await clickSave(page)
+        await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+        const infoGone = !(await page.getByText('Orari non configurati').isVisible())
+        addRow(report, {
+          id: 'orari-non-configurato',
+          schermata: 'orari/non-configurato',
+          profiloTema: 'telefono-390/chiaro',
+          esito: info && lunch === '' && infoGone ? 'OK' : 'FALLITO',
+          misurato: `info:${info} lunch:${lunch} gone:${infoGone}`,
+          atteso: 'avviso; campi vuoti; scompare dopo save',
+          evidenza: 'clear-services',
+        })
+        await pctx.close()
+      } finally {
+        hoursRestoreFrom(pathNc)
+      }
+    }
+
+    if (runCtx.shouldRun('C3-cambio-sistema') && runCtx.screenIncluded('orari')) {
+      const { ctx: pctx, page } = await newPage(browser, 'notebook-1280', 'sistema-chiaro', baseUrl)
+      const r = await checkTemaCambioSistema(page, baseUrl)
+      addRow(report, {
+        id: 'C3-cambio-sistema',
+        schermata: 'orari',
+        profiloTema: 'notebook-1280/sistema',
+        esito: resultToEsito(r),
+        ...r,
+        evidenza: 'login path reused',
+      })
+      await pctx.close()
+    }
+  } finally {
+    hoursRestoreFrom(snapshotPath)
+  }
+}
+
+export async function runOrariDevSimulations(ctx) {
+  const { report, runCtx, newPage, loginApp, testUser, testPassword, addRow, progressStep } = ctx
+
+  if (!runCtx.shouldRun('orari-errore-server') && !runCtx.shouldRun('orari-errore-caricamento') && !runCtx.shouldRun('orari-non-configurato')) {
+    return
+  }
+
+  if (!(await isPortFree(SIM_PORT))) {
+    report.anomalie.push(`Porta ${SIM_PORT} occupata: simulazioni Orari non eseguite`)
+    if (runCtx.shouldRun('orari-errore-server')) {
+      addRow(report, {
+        id: 'orari-errore-server',
+        esito: 'NON PROVATO',
+        misurato: '—',
+        atteso: '—',
+        evidenza: `porta ${SIM_PORT} occupata`,
+      })
+    }
+    if (runCtx.shouldRun('orari-errore-caricamento')) {
+      addRow(report, {
+        id: 'orari-errore-caricamento',
+        esito: 'NON PROVATO',
+        misurato: '—',
+        atteso: '—',
+        evidenza: `porta ${SIM_PORT} occupata`,
+      })
+    }
+    return
+  }
+
+  const snapshotPath = hoursSnapshotToTemp()
+
+  if (runCtx.shouldRun('orari-errore-server')) {
+    progressStep('orari', 'errore-server', 'telefono-390', 'chiaro')
+    await waitForPortFree(SIM_PORT)
+    const child = startDevServer(SIM_PORT, { APP_HOURS_DEV_SIMULATE_SAVE_ERROR: '1' })
+    try {
+      await waitForUrl(`http://localhost:${SIM_PORT}`)
+      const browser = ctx.browser ?? (await import('@playwright/test')).chromium.launch()
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', `http://localhost:${SIM_PORT}`)
+      await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
+      await gotoHoursReady(page)
+      await makeDirty(page)
+      await clickSave(page)
+      await page.getByText('Salvataggio non riuscito').waitFor({ timeout: 15000 })
+      const bar = await page.locator('[data-slot="app-save-bar"]').isVisible()
+      child.kill('SIGTERM')
+      await waitForPortFree(SIM_PORT)
+      const { ctx: pctx2, page: page2 } = await newPage(browser, 'telefono-390', 'chiaro', ctx.baseUrl)
+      await loginApp(page2, ctx.baseUrl, testUser.email, testPassword)
+      await gotoHoursReady(page2)
+      await makeDirty(page2)
+      await clickSave(page2)
+      await page2.getByText('Orari salvati').waitFor({ timeout: 20000 })
+      addRow(report, {
+        id: 'orari-errore-server',
+        schermata: 'orari/errore-server',
+        profiloTema: 'telefono-390/chiaro',
+        esito: bar ? 'OK' : 'FALLITO',
+        misurato: `avviso+barra:${bar}`,
+        atteso: 'errore simulato poi salvataggio OK',
+        evidenza: `localhost:${SIM_PORT}`,
+      })
+      await pctx.close()
+      await pctx2.close()
+      if (!ctx.browser) await browser.close()
+    } catch (e) {
+      child.kill('SIGTERM')
+      addRow(report, {
+        id: 'orari-errore-server',
+        esito: 'FALLITO',
+        misurato: e.message,
+        atteso: 'flusso simulazione',
+        evidenza: String(SIM_PORT),
+      })
+    }
+  }
+
+  if (runCtx.shouldRun('orari-errore-caricamento')) {
+    progressStep('orari', 'errore-caricamento', 'telefono-390', 'chiaro')
+    await waitForPortFree(SIM_PORT)
+    const child = startDevServer(SIM_PORT, { APP_HOURS_DEV_SIMULATE_LOAD_ERROR: '1' })
+    try {
+      await waitForUrl(`http://localhost:${SIM_PORT}`)
+      const browser = (await import('@playwright/test')).chromium.launch()
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', `http://localhost:${SIM_PORT}`)
+      await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
+      await page.goto('/app/hours', { waitUntil: 'networkidle' })
+      const alert = await page.getByText('Impossibile caricare gli orari').isVisible()
+      const inputs = await page.locator('input[type="time"]').count()
+      await page.getByRole('button', { name: 'Riprova' }).click()
+      await sleep(2000)
+      addRow(report, {
+        id: 'orari-errore-caricamento',
+        schermata: 'orari/errore-caricamento',
+        profiloTema: 'telefono-390/chiaro',
+        esito: alert && inputs === 0 ? 'OK' : 'FALLITO',
+        misurato: `alert:${alert} inputs:${inputs}`,
+        atteso: 'solo avviso e Riprova',
+        evidenza: `localhost:${SIM_PORT}`,
+      })
+      await pctx.close()
+      await browser.close()
+    } finally {
+      child.kill('SIGTERM')
+    }
+  }
+
+  hoursRestoreFrom(snapshotPath)
+}
+
+export async function runOrariConsole(ctx) {
+  const { browser, baseUrl, report, newPage, loginApp, testUser, testPassword, addRow, progressStep, browserVersion } =
+    ctx
+  if (!ctx.runCtx.shouldRun('orari-console')) return
+
+  for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+    progressStep('orari', 'console', profiloKey, 'chiaro')
+    const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+    const bag = attachConsoleListeners(page)
+    await loginApp(page, baseUrl, testUser.email, testPassword)
+    await gotoHoursReady(page)
+    await page.getByRole('button', { name: 'Aggiungi chiusura' }).click()
+    await page.keyboard.press('Escape')
+    await page.getByRole('button', { name: 'Aggiungi festività' }).click()
+    await page.evaluate(() => {
+      document.querySelectorAll('nextjs-portal').forEach((el) => el.remove())
+    })
+    await openUserMenu(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
+    await page.keyboard.press('Escape')
+    await sleep(300)
+    const c = consoleEsito(bag)
+    addRow(report, {
+      id: 'orari-console',
+      schermata: '/app/hours',
+      profiloTema: `${profiloKey}/chiaro/Chromium ${browserVersion}`,
+      esito: c.ok ? 'OK' : 'FALLITO',
+      misurato: c.misurato,
+      atteso: 'zero error/warning/pageerror',
+      evidenza: c.evidenza,
+    })
+    await pctx.close()
+  }
+}

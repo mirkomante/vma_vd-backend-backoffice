@@ -10,9 +10,19 @@ export function allControlIds(controlli, ambiente, opts = {}) {
 
   if (ambiente === 'locale-dev') {
     const ids = []
-    if (levelOk('CONSOLE')) ids.push('CONSOLE')
+    const orariScreen = controlli.schermate?.find((s) => s.id === 'orari')
+    const orariInScope = !schermate || schermate.has('orari')
+    if (orariScreen && orariInScope) {
+      for (const c of orariScreen.controlli ?? []) {
+        if (!levelOk(c.id)) continue
+        if (c.ambienti && !c.ambienti.includes('locale-dev')) continue
+        ids.push(c.id)
+      }
+    } else if (levelOk('CONSOLE')) {
+      ids.push('CONSOLE')
+    }
     if (levelOk('webkit-giro-essenziale')) ids.push('webkit-giro-essenziale')
-    return ids
+    return [...new Set(ids)].sort()
   }
 
   if (ambiente === 'online') {
