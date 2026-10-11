@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.1.4'
+export const LAUNCHER_VERSION = '3.1.6'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -831,7 +831,11 @@ export async function checkShellPercorsoVoceAttiva(page, path) {
   const w = page.viewportSize()?.width ?? 1280
   const openedMobile = w < 768
   if (openedMobile) {
-    await openMobileSidebar(page)
+    const nav = await openMobileSidebar(page)
+    if (!nav.opened && !(await isMobileSidebarOpen(page))) {
+      await page.getByRole('button', { name: 'Apri o chiudi il menu' }).click({ timeout: 5000 }).catch(() => {})
+    }
+    await page.locator('[data-sidebar="sidebar"][data-mobile="true"]').waitFor({ state: 'visible', timeout: 8000 }).catch(() => {})
     await page.waitForTimeout(350)
   }
   const data = await page.evaluate(() => {
@@ -839,7 +843,19 @@ export async function checkShellPercorsoVoceAttiva(page, path) {
     const crumbs = nav
       ? [...nav.querySelectorAll('[data-slot=breadcrumb-item]')].map((li) => li.textContent?.trim()).filter(Boolean)
       : []
-    const active = [...document.querySelectorAll('[data-sidebar="menu-button"][data-active] span')].map((s) => s.textContent?.trim())
+    const sidebar =
+      document.querySelector('[data-sidebar="sidebar"][data-mobile="true"]') ??
+      document.querySelector('[data-sidebar="sidebar"]')
+    const scope = sidebar ?? document
+    const active = []
+    scope.querySelectorAll('[data-sidebar="menu-button"]').forEach((btn) => {
+      const isActive =
+        btn.getAttribute('data-active') === 'true' ||
+        btn.getAttribute('aria-current') === 'page'
+      if (!isActive) return
+      const label = btn.querySelector('span')?.textContent?.trim() || btn.textContent?.trim()
+      if (label) active.push(label)
+    })
     return { crumbs, active }
   })
   if (openedMobile) {

@@ -10,6 +10,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 
+import { sql } from '@payloadcms/db-postgres'
 import config from '@payload-config'
 import { APIError, getPayload, ValidationError } from 'payload'
 
@@ -164,12 +165,15 @@ async function main(): Promise<void> {
       overrideAccess: true,
     })
     const servicesBefore = Array.isArray(doc.services) ? doc.services.length : 0
-    await payload.updateGlobal({
-      slug: SYSTEM_SETTINGS_SLUG,
-      depth: 0,
-      overrideAccess: true,
-      data: { services: [] } as Partial<ImpostazioniSistema>,
-    })
+    const parentId = (doc as ImpostazioniSistema).id
+    if (parentId == null) {
+      throw new Error('clear-services: impostazioni-sistema senza id')
+    }
+    // Payload rifiuta services: [] (minRows 2 + prepareSystemSettingsWrite); per ui:verify
+    // azzeriamo solo le righe relazionali, come stato «non configurato» in lettura (length 0).
+    await payload.db.drizzle.execute(
+      sql`DELETE FROM impostazioni_sistema_services WHERE _parent_id = ${parentId}`,
+    )
     const after = await payload.findGlobal({
       slug: SYSTEM_SETTINGS_SLUG,
       depth: 0,

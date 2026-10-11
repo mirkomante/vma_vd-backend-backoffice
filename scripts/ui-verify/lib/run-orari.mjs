@@ -1274,8 +1274,18 @@ export async function runOrariChecks(ctx) {
         const lunchInput = page.locator('#hours-lunch-start')
         const hasLunch = await lunchInput.count()
         const lunch = hasLunch ? await lunchInput.inputValue() : '—'
-        const timeValues = await page.locator('input[type="time"]').evaluateAll((els) => els.map((e) => e.value))
-        const fieldsNotEmpty = timeValues.some((v) => v !== '')
+        const serviceFieldIds = [
+          '#hours-lunch-start',
+          '#hours-lunch-end',
+          '#hours-dinner-start',
+          '#hours-dinner-end',
+        ]
+        const serviceValues = await page.evaluate((ids) => {
+          return ids.map((id) => document.querySelector(id)?.value ?? '—')
+        }, serviceFieldIds)
+        const fourServiceInputs = serviceValues.filter((v) => v !== '—').length
+        const fieldsNotEmpty = serviceValues.some((v) => v !== '' && v !== '—')
+        const fourEmpty = fourServiceInputs === 4 && serviceValues.every((v) => v === '' || v === '—')
         const apiEvidence = `clear:${JSON.stringify(clearOut)} services.length=${servicesLen}`
         const pageEvidence = `serviziHTML:${servicesHtml.slice(0, 400)} | ${alertNote}`
 
@@ -1297,7 +1307,7 @@ export async function runOrariChecks(ctx) {
             'orari-non-configurato-telefono-390-chiaro',
             'chiaro',
           )
-        } else if (fieldsNotEmpty || !info) {
+        } else if (!fourEmpty || !info || fieldsNotEmpty) {
           await addDiagnosticRow(
             report,
             addRow,
@@ -1308,9 +1318,9 @@ export async function runOrariChecks(ctx) {
               schermata: 'orari/non-configurato',
               profiloTema: 'telefono-390/chiaro',
               esito: 'FALLITO',
-              misurato: `info:${info} values:${JSON.stringify(timeValues)} lunch:${lunch}`,
-              atteso: 'services.length=0 e UI «Orari non configurati» con campi vuoti',
-              evidenza: `${apiEvidence} | ${pageEvidence} | possibile difetto app (Global vuoto, UI con valori vecchi)`,
+              misurato: `info:${info} servizi4:${JSON.stringify(serviceValues)} fourEmpty:${fourEmpty}`,
+              atteso: 'services.length=0; avviso «Orari non configurati»; 4 campi servizi vuoti',
+              evidenza: `${apiEvidence} | ${pageEvidence} | serviziHTML:${servicesHtml.slice(0, 800)}`,
             },
             'orari-non-configurato-telefono-390-chiaro',
             'chiaro',
@@ -1328,16 +1338,17 @@ export async function runOrariChecks(ctx) {
             await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
           }
           const infoGone = !(await page.getByText('Orari non configurati').isVisible())
-          const timeCount = await page.locator('input[type="time"]').count()
-          const okNc = info && lunch === '' && infoGone && timeCount >= 4
+          const afterSave = await page.evaluate((ids) => ids.map((id) => document.querySelector(id)?.value ?? ''), serviceFieldIds)
+          const globalAfterSave = hoursPayloadRun('read-as', [testUser.email])
+          const okNc = info && fourEmpty && infoGone && afterSave.every((v) => v !== '')
           const rowNc = {
             id: 'orari-non-configurato',
             schermata: 'orari/non-configurato',
             profiloTema: 'telefono-390/chiaro',
             esito: okNc ? 'OK' : 'FALLITO',
-            misurato: `info:${info} lunch:${lunch} timeInputs:${timeCount} hasLunchField:${hasLunch} gone:${infoGone}`,
+            misurato: `clearLen:${servicesLen} info:${info} fourEmpty:${fourEmpty} gone:${infoGone} afterSave:${JSON.stringify(afterSave)} globalServices:${(globalAfterSave.services ?? []).length}`,
             atteso: 'avviso Orari non configurati; 4 campi ora visibili e vuoti; scompare dopo save',
-            evidenza: `clear-services+reload | motivo: ${!info ? 'manca avviso' : timeCount < 4 ? `solo ${timeCount} input time (attesi 4+)` : !infoGone ? 'avviso resta' : 'altro'}`,
+            evidenza: `clear-services+reload | motivo: ${!info ? 'manca avviso' : !fourEmpty ? '4 campi servizi non vuoti' : !infoGone ? 'avviso resta' : 'altro'}`,
           }
           if (okNc) addRow(report, rowNc)
           else {
