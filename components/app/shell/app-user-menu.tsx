@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { ChevronsUpDown, ExternalLink, LogOut } from 'lucide-react'
 import { useState } from 'react'
 
@@ -100,7 +99,10 @@ export function AppUserMenu({ email, showAdminLink }: AppUserMenuProps) {
           {showAdminLink ? (
             <>
               <DropdownMenuSeparator />
-              <DropdownMenuItem nativeButton={false} render={<Link href="/admin" />}>
+              <DropdownMenuItem
+                nativeButton={false}
+                render={<a href="/admin" target="_blank" rel="noopener" />}
+              >
                 <ExternalLink />
                 Vai all&apos;Admin
               </DropdownMenuItem>

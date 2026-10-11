@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description: 'Backoffice operativo',
 }
 
-const appThemeInitScript = `(function(){try{var m=document.cookie.match(/(?:^|; )${APP_THEME_COOKIE}=([^;]+)/);var p=m?decodeURIComponent(m[1]):'${DEFAULT_APP_THEME}';var d=p==='dark'||(p==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`
+const appThemeInitScript = `(function(){try{var ck='${APP_THEME_COOKIE}';var def='${DEFAULT_APP_THEME}';function readPref(){var m=document.cookie.match(new RegExp('(?:^|; )'+ck+'=([^;]+)'));return m?decodeURIComponent(m[1]):def;}function applyDark(){var p=readPref();var d=p==='dark'||(p==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}applyDark();window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){var p=readPref();if(p!=='system')return;document.documentElement.classList.toggle('dark',window.matchMedia('(prefers-color-scheme: dark)').matches);});}catch(e){}})();`
 
 type AppAreaLayoutProps = {
   children: React.ReactNode

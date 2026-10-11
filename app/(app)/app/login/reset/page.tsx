@@ -39,7 +39,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
         <AppAuthAlert variant="error">{GENERIC_RESET_FAILURE_MESSAGE}</AppAuthAlert>
       ) : null}
 
-      {token && !failed ? (
+      {token ? (
         <form className="flex w-full flex-col gap-4" method="POST" action="/api/users/reset-password/app">
           <input type="hidden" name="token" value={token} />
           <FieldGroup>
