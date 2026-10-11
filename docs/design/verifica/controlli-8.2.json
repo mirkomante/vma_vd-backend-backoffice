@@ -1,0 +1,864 @@
+{
+ "versione": 1,
+ "fase": "8.2",
+ "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6).",
+ "fonti": [
+  "docs/design/decisioni-layout-app.md",
+  "docs/design/schermate/shell/spec.md",
+  "docs/design/schermate/accesso/spec.md",
+  "docs/design/modello-specifica-schermata.md"
+ ],
+ "ambienti": {
+  "locale-dev": {
+   "avvio": "pnpm dev",
+   "url": "http://localhost:3000",
+   "database": "sviluppo",
+   "serve_per": "console senza avvisi di Base UI (la produzione non li stampa)"
+  },
+  "locale-prod": {
+   "avvio": "pnpm build && pnpm start",
+   "url": "http://localhost:3000",
+   "database": "sviluppo",
+   "serve_per": "misure, tema senza lampo, flussi (più vicino a Cloud Run)"
+  },
+  "online": {
+   "avvio": "nessuno",
+   "url": "valore di BASE_URL (dominio pubblico di Cloud Run)",
+   "database": "produzione: MAI credenziali, MAI utenti di prova",
+   "serve_per": "solo i controlli di 'online-senza-credenziali'"
+  }
+ },
+ "profili": {
+  "telefono-360": {
+   "larghezza": 360,
+   "altezza": 800,
+   "scala": 3,
+   "tocco": true
+  },
+  "telefono-390": {
+   "larghezza": 390,
+   "altezza": 844,
+   "scala": 3,
+   "tocco": true
+  },
+  "soglia-767": {
+   "larghezza": 767,
+   "altezza": 1000,
+   "scala": 2,
+   "tocco": true
+  },
+  "soglia-768": {
+   "larghezza": 768,
+   "altezza": 1000,
+   "scala": 2,
+   "tocco": true
+  },
+  "tablet-820": {
+   "larghezza": 820,
+   "altezza": 1180,
+   "scala": 2,
+   "tocco": true
+  },
+  "notebook-1280": {
+   "larghezza": 1280,
+   "altezza": 900,
+   "scala": 1,
+   "tocco": false
+  }
+ },
+ "temi": {
+  "chiaro": {
+   "cookie_app-theme": "light",
+   "colorScheme": "light",
+   "html_dark": false
+  },
+  "scuro": {
+   "cookie_app-theme": "dark",
+   "colorScheme": "light",
+   "html_dark": true
+  },
+  "sistema-chiaro": {
+   "cookie_app-theme": "system",
+   "colorScheme": "light",
+   "html_dark": false
+  },
+  "sistema-scuro": {
+   "cookie_app-theme": "system",
+   "colorScheme": "dark",
+   "html_dark": true
+  }
+ },
+ "comuni": [
+  {
+   "id": "C1",
+   "tipo": "scroll-orizzontale",
+   "profili": [
+    "telefono-360",
+    "telefono-390",
+    "notebook-1280"
+   ],
+   "atteso": "document.documentElement.scrollWidth <= window.innerWidth",
+   "si_applica_a": "ogni stato di ogni schermata",
+   "fonte": "modello C1"
+  },
+  {
+   "id": "C2",
+   "tipo": "tocco-minimo",
+   "profili": [
+    "telefono-390",
+    "tablet-820"
+   ],
+   "minimo_px": 44,
+   "algoritmo": "docs/design/verifica/misura-tocco.md",
+   "atteso": "nessun elemento in elenco",
+   "fonte": "modello C2, decisioni D6"
+  },
+  {
+   "id": "C2-mouse",
+   "tipo": "altezza-mouse",
+   "profili": [
+    "notebook-1280"
+   ],
+   "min_px": 28,
+   "max_px": 48,
+   "gravita": "avviso",
+   "nota": "Con il mouse le altezze restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento.",
+   "fonte": "decisioni D6"
+  },
+  {
+   "id": "C3",
+   "tipo": "tema-classe",
+   "temi": [
+    "chiaro",
+    "scuro",
+    "sistema-chiaro",
+    "sistema-scuro"
+   ],
+   "atteso": "<html> ha la classe 'dark' se e solo se html_dark è vero",
+   "fonte": "modello C3, decisioni D4"
+  },
+  {
+   "id": "C3-no-lampo",
+   "tipo": "tema-no-lampo",
+   "temi": [
+    "scuro",
+    "sistema-scuro"
+   ],
+   "atteso": "nessuna variazione della classe di <html> dopo DOMContentLoaded (osservare con MutationObserver installato prima della pagina)",
+   "fonte": "decisioni D4"
+  },
+  {
+   "id": "C3-cambio-sistema",
+   "tipo": "tema-cambio-sistema",
+   "passi": "con cookie app-theme=system e colorScheme chiaro, cambia a scuro a pagina aperta (emulateMedia) senza ricaricare",
+   "atteso": "la classe 'dark' compare; con cookie 'light' o 'dark' non cambia",
+   "fonte": "A23"
+  },
+  {
+   "id": "CONSOLE",
+   "tipo": "console-pulita",
+   "ambienti": [
+    "locale-dev"
+   ],
+   "atteso": "zero messaggi console di livello error o warning, zero pageerror, zero richieste fallite (4xx/5xx non attesi)",
+   "nota": "Gli avvisi di Base UI compaiono solo in sviluppo.",
+   "fonte": "regola UI 01, sezione Insidie note"
+  },
+  {
+   "id": "C9",
+   "tipo": "comando",
+   "comando": "pnpm ui:check",
+   "atteso": "codice di uscita 0",
+   "fonte": "modello C9"
+  }
+ ],
+ "schermate": [
+  {
+   "id": "login",
+   "percorso": "/app/login",
+   "auth": "nessuna",
+   "fuori_dalla_shell": true,
+   "stati": [
+    {
+     "id": "iniziale",
+     "query": ""
+    },
+    {
+     "id": "rifiutato",
+     "query": "?authFailed=1",
+     "avviso": {
+      "ruolo": "alert",
+      "testo_da": "GENERIC_LOGIN_FAILURE_MESSAGE (lib/auth/loginMessages.ts)"
+     }
+    },
+    {
+     "id": "password-aggiornata",
+     "query": "?reset=1",
+     "avviso": {
+      "ruolo": "status",
+      "testo_da": "RESET_SUCCESS_MESSAGE (lib/auth/localEmail/messages.ts)"
+     }
+    }
+   ],
+   "controlli": [
+    {
+     "id": "login-titolo-documento",
+     "tipo": "testo",
+     "cosa": "document.title",
+     "atteso": "Accesso · Area App"
+    },
+    {
+     "id": "login-testi",
+     "tipo": "testo",
+     "atteso": {
+      "h1": "Area App",
+      "descrizione": "Accedi con Google oppure con email e password.",
+      "collegamento_primario": "Accedi con Google",
+      "pulsante_secondario": "Accedi",
+      "separatore": "oppure",
+      "etichette": [
+       "Email",
+       "Password"
+      ],
+      "collegamenti": [
+       "Password dimenticata?",
+       "Torna al sito"
+      ]
+     }
+    },
+    {
+     "id": "login-link-destinazioni",
+     "tipo": "attributi",
+     "atteso": {
+      "Password dimenticata?": {
+       "href": "/app/login/forgot"
+      },
+      "Torna al sito": {
+       "href": "/"
+      }
+     }
+    },
+    {
+     "id": "login-campi",
+     "tipo": "attributi",
+     "atteso": {
+      "input[name=email]": {
+       "type": "email",
+       "autocomplete": "username",
+       "required": true
+      },
+      "input[name=password]": {
+       "type": "password",
+       "autocomplete": "current-password",
+       "required": true
+      },
+      "form": {
+       "method": "post",
+       "action": "/api/users/login/app"
+      }
+     },
+     "fonte": "accesso/spec.md sezione 2 e checklist 6"
+    },
+    {
+     "id": "login-gerarchia",
+     "tipo": "testo",
+     "cosa": "«Accedi con Google» è il pulsante pieno (sfondo primary), «Accedi» è il secondario (con contorno, sfondo non primary)",
+     "fonte": "accesso/spec.md comportamento 4",
+     "nota": "Confronta il colore di sfondo calcolato dei due elementi: devono essere diversi e il primo uguale al colore di sfondo del token primary."
+    }
+   ]
+  },
+  {
+   "id": "forgot",
+   "percorso": "/app/login/forgot",
+   "auth": "nessuna",
+   "fuori_dalla_shell": true,
+   "stati": [
+    {
+     "id": "iniziale",
+     "query": ""
+    },
+    {
+     "id": "inviata",
+     "query": "?sent=1",
+     "avviso": {
+      "ruolo": "status",
+      "testo_da": "GENERIC_FORGOT_PASSWORD_SENT_MESSAGE (lib/auth/localEmail/messages.ts)",
+      "posizione": "sopra il modulo; il modulo resta presente"
+     }
+    }
+   ],
+   "controlli": [
+    {
+     "id": "forgot-testi",
+     "tipo": "testo",
+     "atteso": {
+      "h1": "Password dimenticata",
+      "descrizione": "Inserisci l’email dell’account locale. Se è in archivio riceverai le istruzioni.",
+      "etichette": [
+       "Email"
+      ],
+      "pulsante": "Invia istruzioni",
+      "collegamenti": [
+       "Torna al login"
+      ]
+     }
+    },
+    {
+     "id": "forgot-titolo-documento",
+     "tipo": "testo",
+     "cosa": "document.title",
+     "atteso": "Accesso · Area App"
+    }
+   ]
+  },
+  {
+   "id": "reset",
+   "percorso": "/app/login/reset",
+   "auth": "nessuna",
+   "fuori_dalla_shell": true,
+   "stati": [
+    {
+     "id": "iniziale",
+     "query": "?token=prova",
+     "modulo": true
+    },
+    {
+     "id": "link-scaduto",
+     "query": "?token=prova&resetFailed=1",
+     "modulo": true,
+     "avviso": {
+      "ruolo": "alert",
+      "testo_da": "GENERIC_RESET_FAILURE_MESSAGE (lib/auth/localEmail/messages.ts)"
+     },
+     "nota": "P12: l'avviso e il modulo sono presenti insieme. NON inviare il modulo."
+    },
+    {
+     "id": "senza-token",
+     "query": "",
+     "modulo": false,
+     "avviso": {
+      "ruolo": "alert",
+      "testo_da": "GENERIC_RESET_FAILURE_MESSAGE (lib/auth/localEmail/messages.ts)"
+     }
+    }
+   ],
+   "controlli": [
+    {
+     "id": "reset-testi",
+     "tipo": "testo",
+     "atteso": {
+      "h1": "Nuova password",
+      "descrizione": "Scegli una password di almeno 8 caratteri, con una maiuscola, una minuscola e una cifra.",
+      "etichette": [
+       "Nuova password"
+      ],
+      "pulsante": "Aggiorna password",
+      "collegamenti": [
+       "Torna al login"
+      ]
+     },
+     "nota": "Etichetta, campo e pulsante solo negli stati con modulo."
+    },
+    {
+     "id": "reset-campi",
+     "tipo": "attributi",
+     "stati": [
+      "iniziale",
+      "link-scaduto"
+     ],
+     "atteso": {
+      "input[name=password]": {
+       "type": "password",
+       "autocomplete": "new-password",
+       "minlength": "8",
+       "required": true
+      },
+      "input[name=token]": {
+       "type": "hidden",
+       "value": "prova"
+      },
+      "form": {
+       "method": "post",
+       "action": "/api/users/reset-password/app"
+      }
+     }
+    },
+    {
+     "id": "reset-senza-token-vuoto",
+     "tipo": "conteggio",
+     "stato": "senza-token",
+     "selettore": "main input:not([type=hidden]), main button, main form",
+     "atteso": 0,
+     "fonte": "accesso/spec.md checklist 4"
+    }
+   ]
+  },
+  {
+   "id": "verify",
+   "percorso": "/app/login/verify",
+   "auth": "nessuna",
+   "fuori_dalla_shell": true,
+   "stati": [
+    {
+     "id": "senza-token",
+     "query": "",
+     "avviso": {
+      "ruolo": "alert",
+      "testo_da": "GENERIC_VERIFY_FAILURE_MESSAGE (lib/auth/localEmail/messages.ts)"
+     }
+    },
+    {
+     "id": "token-non-valido",
+     "query": "?token=prova",
+     "avviso": {
+      "ruolo": "alert",
+      "testo_da": "GENERIC_VERIFY_FAILURE_MESSAGE (lib/auth/localEmail/messages.ts)"
+     }
+    },
+    {
+     "id": "link-valido",
+     "query": "?token=<token reale>",
+     "avviso": {
+      "ruolo": "status",
+      "testo_da": "VERIFY_SUCCESS_MESSAGE (lib/auth/localEmail/messages.ts)"
+     },
+     "stato_prova": "facoltativo: serve un utente di prova con token di attivazione vero, che si consuma una volta sola; se non si riesce a ottenerlo, NON PROVATO"
+    }
+   ],
+   "controlli": [
+    {
+     "id": "verify-testi",
+     "tipo": "testo",
+     "atteso": {
+      "h1": "Conferma email",
+      "collegamenti": [
+       "Vai al login"
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "id": "pagine-accesso-comuni",
+   "percorsi": [
+    "/app/login",
+    "/app/login/forgot",
+    "/app/login/reset?token=prova",
+    "/app/login/verify"
+   ],
+   "controlli": [
+    {
+     "id": "acc-fuori-shell",
+     "tipo": "assenza",
+     "selettore": "[data-slot=sidebar], [data-slot=sidebar-trigger], nav[aria-label=Percorso]",
+     "fonte": "accesso/spec.md checklist 3"
+    },
+    {
+     "id": "acc-collegamenti-sottolineati",
+     "tipo": "misura",
+     "misura": "text-decoration-line calcolato dei collegamenti sotto la scheda",
+     "atteso": "contiene underline, senza passaggio del mouse",
+     "fonte": "accesso/spec.md checklist 5"
+    },
+    {
+     "id": "acc-avvisi",
+     "tipo": "presenza",
+     "atteso": "ogni avviso ha role=alert (errori) o role=status (conferme) e contiene un'icona svg",
+     "fonte": "accesso/spec.md checklist 7"
+    },
+    {
+     "id": "acc-colonna",
+     "tipo": "misura",
+     "misura": "larghezza della scheda",
+     "atteso": "min(384, larghezza finestra - 2*margine)",
+     "tolleranza_px": 1,
+     "profili": [
+      "telefono-390",
+      "tablet-820",
+      "notebook-1280"
+     ],
+     "fonte": "accesso/spec.md sezione 4"
+    },
+    {
+     "id": "acc-margine",
+     "tipo": "misura",
+     "misura": "distanza dal bordo sinistro della finestra al bordo sinistro della scheda, quando la finestra è più stretta di 384 + 2*margine",
+     "atteso": "16 px sotto 768, 24 px da 768",
+     "tolleranza_px": 1.5,
+     "profili": [
+      "telefono-360",
+      "telefono-390"
+     ],
+     "fonte": "accesso/spec.md sezione 4"
+    },
+    {
+     "id": "acc-icona",
+     "tipo": "misura",
+     "misura": "quadrato dell'icona sopra il titolo",
+     "atteso": "40 x 40 px",
+     "tolleranza_px": 1,
+     "fonte": "accesso/spec.md sezione 8 (P11)"
+    },
+    {
+     "id": "acc-spazi-16",
+     "tipo": "misura",
+     "misura": "distanza dal fondo del blocco intestazione (icona, titolo, descrizione) alla cima della scheda, e dal fondo della scheda ai collegamenti",
+     "atteso": "16 px entrambe",
+     "tolleranza_px": 1.5,
+     "fonte": "accesso/spec.md sezione 8 (P11)"
+    },
+    {
+     "id": "acc-padding-scheda",
+     "tipo": "misura",
+     "misura": "distanza dalla cima della scheda al primo elemento al suo interno (avviso o primo controllo)",
+     "atteso": "16 px",
+     "tolleranza_px": 1.5,
+     "fonte": "accesso/spec.md sezione 8 (P11)"
+    },
+    {
+     "id": "acc-centratura",
+     "tipo": "misura",
+     "misura": "con contenuto più basso della finestra: spazio sopra il blocco meno spazio sotto",
+     "atteso": "differenza assoluta <= 2*48 px (py-12 simmetrico)",
+     "nota": "Verifica solo che la colonna sia centrata in verticale, non il valore esatto.",
+     "fonte": "accesso/spec.md sezione 4"
+    }
+   ]
+  },
+  {
+   "id": "shell",
+   "auth": "utente di prova solo App (adminRole none, appRole manager, loginMethod local, email verificata)",
+   "guardia": [
+    {
+     "id": "g1",
+     "tipo": "reindirizzamento",
+     "da": "/app",
+     "senza_sessione": true,
+     "a": "/app/login",
+     "fonte": "shell/spec.md checklist 1"
+    },
+    {
+     "id": "g2",
+     "tipo": "reindirizzamento",
+     "da": [
+      "/app/menu",
+      "/app/hours",
+      "/app/reservations"
+     ],
+     "senza_sessione": true,
+     "a": "/app/login",
+     "fonte": "shell/spec.md checklist 1"
+    }
+   ],
+   "stati": [
+    {
+     "id": "home",
+     "percorso": "/app"
+    },
+    {
+     "id": "segnaposto-menu",
+     "percorso": "/app/menu"
+    },
+    {
+     "id": "segnaposto-hours",
+     "percorso": "/app/hours"
+    },
+    {
+     "id": "segnaposto-reservations",
+     "percorso": "/app/reservations"
+    }
+   ],
+   "controlli": [
+    {
+     "id": "home-testi",
+     "tipo": "testo",
+     "percorso": "/app",
+     "atteso": {
+      "h1": "Area App",
+      "descrizione": "Scegli una sezione.",
+      "schede_in_ordine": [
+       {
+        "titolo": "Prenotazioni",
+        "descrizione": "Elenco, eccezioni giorno, impostazioni",
+        "href": "/app/reservations"
+       },
+       {
+        "titolo": "Menù",
+        "descrizione": "Piatti, vini, bevande, distillati, menù fissi",
+        "href": "/app/menu"
+       },
+       {
+        "titolo": "Orari",
+        "descrizione": "Ristorante, B&B, giorni di riposo, chiusure",
+        "href": "/app/hours"
+       }
+      ]
+     },
+     "fonte": "shell/spec.md sezione 6, decisioni D2"
+    },
+    {
+     "id": "home-nessuna-riga-di-stato",
+     "tipo": "presenza",
+     "atteso": "le schede hanno solo titolo e descrizione (nessuna riga di stato) nella 8.2",
+     "fonte": "shell/spec.md checklist 7"
+    },
+    {
+     "id": "home-colonne",
+     "tipo": "misura",
+     "misura": "numero di colonne di schede (valori distinti di 'left')",
+     "atteso": {
+      "telefono-390": 1,
+      "soglia-768": 2,
+      "tablet-820": 2,
+      "notebook-1280": 3
+     },
+     "fonte": "shell/spec.md sezione 4"
+    },
+    {
+     "id": "shell-margine-contenuto",
+     "tipo": "misura",
+     "misura": "distanza tra il bordo sinistro dell'area del contenuto (main) e il bordo sinistro del titolo",
+     "atteso": {
+      "telefono-390": 16,
+      "soglia-768": 24,
+      "notebook-1280": 24
+     },
+     "tolleranza_px": 2,
+     "gravita": "avviso",
+     "fonte": "shell/spec.md sezione 4"
+    },
+    {
+     "id": "shell-barra-alta",
+     "tipo": "misura",
+     "misura": "altezza della barra in alto",
+     "atteso": 56,
+     "tolleranza_px": 1,
+     "profili": [
+      "telefono-390",
+      "soglia-768",
+      "notebook-1280"
+     ],
+     "fonte": "shell/spec.md sezione 4"
+    },
+    {
+     "id": "shell-passaggio-768",
+     "tipo": "misura",
+     "misura": "a 767 px la barra laterale fissa non è visibile e il pulsante «Apri o chiudi il menu» apre un pannello largo 288 px (18 rem); a 768 px la barra fissa è visibile larga 256 px (16 rem)",
+     "tolleranza_px": 1,
+     "profili": [
+      "soglia-767",
+      "soglia-768"
+     ],
+     "fonte": "shell/spec.md sezione 4, decisioni D1"
+    },
+    {
+     "id": "shell-sticky",
+     "tipo": "misura",
+     "misura": "dopo avere inserito nel contenuto un elemento alto 2000 px e scorso di 600 px, la barra in alto ha top = 0",
+     "atteso": 0,
+     "tolleranza_px": 0.5,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "fonte": "modello C8, decisioni P1 (overflow-x: clip)"
+    },
+    {
+     "id": "shell-menu-voci",
+     "tipo": "testo",
+     "atteso": {
+      "gruppi_in_ordine": [
+       "Menù",
+       "Orari",
+       "Prenotazioni"
+      ],
+      "voci_per_gruppo": {
+       "Menù": [
+        "Piatti"
+       ],
+       "Orari": [
+        "Orari"
+       ],
+       "Prenotazioni": [
+        "Elenco"
+       ]
+      },
+      "collegamenti_navigazione": 3
+     },
+     "nota": "Esattamente tre voci abilitate nella 8.2.",
+     "fonte": "shell/spec.md checklist 11, decisioni D12"
+    },
+    {
+     "id": "shell-blocco-in-cima",
+     "tipo": "testo",
+     "atteso": {
+      "titolo": "Area App",
+      "ruolo": "Manager",
+      "href": "/app"
+     },
+     "fonte": "decisioni D12"
+    },
+    {
+     "id": "shell-blocco-utente",
+     "tipo": "testo",
+     "atteso": {
+      "mostra": "email intera o troncata con puntini",
+      "iniziali": "prime lettere delle prime due parti della parte locale separata da . _ - ; senza separatori le prime due lettere; maiuscole"
+     },
+     "fonte": "shell/spec.md sezione 2, checklist 4"
+    },
+    {
+     "id": "shell-menu-utente",
+     "tipo": "testo",
+     "atteso": {
+      "voci_in_ordine": [
+       "Tema: Chiaro, Scuro, Sistema (predefinita Sistema)",
+       "Esci"
+      ],
+      "assente": [
+       "Vai all'Admin"
+      ],
+      "nota_admin": "«Vai all'Admin» compare solo con canAccessAdminPanel: con l'utente di prova solo App deve essere ASSENTE"
+     },
+     "fonte": "shell/spec.md checklist 5, decisioni D3"
+    },
+    {
+     "id": "shell-nomi-accessibili",
+     "tipo": "testo",
+     "atteso": "Nomi accessibili in italiano: «Apri o chiudi il menu», «Chiudi», «Percorso», «Menu». Nessuno di questi testi inglesi nella pagina o negli aria-label: Toggle Sidebar, Close, Sidebar, breadcrumb, More, Displays the mobile sidebar.",
+     "fonte": "shell/spec.md checklist 8, decisioni T1"
+    },
+    {
+     "id": "shell-tema-scelta",
+     "tipo": "tema-persistenza",
+     "passi": "dal menu utente scegli Scuro, poi Chiaro, poi Sistema; dopo ognuno la classe di <html> è quella attesa, il cookie app-theme vale dark, light, system, e dopo il ricaricamento la scelta resta e il radio selezionato è lo stesso",
+     "fonte": "shell/spec.md checklist 5"
+    },
+    {
+     "id": "shell-segnaposto",
+     "tipo": "testo",
+     "percorsi": [
+      "/app/menu",
+      "/app/hours",
+      "/app/reservations"
+     ],
+     "atteso": {
+      "descrizione": "Questa sezione sarà disponibile a breve.",
+      "h1": "titolo come nella tabella Testi di shell/spec.md"
+     },
+     "nota": "Dentro la shell: barra laterale e barra in alto presenti.",
+     "fonte": "shell/spec.md checklist 11"
+    },
+    {
+     "id": "shell-percorso-voce-attiva",
+     "tipo": "testo",
+     "atteso": "per ogni pagina il percorso (breadcrumb) e la voce evidenziata coincidono con la sezione 7 di shell/spec.md; nella home nessuna voce evidenziata",
+     "fonte": "shell/spec.md checklist 6, 1"
+    },
+    {
+     "id": "shell-uscita",
+     "tipo": "flusso",
+     "passi": [
+      "con sessione valida apri /app",
+      "apri il menu utente e CLICCA la voce «Esci» (clic vero, non l'invio diretto del modulo)"
+     ],
+     "atteso": [
+      "la richiesta POST /app/logout risponde 303",
+      "l'intestazione Location è relativa (/app/login) oppure ha la stessa origine della pagina, MAI contiene 0.0.0.0",
+      "la pagina finale è <origine>/app/login",
+      "il cookie payload-token non c'è più",
+      "GET /app porta di nuovo a /app/login",
+      "(solo locale) nel registro attività c'è una riga con eventType logout, area app, method local per quell'utente"
+     ],
+     "fonte": "shell/spec.md checklist 10, rilievo P13"
+    },
+    {
+     "id": "shell-admin-link",
+     "tipo": "flusso",
+     "stato_prova": "NON PROVABILE con l'utente di prova solo App: serve un utente con canAccessAdminPanel e un modo documentato per avere la sessione. Non inventare scorciatoie e non usare la produzione: scrivi NON PROVATO.",
+     "passi": [
+      "con sessione di un utente che supera canAccessAdminPanel apri /app",
+      "apri il menu utente: la voce «Vai all'Admin» c'è, con icona di collegamento esterno",
+      "è un <a href=/admin target=_blank rel contiene noopener>; il clic apre una nuova scheda su /admin e la scheda dell'App resta su /app"
+     ],
+     "fonte": "decisioni D3 (nuova scheda, 2026-10-11)"
+    }
+   ]
+  }
+ ],
+ "online-senza-credenziali": [
+  {
+   "id": "on1",
+   "tipo": "flusso",
+   "passi": [
+    "GET <BASE_URL>/app/login"
+   ],
+   "atteso": [
+    "200",
+    "h1 «Area App»"
+   ]
+  },
+  {
+   "id": "on2",
+   "tipo": "reindirizzamento",
+   "da": "/app",
+   "senza_sessione": true,
+   "a": "/app/login",
+   "atteso": "la destinazione ha l'origine di BASE_URL, MAI 0.0.0.0 o localhost"
+  },
+  {
+   "id": "on3",
+   "tipo": "flusso",
+   "passi": [
+    "POST <BASE_URL>/app/logout senza cookie"
+   ],
+   "atteso": [
+    "303",
+    "Location relativo /app/login oppure con l'origine di BASE_URL (MAI 0.0.0.0)",
+    "Set-Cookie payload-token con scadenza passata"
+   ],
+   "fonte": "rilievo P13"
+  },
+  {
+   "id": "on4",
+   "tipo": "conteggio",
+   "percorso": "/app/login/reset",
+   "selettore": "main input:not([type=hidden]), main button, main form",
+   "atteso": 0
+  },
+  {
+   "id": "on5",
+   "tipo": "flusso",
+   "passi": [
+    "GET <BASE_URL>/app/login/reset?token=prova&resetFailed=1"
+   ],
+   "atteso": [
+    "l'HTML contiene l'avviso E il campo input[name=password]"
+   ],
+   "fonte": "rilievo P12"
+  },
+  {
+   "id": "on6",
+   "tipo": "flusso",
+   "passi": [
+    "GET <BASE_URL>/app/login/verify"
+   ],
+   "atteso": [
+    "200",
+    "avviso con la costante GENERIC_VERIFY_FAILURE_MESSAGE"
+   ]
+  }
+ ],
+ "online-con-sessione-reale": {
+  "chi": "la chat di design con il browser di Mirko già collegato, oppure Mirko a mano; NON l'agente di verifica (niente credenziali di produzione)",
+  "controlli": [
+   "Esci con clic vero dal menu utente su Cloud Run: la pagina finale è <dominio pubblico>/app/login, mai 0.0.0.0",
+   "Dopo Esci, aprire /admin porta al login dell'Admin (la sessione è la stessa)",
+   "«Vai all'Admin» si apre in una nuova scheda e l'App resta su /app",
+   "Nel registro attività dell'Admin compare la riga logout appena fatta",
+   "Il tema «Sistema» segue il cambio del sistema operativo a pagina aperta",
+   "Prova su iPhone vero delle aree di tocco (D6), del campo ora nativo e della tastiera"
+  ]
+ }
+}

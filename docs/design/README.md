@@ -11,6 +11,7 @@ Design UI/UX dell'Area App `(app)`. L'Admin è quello standard di Payload e non 
 | `schermate/<nome>/` | Un pacchetto per ogni schermata approvata (vedi sotto) |
 | `prototipo-sorgenti.zip` | Sorgenti e script con cui si producono prototipi, mockup statici e screenshot (non è codice dell'app; non si estrae nel repo: le istruzioni di ripristino sono nel `README-ripristino.md` dentro lo zip) |
 | `assets/` | `mockup.css` (generato) e il font Geist, usati dai mockup statici |
+| `verifica/` | Procedura di verifica automatica su ambienti reali (agente di verifica): controlli come dati, misura delle aree di tocco, prompt dell'agente, esiti. Regola: `.cursor/rules/ui/02-ui-verifica-agente.mdc` |
 
 **Pacchetto di una schermata** (`schermate/<nome>/`):
 

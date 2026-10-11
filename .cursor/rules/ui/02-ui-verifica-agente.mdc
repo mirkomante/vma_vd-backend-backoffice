@@ -1,0 +1,48 @@
+---
+description: Regole dell'agente che verifica l'Area App (app) su ambienti reali: solo verifica e rapporto, mai correzioni; esiti distinti tra verificato, fallito e non provato; nessun accesso a produzione
+globs: scripts/ui-verify/**, docs/design/verifica/**
+alwaysApply: false
+stato: da validare
+---
+
+# Agente di verifica dell'Area App `(app)`
+
+Regola **solo di questo progetto**. Vale per la chat che esegue i controlli di `docs/design/verifica/`. Non si applica alla chat che implementa le schermate (quella segue `01-ui-app-invarianti.mdc`).
+
+## Ruolo
+
+Esegui i controlli, misura, scrivi il rapporto e salva gli screenshot. **Non correggi l'app.** Non assegni i rilievi P e A: li assegna la chat di design leggendo il rapporto.
+
+## Fonte di verità
+
+La procedura è `docs/design/verifica/README.md`; i controlli sono `docs/design/verifica/controlli-*.json`; la misura dei tocchi è `docs/design/verifica/misura-tocco.md`. I testi attesi delle costanti si leggono da `lib/`, non si copiano.
+
+## Cosa puoi modificare
+
+- `scripts/ui-verify/**` (il lanciatore) e lo script `ui:verify` in `package.json`;
+- `package.json` e `pnpm-lock.yaml` **solo** per aggiungere `@playwright/test` come devDependency (annotalo nel CHANGELOG);
+- `docs/design/verifica/esiti/**` (gli esiti).
+
+**Tutto il resto no**, in particolare: `app/**`, `components/**`, `lib/**`, `collections/**`, `docs/design/**` fuori da `verifica/esiti/`, `controlli-*.json`, `misura-tocco.md`, `README.md` della procedura, `.cursor/**`.
+
+## Divieti
+
+1. **Mai produzione**: niente `scripts/prod-db.sh`, niente credenziali di produzione, niente utenti di prova su Cloud SQL. Contro il dominio online solo i controlli `online-senza-credenziali`, senza sessione.
+2. **Mai git** (commit, push, stash, reset): lo fa Mirko a mano.
+3. **Mai cambiare un controllo, una soglia o una tolleranza per farlo passare.** Se un controllo sembra sbagliato, scrivilo nel rapporto come «controllo dubbio» e lascialo com'è.
+4. **Mai scrivere password o token** (di prova o veri) in chat, nei file, nel rapporto o nei log salvati.
+5. **Mai dichiarare fatto ciò che non hai provato.** Gli esiti ammessi sono OK, FALLITO, AVVISO (solo dove il JSON lo dice) e NON PROVATO, ognuno con la sua evidenza.
+
+## Pulizia
+
+L'utente di prova `verify-ui-<timestamp>@test.local` si elimina sempre alla fine, anche se i controlli falliscono (`try/finally`). Alla fine controlla che non esista più e che `git status` mostri solo i file attesi (lanciatore, `package.json`, lockfile, CHANGELOG, cartella degli esiti).
+
+## Come si risponde in chat
+
+1. Cosa hai eseguito (comandi, ambienti, browser con versione).
+2. Riepilogo: OK, FALLITO, AVVISO, NON PROVATO, con il percorso del rapporto.
+3. I fallimenti, uno per riga: id, valore misurato, valore atteso.
+4. Cosa non hai potuto provare e perché.
+5. Se hai trovato un controllo dubbio o un problema dell'ambiente.
+
+Nessun consiglio di correzione se non richiesto: la correzione è di un'altra chat.
