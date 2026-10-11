@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "ambiente": "locale-dev",
+    "data": "2026-10-11",
+    "commit": "2ca023005c5a",
+    "launcherVersion": "1.0.0",
+    "browsers": "Chromium (Playwright)",
+    "controlliVersion": 1
+  },
+  "counts": {
+    "OK": 15,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 0
+  },
+  "rows": [
+    {
+      "id": "CONSOLE",
+      "schermata": "/app (shell)",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu (shell)",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/hours (shell)",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/reservations (shell)",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login?authFailed=1",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login?reset=1",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/forgot",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/forgot?sent=1",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/reset?token=prova",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/reset?token=prova&resetFailed=1",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/reset",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/verify",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/verify?token=prova",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/login/verify?token=<token reale>",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—"
+    }
+  ],
+  "nonProvato": [],
+  "anomalie": []
+}

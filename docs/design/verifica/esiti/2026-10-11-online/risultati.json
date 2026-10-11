@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "ambiente": "online",
+    "data": "2026-10-11",
+    "commit": "2ca023005c5a",
+    "launcherVersion": "1.0.0",
+    "browsers": "fetch",
+    "controlliVersion": 1
+  },
+  "counts": {
+    "OK": 6,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 0
+  },
+  "rows": [
+    {
+      "id": "on1",
+      "schermata": "/app/login",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "200, h1 true",
+      "atteso": "200 + h1 Area App",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app"
+    },
+    {
+      "id": "on2",
+      "schermata": "/app",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "307 → /app/login",
+      "atteso": "redirect a /app/login su origine pubblica",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app"
+    },
+    {
+      "id": "on3",
+      "schermata": "POST /app/logout",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "303 Location:/app/login Set-Cookie:payload-token=; Expires=Sun, 11 Oct 2026 09:25:13 GMT; Path=…",
+      "atteso": "303, Location ok, Set-Cookie payload-token",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app"
+    },
+    {
+      "id": "on4",
+      "schermata": "/app/login/reset",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "0 controlli in main",
+      "atteso": "0",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app"
+    },
+    {
+      "id": "on5",
+      "schermata": "reset token+resetFailed",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "alert+password: true",
+      "atteso": "avviso e campo password",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app"
+    },
+    {
+      "id": "on6",
+      "schermata": "/app/login/verify",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "200, messaggio:true",
+      "atteso": "200 + GENERIC_VERIFY_FAILURE_MESSAGE",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app"
+    }
+  ],
+  "nonProvato": [],
+  "anomalie": []
+}
