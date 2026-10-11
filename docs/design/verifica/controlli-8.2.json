@@ -1,7 +1,7 @@
 {
- "versione": 1,
+ "versione": 2,
  "fase": "8.2",
- "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6).",
+ "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto.",
  "fonti": [
   "docs/design/decisioni-layout-app.md",
   "docs/design/schermate/shell/spec.md",
@@ -90,6 +90,19 @@
  },
  "comuni": [
   {
+   "id": "AMBIENTE",
+   "tipo": "assenza",
+   "ambienti": [
+    "locale-prod",
+    "online"
+   ],
+   "selettore": "indicatore di sviluppo di Next (cerchio «N» in basso a sinistra; di norma l'elemento <nextjs-portal>: verifica sul DOM e riporta il selettore usato)",
+   "atteso": "assente",
+   "se_fallisce": "l'ambiente NON è di produzione: tutti gli esiti di misura di quell'esecuzione sono NON VALIDI e vanno rifatti con `pnpm build && pnpm start` su una porta libera",
+   "nota": "Eseguire prima di ogni altro controllo. La prima esecuzione di 'locale-prod' mostrava l'indicatore nei suoi screenshot.",
+   "fonte": "README sezione 4"
+  },
+  {
    "id": "C1",
    "tipo": "scroll-orizzontale",
    "profili": [
@@ -122,8 +135,10 @@
    "min_px": 28,
    "max_px": 48,
    "gravita": "avviso",
-   "nota": "Con il mouse le altezze restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento.",
-   "fonte": "decisioni D6"
+   "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto.",
+   "fonte": "decisioni D6",
+   "elementi": "button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
+   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?» e «Torna al sito») e gli elementi nascosti"
   },
   {
    "id": "C3",
@@ -162,7 +177,8 @@
    ],
    "atteso": "zero messaggi console di livello error o warning, zero pageerror, zero richieste fallite (4xx/5xx non attesi)",
    "nota": "Gli avvisi di Base UI compaiono solo in sviluppo.",
-   "fonte": "regola UI 01, sezione Insidie note"
+   "fonte": "regola UI 01, sezione Insidie note",
+   "passi": "oltre al caricamento di ogni pagina: nelle pagine della shell apri il pannello del menu (telefono), apri il menu utente, scegli Chiaro, Scuro e Sistema, poi richiudi; gli avvisi di Base UI compaiono proprio all'apertura dei menu. Profili: notebook-1280 e telefono-390. Non visitare mai indirizzi con segnaposto (per esempio <token reale>)."
   },
   {
    "id": "C9",
@@ -213,18 +229,22 @@
      "atteso": {
       "h1": "Area App",
       "descrizione": "Accedi con Google oppure con email e password.",
-      "collegamento_primario": "Accedi con Google",
+      "collegamento_con_aspetto_di_pulsante": "Accedi con Google",
       "pulsante_secondario": "Accedi",
       "separatore": "oppure",
       "etichette": [
        "Email",
        "Password"
       ],
-      "collegamenti": [
+      "collegamenti_di_testo": [
        "Password dimenticata?",
        "Torna al sito"
       ]
-     }
+     },
+     "solo_su": [
+      "login"
+     ],
+     "nota": "«Accedi con Google» è un collegamento con l'aspetto di un pulsante: NON va nell'elenco dei collegamenti di testo."
     },
     {
      "id": "login-link-destinazioni",
@@ -264,7 +284,10 @@
      "tipo": "testo",
      "cosa": "«Accedi con Google» è il pulsante pieno (sfondo primary), «Accedi» è il secondario (con contorno, sfondo non primary)",
      "fonte": "accesso/spec.md comportamento 4",
-     "nota": "Confronta il colore di sfondo calcolato dei due elementi: devono essere diversi e il primo uguale al colore di sfondo del token primary."
+     "nota": "Confronta il colore di sfondo calcolato dei due elementi: devono essere diversi e il primo uguale al colore di sfondo del token primary.",
+     "solo_su": [
+      "login"
+     ]
     }
    ]
   },
@@ -423,7 +446,8 @@
       "ruolo": "status",
       "testo_da": "VERIFY_SUCCESS_MESSAGE (lib/auth/localEmail/messages.ts)"
      },
-     "stato_prova": "facoltativo: serve un utente di prova con token di attivazione vero, che si consuma una volta sola; se non si riesce a ottenerlo, NON PROVATO"
+     "stato_prova": "facoltativo: serve un utente di prova con token di attivazione vero, che si consuma una volta sola; se non si riesce a ottenerlo, NON PROVATO",
+     "da_visitare": false
     }
    ],
    "controlli": [
@@ -595,7 +619,8 @@
        }
       ]
      },
-     "fonte": "shell/spec.md sezione 6, decisioni D2"
+     "fonte": "shell/spec.md sezione 6, decisioni D2",
+     "nota": "Leggere da ogni scheda titolo, descrizione e href (non solo l'href) e confrontarli con l'atteso, nell'ordine."
     },
     {
      "id": "home-nessuna-riga-di-stato",
@@ -859,6 +884,42 @@
    "Nel registro attività dell'Admin compare la riga logout appena fatta",
    "Il tema «Sistema» segue il cambio del sistema operativo a pagina aperta",
    "Prova su iPhone vero delle aree di tocco (D6), del campo ora nativo e della tastiera"
+  ]
+ },
+ "immagini": {
+  "regola": "un file per ogni stato elencato, mai sovrascritto da un altro stato; nome <schermata>-<stato>-<profilo>-<tema>.png",
+  "profili": [
+   "telefono-390",
+   "notebook-1280"
+  ],
+  "temi": [
+   "chiaro",
+   "scuro"
+  ],
+  "stati_aggiuntivi_shell": [
+   {
+    "stato": "home",
+    "nota": "pagina appena caricata, nessun menu aperto"
+   },
+   {
+    "stato": "home-menu-aperto",
+    "profili": [
+     "telefono-390"
+    ],
+    "nota": "pannello del menu aperto"
+   },
+   {
+    "stato": "home-menu-utente",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "nota": "menu utente aperto"
+   },
+   {
+    "stato": "segnaposto-menu",
+    "nota": "una per segnaposto basta in chiaro e scuro"
+   }
   ]
  }
 }

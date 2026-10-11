@@ -39,6 +39,8 @@ Sostituisce gli screenshot fatti a mano: un agente (una chat pulita di Cursor co
 
 Le misure si fanno su `locale-prod`; la console su `locale-dev`. Un controllo si dichiara fatto solo sull'ambiente in cui ha senso.
 
+**Prima di ogni esecuzione** si lancia il controllo `AMBIENTE`: su `locale-prod` e su `online` l'indicatore di sviluppo di Next (cerchio «N» in basso a sinistra) non deve esserci. Se c'è, l'esecuzione non è di produzione e i suoi esiti sono NON VALIDI. Dev e prod girano su porte diverse e nessun altro server deve essere attivo sulla porta usata.
+
 ## 5. Profili di dispositivo e temi
 
 Definiti nel JSON (`profili`, `temi`). Punti fermi:
@@ -78,6 +80,13 @@ Cartella: `docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/` con:
 - `img/<schermata>-<stato>-<profilo>-<tema>.png`: uno screenshot per ogni stato nei profili `telefono-390` e `notebook-1280`, nei temi `chiaro` e `scuro`. Gli altri profili solo in caso di fallimento.
 
 Si tiene **solo l'ultimo esito per ambiente** (gli altri si cancellano: la storia è in git).
+
+Regole del rapporto (v2):
+- **Compatto**: i FALLITO, gli AVVISO e i NON PROVATO si scrivono per esteso, una riga ciascuno. Gli OK si raggruppano per controllo: `C1: OK in 66/66 combinazioni`. Un rapporto di centinaia di kilobyte non si legge.
+- **Intestazione compilata**: commit, lanciatore, nomi e versioni dei browser, versione dei controlli. Mai «undefined» né «(in corso)».
+- **Ogni controllo del JSON compare**: se il lanciatore non lo implementa va in tabella come NON PROVATO con il motivo, e in `risultati.json` sotto `anomalie`. Un controllo assente dal rapporto non esiste.
+- **Il conteggio** è per combinazione (controllo × stato × profilo × tema): si riporta anche il numero di controlli distinti.
+- **Gli screenshot** seguono la sezione `immagini` del JSON: un file per stato, mai sovrascritto da un altro stato (la prima esecuzione salvava la home, il menu aperto e il menu utente nello stesso file).
 
 **Modello del rapporto**
 
