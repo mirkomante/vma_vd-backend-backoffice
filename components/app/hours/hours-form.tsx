@@ -1,6 +1,6 @@
 'use client'
 
-import { CircleAlert, Info, Plus } from 'lucide-react'
+import { CircleAlert, CircleCheck, Info, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
@@ -160,12 +160,14 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
 
   useEffect(() => {
     setSaveBar(
-      <HoursSaveBar
-        dirty={dirty}
-        saving={saving}
-        onDiscard={handleDiscard}
-        onSave={() => void handleSave()}
-      />,
+      dirty || saving ? (
+        <HoursSaveBar
+          dirty={dirty}
+          saving={saving}
+          onDiscard={handleDiscard}
+          onSave={() => void handleSave()}
+        />
+      ) : null,
     )
     return () => setSaveBar(null)
   }, [dirty, saving, handleDiscard, handleSave, setSaveBar])
@@ -288,7 +290,7 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
         <div role="status" className="flex flex-col gap-3">
           {notice?.kind === 'saved' ? (
             <Alert>
-              <Info />
+              <CircleCheck />
               <AlertTitle>Orari salvati</AlertTitle>
             </Alert>
           ) : null}
@@ -675,7 +677,6 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
           <AlertDialogFooter>
             <AlertDialogCancel>Annulla</AlertDialogCancel>
             <AlertDialogAction
-              variant="destructive"
               onClick={() => {
                 if (removeHolidayYear == null) {
                   return

@@ -86,9 +86,6 @@ function ClosureSheetForm({
           </Field>
         </div>
         <SheetFooter className="grid grid-cols-2 gap-2">
-          <Button type="button" variant="outline" disabled={disabled} onClick={onClose}>
-            Annulla
-          </Button>
           <Button
             type="button"
             disabled={disabled || !canApply}
@@ -102,6 +99,9 @@ function ClosureSheetForm({
             }}
           >
             Applica
+          </Button>
+          <Button type="button" variant="outline" disabled={disabled} onClick={onClose}>
+            Annulla
           </Button>
         </SheetFooter>
       </SheetContent>
