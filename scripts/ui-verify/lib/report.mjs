@@ -3,7 +3,18 @@ import { join } from 'node:path'
 
 import { allControlIds } from './controlli-index.mjs'
 
-export function initReport({ ambiente, data, commit, launcherVersion, browsers, controlliVersion, controlli }) {
+export function initReport({
+  ambiente,
+  data,
+  commit,
+  launcherVersion,
+  browsers,
+  controlliVersion,
+  controlli,
+  controlliBasename = 'controlli-8.2.json',
+  livelloEseguito = 'completo',
+  expectedIdsOptions = {},
+}) {
   const dir = join(import.meta.dirname, '../../../docs/design/verifica/esiti', `${data}-${ambiente}`)
   const imgDir = join(dir, 'img')
   if (existsSync(dir)) {
@@ -14,12 +25,28 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
   const nonProvato = []
   const anomalie = []
   const screenshotHashes = []
-  const expectedIds = allControlIds(controlli, ambiente)
+  const expectedIds = allControlIds(controlli, ambiente, expectedIdsOptions)
+
+  const launcherHeader =
+    livelloEseguito === 'completo'
+      ? `${launcherVersion}`
+      : `${launcherVersion} (${livelloEseguito})`
 
   return {
     dir,
     imgDir,
-    meta: { ambiente, data, commit, launcherVersion, browsers, controlliVersion, durataMs: null },
+    meta: {
+      ambiente,
+      data,
+      commit,
+      launcherVersion,
+      launcherHeader,
+      browsers,
+      controlliVersion,
+      controlliBasename,
+      livelloEseguito,
+      durataMs: null,
+    },
     rows,
     nonProvato,
     anomalie,
@@ -68,13 +95,13 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
       const fallitiGrouped = formatFallitiGrouped(falliti)
 
       const okLines = [...okById.entries()]
-        .filter(([id, g]) => g.ok === g.total && g.total > 0)
+        .filter(([, g]) => g.ok === g.total && g.total > 0)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([id, g]) => `- **${id}**: OK in ${g.ok}/${g.total} combinazioni`)
 
       const partialOk = [...okById.entries()].filter(([, g]) => g.ok > 0 && g.ok < g.total)
-      for (const [id, g] of partialOk) {
-        okLines.push(`- **${id}**: OK in ${g.ok}/${g.total} combinazioni (con fallimenti o avvisi su altre combinazioni)`)
+      for (const [controlId, g] of partialOk) {
+        okLines.push(`- **${controlId}**: OK in ${g.ok}/${g.total} combinazioni (con fallimenti o avvisi su altre combinazioni)`)
       }
 
       const distinctControls = expectedIds.length
@@ -100,7 +127,7 @@ export function initReport({ ambiente, data, commit, launcherVersion, browsers, 
           : ''
 
       const header = `# Esito verifica — ${ambiente} — ${data}
-Commit: ${commit} · Lanciatore: ${launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: controlli-8.2.json v${controlliVersion}${durata}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}
+Commit: ${commit} · Lanciatore: ${this.meta.launcherHeader ?? launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: ${this.meta.controlliBasename ?? controlliBasename} v${controlliVersion}${durata}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}
 
 ## Riepilogo
 OK: ${counts.OK} · FALLITO: ${counts.FALLITO} · AVVISO: ${counts.AVVISO} · NON PROVATO: ${counts['NON PROVATO']} · Controlli distinti nel JSON: ${distinctControls}
@@ -148,7 +175,10 @@ ${anomalie.length ? anomalie.map((a) => `- ${a}`).join('\n') : '- (nessuna)'}
               data,
               commit,
               launcherVersion,
+              launcherHeader: this.meta.launcherHeader,
               browsers: this.meta.browsers ?? browsers,
+              controlliBasename: this.meta.controlliBasename,
+              livelloEseguito: this.meta.livelloEseguito,
               controlliVersion,
               durataMs: this.meta.durataMs,
               invalidRun: this.invalidRun,

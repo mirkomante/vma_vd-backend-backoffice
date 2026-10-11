@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Lanciatore verifica UI Area App v2 — docs/design/verifica/README.md
+ * Lanciatore verifica UI Area App v3 — docs/design/verifica/README.md
  */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -12,6 +12,15 @@ import { chromium, webkit } from '@playwright/test'
 import { loadAuthMessages } from './lib/messages.mjs'
 import { auditScreenshotThemeHashes, initReport } from './lib/report.mjs'
 import { DEV_PORT, PROD_PORT, devBaseUrl, prodBaseUrl } from './lib/ports.mjs'
+import {
+  parseCli,
+  loadControlli,
+  timeoutMsForAmbiente,
+  RunBudget,
+  RunTimeoutError,
+  logProgress,
+} from './lib/cli.mjs'
+import { createRunContext } from './lib/perimeter.mjs'
 import {
   LAUNCHER_VERSION,
   SEGNAPOSTO_H1,
@@ -60,8 +69,15 @@ import {
 } from './lib/engine.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
-const CONTROLLI = JSON.parse(readFileSync(join(ROOT, 'docs/design/verifica/controlli-8.2.json'), 'utf8'))
 const DATA = '2026-10-11'
+
+/** @type {import('./lib/perimeter.mjs').ReturnType<typeof createRunContext>} */
+let runCtx
+/** @type {Record<string, unknown>} */
+let CONTROLLI
+/** @type {RunBudget | null} */
+let budget = null
+let controlliBasename = 'controlli-8.2.json'
 const ONLINE_BASE = (process.env.BASE_URL ?? 'https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app').replace(
   /\/$/,
   '',
@@ -145,6 +161,8 @@ async function newPage(browser, profiloKey, temaKey, baseUrl) {
 }
 
 function addRow(report, row) {
+  if (row.id && runCtx && !runCtx.shouldRun(row.id)) return
+  budget?.check()
   report.add({
     id: row.id,
     schermata: row.schermata ?? '—',
@@ -154,6 +172,11 @@ function addRow(report, row) {
     atteso: row.atteso ?? '—',
     evidenza: row.evidenza ?? '—',
   })
+}
+
+function progressStep(schermata, stato, profilo, tema) {
+  logProgress([schermata, stato, profilo, tema])
+  budget?.check()
 }
 
 function resultToEsito(r, gravitaAvviso = false) {
@@ -213,6 +236,7 @@ function visitableAccessStates() {
   const out = []
   for (const s of CONTROLLI.schermate) {
     if (!s.stati || s.id === 'shell' || s.id === 'pagine-accesso-comuni') continue
+    if (!runCtx.screenIncluded(s.id)) continue
     for (const st of s.stati) {
       if (st.da_visitare === false) continue
       if (st.stato_prova?.includes('facoltativo')) continue
@@ -252,21 +276,20 @@ function consoleEsito(bag) {
 }
 
 async function runConsoleClean(baseUrl, report, browserVersion) {
+  if (!runCtx.shouldRun('CONSOLE')) return
   const browser = await chromium.launch()
-  const profiles = ['notebook-1280', 'telefono-390']
+  const profiles = runCtx.profiliConsole()
   const accessPaths = [
-    ...new Set([
-      ...visitableAccessStates().map((s) => s.path),
-      ...(CONTROLLI.schermate.find((x) => x.id === 'pagine-accesso-comuni')?.percorsi ?? []).map((p) =>
-        p.replace(/^https?:\/\/[^/]+/, ''),
-      ),
-    ]),
+    ...new Set(visitableAccessStates().map((s) => s.path)),
   ].filter((p) => !p.includes('<token'))
 
-  const shellPaths = ['/app', '/app/menu', '/app/hours', '/app/reservations']
+  const shellPaths = runCtx.screenIncluded('shell')
+    ? ['/app', '/app/menu', '/app/hours', '/app/reservations']
+    : []
 
   for (const profiloKey of profiles) {
     for (const path of accessPaths) {
+      progressStep(path, 'caricamento', profiloKey, 'chiaro')
       const { ctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
       const bag = attachConsoleListeners(page)
       await page.goto(path, { waitUntil: 'networkidle' })
@@ -284,10 +307,11 @@ async function runConsoleClean(baseUrl, report, browserVersion) {
       await ctx.close()
     }
 
-    if (!testUser.email) continue
+    if (!testUser.email || shellPaths.length === 0) continue
     const { ctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
     await loginApp(page, baseUrl, testUser.email, testPassword)
     for (const p of shellPaths) {
+      progressStep(p, 'shell+menu', profiloKey, 'chiaro')
       const bag = attachConsoleListeners(page)
       await page.goto(p, { waitUntil: 'networkidle' })
       await consoleShellInteractions(page, profiloKey)
@@ -355,7 +379,7 @@ async function runAccessScreenChecks(page, report, screenId, statoId, sch, pt, p
   const r3 = await checkTemaClasse(page, CONTROLLI.temi[temaKey].html_dark)
   addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r3), misurato: r3.misurato, atteso: r3.atteso, evidenza: path })
 
-  if (['scuro', 'sistema-scuro'].includes(temaKey)) {
+  if (['scuro', 'sistema-scuro'].includes(temaKey) && runCtx.shouldRun('C3-no-lampo')) {
     await installNoLampoObserver(page)
     await page.reload({ waitUntil: 'networkidle' })
     const r = await checkNoLampo(page)
@@ -475,11 +499,16 @@ async function runLocaleProd(baseUrl, report) {
     evidenza: c9.status === 0 ? 'pnpm ui:check' : (c9.stdout || c9.stderr).slice(0, 200),
   })
 
-  report.addNonProvato('verify-link-valido', 'facoltativo: token reale monouso non ottenuto')
-  report.addNonProvato('shell-admin-link', 'NON PROVABILE con utente solo App (adminRole none)')
+  if (runCtx.shouldRun('verify-link-valido')) {
+    report.addNonProvato('verify-link-valido', 'facoltativo: token reale monouso non ottenuto')
+  }
+  if (runCtx.shouldRun('shell-admin-link')) {
+    report.addNonProvato('shell-admin-link', 'NON PROVABILE con utente solo App (adminRole none)')
+  }
 
-  const accessScreens = CONTROLLI.schermate.filter((s) => s.fuori_dalla_shell)
-  const profiliAll = ['telefono-360', 'telefono-390', 'notebook-1280', 'tablet-820']
+  const accessScreens = CONTROLLI.schermate.filter((s) => s.fuori_dalla_shell && runCtx.screenIncluded(s.id))
+  const profiliAll = runCtx.profiliAccess()
+  const temiAll = runCtx.temiKeys()
 
   for (const screen of accessScreens) {
     for (const stato of screen.stati) {
@@ -489,8 +518,9 @@ async function runLocaleProd(baseUrl, report) {
         continue
       }
       const path = `${screen.percorso}${stato.query ?? ''}`
-      for (const temaKey of Object.keys(CONTROLLI.temi)) {
+      for (const temaKey of temiAll) {
         for (const profiloKey of profiliAll) {
+          progressStep(screen.id, stato.id, profiloKey, temaKey)
           const { ctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
           await page.goto(path, { waitUntil: 'networkidle' })
           const sch = `${screen.id}/${stato.id}`
@@ -505,7 +535,8 @@ async function runLocaleProd(baseUrl, report) {
     }
   }
 
-  {
+  if (runCtx.screenIncluded('reset') && runCtx.shouldRun('reset-senza-token-vuoto')) {
+    progressStep('reset', 'senza-token', 'telefono-390', 'chiaro')
     const { ctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
     await page.goto('/app/login/reset', { waitUntil: 'networkidle' })
     const n = await page.locator('main input:not([type=hidden]), main button, main form').count()
@@ -521,7 +552,8 @@ async function runLocaleProd(baseUrl, report) {
     await ctx.close()
   }
 
-  {
+  if (runCtx.shouldRun('C3-cambio-sistema')) {
+    progressStep('login', 'C3-cambio-sistema', 'notebook-1280', 'sistema')
     const { ctx, page } = await newPage(browser, 'notebook-1280', 'sistema-chiaro', baseUrl)
     const r = await checkTemaCambioSistema(page, baseUrl)
     addRow(report, {
@@ -537,8 +569,16 @@ async function runLocaleProd(baseUrl, report) {
   }
 
   const shell = CONTROLLI.schermate.find((s) => s.id === 'shell')
+  if (!runCtx.screenIncluded('shell')) {
+    await browser.close()
+    report.meta.browsers = `Chromium ${browserVersion}`
+    return
+  }
+
   for (const g of shell.guardia) {
+    if (!runCtx.shouldRun(g.id)) continue
     for (const da of Array.isArray(g.da) ? g.da : [g.da]) {
+      progressStep('shell', `guardia ${g.id}`, 'notebook-1280', 'chiaro')
       const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
       await page.goto(da, { waitUntil: 'networkidle' })
       const ok = page.url().includes('/app/login')
@@ -555,9 +595,11 @@ async function runLocaleProd(baseUrl, report) {
     }
   }
 
+  const profiliShell = runCtx.profiliShell()
   for (const stato of shell.stati) {
-    for (const temaKey of Object.keys(CONTROLLI.temi)) {
-      for (const profiloKey of ['telefono-390', 'notebook-1280', 'soglia-767', 'soglia-768', 'tablet-820']) {
+    for (const temaKey of temiAll) {
+      for (const profiloKey of profiliShell) {
+        progressStep('shell', stato.id, profiloKey, temaKey)
         const { ctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
         const pt = `${profiloKey}/${temaKey}`
         const sch = `shell/${stato.id}`
@@ -683,7 +725,8 @@ async function runLocaleProd(baseUrl, report) {
     }
   }
 
-  {
+  if (runCtx.shouldRun('shell-tema-scelta')) {
+    progressStep('shell', 'tema-scelta', 'notebook-1280', 'chiaro')
     const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
     try {
       await loginApp(page, baseUrl, testUser.email, testPassword)
@@ -705,9 +748,12 @@ async function runLocaleProd(baseUrl, report) {
 
   auditScreenshotThemeHashes(report)
 
-  await probeWebKitProdLoginCookies(baseUrl, report)
+  if (runCtx.runWebKitProdDiagnosis()) {
+    await probeWebKitProdLoginCookies(baseUrl, report)
+  }
 
-  {
+  if (runCtx.shouldRun('shell-uscita')) {
+    progressStep('shell', 'uscita', 'notebook-1280', 'chiaro')
     const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
     await loginApp(page, baseUrl, testUser.email, testPassword)
     const logoutPromise = page.waitForResponse((res) => res.url().includes('/app/logout') && res.request().method() === 'POST')
@@ -778,6 +824,8 @@ async function probeWebKitProdLoginCookies(baseUrl, report) {
 }
 
 async function runWebkitEssential(baseUrl, report) {
+  if (!runCtx.runWebkitEssential || !runCtx.shouldRun('webkit-giro-essenziale')) return null
+  progressStep('shell', 'webkit-essenziale', 'telefono-390', 'chiaro')
   const wk = await webkit.launch()
   const wkVer = await wk.version()
   const { ctx, page } = await newPage(wk, 'telefono-390', 'chiaro', baseUrl)
@@ -894,12 +942,41 @@ function makeReport(ambiente, commit) {
     browsers: '—',
     controlliVersion: CONTROLLI.versione,
     controlli: CONTROLLI,
+    controlliBasename,
+    livelloEseguito: runCtx.livelloLabel(),
+    expectedIdsOptions: {
+      livello: runCtx.livello,
+      schermate: runCtx.schermate,
+      levels: runCtx.levels,
+    },
   })
 }
 
+async function runAmbienteWithBudget(ambiente, fn) {
+  const report = makeReport(ambiente, gitCommit())
+  budget = new RunBudget(timeoutMsForAmbiente(ambiente), report)
+  const t0 = Date.now()
+  try {
+    await fn(report, budget)
+  } catch (e) {
+    if (!(e instanceof RunTimeoutError)) throw e
+  } finally {
+    report.meta.durataMs = Date.now() - t0
+    budget = null
+    process.stderr.write('\n')
+    console.log(`Esiti ${ambiente}: ${report.write()}`)
+  }
+  return report
+}
+
 async function main() {
-  const mode = process.argv[2] ?? 'all'
-  const commit = gitCommit()
+  const cli = parseCli(process.argv)
+  const loaded = loadControlli(cli.controlliFile)
+  CONTROLLI = loaded.controlli
+  controlliBasename = loaded.controlliBasename
+  runCtx = createRunContext(CONTROLLI, cli)
+
+  const mode = cli.mode
   let devChild = null
   let prodChild = null
 
@@ -912,18 +989,18 @@ async function main() {
       if (!(await isPortFree(DEV_PORT))) {
         throw new Error(`Porta ${DEV_PORT} occupata: liberare prima di locale-dev`)
       }
-      const t0 = Date.now()
       devChild = startProcess('pnpm', ['dev'], { PORT: String(DEV_PORT) })
       await waitForUrl(devBaseUrl())
       const browser = await chromium.launch()
       const browserVersion = await browser.version()
       await browser.close()
-      const report = makeReport('locale-dev', commit)
-      await runConsoleClean(devBaseUrl(), report, browserVersion)
-      const wkVer = await runWebkitEssential(devBaseUrl(), report)
-      report.meta.browsers = `Chromium ${browserVersion}; WebKit ${wkVer}`
-      report.meta.durataMs = Date.now() - t0
-      console.log(`Esiti locale-dev: ${report.write()}`)
+      await runAmbienteWithBudget('locale-dev', async (report) => {
+        await runConsoleClean(devBaseUrl(), report, browserVersion)
+        const wkVer = await runWebkitEssential(devBaseUrl(), report)
+        report.meta.browsers = wkVer
+          ? `Chromium ${browserVersion}; WebKit ${wkVer}`
+          : `Chromium ${browserVersion}`
+      })
       devChild.kill('SIGTERM')
       devChild = null
       await sleep(2000)
@@ -933,25 +1010,21 @@ async function main() {
       if (!(await isPortFree(PROD_PORT))) {
         throw new Error(`Porta ${PROD_PORT} occupata: liberare prima di locale-prod`)
       }
-      const t0 = Date.now()
       const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
       if (build.status !== 0) throw new Error('pnpm build fallito')
       prodChild = startProcess('pnpm', ['start'], { PORT: String(PROD_PORT) })
       await waitForUrl(prodBaseUrl())
-      const report = makeReport('locale-prod', commit)
-      await runLocaleProd(prodBaseUrl(), report)
-      report.meta.durataMs = Date.now() - t0
-      console.log(`Esiti locale-prod: ${report.write()}`)
+      await runAmbienteWithBudget('locale-prod', async (report) => {
+        await runLocaleProd(prodBaseUrl(), report)
+      })
       prodChild.kill('SIGTERM')
       prodChild = null
     }
 
     if (mode === 'all' || mode === 'online') {
-      const t0 = Date.now()
-      const report = makeReport('online', commit)
-      await runOnline(report)
-      report.meta.durataMs = Date.now() - t0
-      console.log(`Esiti online: ${report.write()}`)
+      await runAmbienteWithBudget('online', async (report) => {
+        await runOnline(report)
+      })
     }
   } finally {
     if (devChild) devChild.kill('SIGTERM')

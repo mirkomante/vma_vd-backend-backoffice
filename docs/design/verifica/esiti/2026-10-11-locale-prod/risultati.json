@@ -2,15 +2,18 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-11",
-    "commit": "a6d9b3c8e8e1",
-    "launcherVersion": "2.2.0",
+    "commit": "4c5cda01d318",
+    "launcherVersion": "3.0.0",
+    "launcherHeader": "3.0.0 (L2)",
     "browsers": "Chromium 140.0.7339.186",
-    "controlliVersion": 2,
-    "durataMs": 329703,
+    "controlliBasename": "controlli-8.2.json",
+    "livelloEseguito": "L2",
+    "controlliVersion": 3,
+    "durataMs": 347085,
     "invalidRun": false
   },
   "counts": {
-    "OK": 2680,
+    "OK": 2679,
     "FALLITO": 1,
     "AVVISO": 0,
     "NON PROVATO": 2
@@ -19722,27 +19725,18 @@
       "id": "shell-menu-utente",
       "schermata": "shell/home",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "menu non apribile: locator.scrollIntoViewIfNeeded: Element is not attached to the DOM\nCall log:\n  - attempting scroll into view action\n    - waiting for element to be stable\n    - element is not stable\n  - retrying scroll into view action\n    - waiting for element to be stable\n",
+      "esito": "OK",
+      "misurato": "[\"Chiaro\",\"Scuro\",\"Sistema\",\"Esci\"]",
       "atteso": "Tema+Esci, no Admin",
       "evidenza": "/app"
     },
     {
-      "id": "shell-percorso-voce-attiva",
+      "id": "runtime-shell",
       "schermata": "shell/home",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "crumbs=Area App; active=",
-      "atteso": "{\"breadcrumb\":[\"Area App\"],\"active\":null}",
-      "evidenza": "/app"
-    },
-    {
-      "id": "shell-nomi-accessibili",
-      "schermata": "shell/home",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessuno",
-      "atteso": "nessun testo inglese elencato",
+      "esito": "FALLITO",
+      "misurato": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })\n",
+      "atteso": "iterazione completata",
       "evidenza": "/app"
     },
     {
@@ -19851,7 +19845,7 @@
       "esito": "OK",
       "misurato": "iniziali=VU, attese=VU",
       "atteso": "email visibile + iniziali corrette",
-      "evidenza": "verify-ui-1791723316189@test.local"
+      "evidenza": "verify-ui-1791724689424@test.local"
     },
     {
       "id": "shell-menu-utente",
@@ -24176,6 +24170,7 @@
     }
   ],
   "anomalie": [
+    "shell shell/home telefono-390/chiaro: locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Apri o chiudi il menu' })\n",
     "WebKit 26.0 su http://localhost:3100 (diagnosi login prod): URL finale=http://localhost:3100/app/login; payload-token: presente secure=true httpOnly=true sameSite=Lax; Set-Cookie login: (nessun Set-Cookie catturato sulla risposta login)"
   ]
 }
