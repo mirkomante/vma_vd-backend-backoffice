@@ -16,7 +16,7 @@ export function HoursSaveBar({ dirty, saving, onDiscard, onSave }: HoursSaveBarP
   const statusText = saving ? 'Salvataggio in corso…' : 'Modifiche non salvate'
 
   return (
-    <div className="flex flex-col gap-3 py-3 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-2 py-3 md:flex-row md:items-center md:justify-between md:gap-3">
       <p className="text-sm text-muted-foreground">{statusText}</p>
       <div className="grid grid-cols-2 gap-2">
         <Button type="button" variant="outline" size="lg" disabled={saving} onClick={onDiscard}>

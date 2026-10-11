@@ -28,7 +28,7 @@ export function AppSaveBarAnchor() {
       data-slot="app-save-bar"
       className="sticky bottom-0 z-10 w-full border-t bg-background"
     >
-      <div className="mx-auto w-full max-w-xl px-4 pb-4 md:px-6 md:pb-6">{ctx.saveBar}</div>
+      <div className="mx-auto w-full max-w-xl px-4 pb-0 md:px-6 md:pb-6">{ctx.saveBar}</div>
     </div>
   )
 }

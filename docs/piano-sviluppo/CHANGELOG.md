@@ -18,6 +18,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- Fase 8.5: altezza barra di salvataggio a 390 px — slot `pb-0` (prima `pb-4`) e colonna modulo `gap-2` (prima `gap-3`) per rientrare in 97 px (bordo 1 + `py-3` + testo + gap + pulsanti 44 + `py-3`); desktop invariato (`md:pb-6`, `md:gap-3`). **Nota design**: su iPhone il `pb-4` dello slot poteva fungere da respiro sopra il bordo sicuro; con `pb-0` non c’è `env(safe-area-inset-bottom)` — da decidere in design/L2 se serve padding o classe dedicata. Chiusure annuali: `clientId` sempre generato lato client (`newClosureClientId`); `payloadId` separato per il salvataggio; `sortFormClosures` non riallinea più per data+etichetta (evita chiavi React duplicate e cestino che rimuove più righe).
+
 - Fase 8.4: skip email «Account creato» legato al singolo `userId` in `req.context` (Set), non più globale per tutta la richiesta — evita salti su attivazioni multiple SSO con `req` condiviso (lista Admin).
 
 ### Tests
@@ -28,7 +30,9 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 - Fase 8.5 — decisioni §10 specifica Orari: **Uscita con modifiche** — intercettazione in fase capture dei link same-origin (menu, home, voci sidebar) con `AlertDialog`; chiusura/ricarica scheda con `beforeunload`. Non verificato su ogni collegamento a runtime. **Errori server sui campi** — `ValidationError.data.errors` mappati con `mapServerValidationPath` (indici `services.0`/`1` = Pranzo/Cena nell’ordine inviato). **Dopo salvataggio** — `findGlobal` ripetuto (non si fidano solo i valori inviati).
 
-- Fase 8.5 — checklist accettazione `schermate/orari/spec.md` §9 (esito per punto): 1 non provato · 2 non provato · 3 non provato · 4 non provato · 5 non provato · 6 non provato · 7 non provato · 8 non provato · 9 non provato · 10 non provato · 11 non provato · 12 non provato · 13 verificato (testi da tabella §6 nel codice) · 14 non provato · 15 non provato · 16 verificato (`pnpm ui:check`) · 17 non provato · 18 non provato (simulazione `APP_HOURS_DEV_SIMULATE_SAVE_ERROR` documentata, non eseguita) · 19 non provato · 20 non provato (simulazione `APP_HOURS_DEV_SIMULATE_LOAD_ERROR` documentata, non eseguita) · 21 non provato · 22 non provato (confronto PNG / L2).
+- Fase 8.5 — checklist accettazione `schermate/orari/spec.md` §9 (esito per punto): 1 non provato · 2 non provato · 3 non provato · 4 non provato · 5 non provato · 6 non provato · 7 non provato · 8 non provato (correzione layout 97 px: verificato solo su conteggio token, non misura Playwright) · 9 non provato · 10 non provato · 11 non provato · 12 non provato · 13 verificato (testi da tabella §6 nel codice) · 14 non provato · 15 non provato · 16 verificato (`pnpm ui:check`) · 17 non provato · 18 non provato (simulazione `APP_HOURS_DEV_SIMULATE_SAVE_ERROR` documentata, non eseguita) · 19 non provato · 20 non provato (simulazione `APP_HOURS_DEV_SIMULATE_LOAD_ERROR` documentata, non eseguita) · 21 non provato · 22 non provato (confronto PNG / L2).
+
+- Fase 8.5 (correzioni barra + chiusure): `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` OK. Altezza 97 px a 390 px e cestino con `id` Payload duplicati: **non provati** a runtime (L2 / dev).
 
 - Fase 8.4 (fix skip per documento): `pnpm typecheck`, `pnpm lint` OK; `pnpm payload run scripts/verify-users-8_4.ts` OK incluso caso due SSO attivati con lo stesso `req` (due invii e timestamp; riattivazione senza reinvio).
 

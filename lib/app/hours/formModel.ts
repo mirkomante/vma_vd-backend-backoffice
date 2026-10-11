@@ -19,9 +19,11 @@ export const WEEKDAY_ITEMS: { value: WeekdayValue; short: string; aria: string }
 
 let closureIdCounter = 0
 
-export function newClosureClientId(): string {
+/** Id React / UI: sempre univoco lato client; non usare `row.id` Payload come chiave. */
+export function newClosureClientId(payloadId?: string | null): string {
   closureIdCounter += 1
-  return `closure-${closureIdCounter}-${Date.now()}`
+  const payloadSuffix = payloadId ? `p-${payloadId}` : 'new'
+  return `closure-${closureIdCounter}-${payloadSuffix}-${Date.now()}`
 }
 
 function emptyServiceTimes(): { startTime: string; endTime: string } {
@@ -60,7 +62,7 @@ export function hoursFormValuesFromGlobal(doc: ImpostazioniSistema): HoursFormVa
     dinner: serviceFromGlobal(doc.services, 'dinner'),
     weeklyClosedDays: [...(doc.weeklyClosedDays ?? [])] as WeekdayValue[],
     annualClosures: sortedClosures.map((row) => ({
-      clientId: row.id ?? newClosureClientId(),
+      clientId: newClosureClientId(row.id),
       date: row.date ?? '',
       label: row.label ?? '',
       payloadId: row.id ?? null,
@@ -116,20 +118,9 @@ export function hoursFormValuesEqual(a: HoursFormValues, b: HoursFormValues): bo
 }
 
 export function sortFormClosures(values: HoursFormValues): HoursFormValues {
-  const sorted = sortAnnualClosuresByDate(values.annualClosures)
   return {
     ...values,
-    annualClosures: sorted.map((row) => {
-      const prev = values.annualClosures.find(
-        (r) => r.date === row.date && r.label === row.label,
-      )
-      return {
-        clientId: prev?.clientId ?? newClosureClientId(),
-        date: row.date ?? '',
-        label: row.label ?? '',
-        payloadId: prev?.payloadId ?? null,
-      }
-    }),
+    annualClosures: sortAnnualClosuresByDate(values.annualClosures),
   }
 }
 
@@ -137,19 +128,34 @@ export function mapLibClosuresToFormRows(
   previous: AnnualClosureFormRow[],
   rows: AnnualClosureLike[],
 ): AnnualClosureFormRow[] {
-  const byDateKey = new Map(
-    previous
-      .filter((row) => row.date)
-      .map((row) => [annualClosureDateKey(row.date), row] as const),
-  )
+  const usedClientIds = new Set<string>()
+
+  function takePrevious(match: (row: AnnualClosureFormRow) => boolean): AnnualClosureFormRow | undefined {
+    const found = previous.find((row) => match(row) && !usedClientIds.has(row.clientId))
+    if (found) {
+      usedClientIds.add(found.clientId)
+    }
+    return found
+  }
+
   return rows.map((row) => {
-    const key = row.date ? annualClosureDateKey(row.date) : ''
-    const existing = key ? byDateKey.get(key) : undefined
+    const payloadId = row.id ?? null
+    const prev =
+      (payloadId ? takePrevious((p) => p.payloadId === payloadId) : undefined) ??
+      (row.date
+        ? takePrevious(
+            (p) =>
+              Boolean(p.date) &&
+              annualClosureDateKey(p.date) === annualClosureDateKey(row.date!) &&
+              p.label === row.label,
+          )
+        : undefined)
+
     return {
-      clientId: existing?.clientId ?? newClosureClientId(),
+      clientId: prev?.clientId ?? newClosureClientId(payloadId),
       date: row.date ?? '',
       label: row.label ?? '',
-      payloadId: existing?.payloadId ?? row.id ?? null,
+      payloadId: payloadId ?? prev?.payloadId ?? null,
     }
   })
 }
