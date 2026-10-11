@@ -11,7 +11,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 
 import config from '@payload-config'
-import { APIError, getPayload } from 'payload'
+import { APIError, getPayload, ValidationError } from 'payload'
 
 import { SYSTEM_SETTINGS_SLUG } from '@/globals/SystemSettings'
 import type { ImpostazioniSistema, User } from '@/payload-types'
@@ -46,6 +46,15 @@ function isAccessDenied(error: unknown): boolean {
   return error instanceof APIError && error.status === 403
 }
 
+function fieldMessagesFromValidation(error: unknown): string[] {
+  if (error instanceof ValidationError) {
+    return (error.data?.errors ?? [])
+      .map((e) => (typeof e.message === 'string' ? e.message : ''))
+      .filter(Boolean)
+  }
+  return []
+}
+
 async function readGlobal(overrideAccess: boolean, user?: User) {
   const payload = await getPayload({ config })
   return payload.findGlobal({
@@ -73,6 +82,30 @@ async function main(): Promise<void> {
   }
 
   const payload = await getPayload({ config })
+
+  if (action === 'audit-closures') {
+    const doc = await payload.findGlobal({
+      slug: SYSTEM_SETTINGS_SLUG,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const closures = (doc as ImpostazioniSistema).annualClosures ?? []
+    const byId = new Map<string, number>()
+    for (const row of closures) {
+      const id = row.id != null ? String(row.id) : ''
+      if (!id) continue
+      byId.set(id, (byId.get(id) ?? 0) + 1)
+    }
+    const duplicateIds = [...byId.entries()].filter(([, n]) => n > 1).map(([id]) => id)
+    process.stdout.write(
+      JSON.stringify({
+        count: closures.length,
+        duplicateIds,
+        rowsWithoutId: closures.filter((c) => c.id == null).length,
+      }),
+    )
+    return
+  }
 
   if (action === 'snapshot') {
     const doc = await payload.findGlobal({
@@ -156,7 +189,7 @@ async function main(): Promise<void> {
       { name: 'lunch', startTime: '12:00', endTime: '14:00' },
       { name: 'dinner', startTime: '19:00', endTime: '22:00' },
     ]
-    const results: { value: string; ok: boolean; message?: string }[] = []
+    const results: { value: string; ok: boolean; message?: string; fieldMessages?: string[] }[] = []
     for (const value of ['25:99', '9:30']) {
       try {
         await writeGlobal(
@@ -170,18 +203,27 @@ async function main(): Promise<void> {
         )
         results.push({ value, ok: false, message: 'update non rifiutato' })
       } catch (error) {
-        const msg =
-          error instanceof APIError
-            ? String(error.message)
-            : error instanceof Error
-              ? error.message
-              : String(error)
+        const fieldMsgs = fieldMessagesFromValidation(error)
         const expected = validateTimeOfDayField(value)
         const expectedStr = typeof expected === 'string' ? expected : ''
+        const ok =
+          fieldMsgs.length > 0 &&
+          (expectedStr
+            ? fieldMsgs.some(
+                (m) =>
+                  m.includes(expectedStr) ||
+                  m.toLowerCase().includes('hh:mm') ||
+                  m.toLowerCase().includes(expectedStr.toLowerCase().slice(0, 20)),
+              )
+            : fieldMsgs.some((m) => m.toLowerCase().includes('hh:mm')))
         results.push({
           value,
-          ok: expectedStr ? msg.includes(expectedStr) : false,
-          message: msg.slice(0, 200),
+          ok,
+          message: (fieldMsgs[0] ?? (error instanceof Error ? error.message : String(error))).slice(
+            0,
+            200,
+          ),
+          fieldMessages: fieldMsgs,
         })
       }
     }

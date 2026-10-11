@@ -1,46 +1,67 @@
 # Esito verifica — locale-dev — 2026-10-11
-Commit: 60356e92b7cd · Lanciatore: 3.1.0 (L1) · Browser: — · Controlli: controlli-8.5.json v3 · Durata: 4 min 9 s
+Commit: af472456fe1a · Lanciatore: 3.1.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-8.5.json v3 · Durata: 23 s
 
-## Riepilogo
-OK: 0 · FALLITO: 3 · AVVISO: 0 · NON PROVATO: 22 · Controlli distinti nel JSON: 24
+## Riepilogo (tutti i pacchetti in cartella)
+OK: 13 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 21 · Controlli distinti nel JSON corrente: 24
 
-## Esiti compatti
+## Pacchetto: shell
+Righe: 1 · OK: 1 · FALLITO: 0
 
-### OK (raggruppati)
+### FALLITO (shell)
 - (nessuno)
 
-### FALLITO
-- **orari-console** (2 combinazioni): es. `err:2 warn:0 http:0` · atteso `zero error/warning/pageerror` · /app/hours · telefono-390/chiaro/Chromium 140.0.7339.186; /app/hours · notebook-1280/chiaro/Chromium 140.0.7339.186
-- **orari-errore-server** (1 combinazioni): es. `Server non raggiungibile: http://localhost:3200` · atteso `flusso simulazione` · — · —
+## Pacchetto: orari
+Righe: 24 · OK: 4 · FALLITO: 0
+
+### FALLITO (orari)
+- (nessuno)
+
+## Pacchetto: completo
+Righe: 9 · OK: 8 · FALLITO: 0
+
+### FALLITO (completo)
+- (nessuno)
+
+## Esiti compatti (esecuzione corrente)
+
+### OK (raggruppati)
+- **CONSOLE**: OK in 8/8 combinazioni
+- **orari-console**: OK in 2/2 combinazioni
+- **orari-errore-caricamento**: OK in 1/1 combinazioni
+- **orari-errore-server**: OK in 1/1 combinazioni
+- **webkit-giro-essenziale**: OK in 1/2 combinazioni (con fallimenti o avvisi su altre combinazioni)
+
+### FALLITO (tutte le righe, dettaglio)
+- (nessuno)
 
 ### AVVISO
 - (nessuno)
 
 ### NON PROVATO
-- **orari-annulla** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-barra-misure** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-campi-ora** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-chiusure-foglio** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-colonna** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-dati** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-errore-caricamento** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-errore-validazione** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-festivita** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-giorni-riposo** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-giorno-selezionato** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-intestazione-anno** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-modificato-barra** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-nomi-accessibili** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-non-configurato** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-permessi** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-salvataggio-in-corso** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-salvataggio-ok** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-stato-iniziale** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-testi** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **orari-validazione-server** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
-- **webkit-giro-essenziale** (—, —): misurato `—` · atteso `—` · controllo non eseguito dal lanciatore in questa esecuzione
+- **webkit-giro-essenziale** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-annulla** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-barra-misure** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-campi-ora** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-chiusure-foglio** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-colonna** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-dati** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-errore-validazione** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-festivita** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-giorni-riposo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-giorno-selezionato** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-intestazione-anno** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-modificato-barra** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-nomi-accessibili** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-non-configurato** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-permessi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-salvataggio-in-corso** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-salvataggio-ok** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-stato-iniziale** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-testi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **orari-validazione-server** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 
-## Tabella controlli distinti (JSON)
+
+## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
 | orari-annulla | NON PROVATO (0/1) |
@@ -48,10 +69,10 @@ OK: 0 · FALLITO: 3 · AVVISO: 0 · NON PROVATO: 22 · Controlli distinti nel JS
 | orari-campi-ora | NON PROVATO (0/1) |
 | orari-chiusure-foglio | NON PROVATO (0/1) |
 | orari-colonna | NON PROVATO (0/1) |
-| orari-console | FALLITO (0/2) |
+| orari-console | OK (2/2) |
 | orari-dati | NON PROVATO (0/1) |
-| orari-errore-caricamento | NON PROVATO (0/1) |
-| orari-errore-server | FALLITO (0/1) |
+| orari-errore-caricamento | OK (1/1) |
+| orari-errore-server | OK (1/1) |
 | orari-errore-validazione | NON PROVATO (0/1) |
 | orari-festivita | NON PROVATO (0/1) |
 | orari-giorni-riposo | NON PROVATO (0/1) |
@@ -66,21 +87,18 @@ OK: 0 · FALLITO: 3 · AVVISO: 0 · NON PROVATO: 22 · Controlli distinti nel JS
 | orari-stato-iniziale | NON PROVATO (0/1) |
 | orari-testi | NON PROVATO (0/1) |
 | orari-validazione-server | NON PROVATO (0/1) |
-| webkit-giro-essenziale | NON PROVATO (0/1) |
+| webkit-giro-essenziale | NON PROVATO (1/2) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
 |---|---|---|---|---|---|---|
-| orari-console | /app/hours | telefono-390/chiaro/Chromium 140.0.7339.186 | FALLITO | err:2 warn:0 http:0 | zero error/warning/pageerror | Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e \| Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e |
-| orari-console | /app/hours | notebook-1280/chiaro/Chromium 140.0.7339.186 | FALLITO | err:2 warn:0 http:0 | zero error/warning/pageerror | Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e \| Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e |
-| orari-errore-server | — | — | FALLITO | Server non raggiungibile: http://localhost:3200 | flusso simulazione | 3200 |
+| webkit-giro-essenziale | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-annulla | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-barra-misure | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-campi-ora | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-chiusure-foglio | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-colonna | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-dati | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| orari-errore-caricamento | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-errore-validazione | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-festivita | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-giorni-riposo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
@@ -95,7 +113,6 @@ OK: 0 · FALLITO: 3 · AVVISO: 0 · NON PROVATO: 22 · Controlli distinti nel JS
 | orari-stato-iniziale | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-testi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | orari-validazione-server | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| webkit-giro-essenziale | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
 - orari-annulla: controllo non eseguito dal lanciatore in questa esecuzione
@@ -104,7 +121,6 @@ OK: 0 · FALLITO: 3 · AVVISO: 0 · NON PROVATO: 22 · Controlli distinti nel JS
 - orari-chiusure-foglio: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-colonna: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-dati: controllo non eseguito dal lanciatore in questa esecuzione
-- orari-errore-caricamento: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-errore-validazione: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-festivita: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-giorni-riposo: controllo non eseguito dal lanciatore in questa esecuzione
@@ -119,7 +135,7 @@ OK: 0 · FALLITO: 3 · AVVISO: 0 · NON PROVATO: 22 · Controlli distinti nel JS
 - orari-stato-iniziale: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-testi: controllo non eseguito dal lanciatore in questa esecuzione
 - orari-validazione-server: controllo non eseguito dal lanciatore in questa esecuzione
-- webkit-giro-essenziale: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
-- (nessuna)
+- Tempo massimo ambiente scaduto (3 min, configurabile con UI_VERIFY_TIMEOUT_MS o UI_VERIFY_TIMEOUT_<AMBIENTE>_MS): esecuzione interrotta.
+- runOrariDevSimulations: Tempo massimo ambiente scaduto

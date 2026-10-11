@@ -2,55 +2,168 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-11",
-    "commit": "60356e92b7cd",
-    "launcherVersion": "3.1.0",
-    "launcherHeader": "3.1.0 (L1)",
-    "browsers": "—",
+    "commit": "af472456fe1a",
+    "launcherVersion": "3.1.1",
+    "launcherHeader": "3.1.1 (L1)",
+    "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-8.5.json",
     "livelloEseguito": "L1",
     "controlliVersion": 3,
-    "durataMs": 249438,
+    "durataMs": 23201,
     "invalidRun": false
   },
   "counts": {
-    "OK": 0,
-    "FALLITO": 3,
+    "OK": 13,
+    "FALLITO": 0,
     "AVVISO": 0,
-    "NON PROVATO": 22
+    "NON PROVATO": 21
   },
   "distinctControls": 24,
   "rows": [
     {
+      "id": "webkit-giro-essenziale",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/hours (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/reservations (shell+menu)",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/hours (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/reservations (shell+menu)",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "webkit-giro-essenziale",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro/WebKit 26.0",
+      "esito": "OK",
+      "misurato": "login→/app OK (http://localhost:3000/app)",
+      "atteso": "login, home, menu, menu utente (locale-dev)",
+      "evidenza": "26.0",
+      "pacchetto": "shell"
+    },
+    {
       "id": "orari-console",
       "schermata": "/app/hours",
       "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
-      "esito": "FALLITO",
-      "misurato": "err:2 warn:0 http:0",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror",
-      "evidenza": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e | Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e"
+      "evidenza": "—",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-console",
       "schermata": "/app/hours",
       "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "FALLITO",
-      "misurato": "err:2 warn:0 http:0",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
       "atteso": "zero error/warning/pageerror",
-      "evidenza": "Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e | Encountered two children with the same key, `%s`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version. 6ac4dbfd95da6d03f5b08c6e"
+      "evidenza": "—",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-errore-server",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "FALLITO",
-      "misurato": "Server non raggiungibile: http://localhost:3200",
-      "atteso": "flusso simulazione",
-      "evidenza": "3200"
+      "schermata": "orari/errore-server (sim)",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "avviso+barra:true",
+      "atteso": "errore simulato con barra visibile",
+      "evidenza": "localhost:3200",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "orari-errore-caricamento",
+      "schermata": "orari/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "alert:true inputs:0",
+      "atteso": "solo avviso e Riprova",
+      "evidenza": "localhost:3200",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-annulla",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -60,6 +173,7 @@
       "id": "orari-barra-misure",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -69,6 +183,7 @@
       "id": "orari-campi-ora",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -78,6 +193,7 @@
       "id": "orari-chiusure-foglio",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -87,6 +203,7 @@
       "id": "orari-colonna",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -96,15 +213,7 @@
       "id": "orari-dati",
       "schermata": "—",
       "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-errore-caricamento",
-      "schermata": "—",
-      "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -114,6 +223,7 @@
       "id": "orari-errore-validazione",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -123,6 +233,7 @@
       "id": "orari-festivita",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -132,6 +243,7 @@
       "id": "orari-giorni-riposo",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -141,6 +253,7 @@
       "id": "orari-giorno-selezionato",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -150,6 +263,7 @@
       "id": "orari-intestazione-anno",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -159,6 +273,7 @@
       "id": "orari-modificato-barra",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -168,6 +283,7 @@
       "id": "orari-nomi-accessibili",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -177,6 +293,7 @@
       "id": "orari-non-configurato",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -186,6 +303,7 @@
       "id": "orari-permessi",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -195,6 +313,7 @@
       "id": "orari-salvataggio-in-corso",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -204,6 +323,7 @@
       "id": "orari-salvataggio-ok",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -213,6 +333,7 @@
       "id": "orari-stato-iniziale",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -222,6 +343,7 @@
       "id": "orari-testi",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -231,15 +353,7 @@
       "id": "orari-validazione-server",
       "schermata": "—",
       "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "webkit-giro-essenziale",
-      "schermata": "—",
-      "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -272,10 +386,6 @@
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "orari-errore-caricamento",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
       "id": "orari-errore-validazione",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
@@ -330,11 +440,11 @@
     {
       "id": "orari-validazione-server",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "webkit-giro-essenziale",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "anomalie": []
+  "anomalie": [
+    "Tempo massimo ambiente scaduto (3 min, configurabile con UI_VERIFY_TIMEOUT_MS o UI_VERIFY_TIMEOUT_<AMBIENTE>_MS): esecuzione interrotta.",
+    "runOrariDevSimulations: Tempo massimo ambiente scaduto"
+  ],
+  "screenshotHashes": []
 }

@@ -511,6 +511,11 @@ async function runLocaleProd(baseUrl, report) {
   const profiliAll = runCtx.profiliAccess()
   const temiAll = runCtx.temiKeys()
 
+  if (accessScreens.length > 0) {
+    report.replacePacchetto('accesso')
+    report.pacchettoDefault = 'accesso'
+  }
+
   for (const screen of accessScreens) {
     for (const stato of screen.stati) {
       if (stato.da_visitare === false) continue
@@ -570,6 +575,8 @@ async function runLocaleProd(baseUrl, report) {
   }
 
   if (runCtx.screenIncluded('orari')) {
+    report.replacePacchetto('orari')
+    report.pacchettoDefault = 'orari'
     for (const id of ['orari-errore-server', 'orari-errore-caricamento']) {
       if (runCtx.shouldRun(id)) {
         report.addNonProvato(
@@ -599,6 +606,10 @@ async function runLocaleProd(baseUrl, report) {
   }
 
   const shell = CONTROLLI.schermate.find((s) => s.id === 'shell')
+  if (runCtx.screenIncluded('shell')) {
+    report.replacePacchetto('shell')
+    report.pacchettoDefault = 'shell'
+  }
   if (!runCtx.screenIncluded('shell')) {
     await browser.close()
     report.meta.browsers = `Chromium ${browserVersion}`
@@ -1029,6 +1040,8 @@ async function main() {
       await runAmbienteWithBudget('locale-dev', async (report) => {
         const devBrowser = await chromium.launch()
         if (runCtx.screenIncluded('orari')) {
+          report.replacePacchetto('orari')
+          report.pacchettoDefault = 'orari'
           await runOrariConsole({
             browser: devBrowser,
             baseUrl: devBaseUrl(),
@@ -1045,6 +1058,7 @@ async function main() {
           try {
             await runOrariDevSimulations({
               browser: devBrowser,
+              playwrightBrowser: devBrowser,
               baseUrl: devBaseUrl(),
               report,
               runCtx,

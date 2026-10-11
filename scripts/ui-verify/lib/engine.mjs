@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.1.0'
+export const LAUNCHER_VERSION = '3.1.1'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -69,7 +69,11 @@ export async function checkTemaClasse(page, htmlDark) {
   return { ok, misurato: has ? 'dark presente' : 'dark assente', atteso: htmlDark ? 'dark presente' : 'dark assente' }
 }
 
-export async function checkToccoMinimo(page) {
+export async function checkToccoMinimo(page, { stableFirst = false } = {}) {
+  if (stableFirst) {
+    const { waitForPageLayoutStable } = await import('./measure-stable.mjs')
+    await waitForPageLayoutStable(page)
+  }
   const list = await page.evaluate(TOUCH_MEASURE_FN)
   return {
     ok: list.length === 0,

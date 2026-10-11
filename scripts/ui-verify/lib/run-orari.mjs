@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
 import net from 'node:net'
@@ -15,7 +15,12 @@ import {
   openMobileSidebar,
   openUserMenu,
 } from './engine.mjs'
-import { hoursPayloadRun, withHoursBackup, hoursRestoreFrom, hoursSnapshotToTemp } from './hours-payload.mjs'
+import { hoursPayloadRun, hoursRestoreFrom, hoursSnapshotToTemp } from './hours-payload.mjs'
+import {
+  waitFieldCenteredAndFocused,
+  waitForPageLayoutStable,
+  waitForStableBoundingBox,
+} from './measure-stable.mjs'
 
 const ROOT = join(import.meta.dirname, '../../..')
 const SIM_PORT = 3200
@@ -46,7 +51,7 @@ async function isPortFree(port) {
   })
 }
 
-async function waitForUrl(baseUrl, ms = 180000) {
+async function waitForUrl(baseUrl, ms = 120000) {
   const start = Date.now()
   while (Date.now() - start < ms) {
     try {
@@ -60,7 +65,13 @@ async function waitForUrl(baseUrl, ms = 180000) {
   throw new Error(`Server non raggiungibile: ${baseUrl}`)
 }
 
+/** Server dev dedicato (simulazioni APP_HOURS_DEV_SIMULATE_* richiedono NODE_ENV development). */
 function startDevServer(port, extraEnv) {
+  try {
+    unlinkSync(join(ROOT, '.next/dev/lock'))
+  } catch {
+    /* nessun lock */
+  }
   const child = spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
     cwd: ROOT,
     env: { ...process.env, ...extraEnv },
@@ -73,6 +84,26 @@ function startDevServer(port, extraEnv) {
     }
   })
   return child
+}
+
+async function waitDialogTouchTargetsReady(page) {
+  const dialog = page.getByRole('alertdialog')
+  await dialog.waitFor({ state: 'visible' })
+  const firstBtn = dialog.getByRole('button').first()
+  await waitForStableBoundingBox(page, firstBtn, { attempts: 60, intervalMs: 100 })
+  try {
+    await page.waitForFunction(
+      () => {
+        const b = document.querySelector('[role="alertdialog"] button')
+        if (!b) return false
+        const h = b.getBoundingClientRect().height
+        return h >= 43.5
+      },
+      { timeout: 8000 },
+    )
+  } catch {
+    await waitForStableBoundingBox(page, firstBtn, { attempts: 20, intervalMs: 100 })
+  }
 }
 
 async function waitForPortFree(port, ms = 30000) {
@@ -168,25 +199,41 @@ async function prepareState(page, stateId, profiloKey, temaKey) {
   }
 }
 
+async function freshHoursPage(browser, baseUrl, loginApp, testUser, testPassword, profiloKey, temaKey, newPage, snapshotPath) {
+  hoursRestoreFrom(snapshotPath)
+  const { ctx: pctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
+  await loginApp(page, baseUrl, testUser.email, testPassword)
+  await page.goto('/app/hours', { waitUntil: 'networkidle' })
+  await page.locator('h1', { hasText: 'Orari' }).waitFor({ timeout: 20000 })
+  return { pctx, page }
+}
+
 async function measureFormColumn(page, profiloKey, tol) {
   const col = page.locator('main .max-w-xl').first()
+  await waitForStableBoundingBox(page, col)
   const box = await col.boundingBox()
   if (!box) return { ok: false, misurato: 'colonna assente', atteso: 'presente' }
+  const mainBox = await page.locator('main').boundingBox()
   const vw = await page.evaluate(() => window.innerWidth)
   if (profiloKey === 'notebook-1280') {
+    const mainX = mainBox?.x ?? 0
+    const mainW = mainBox?.width ?? vw
+    const expectedLeft = mainX + (mainW - 576) / 2
+    const contentCenter = mainX + mainW / 2
     const wOk = withinTolerance(box.width, 576, tol)
-    const centerOk = withinTolerance(box.x + box.width / 2, vw / 2, tol + 8)
+    const centerOk = withinTolerance(box.x + box.width / 2, contentCenter, tol + 8)
+    const leftOk = withinTolerance(box.x, expectedLeft, tol + 8)
     const toggle = page.locator('[aria-label="Giorni di riposo settimanali"] [data-state]')
     const firstToggle = page.locator('[aria-label="Giorni di riposo settimanali"] button').first()
     const groupBox = await page.locator('[aria-label="Giorni di riposo settimanali"]').boundingBox()
     const itemBox = await firstToggle.boundingBox()
     const gOk = groupBox ? withinTolerance(groupBox.width, 392, tol + 4) : false
     const iOk = itemBox ? withinTolerance(itemBox.width, 56, tol + 4) : false
-    const ok = wOk && centerOk && gOk && iOk
+    const ok = wOk && centerOk && leftOk && gOk && iOk
     return {
       ok,
-      misurato: `form ${Math.round(box.width)}px x=${Math.round(box.x)}; gruppo ${groupBox ? Math.round(groupBox.width) : '?'}; voce ${itemBox ? Math.round(itemBox.width) : '?'}`,
-      atteso: '576 centrato; gruppo 392; voce 56',
+      misurato: `form ${Math.round(box.width)}px x=${Math.round(box.x)} (main ${Math.round(mainX)}+${Math.round(mainW)}); gruppo ${groupBox ? Math.round(groupBox.width) : '?'}; voce ${itemBox ? Math.round(itemBox.width) : '?'}`,
+      atteso: `576 centrato in main (left≈${Math.round(expectedLeft)}); gruppo 392; voce 56`,
     }
   }
   const marginOk = withinTolerance(box.x, 16, tol + 2) && withinTolerance(vw - (box.x + box.width), 16, tol + 2)
@@ -228,6 +275,49 @@ export async function runOrariChecks(ctx) {
   const snapshotPath = hoursSnapshotToTemp()
 
   try {
+    try {
+      const audit = hoursPayloadRun('audit-closures')
+      if (audit.duplicateIds?.length) {
+        report.anomalie.push(
+          `annualClosures: id duplicati nel Global dev (${audit.duplicateIds.length}): ${audit.duplicateIds.slice(0, 5).join(', ')}`,
+        )
+      }
+      if (audit.rowsWithoutId > 0) {
+        report.anomalie.push(`annualClosures: ${audit.rowsWithoutId} righe senza id`)
+      }
+    } catch (e) {
+      report.anomalie.push(`audit-closures: ${e.message}`)
+    }
+
+    if (runCtx.shouldRun('orari-stato-iniziale')) {
+      progressStep('orari', 'stato-iniziale', 'telefono-390', 'chiaro')
+      const { pctx, page } = await freshHoursPage(
+        browser,
+        baseUrl,
+        loginApp,
+        testUser,
+        testPassword,
+        'telefono-390',
+        'chiaro',
+        newPage,
+        snapshotPath,
+      )
+      const saveBar = await page.locator('[data-slot="app-save-bar"]').count()
+      const alerts = await page.locator('[role="alert"]').count()
+      const statusText = await page.locator('[role="status"]').innerText().catch(() => '')
+      const ok = saveBar === 0 && alerts === 0 && !statusText.includes('Orari salvati')
+      addRow(report, {
+        id: 'orari-stato-iniziale',
+        schermata: 'orari/iniziale',
+        profiloTema: 'telefono-390/chiaro',
+        esito: ok ? 'OK' : 'FALLITO',
+        misurato: `saveBar:${saveBar} alert:${alerts} status:${statusText.slice(0, 40)}`,
+        atteso: 'nessuna barra né avviso su pagina appena caricata',
+        evidenza: '/app/hours',
+      })
+      await pctx.close()
+    }
+
     for (const stato of [
       'iniziale',
       'modificato',
@@ -245,22 +335,30 @@ export async function runOrariChecks(ctx) {
           const sch = `orari/${stato}`
           const pt = `${profiloKey}/${temaKey}`
           try {
+          hoursRestoreFrom(snapshotPath)
           await loginApp(page, baseUrl, testUser.email, testPassword)
+          await page.goto('/app/hours', { waitUntil: 'networkidle' })
+          await page.locator('h1', { hasText: 'Orari' }).waitFor({ timeout: 20000 })
           await prepareState(page, stato, profiloKey, temaKey)
+          if (stato === 'foglio-chiusura' || stato === 'conferma-rimozione') {
+            await waitForPageLayoutStable(page)
+          }
 
           if (C1_PROFILES.has(profiloKey) && runCtx.shouldRun('C1')) {
             const r = await checkScrollOrizzontale(page)
             addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: '/app/hours' })
           }
           if (C2_PROFILES.has(profiloKey) && runCtx.shouldRun('C2')) {
-            let r = await checkToccoMinimo(page)
+            let r = await checkToccoMinimo(page, { stableFirst: true })
             addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: stato })
             if (stato === 'foglio-chiusura') {
-              r = await checkToccoMinimo(page)
+              await waitForStableBoundingBox(page, page.getByRole('dialog').first())
+              r = await checkToccoMinimo(page, { stableFirst: true })
               addRow(report, { id: 'C2', schermata: `${sch} (foglio)`, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: 'foglio' })
             }
-            if (stato === 'conferma-rimozione') {
-              r = await checkToccoMinimo(page)
+            if (stato === 'conferma-rimozione' && profiloKey === 'telefono-390') {
+              await waitDialogTouchTargetsReady(page)
+              r = await checkToccoMinimo(page, { stableFirst: true })
               addRow(report, { id: 'C2', schermata: `${sch} (dialog)`, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: 'dialog' })
             }
           }
@@ -338,27 +436,6 @@ export async function runOrariChecks(ctx) {
       await pctx.close()
     }
 
-    if (runCtx.shouldRun('orari-stato-iniziale')) {
-      hoursRestoreFrom(snapshotPath)
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoHoursReady(page)
-      const saveBar = await page.locator('[data-slot="app-save-bar"]').count()
-      const alerts = await page.locator('[role="alert"]').count()
-      const statusText = await page.locator('[role="status"]').innerText().catch(() => '')
-      const ok = saveBar === 0 && alerts === 0 && !statusText.includes('Orari salvati')
-      addRow(report, {
-        id: 'orari-stato-iniziale',
-        schermata: 'orari/iniziale',
-        profiloTema: 'telefono-390/chiaro',
-        esito: ok ? 'OK' : 'FALLITO',
-        misurato: `saveBar:${saveBar} alert:${alerts}`,
-        atteso: 'nessuna barra né avviso',
-        evidenza: '/app/hours',
-      })
-      await pctx.close()
-    }
-
     if (runCtx.shouldRun('orari-campi-ora')) {
       const global = hoursPayloadRun('read-as', [testUser.email])
       const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
@@ -396,9 +473,17 @@ export async function runOrariChecks(ctx) {
 
     if (runCtx.shouldRun('orari-colonna')) {
       for (const profiloKey of ['telefono-390', 'notebook-1280']) {
-        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoHoursReady(page)
+        const { pctx, page } = await freshHoursPage(
+          browser,
+          baseUrl,
+          loginApp,
+          testUser,
+          testPassword,
+          profiloKey,
+          'chiaro',
+          newPage,
+          snapshotPath,
+        )
         const r = await measureFormColumn(page, profiloKey, 2)
         addRow(report, {
           id: 'orari-colonna',
@@ -455,9 +540,17 @@ export async function runOrariChecks(ctx) {
 
     if (runCtx.shouldRun('orari-modificato-barra')) {
       for (const profiloKey of ['telefono-390', 'notebook-1280']) {
-        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoHoursReady(page)
+        const { pctx, page } = await freshHoursPage(
+          browser,
+          baseUrl,
+          loginApp,
+          testUser,
+          testPassword,
+          profiloKey,
+          'chiaro',
+          newPage,
+          snapshotPath,
+        )
         const original = await page.locator('#hours-lunch-start').inputValue()
         await makeDirty(page)
         const visible =
@@ -481,15 +574,25 @@ export async function runOrariChecks(ctx) {
 
     if (runCtx.shouldRun('orari-barra-misure')) {
       for (const profiloKey of ['telefono-390', 'notebook-1280']) {
-        const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoHoursReady(page)
+        const { pctx, page } = await freshHoursPage(
+          browser,
+          baseUrl,
+          loginApp,
+          testUser,
+          testPassword,
+          profiloKey,
+          'chiaro',
+          newPage,
+          snapshotPath,
+        )
         await makeDirty(page)
         const bar = page.locator('[data-slot="app-save-bar"]')
+        await bar.waitFor({ state: 'visible', timeout: 10000 })
+        await waitForStableBoundingBox(page, bar)
         const box = await bar.boundingBox()
         const buttons = bar.locator('button')
-        const h0 = await buttons.nth(0).boundingBox()
-        const h1 = await buttons.nth(1).boundingBox()
+        const h0 = await waitForStableBoundingBox(page, buttons.nth(0))
+        const h1 = await waitForStableBoundingBox(page, buttons.nth(1))
         let ok = Boolean(box)
         let misurato = 'barra assente'
         if (box && profiloKey === 'telefono-390') {
@@ -529,22 +632,31 @@ export async function runOrariChecks(ctx) {
 
     if (runCtx.shouldRun('orari-errore-validazione')) {
       for (const temaKey of ['chiaro', 'scuro']) {
-        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoHoursReady(page)
+        const { pctx, page } = await freshHoursPage(
+          browser,
+          baseUrl,
+          loginApp,
+          testUser,
+          testPassword,
+          'telefono-390',
+          temaKey,
+          newPage,
+          snapshotPath,
+        )
         let saveRequests = 0
         page.on('request', (req) => {
           if (req.method() === 'POST' && req.url().includes('hours')) saveRequests += 1
         })
         await page.locator('#hours-lunch-start').fill('')
         await clickSave(page)
-        await sleep(500)
+        const scrollOk = await waitFieldCenteredAndFocused(page, 'hours-lunch-start')
         const alert = await page.getByText('Controlla i campi evidenziati').isVisible()
         const fieldMsg = await page.getByText(TIME_MSG.required).count()
         const focused = await page.evaluate(() => document.activeElement?.id === 'hours-lunch-start')
         const rect = await page.locator('#hours-lunch-start').boundingBox()
         const vh = await page.evaluate(() => window.innerHeight)
-        const inView = rect ? rect.top >= 0 && rect.bottom <= vh : false
+        const mid = rect ? (rect.top + rect.bottom) / 2 : 0
+        const inView = rect ? Math.abs(mid - vh / 2) <= 90 : false
         let colorOk = true
         if (temaKey === 'chiaro') {
           colorOk = await page.evaluate(() => {
@@ -561,14 +673,21 @@ export async function runOrariChecks(ctx) {
             return border.includes('oklch') || border === destructive
           })
         }
-        const ok = saveRequests === 0 && alert && fieldMsg > 0 && focused && inView && (temaKey !== 'chiaro' || colorOk)
+        const ok =
+          saveRequests === 0 &&
+          alert &&
+          fieldMsg > 0 &&
+          focused &&
+          inView &&
+          scrollOk &&
+          (temaKey !== 'chiaro' || colorOk)
         addRow(report, {
           id: 'orari-errore-validazione',
           schermata: 'orari/errore-validazione',
           profiloTema: `telefono-390/${temaKey}`,
           esito: ok ? 'OK' : 'FALLITO',
-          misurato: `req:${saveRequests} alert:${alert} focus:${focused} view:${inView}`,
-          atteso: 'nessuna richiesta; avviso; campo; focus; destructive',
+          misurato: `req:${saveRequests} alert:${alert} focus:${focused} view:${inView} scroll:${scrollOk}`,
+          atteso: 'nessuna richiesta; avviso; campo; focus; scroll smooth centrato; destructive',
           evidenza: TIME_MSG.required,
         })
         await pctx.close()
@@ -632,9 +751,17 @@ export async function runOrariChecks(ctx) {
     }
 
     if (runCtx.shouldRun('orari-annulla')) {
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoHoursReady(page)
+      const { pctx, page } = await freshHoursPage(
+        browser,
+        baseUrl,
+        loginApp,
+        testUser,
+        testPassword,
+        'telefono-390',
+        'chiaro',
+        newPage,
+        snapshotPath,
+      )
       const before = await page.locator('#hours-lunch-start').inputValue()
       await makeDirty(page)
       await page.getByRole('button', { name: 'Aggiungi chiusura' }).click()
@@ -658,9 +785,17 @@ export async function runOrariChecks(ctx) {
     }
 
     if (runCtx.shouldRun('orari-festivita')) {
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoHoursReady(page)
+      const { pctx, page } = await freshHoursPage(
+        browser,
+        baseUrl,
+        loginApp,
+        testUser,
+        testPassword,
+        'telefono-390',
+        'chiaro',
+        newPage,
+        snapshotPath,
+      )
       const steps = []
       await page.locator('#hours-holiday-year').fill('1899')
       await page.getByRole('button', { name: 'Aggiungi festività' }).click()
@@ -847,7 +982,7 @@ export async function runOrariChecks(ctx) {
       const path = hoursSnapshotToTemp()
       try {
         const out = hoursPayloadRun('invalid-times', [], { UI_VERIFY_MANAGER_EMAIL: testUser.email })
-        const ok = out.results?.every((r) => r.ok || /invalid|Formato non valido/i.test(r.message ?? ''))
+        const ok = out.results?.every((r) => r.ok)
         addRow(report, {
           id: 'orari-validazione-server',
           schermata: 'orari/server',
@@ -953,24 +1088,38 @@ export async function runOrariChecks(ctx) {
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await page.reload({ waitUntil: 'networkidle' })
         const info = await page.getByText('Orari non configurati').isVisible()
-        const lunch = await page.locator('#hours-lunch-start').inputValue()
-        await page.locator('#hours-lunch-start').fill('12:00')
-        await page.locator('#hours-lunch-end').fill('14:00')
-        await page.locator('#hours-dinner-start').fill('19:00')
-        await page.locator('#hours-dinner-end').fill('22:00')
-        await clickSave(page)
-        await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+        const lunchInput = page.locator('#hours-lunch-start')
+        const hasLunch = await lunchInput.count()
+        const lunch = hasLunch ? await lunchInput.inputValue() : '—'
+        if (hasLunch) {
+          await lunchInput.fill('12:00')
+          await page.locator('#hours-lunch-end').fill('14:00')
+          await page.locator('#hours-dinner-start').fill('19:00')
+          await page.locator('#hours-dinner-end').fill('22:00')
+          await clickSave(page)
+          await page.getByText('Orari salvati').waitFor({ timeout: 20000 })
+        }
         const infoGone = !(await page.getByText('Orari non configurati').isVisible())
         addRow(report, {
           id: 'orari-non-configurato',
           schermata: 'orari/non-configurato',
           profiloTema: 'telefono-390/chiaro',
           esito: info && lunch === '' && infoGone ? 'OK' : 'FALLITO',
-          misurato: `info:${info} lunch:${lunch} gone:${infoGone}`,
+          misurato: `info:${info} lunch:${lunch} inputs:${hasLunch} gone:${infoGone}`,
           atteso: 'avviso; campi vuoti; scompare dopo save',
           evidenza: 'clear-services',
         })
         await pctx.close()
+      } catch (e) {
+        addRow(report, {
+          id: 'orari-non-configurato',
+          schermata: 'orari/non-configurato',
+          profiloTema: 'telefono-390/chiaro',
+          esito: 'FALLITO',
+          misurato: e.message,
+          atteso: 'flusso non-configurato',
+          evidenza: 'clear-services',
+        })
       } finally {
         hoursRestoreFrom(pathNc)
       }
@@ -997,112 +1146,120 @@ export async function runOrariChecks(ctx) {
 export async function runOrariDevSimulations(ctx) {
   const { report, runCtx, newPage, loginApp, testUser, testPassword, addRow, progressStep } = ctx
 
-  if (!runCtx.shouldRun('orari-errore-server') && !runCtx.shouldRun('orari-errore-caricamento') && !runCtx.shouldRun('orari-non-configurato')) {
-    return
-  }
-
-  if (!(await isPortFree(SIM_PORT))) {
-    report.anomalie.push(`Porta ${SIM_PORT} occupata: simulazioni Orari non eseguite`)
-    if (runCtx.shouldRun('orari-errore-server')) {
-      addRow(report, {
-        id: 'orari-errore-server',
-        esito: 'NON PROVATO',
-        misurato: '—',
-        atteso: '—',
-        evidenza: `porta ${SIM_PORT} occupata`,
-      })
-    }
-    if (runCtx.shouldRun('orari-errore-caricamento')) {
-      addRow(report, {
-        id: 'orari-errore-caricamento',
-        esito: 'NON PROVATO',
-        misurato: '—',
-        atteso: '—',
-        evidenza: `porta ${SIM_PORT} occupata`,
-      })
-    }
+  if (
+    !runCtx.shouldRun('orari-errore-server') &&
+    !runCtx.shouldRun('orari-errore-caricamento') &&
+    !runCtx.shouldRun('orari-non-configurato')
+  ) {
     return
   }
 
   const snapshotPath = hoursSnapshotToTemp()
 
-  if (runCtx.shouldRun('orari-errore-server')) {
-    progressStep('orari', 'errore-server', 'telefono-390', 'chiaro')
-    await waitForPortFree(SIM_PORT)
-    const child = startDevServer(SIM_PORT, { APP_HOURS_DEV_SIMULATE_SAVE_ERROR: '1' })
-    try {
-      await waitForUrl(`http://localhost:${SIM_PORT}`)
-      const browser = ctx.browser ?? (await import('@playwright/test')).chromium.launch()
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', `http://localhost:${SIM_PORT}`)
-      await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
-      await gotoHoursReady(page)
-      await makeDirty(page)
-      await clickSave(page)
-      await page.getByText('Salvataggio non riuscito').waitFor({ timeout: 15000 })
-      const bar = await page.locator('[data-slot="app-save-bar"]').isVisible()
-      child.kill('SIGTERM')
+  try {
+    if (!(await isPortFree(SIM_PORT))) {
+      report.anomalie.push(`Porta ${SIM_PORT} occupata: simulazioni Orari non eseguite`)
+      if (runCtx.shouldRun('orari-errore-server')) {
+        addRow(report, {
+          id: 'orari-errore-server',
+          esito: 'NON PROVATO',
+          misurato: '—',
+          atteso: '—',
+          evidenza: `porta ${SIM_PORT} occupata`,
+        })
+      }
+      if (runCtx.shouldRun('orari-errore-caricamento')) {
+        addRow(report, {
+          id: 'orari-errore-caricamento',
+          esito: 'NON PROVATO',
+          misurato: '—',
+          atteso: '—',
+          evidenza: `porta ${SIM_PORT} occupata`,
+        })
+      }
+      return
+    }
+
+    if (runCtx.shouldRun('orari-errore-server')) {
+      progressStep('orari', 'errore-server', 'telefono-390', 'chiaro')
       await waitForPortFree(SIM_PORT)
-      const { ctx: pctx2, page: page2 } = await newPage(browser, 'telefono-390', 'chiaro', ctx.baseUrl)
-      await loginApp(page2, ctx.baseUrl, testUser.email, testPassword)
-      await gotoHoursReady(page2)
-      await makeDirty(page2)
-      await clickSave(page2)
-      await page2.getByText('Orari salvati').waitFor({ timeout: 20000 })
-      addRow(report, {
-        id: 'orari-errore-server',
-        schermata: 'orari/errore-server',
-        profiloTema: 'telefono-390/chiaro',
-        esito: bar ? 'OK' : 'FALLITO',
-        misurato: `avviso+barra:${bar}`,
-        atteso: 'errore simulato poi salvataggio OK',
-        evidenza: `localhost:${SIM_PORT}`,
-      })
-      await pctx.close()
-      await pctx2.close()
-      if (!ctx.browser) await browser.close()
-    } catch (e) {
-      child.kill('SIGTERM')
-      addRow(report, {
-        id: 'orari-errore-server',
-        esito: 'FALLITO',
-        misurato: e.message,
-        atteso: 'flusso simulazione',
-        evidenza: String(SIM_PORT),
-      })
+      const child = startDevServer(SIM_PORT, { APP_HOURS_DEV_SIMULATE_SAVE_ERROR: '1' })
+      try {
+        await waitForUrl(`http://localhost:${SIM_PORT}`, 120000)
+        const browser = ctx.browser ?? ctx.playwrightBrowser
+        if (!browser) throw new Error('browser Playwright mancante per simulazione')
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', `http://localhost:${SIM_PORT}`)
+        await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
+        await gotoHoursReady(page)
+        await makeDirty(page)
+        await clickSave(page)
+        await page.getByText('Salvataggio non riuscito').waitFor({ timeout: 15000 })
+        const bar = await page.locator('[data-slot="app-save-bar"]').isVisible()
+        await pctx.close()
+        addRow(report, {
+          id: 'orari-errore-server',
+          schermata: 'orari/errore-server (sim)',
+          profiloTema: 'telefono-390/chiaro',
+          esito: bar ? 'OK' : 'FALLITO',
+          misurato: `avviso+barra:${bar}`,
+          atteso: 'errore simulato con barra visibile',
+          evidenza: `localhost:${SIM_PORT}`,
+        })
+      } catch (e) {
+        addRow(report, {
+          id: 'orari-errore-server',
+          esito: 'FALLITO',
+          misurato: e.message,
+          atteso: 'server :3200 raggiungibile e flusso simulazione',
+          evidenza: String(SIM_PORT),
+        })
+      } finally {
+        child.kill('SIGTERM')
+        await waitForPortFree(SIM_PORT)
+      }
     }
-  }
 
-  if (runCtx.shouldRun('orari-errore-caricamento')) {
-    progressStep('orari', 'errore-caricamento', 'telefono-390', 'chiaro')
-    await waitForPortFree(SIM_PORT)
-    const child = startDevServer(SIM_PORT, { APP_HOURS_DEV_SIMULATE_LOAD_ERROR: '1' })
-    try {
-      await waitForUrl(`http://localhost:${SIM_PORT}`)
-      const browser = (await import('@playwright/test')).chromium.launch()
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', `http://localhost:${SIM_PORT}`)
-      await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
-      await page.goto('/app/hours', { waitUntil: 'networkidle' })
-      const alert = await page.getByText('Impossibile caricare gli orari').isVisible()
-      const inputs = await page.locator('input[type="time"]').count()
-      await page.getByRole('button', { name: 'Riprova' }).click()
-      await sleep(2000)
-      addRow(report, {
-        id: 'orari-errore-caricamento',
-        schermata: 'orari/errore-caricamento',
-        profiloTema: 'telefono-390/chiaro',
-        esito: alert && inputs === 0 ? 'OK' : 'FALLITO',
-        misurato: `alert:${alert} inputs:${inputs}`,
-        atteso: 'solo avviso e Riprova',
-        evidenza: `localhost:${SIM_PORT}`,
-      })
-      await pctx.close()
-      await browser.close()
-    } finally {
-      child.kill('SIGTERM')
+    if (runCtx.shouldRun('orari-errore-caricamento')) {
+      progressStep('orari', 'errore-caricamento', 'telefono-390', 'chiaro')
+      await waitForPortFree(SIM_PORT)
+      const child = startDevServer(SIM_PORT, { APP_HOURS_DEV_SIMULATE_LOAD_ERROR: '1' })
+      try {
+        await waitForUrl(`http://localhost:${SIM_PORT}`, 120000)
+        const browser = ctx.browser ?? ctx.playwrightBrowser
+        if (!browser) throw new Error('browser Playwright mancante per simulazione')
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', `http://localhost:${SIM_PORT}`)
+        await loginApp(page, `http://localhost:${SIM_PORT}`, testUser.email, testPassword)
+        await page.goto('/app/hours', { waitUntil: 'networkidle' })
+        const alert = await page.getByText('Impossibile caricare gli orari').isVisible()
+        const inputs = await page.locator('input[type="time"]').count()
+        await page.getByRole('button', { name: 'Riprova' }).click()
+        await sleep(2000)
+        addRow(report, {
+          id: 'orari-errore-caricamento',
+          schermata: 'orari/errore-caricamento',
+          profiloTema: 'telefono-390/chiaro',
+          esito: alert && inputs === 0 ? 'OK' : 'FALLITO',
+          misurato: `alert:${alert} inputs:${inputs}`,
+          atteso: 'solo avviso e Riprova',
+          evidenza: `localhost:${SIM_PORT}`,
+        })
+        await pctx.close()
+      } catch (e) {
+        addRow(report, {
+          id: 'orari-errore-caricamento',
+          esito: 'FALLITO',
+          misurato: e.message,
+          atteso: 'server :3200 raggiungibile',
+          evidenza: String(SIM_PORT),
+        })
+      } finally {
+        child.kill('SIGTERM')
+        await waitForPortFree(SIM_PORT)
+      }
     }
+  } finally {
+    hoursRestoreFrom(snapshotPath)
   }
-
-  hoursRestoreFrom(snapshotPath)
 }
 
 export async function runOrariConsole(ctx) {

@@ -2,21 +2,21 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-11",
-    "commit": "60356e92b7cd",
-    "launcherVersion": "3.1.0",
-    "launcherHeader": "3.1.0 (L1)",
+    "commit": "af472456fe1a",
+    "launcherVersion": "3.1.1",
+    "launcherHeader": "3.1.1 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-8.5.json",
     "livelloEseguito": "L1",
     "controlliVersion": 3,
-    "durataMs": 128552,
+    "durataMs": 246687,
     "invalidRun": false
   },
   "counts": {
-    "OK": 78,
-    "FALLITO": 20,
+    "OK": 92,
+    "FALLITO": 13,
     "AVVISO": 0,
-    "NON PROVATO": 6
+    "NON PROVATO": 9
   },
   "distinctControls": 29,
   "rows": [
@@ -57,9 +57,90 @@
       "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
     },
     {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
       "id": "orari-errore-server",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -69,19 +150,31 @@
       "id": "orari-errore-caricamento",
       "schermata": "—",
       "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)"
     },
     {
+      "id": "orari-stato-iniziale",
+      "schermata": "orari/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "saveBar:1 alert:1 status:",
+      "atteso": "nessuna barra né avviso su pagina appena caricata",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
+    },
+    {
       "id": "C1",
       "schermata": "orari/iniziale",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -90,7 +183,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -99,7 +193,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -108,7 +203,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -117,7 +213,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (28 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -126,7 +223,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -135,7 +233,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -144,7 +243,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -153,7 +253,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -162,7 +263,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -171,7 +273,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (28 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -180,7 +283,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "iniziale"
+      "evidenza": "iniziale",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -189,7 +293,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -198,7 +303,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -207,7 +313,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -216,7 +323,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -225,7 +333,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (30 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -234,7 +343,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -243,7 +353,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -252,7 +363,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -261,7 +373,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -270,7 +383,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -279,7 +393,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (30 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -288,7 +403,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "modificato"
+      "evidenza": "modificato",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -297,7 +413,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -306,7 +423,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -315,7 +433,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -324,7 +443,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -333,7 +453,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (30 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -342,7 +463,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -351,7 +473,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -360,7 +483,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -369,7 +493,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -378,7 +503,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -387,7 +513,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (30 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -396,7 +523,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "errore-validazione"
+      "evidenza": "errore-validazione",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -405,7 +533,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -414,7 +543,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "salvato"
+      "evidenza": "salvato",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -423,34 +553,98 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "salvato"
+      "evidenza": "salvato",
+      "pacchetto": "orari"
     },
     {
-      "id": "runtime-orari-stato",
+      "id": "C1",
       "schermata": "orari/salvato",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "FALLITO",
-      "misurato": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-      "atteso": "stato preparato",
-      "evidenza": "salvato"
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
-      "id": "runtime-orari-stato",
+      "id": "C2-mouse",
+      "schermata": "orari/salvato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (28 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "salvato",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C3",
+      "schermata": "orari/salvato",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "salvato",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C1",
       "schermata": "orari/salvato",
       "profiloTema": "telefono-390/scuro",
-      "esito": "FALLITO",
-      "misurato": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-      "atteso": "stato preparato",
-      "evidenza": "salvato"
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
-      "id": "runtime-orari-stato",
+      "id": "C2",
+      "schermata": "orari/salvato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "salvato",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C3",
+      "schermata": "orari/salvato",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "salvato",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C1",
       "schermata": "orari/salvato",
       "profiloTema": "notebook-1280/scuro",
-      "esito": "FALLITO",
-      "misurato": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-      "atteso": "stato preparato",
-      "evidenza": "salvato"
+      "esito": "OK",
+      "misurato": "1280 vs innerWidth 1280",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C2-mouse",
+      "schermata": "orari/salvato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "tutte in [28,48] (28 elementi)",
+      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
+      "evidenza": "salvato",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "C3",
+      "schermata": "orari/salvato",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "dark presente",
+      "atteso": "dark presente",
+      "evidenza": "salvato",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -459,7 +653,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -468,7 +663,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -477,7 +673,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "foglio"
+      "evidenza": "foglio",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -486,7 +683,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -495,7 +693,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -504,7 +703,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (33 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -513,7 +713,8 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -522,7 +723,8 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -531,7 +733,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
@@ -540,7 +743,8 @@
       "esito": "OK",
       "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "foglio"
+      "evidenza": "foglio",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -549,7 +753,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -558,7 +763,8 @@
       "esito": "OK",
       "misurato": "1280 vs innerWidth 1280",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2-mouse",
@@ -567,7 +773,8 @@
       "esito": "OK",
       "misurato": "tutte in [28,48] (33 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -576,7 +783,8 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "foglio-chiusura"
+      "evidenza": "foglio-chiusura",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -585,25 +793,28 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
       "schermata": "orari/conferma-rimozione",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "Annulla 274x42; Rimuovi 274x42",
+      "esito": "OK",
+      "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "conferma-rimozione"
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
       "schermata": "orari/conferma-rimozione (dialog)",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "Annulla 274x42; Rimuovi 274x42",
+      "esito": "OK",
+      "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "dialog"
+      "evidenza": "dialog",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -612,34 +823,18 @@
       "esito": "OK",
       "misurato": "dark assente",
       "atteso": "dark assente",
-      "evidenza": "conferma-rimozione"
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
     },
     {
-      "id": "C1",
+      "id": "runtime-orari-stato",
       "schermata": "orari/conferma-rimozione",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "orari/conferma-rimozione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (30 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "conferma-rimozione"
-    },
-    {
-      "id": "C3",
-      "schermata": "orari/conferma-rimozione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "conferma-rimozione"
+      "esito": "FALLITO",
+      "misurato": "page.waitForFunction: Timeout 30000ms exceeded.",
+      "atteso": "stato preparato",
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
     },
     {
       "id": "C1",
@@ -648,25 +843,28 @@
       "esito": "OK",
       "misurato": "390 vs innerWidth 390",
       "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
       "schermata": "orari/conferma-rimozione",
       "profiloTema": "telefono-390/scuro",
-      "esito": "FALLITO",
-      "misurato": "Annulla 274x42; Rimuovi 274x42",
+      "esito": "OK",
+      "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "conferma-rimozione"
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
     },
     {
       "id": "C2",
       "schermata": "orari/conferma-rimozione (dialog)",
       "profiloTema": "telefono-390/scuro",
-      "esito": "FALLITO",
-      "misurato": "Annulla 274x42; Rimuovi 274x42",
+      "esito": "OK",
+      "misurato": "nessun elemento",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "dialog"
+      "evidenza": "dialog",
+      "pacchetto": "orari"
     },
     {
       "id": "C3",
@@ -675,34 +873,18 @@
       "esito": "OK",
       "misurato": "dark presente",
       "atteso": "dark presente",
-      "evidenza": "conferma-rimozione"
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
     },
     {
-      "id": "C1",
+      "id": "runtime-orari-stato",
       "schermata": "orari/conferma-rimozione",
       "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "/app/hours"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "orari/conferma-rimozione",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (30 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "conferma-rimozione"
-    },
-    {
-      "id": "C3",
-      "schermata": "orari/conferma-rimozione",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "conferma-rimozione"
+      "esito": "FALLITO",
+      "misurato": "page.waitForFunction: Timeout 30000ms exceeded.",
+      "atteso": "stato preparato",
+      "evidenza": "conferma-rimozione",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-testi",
@@ -711,16 +893,8 @@
       "esito": "OK",
       "misurato": "testi principali presenti",
       "atteso": "testi sezione 6 spec",
-      "evidenza": "/app/hours"
-    },
-    {
-      "id": "orari-stato-iniziale",
-      "schermata": "orari/iniziale",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "saveBar:1 alert:1",
-      "atteso": "nessuna barra né avviso",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-campi-ora",
@@ -729,7 +903,8 @@
       "esito": "OK",
       "misurato": "n=6 match=true",
       "atteso": "6 input time coerenti con Global",
-      "evidenza": "{\"lunchStart\":\"12:15\",\"lunchEnd\":\"14:15\",\"dinnerStart\":\"19:30\",\"dinnerEnd\":\"22:00\",\"bnbIn\":\"15:00\",\"bnbOut\":\"11:00\"}"
+      "evidenza": "{\"lunchStart\":\"12:30\",\"lunchEnd\":\"14:30\",\"dinnerStart\":\"19:30\",\"dinnerEnd\":\"22:00\",\"bnbIn\":\"15:00\",\"bnbOut\":\"11:00\"}",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-colonna",
@@ -738,34 +913,38 @@
       "esito": "OK",
       "misurato": "margini ~16/16; voce 47",
       "atteso": "16px margini; voce ~47px",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-colonna",
       "schermata": "orari/iniziale",
       "profiloTema": "notebook-1280/chiaro",
-      "esito": "FALLITO",
-      "misurato": "form 576px x=480; gruppo 392; voce 56",
-      "atteso": "576 centrato; gruppo 392; voce 56",
-      "evidenza": "/app/hours"
+      "esito": "OK",
+      "misurato": "form 576px x=480 (main 256+1024); gruppo 392; voce 56",
+      "atteso": "576 centrato in main (left≈480); gruppo 392; voce 56",
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-giorno-selezionato",
       "schermata": "orari/iniziale",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "nessun giorno on",
+      "misurato": "state:null",
       "atteso": "sfondo --primary e testo --primary-foreground",
-      "evidenza": "Lun attivo"
+      "evidenza": "Lun attivo",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-giorno-selezionato",
       "schermata": "orari/iniziale",
       "profiloTema": "telefono-390/scuro",
       "esito": "FALLITO",
-      "misurato": "nessun giorno on",
+      "misurato": "state:null",
       "atteso": "sfondo --primary e testo --primary-foreground",
-      "evidenza": "Lun attivo"
+      "evidenza": "Lun attivo",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-modificato-barra",
@@ -774,7 +953,8 @@
       "esito": "FALLITO",
       "misurato": "compare:true scompare:false",
       "atteso": "barra con testi attesi poi assente",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-modificato-barra",
@@ -783,16 +963,18 @@
       "esito": "FALLITO",
       "misurato": "compare:true scompare:false",
       "atteso": "barra con testi attesi poi assente",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-barra-misure",
       "schermata": "orari/modificato",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "h=117 btn=44",
+      "esito": "OK",
+      "misurato": "h=97 btn=44",
       "atteso": "≤97px, pulsanti 44 affiancati",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-barra-misure",
@@ -801,25 +983,28 @@
       "esito": "FALLITO",
       "misurato": "allineamento colonna=false",
       "atteso": "testo sx pulsanti dx",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-errore-validazione",
       "schermata": "orari/errore-validazione",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "req:0 alert:true focus:true view:false",
-      "atteso": "nessuna richiesta; avviso; campo; focus; destructive",
-      "evidenza": "Orario obbligatorio."
+      "misurato": "req:0 alert:true focus:true view:false scroll:true",
+      "atteso": "nessuna richiesta; avviso; campo; focus; scroll smooth centrato; destructive",
+      "evidenza": "Orario obbligatorio.",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-errore-validazione",
       "schermata": "orari/errore-validazione",
       "profiloTema": "telefono-390/scuro",
       "esito": "FALLITO",
-      "misurato": "req:0 alert:true focus:true view:false",
-      "atteso": "nessuna richiesta; avviso; campo; focus; destructive",
-      "evidenza": "Orario obbligatorio."
+      "misurato": "req:0 alert:true focus:true view:false scroll:true",
+      "atteso": "nessuna richiesta; avviso; campo; focus; scroll smooth centrato; destructive",
+      "evidenza": "Orario obbligatorio.",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-salvataggio-ok",
@@ -828,7 +1013,8 @@
       "esito": "OK",
       "misurato": "save:11:00 reload:11:00",
       "atteso": "11:00 persistito",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-salvataggio-in-corso",
@@ -837,7 +1023,8 @@
       "esito": "OK",
       "misurato": "busy:1 disabled:7 spinner:1",
       "atteso": "fieldset disabilitato; testo in corso; spinner",
-      "evidenza": "route delay 1500ms"
+      "evidenza": "route delay 1500ms",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-annulla",
@@ -846,7 +1033,8 @@
       "esito": "FALLITO",
       "misurato": "valore:true chiusura:true",
       "atteso": "stato salvato ripristinato",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-festivita",
@@ -855,7 +1043,8 @@
       "esito": "FALLITO",
       "misurato": "0:true 1:false 2:true 3:true",
       "atteso": "flusso festività (parziale step 1-4)",
-      "evidenza": "2026"
+      "evidenza": "2026",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-chiusure-foglio",
@@ -864,7 +1053,8 @@
       "esito": "OK",
       "misurato": "sheet:true apply:true row:true",
       "atteso": "foglio; Applica disabilitato finché incompleto",
-      "evidenza": "telefono-390"
+      "evidenza": "telefono-390",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-chiusure-foglio",
@@ -873,7 +1063,8 @@
       "esito": "OK",
       "misurato": "sheet:true apply:true row:true",
       "atteso": "foglio; Applica disabilitato finché incompleto",
-      "evidenza": "notebook-1280"
+      "evidenza": "notebook-1280",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-intestazione-anno",
@@ -882,7 +1073,8 @@
       "esito": "OK",
       "misurato": "{\"size\":\"16px\",\"weight\":\"600\",\"color\":\"lab(2.75381 0 0)\"}",
       "atteso": "16px peso 600 foreground",
-      "evidenza": "intestazione anno"
+      "evidenza": "intestazione anno",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-intestazione-anno",
@@ -891,25 +1083,28 @@
       "esito": "OK",
       "misurato": "{\"size\":\"16px\",\"weight\":\"600\",\"color\":\"lab(98.26 0 0)\"}",
       "atteso": "16px peso 600 foreground",
-      "evidenza": "intestazione anno"
+      "evidenza": "intestazione anno",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-dati",
       "schermata": "orari/dati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "{\"id\":\"6acb9afa3e4cf40ce9f13505\",\"name\":\"dinner\",\"startTime\":\"20:00\",\"endTime\":\"22:30\"}",
+      "misurato": "{\"id\":\"6acba1f494373d598252014d\",\"name\":\"dinner\",\"startTime\":\"20:00\",\"endTime\":\"22:30\"}",
       "atteso": "dinner 20:00-22:30 nel Global",
-      "evidenza": "Local API manager"
+      "evidenza": "Local API manager",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-validazione-server",
       "schermata": "orari/server",
       "profiloTema": "—",
-      "esito": "FALLITO",
-      "misurato": "[{\"value\":\"25:99\",\"ok\":false,\"message\":\"The following field is invalid: services.0.startTime\"},{\"value\":\"9:30\",\"ok\":false,\"message\":\"The following field is invalid: services.0.startTime\"}]",
+      "esito": "OK",
+      "misurato": "[{\"value\":\"25:99\",\"ok\":true,\"message\":\"services.0.startTime: formato non valido (usa HH:mm in 24 ore, es. 09:30).\",\"fieldMessages\":[\"services.0.startTime: formato non valido (usa HH:mm in 24 ore, es. 09:30).\"]},{\"value\":\"9:30\",\"ok\":true,\"message\":\"services.0.startTime: formato non valido (usa HH:mm in 24 ore, es. 09:30).\",\"fieldMessages\":[\"services.0.startTime: formato non valido (usa HH:mm in 24 ore, es. 09:30).\"]}]",
       "atteso": "Formato non valido: usa HH:mm in 24 ore (es. 09:30).",
-      "evidenza": "Local API"
+      "evidenza": "Local API",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-permessi",
@@ -918,7 +1113,8 @@
       "esito": "OK",
       "misurato": "{\"perm\":{\"admin\":{\"read\":true,\"write\":true},\"superAdmin\":{\"read\":true,\"write\":true},\"noRole\":{\"read\":false,\"write\":false}},\"redirected\":true}",
       "atteso": "staff OK; noRole negato; URL senza sessione→login",
-      "evidenza": "Local API + GET /hours anon"
+      "evidenza": "Local API + GET /hours anon",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-nomi-accessibili",
@@ -927,7 +1123,8 @@
       "esito": "OK",
       "misurato": "nessuno",
       "atteso": "nessuna stringa inglese vietata",
-      "evidenza": "/app/hours"
+      "evidenza": "/app/hours",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-giorni-riposo",
@@ -936,21 +1133,24 @@
       "esito": "OK",
       "misurato": "wed:true empty:true",
       "atteso": "toggle e weeklyClosedDays vuoto",
-      "evidenza": "[]"
+      "evidenza": "[]",
+      "pacchetto": "orari"
+    },
+    {
+      "id": "orari-non-configurato",
+      "schermata": "orari/non-configurato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "info:false lunch:— inputs:0 gone:true",
+      "atteso": "avviso; campi vuoti; scompare dopo save",
+      "evidenza": "clear-services",
+      "pacchetto": "orari"
     },
     {
       "id": "orari-console",
       "schermata": "—",
       "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-non-configurato",
-      "schermata": "—",
-      "profiloTema": "—",
+      "pacchetto": "orari",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -977,15 +1177,205 @@
     {
       "id": "orari-console",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "orari-non-configurato",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
   "anomalie": [
     "orari orari/salvato notebook-1280/chiaro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
     "orari orari/salvato telefono-390/scuro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
-    "orari orari/salvato notebook-1280/scuro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n"
+    "orari orari/salvato notebook-1280/scuro: locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: 'Salva modifiche' }) to be visible\n",
+    "orari orari/conferma-rimozione notebook-1280/chiaro: page.waitForFunction: Timeout 30000ms exceeded.",
+    "orari orari/conferma-rimozione notebook-1280/scuro: page.waitForFunction: Timeout 30000ms exceeded."
+  ],
+  "screenshotHashes": [
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "5b62a46951633bbf82d7d0bf0f18e38238dc9ccf3ce9f2b171cde131e975a758"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "0f143424ecfb94fc9a02ea4cb914b91997e215648d8f888f2e833625d624136e"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "ae1036880b033bafcf31b1c0fc3fb64887b77c169136704280bbecab7c1679fb"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "3436878b573c07f8d3036b5f76e6b4ecb4b2eceec772cb94f8a9e3dd7bfa4758"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "b4213356e1299d8a05613933960fd047195e205b1c97b52e241dfe82de2035df"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "a20a5f8e6cfce10d19a6e11397221dfa6af3aef715e35a8039378ede40afe82e"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "3cdde1c6e86411e7ca98f55dfd36ba18f2ab2bb9317d26f4039608a2ff12a38d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "65b90f91455949d9d7c211699c862969da7f6b3856b815ba6efaeaef3e075e11"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "cdf5e256f92effa3e96b44c812ef3ba60a2bb6f1dfe25cbddd5b667f00c5705a"
+    },
+    {
+      "name": "orari-salvato-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "0f143424ecfb94fc9a02ea4cb914b91997e215648d8f888f2e833625d624136e"
+    },
+    {
+      "name": "orari-salvato-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "fba08247a4ff7a2efc10f79c5753970230d263aecd7385d1c77e5f9839065bd9"
+    },
+    {
+      "name": "orari-salvato-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "3436878b573c07f8d3036b5f76e6b4ecb4b2eceec772cb94f8a9e3dd7bfa4758"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d133a5ef88b1a7de836f68c092130ee8b1f2c0e67fe6e85ff641377cd0845ce5"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "e7f15174cc88809a652afc994c230e645ed9c9e87588545c94e399b5b6d13a6a"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "90fcff56eb2a3989a39abd8e60781ac30417826b31565fdaabb48917484eec2e"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "af7776269594f70081b212dddac53bfe87d9b350e32bf2d198457ba02a365d51"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "43011d41ab4748cb222513484fe735172cf318a0205d11637d05ee195658ab17"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "6f539f2214a83fa4015b89b1163f13271993325f6fcf49526a0752ebb830572b"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "8eda506d1aa85e068cb3482cbb9c27e55d16f036afed506c2224fa951c29def1"
+    },
+    {
+      "name": "orari-conferma-rimozione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "3078101d292c2d22ad21abf235269f654af190e18ba87456a05a7764ff4c1d02"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "cfa3bd4db363641b80cc98af51be42ef68d2e893158d37376f73f35143f3de81"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "89d5a1a7d923fa62c3dff947152e6ce8db85079d68c177daba34ea28c84ee5df"
+    },
+    {
+      "name": "orari-iniziale-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "ae1036880b033bafcf31b1c0fc3fb64887b77c169136704280bbecab7c1679fb"
+    },
+    {
+      "name": "orari-iniziale-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "134ab17ff4d43a9b635e260a7b0d5433c983599cd59f3fc4def93885461e939f"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "bb6560611803b30437b801149bfb91db9370326e63e4c5ba98b2d215d445397d"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "22bbf89be314dd96cf2241ca3141068ce4e020037e05a601df2f96a53422423a"
+    },
+    {
+      "name": "orari-errore-validazione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "00fb9e3309642265a097a8a92a879af858b94f6731a02510fd3d66780d9f6d95"
+    },
+    {
+      "name": "orari-errore-validazione-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "24bbe79251d698b2ede1e48df37a5268618877302e382e1098be4677562c618c"
+    },
+    {
+      "name": "orari-salvato-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "cdf5e256f92effa3e96b44c812ef3ba60a2bb6f1dfe25cbddd5b667f00c5705a"
+    },
+    {
+      "name": "orari-salvato-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "89d5a1a7d923fa62c3dff947152e6ce8db85079d68c177daba34ea28c84ee5df"
+    },
+    {
+      "name": "orari-salvato-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "1e6e63567321fc7ef05eb7c8d4757d1a1133d9f837b6a620eb5790b5a1204bcc"
+    },
+    {
+      "name": "orari-salvato-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "134ab17ff4d43a9b635e260a7b0d5433c983599cd59f3fc4def93885461e939f"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d133a5ef88b1a7de836f68c092130ee8b1f2c0e67fe6e85ff641377cd0845ce5"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-chiaro",
+      "temaKey": "chiaro",
+      "hash": "e7cf2bb5f8ecd9d4b0503ed7ac7dd1ce6b978eb4e6c5dd3aa32a66ca7326335a"
+    },
+    {
+      "name": "orari-foglio-chiusura-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "90fcff56eb2a3989a39abd8e60781ac30417826b31565fdaabb48917484eec2e"
+    },
+    {
+      "name": "orari-foglio-chiusura-notebook-1280-scuro",
+      "temaKey": "scuro",
+      "hash": "822f245beb0f8bb1021265c8c965b752c869f81fa45bd5aa5b08b95814c86dec"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "43011d41ab4748cb222513484fe735172cf318a0205d11637d05ee195658ab17"
+    },
+    {
+      "name": "orari-conferma-rimozione-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "8eda506d1aa85e068cb3482cbb9c27e55d16f036afed506c2224fa951c29def1"
+    }
   ]
 }
