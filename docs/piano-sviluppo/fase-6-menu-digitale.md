@@ -148,7 +148,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.2 — Collection del menù e relazione menu fisso–piatto
 
-**Stato**: 🔶 in corso (codice, migrazione `20261012_184106_menu_content_6_2`, verify dev e build OK 2026-10-12; **migrazione Cloud SQL prod** e smoke REST prod **in attesa** dell’umano)
+**Stato**: ✅ chiusa (2026-10-12): schema, migrazione su Cloud SQL prod, verify dev, smoke REST anonima prod e regressioni 6.1; debiti di verifica tracciati in checklist e CHANGELOG.
 
 **Dipende da**: 6.1.
 
@@ -206,8 +206,9 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [x] Campi `localized` secondo la regola di `ADR-108`; **nessun** `localized` su nomi propri, sigle, anno, capacità, grado, prezzi e flag.
 - [x] Menu fisso: array con `portion`, ordine, nessun doppione; `visibility` su menu e categoria (obbligatorio + default `always` anche su categorie, ADR-108 §2).
 - [x] Lettura pubblica e prova per ruolo superate in dev (`pnpm verify:menu-6_2` con `pnpm dev` su `vma_vd_dev`).
-- [ ] Migrazione applicata su Cloud SQL prod **prima** del push.
-- [x] **Nomi congelati**: elenco slug e campi nel CHANGELOG `[Unreleased]` (contratto frontend alla chiusura formale dopo prod).
+- [x] **Produzione (2026-10-12)**: ordine rispettato — commit, migrazione `20261012_184106_menu_content_6_2` su Cloud SQL prod, push e deploy riusciti. Smoke REST **anonima** sul servizio pubblico, su ciascuno dei sette slug (`dishes`, `wines`, `spirits`, `drinks`, `menu-services`, `fixed-menu-categories`, `fixed-menus`): `GET` **200**, `POST {}` **403**, `PATCH` **403**, `DELETE` **403**. `GET /api/dishes?locale=en&limit=100&depth=2` → lista vuota (`totalDocs` **0**, atteso fino all’import **6.8**). Regressioni **6.1**: `GET /api/countries` → `totalDocs` **13**; `GET /api/globals/menu-general` → **200**.
+- [x] **Nomi congelati**: elenco slug e campi nel CHANGELOG `[Unreleased]` (contratto frontend alla chiusura di 6.2).
+- **Debiti dichiarati (non bloccanti per 6.8)**: visibilità voci «Menù digitale» nell’Admin nel browser **non provata** (solo `admin.hidden` in config); errore tecnico del database alla cancellazione admin di una voce referenziata (**limite noto**, permessi invariati); lingue provate su collection e campi richiesti in dev, **non** campo per campo su tutti i campi localizzati.
 
 ---
 
