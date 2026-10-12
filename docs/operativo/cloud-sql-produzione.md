@@ -76,6 +76,14 @@ SELECT id, name, batch, created_at FROM payload_migrations ORDER BY id;
 
 Con `push` disattivato (`NODE_ENV=production` via `prod-db.sh` o inline) non si aggiungono nuove righe batch −1; la riga storica può restare finché non si decide un intervento manuale (fuori scope di questo documento).
 
+## Disponibilità e alta affidabilità (decisione del 2026-10-12)
+
+- **Stato**: istanza a zona singola, **senza HA**, tipo `db-f1-micro` (`ADR-110`). **Nessuno SLA**: Google esclude dallo SLA di Cloud SQL le istanze shared-core e quelle a zona singola, e `db-f1-micro` resta fuori anche con HA attiva (documentazione ufficiale, 2026-10-12).
+- **Verificato il 2026-10-12** con `gcloud sql instances describe`: `db-f1-micro`, `ZONAL`, `ENTERPRISE`. Il riquadro dell'edizione nella console («99,95% … garantita dallo SLA») descrive l'edizione, non questa istanza: conta la definizione di «servizio coperto» dello SLA.
+- **Decisione** (Mirko, 2026-10-12): per il go-live del menù non si attiva l'HA. Un fermo del database non è critico per questo tipo di applicazione (menù statico, stato delle voci in un bucket).
+- **Protezione dei dati**: backup automatici con ripristino a un istante preciso, 7 giorni, indipendenti dall'HA.
+- **Da rivalutare** prima che dati reali di prenotazioni (5.3) entrino su questa istanza, o prima di aggiungere altri servizi, o se il menù diventa critico. Nota di chiarimento in `ADR-110`.
+
 ## Helper
 
 `scripts/prod-db.sh` rifiuta un `NODE_ENV` già impostato a un valore diverso da `production`, verifica che il proxy risponda su `5433`, esporta `NODE_ENV=production` (messaggio «push disattivato»), poi esegue il comando dopo `--` (es. `./scripts/prod-db.sh -- pnpm migrate:status` con `DATABASE_URL` prod inline o in ambiente).

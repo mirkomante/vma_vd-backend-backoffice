@@ -255,7 +255,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [x] Report a secco: conteggi per entità, duplicati di chiave naturale, valori non abbinati, tabella allergeni 14 righe, capacità e `prezzoCalice`. Nessun errore sullo snapshot del 2026-10-12 (`~/vtn-export-2026-10-12`, fuori repo).
 - [x] Prova in sviluppo su `vma_vd_dev` (`pnpm import:menu`); secondo `--apply` con 0 creati; hash SHA-256 del contenuto (`depth=2`) invariato tra due letture consecutive (`scripts/verify-menu-6_8-import-idempotency.ts`).
 - [ ] Esecuzione in produzione da locale con uno snapshot del giorno; conteggi coincidenti.
-- [ ] Rivalutazione esplicita dell'alta affidabilità di Cloud SQL (`ADR-110` §3, `arco-26`, `arco-27`): decisione e data annotate in `docs/operativo/cloud-sql-produzione.md`. La stessa voce sta nella checklist di chiusura di 5.3.
+- [x] Rivalutazione esplicita dell'alta affidabilità di Cloud SQL (`ADR-110` §3, `arco-27`): **decisione del 2026-10-12, nessuna HA per il go-live del menù**; da rivalutare prima dei dati reali delle prenotazioni (5.3). Annotata in `docs/operativo/cloud-sql-produzione.md` e in una nota di chiarimento ad `ADR-110`. La voce per la Fase 5 (`arco-26`) resta aperta nella checklist di chiusura di 5.3.
 - [x] Lettura pubblica REST dev `locale=it` (`depth=2`): campione piatto/bevanda/distillato/vino; piatto nascosto `disabled: true`; `locale=en` con ripiego vs `fallback-locale=none` su piatto importato.
 - [x] CHANGELOG (esiti dev); elenco revisione manuale per l'umano nel CHANGELOG.
 - [x] Script `scripts/import-menu-vtn-backend.ts`, comando `pnpm import:menu`; nota in testata script: **non rilanciare su DB già rivisto a mano**.

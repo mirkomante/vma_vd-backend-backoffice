@@ -227,7 +227,7 @@ fasi:
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
         stato: "in_corso"
-        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione e rivalutazione ADR-110 §3 restano aperti. Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md."
+        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione resta aperta; rivalutazione ADR-110 §3 chiusa il 2026-10-12 (nessuna HA per il menù, da rivedere prima di fase-5.3). Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md."
       - id: fase-6.9
         nome: "Scaffold del frontend del menù (repository separato, banco di prova dei punti di contatto)"
         stato: "da_fare"
@@ -545,7 +545,9 @@ archi:
       pubblico del menù digitale (fase-6): nessun carico ospiti dipende
       da questa istanza finché fase-6 non la porta in produzione reale —
       a quel punto l'HA va rivalutata esplicitamente, non lasciata
-      implicita.
+      implicita. Chiuso il 2026-10-12 (nota di chiarimento ad ADR-110):
+      nessuna HA per il menù, da rivalutare prima dei dati reali delle
+      prenotazioni; arco-26 resta aperto per fase-5.
     adr: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     fonte: "ADR-110-istanza-cloud-sql-produzione.md §3"
 
@@ -1017,7 +1019,10 @@ adr_da_scrivere:
       operativa di Fase 3.1, non alla composizione iniziale. Nessuna
       deviazione da un default di catalogo: fase-3-db-postgres.md
       lascia tier e disponibilità esplicitamente aperti al progetto.
-      Validato dall'utente il 2026-09-26.
+      Validato dall'utente il 2026-09-26. Nota di chiarimento del
+      2026-10-12: rivalutazione dell'HA chiusa per il menù (arco-27),
+      nessuna HA; l'istanza db-f1-micro non ha SLA (shared-core e zona
+      singola esclusi dalla documentazione ufficiale, anche con HA).
   - titolo: "ADR — Contratto CMS <-> siti esterni (preview e revalidation)"
     archi: ["arco-28"]
     stato: "da_scrivere"
