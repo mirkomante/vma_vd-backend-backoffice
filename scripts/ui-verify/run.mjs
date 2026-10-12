@@ -759,7 +759,7 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
             evidenza: stato.percorso,
           })
         }
-        r = await checkShellPercorsoVoceAttiva(page, stato.percorso)
+        r = await checkShellPercorsoVoceAttiva(page, stato.percorso, { report })
         addRow(report, { id: 'shell-percorso-voce-attiva', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
 
         r = await checkShellNomiAccessibili(page)

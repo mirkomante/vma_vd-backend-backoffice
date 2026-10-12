@@ -7,7 +7,9 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.2.0'
+export const LAUNCHER_VERSION = '3.2.1'
+
+let shellPercorsoPiattiDiagnosticDone = false
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -956,32 +958,64 @@ async function openUserMenuAndGetChecked(page, label) {
   return checked === 'true'
 }
 
-export async function checkShellPercorsoVoceAttiva(page, path) {
+async function emitShellPercorsoPiattiDiagnostic(page, report) {
+  if (!report || shellPercorsoPiattiDiagnosticDone) return
+  const w = page.viewportSize()?.width ?? 0
+  if (w < 768) return
+  shellPercorsoPiattiDiagnosticDone = true
+  const d = await page.evaluate(() => {
+    const sidebar = document.querySelector('[data-sidebar="sidebar"]')
+    const buttons = [...(sidebar ?? document).querySelectorAll('[data-sidebar="menu-button"]')]
+    const piatti = buttons.find((btn) => (btn.textContent || '').includes('Piatti'))
+    if (!piatti) return { found: false }
+    const attrs = {}
+    for (const a of piatti.attributes) attrs[a.name] = a.value
+    return { found: true, outerHTML: piatti.outerHTML.slice(0, 8000), attrs }
+  })
+  if (!d.found) {
+    report.anomalie.push('shell-percorso-voce-attiva diagnostica: pulsante «Piatti» non trovato @1280px')
+    return
+  }
+  report.anomalie.push(
+    `shell-percorso-voce-attiva diagnostica (Piatti @1280px): attributi=${JSON.stringify(d.attrs)}; outerHTML=${d.outerHTML}`,
+  )
+}
+
+export async function checkShellPercorsoVoceAttiva(page, path, { report } = {}) {
   const atteso = PERCORSO_ATTESO[path]
   if (!atteso) return { ok: false, misurato: `path ${path} sconosciuto`, atteso: '—' }
   const w = page.viewportSize()?.width ?? 1280
   const openedMobile = w < 768
-  if (openedMobile) {
+  if (path === '/app/menu' && !openedMobile) {
+    await emitShellPercorsoPiattiDiagnostic(page, report)
+  }
+  if (openedMobile && atteso.active && !(await isMobileSidebarOpen(page))) {
+    await page.keyboard.press('Escape')
+    await page.waitForTimeout(150)
     const nav = await openMobileSidebar(page)
     if (!nav.opened && !(await isMobileSidebarOpen(page))) {
       await page.getByRole('button', { name: 'Apri o chiudi il menu' }).click({ timeout: 5000 }).catch(() => {})
     }
-    await page.locator('[data-sidebar="sidebar"][data-mobile="true"]').waitFor({ state: 'visible', timeout: 8000 }).catch(() => {})
-    await page.waitForTimeout(350)
+    await page.locator('[data-sidebar="sidebar"][data-mobile="true"]').waitFor({ state: 'visible', timeout: 10000 })
   }
   const data = await page.evaluate(() => {
     const nav = document.querySelector('nav[aria-label="Percorso"]')
     const crumbs = nav
       ? [...nav.querySelectorAll('[data-slot=breadcrumb-item]')].map((li) => li.textContent?.trim()).filter(Boolean)
       : []
+    const sidebars = [...document.querySelectorAll('[data-sidebar="sidebar"]')]
     const sidebar =
+      sidebars.find((el) => {
+        const r = el.getBoundingClientRect()
+        return r.width > 50 && r.height > 50
+      }) ??
       document.querySelector('[data-sidebar="sidebar"][data-mobile="true"]') ??
       document.querySelector('[data-sidebar="sidebar"]')
     const scope = sidebar ?? document
     const active = []
-    scope.querySelectorAll('[data-sidebar="menu-button"]').forEach((btn) => {
+    scope.querySelectorAll('[data-sidebar="menu"] [data-sidebar="menu-button"]').forEach((btn) => {
       const isActive =
-        btn.getAttribute('data-active') === 'true' ||
+        btn.hasAttribute('data-active') ||
         btn.getAttribute('aria-current') === 'page'
       if (!isActive) return
       const label = btn.querySelector('span')?.textContent?.trim() || btn.textContent?.trim()
