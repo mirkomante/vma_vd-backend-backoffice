@@ -193,6 +193,7 @@ async function seedAllergens(payload: Payload): Promise<{ created: number; enPat
       collection: ALLERGENS_SLUG,
       id,
       locale: 'en',
+      fallbackLocale: false,
       depth: 0,
       overrideAccess: true,
     })
@@ -231,7 +232,15 @@ async function logCounts(payload: Payload): Promise<void> {
   }
 }
 
-export async function runMenuTaxonomiesSeed(payload: Payload): Promise<void> {
+export type MenuTaxonomiesSeedStats = {
+  countries: { created: number }
+  regions: { created: number }
+  appellations: { created: number }
+  classifications: { created: number }
+  allergens: { created: number; enPatched: number }
+}
+
+export async function runMenuTaxonomiesSeed(payload: Payload): Promise<MenuTaxonomiesSeedStats> {
   const countries = await seedCountries(payload)
   const regions = await seedRegions(payload)
   const appellations = await seedAppellations(payload)
@@ -244,6 +253,7 @@ export async function runMenuTaxonomiesSeed(payload: Payload): Promise<void> {
       `allergeni=${allergens.created} (en aggiornati=${allergens.enPatched})`,
   )
   await logCounts(payload)
+  return { countries, regions, appellations, classifications, allergens }
 }
 
 async function main(): Promise<void> {

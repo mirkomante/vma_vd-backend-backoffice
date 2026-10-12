@@ -33,6 +33,7 @@ import {
 } from '@/lib/menu/constants'
 import type { User } from '@/payload-types'
 
+import { ALLERGENS_SEED } from './menu-taxonomies/seed-data'
 import { runMenuTaxonomiesSeed } from './seed-menu-taxonomies'
 
 const TEST_RUN_ID = Date.now().toString(36)
@@ -98,6 +99,40 @@ function expectAnonRestWriteStatus(label: string, res: Response): void {
     throw new Error(`REST anonimo ${label}: atteso 403, ottenuto ${res.status}`)
   }
   console.log(`OK: REST anonimo ${label} → ${res.status}`)
+}
+
+async function assertAllergensEnglishFromSeed(payload: PayloadInstance): Promise<void> {
+  for (const row of ALLERGENS_SEED) {
+    const existing = await payload.find({
+      collection: ALLERGENS_SLUG,
+      locale: 'it',
+      depth: 0,
+      limit: 1,
+      overrideAccess: true,
+      where: { name: { equals: row.nameIt } },
+    })
+    const id = existing.docs[0]?.id
+    if (id == null) {
+      throw new Error(`Allergene IT mancante: ${row.nameIt}`)
+    }
+    const enDoc = await payload.findByID({
+      collection: ALLERGENS_SLUG,
+      id,
+      locale: 'en',
+      fallbackLocale: false,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const enName = typeof enDoc.name === 'string' ? enDoc.name.trim() : ''
+    if (enName !== row.nameEn) {
+      throw new Error(
+        `Allergene «${row.nameIt}»: atteso name en «${row.nameEn}», ottenuto «${enName}»`,
+      )
+    }
+  }
+  console.log(
+    `OK: allergeni locale=en fallbackLocale=false (${ALLERGENS_SEED.length}/${ALLERGENS_SEED.length})`,
+  )
 }
 
 async function assertCounts(payload: PayloadInstance): Promise<void> {
@@ -405,14 +440,24 @@ async function main(): Promise<void> {
 
   try {
     console.log('--- Seed idempotente (due esecuzioni) ---')
-    await runMenuTaxonomiesSeed(payload)
+    const firstSeed = await runMenuTaxonomiesSeed(payload)
+    await assertAllergensEnglishFromSeed(payload)
+    console.log(
+      `OK: primo seed allergeni en aggiornati=${firstSeed.allergens.enPatched}`,
+    )
     const afterFirst = await payload.find({
       collection: COUNTRIES_SLUG,
       depth: 0,
       limit: 0,
       overrideAccess: true,
     })
-    await runMenuTaxonomiesSeed(payload)
+    const secondSeed = await runMenuTaxonomiesSeed(payload)
+    if (secondSeed.allergens.enPatched !== 0) {
+      throw new Error(
+        `Secondo seed: atteso en aggiornati=0, ottenuto ${secondSeed.allergens.enPatched}`,
+      )
+    }
+    console.log('OK: secondo seed en aggiornati=0')
     const afterSecond = await payload.find({
       collection: COUNTRIES_SLUG,
       depth: 0,
