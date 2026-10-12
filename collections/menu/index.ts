@@ -159,3 +159,5 @@ export const menuTaxonomyCollections: CollectionConfig[] = [
   WineTypes,
   DrinkTypes,
 ]
+
+export { menuContentCollections } from './menuContentCollections'

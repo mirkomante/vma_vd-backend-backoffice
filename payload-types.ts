@@ -77,6 +77,13 @@ export interface Config {
     'spirit-types': SpiritType;
     'wine-types': WineType;
     'drink-types': DrinkType;
+    dishes: Dish;
+    wines: Wine;
+    spirits: Spirit;
+    drinks: Drink;
+    'menu-services': MenuService;
+    'fixed-menu-categories': FixedMenuCategory;
+    'fixed-menus': FixedMenu;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -95,6 +102,13 @@ export interface Config {
     'spirit-types': SpiritTypesSelect<false> | SpiritTypesSelect<true>;
     'wine-types': WineTypesSelect<false> | WineTypesSelect<true>;
     'drink-types': DrinkTypesSelect<false> | DrinkTypesSelect<true>;
+    dishes: DishesSelect<false> | DishesSelect<true>;
+    wines: WinesSelect<false> | WinesSelect<true>;
+    spirits: SpiritsSelect<false> | SpiritsSelect<true>;
+    drinks: DrinksSelect<false> | DrinksSelect<true>;
+    'menu-services': MenuServicesSelect<false> | MenuServicesSelect<true>;
+    'fixed-menu-categories': FixedMenuCategoriesSelect<false> | FixedMenuCategoriesSelect<true>;
+    'fixed-menus': FixedMenusSelect<false> | FixedMenusSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -346,6 +360,172 @@ export interface DrinkType {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dishes".
+ */
+export interface Dish {
+  id: number;
+  name: string;
+  description?: string | null;
+  price: number;
+  category: number | DishCategory;
+  allergens?: (number | Allergen)[] | null;
+  glutenFree?: boolean | null;
+  dairyFree?: boolean | null;
+  vegan?: boolean | null;
+  eggFree?: boolean | null;
+  /**
+   * Esaurimento temporaneo; reset automatico ai confini di servizio (6.4).
+   */
+  soldOut?: boolean | null;
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wines".
+ */
+export interface Wine {
+  id: number;
+  name: string;
+  description?: string | null;
+  winery?: string | null;
+  year?: string | null;
+  /**
+   * Es. «75 cl».
+   */
+  volume?: string | null;
+  abv?: string | null;
+  price: number;
+  glassPrice?: number | null;
+  classification?: (number | null) | Classification;
+  country: number | Country;
+  region?: (number | null) | Region;
+  appellation?: (number | null) | Appellation;
+  type: number | WineType;
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spirits".
+ */
+export interface Spirit {
+  id: number;
+  name: string;
+  description?: string | null;
+  abv?: string | null;
+  aging?: string | null;
+  volume?: string | null;
+  price: number;
+  country: number | Country;
+  type: number | SpiritType;
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Include le birre (tipologia «Birre»).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drinks".
+ */
+export interface Drink {
+  id: number;
+  name: string;
+  description?: string | null;
+  price: number;
+  type: number | DrinkType;
+  country?: (number | null) | Country;
+  abv?: string | null;
+  volume?: string | null;
+  allergens?: (number | Allergen)[] | null;
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Coperto, diritto di dolce, diritto di tappo
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-services".
+ */
+export interface MenuService {
+  id: number;
+  name: string;
+  price: number;
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fixed-menu-categories".
+ */
+export interface FixedMenuCategory {
+  id: number;
+  name: string;
+  /**
+   * Quando il menu o la categoria compare nelle pagine del menù pubblico.
+   */
+  visibility: 'always' | 'lunch_only' | 'dinner_only';
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fixed-menus".
+ */
+export interface FixedMenu {
+  id: number;
+  name: string;
+  description?: string | null;
+  price: number;
+  category: number | FixedMenuCategory;
+  /**
+   * Quando il menu o la categoria compare nelle pagine del menù pubblico.
+   */
+  visibility: 'always' | 'lunch_only' | 'dinner_only';
+  dishes?:
+    | {
+        dish: number | Dish;
+        /**
+         * Facoltativa; solo se la quantità nel menu fisso differisce dalla porzione à la carte.
+         */
+        portion?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  services?: (number | MenuService)[] | null;
+  /**
+   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -407,6 +587,34 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'drink-types';
         value: number | DrinkType;
+      } | null)
+    | ({
+        relationTo: 'dishes';
+        value: number | Dish;
+      } | null)
+    | ({
+        relationTo: 'wines';
+        value: number | Wine;
+      } | null)
+    | ({
+        relationTo: 'spirits';
+        value: number | Spirit;
+      } | null)
+    | ({
+        relationTo: 'drinks';
+        value: number | Drink;
+      } | null)
+    | ({
+        relationTo: 'menu-services';
+        value: number | MenuService;
+      } | null)
+    | ({
+        relationTo: 'fixed-menu-categories';
+        value: number | FixedMenuCategory;
+      } | null)
+    | ({
+        relationTo: 'fixed-menus';
+        value: number | FixedMenu;
       } | null)
     | ({
         relationTo: 'users';
@@ -552,6 +760,125 @@ export interface WineTypesSelect<T extends boolean = true> {
  */
 export interface DrinkTypesSelect<T extends boolean = true> {
   name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dishes_select".
+ */
+export interface DishesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  price?: T;
+  category?: T;
+  allergens?: T;
+  glutenFree?: T;
+  dairyFree?: T;
+  vegan?: T;
+  eggFree?: T;
+  soldOut?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wines_select".
+ */
+export interface WinesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  winery?: T;
+  year?: T;
+  volume?: T;
+  abv?: T;
+  price?: T;
+  glassPrice?: T;
+  classification?: T;
+  country?: T;
+  region?: T;
+  appellation?: T;
+  type?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spirits_select".
+ */
+export interface SpiritsSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  abv?: T;
+  aging?: T;
+  volume?: T;
+  price?: T;
+  country?: T;
+  type?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drinks_select".
+ */
+export interface DrinksSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  price?: T;
+  type?: T;
+  country?: T;
+  abv?: T;
+  volume?: T;
+  allergens?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-services_select".
+ */
+export interface MenuServicesSelect<T extends boolean = true> {
+  name?: T;
+  price?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fixed-menu-categories_select".
+ */
+export interface FixedMenuCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  visibility?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fixed-menus_select".
+ */
+export interface FixedMenusSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  price?: T;
+  category?: T;
+  visibility?: T;
+  dishes?:
+    | T
+    | {
+        dish?: T;
+        portion?: T;
+        id?: T;
+      };
+  services?: T;
+  disabled?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -148,7 +148,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.2 — Collection del menù e relazione menu fisso–piatto
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (codice, migrazione `20261012_184106_menu_content_6_2`, verify dev e build OK 2026-10-12; **migrazione Cloud SQL prod** e smoke REST prod **in attesa** dell’umano)
 
 **Dipende da**: 6.1.
 
@@ -202,12 +202,12 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 **Verifiche tecniche**: lettura anonima `GET /api/dishes?locale=it&limit=100&depth=2` e con `locale=en`; la REST restituisce anche le voci disabilitate con `disabled: true`; prova per ruolo su ogni collection (creazione, modifica, cancellazione); un manager che tenta la cancellazione è rifiutato.
 
 **Checklist di chiusura sottofase**:
-- [ ] Collection registrate con i nomi confermati; sezione «Menù digitale» nella barra laterale dell'Admin per admin e super-admin.
-- [ ] Campi `localized` secondo la regola di `ADR-108`; **nessun** `localized` su nomi propri, sigle, anno, capacità, grado, prezzi e flag.
-- [ ] Menu fisso: array con `portion`, ordine, nessun doppione; `visibility` su menu e categoria.
-- [ ] Lettura pubblica e prova per ruolo superate.
+- [x] Collection registrate con i nomi confermati; sezione «Menù digitale» nella barra laterale dell'Admin per admin e super-admin (**visibilità nel browser Admin**: non provata, solo `admin.hidden` in config).
+- [x] Campi `localized` secondo la regola di `ADR-108`; **nessun** `localized` su nomi propri, sigle, anno, capacità, grado, prezzi e flag.
+- [x] Menu fisso: array con `portion`, ordine, nessun doppione; `visibility` su menu e categoria (obbligatorio + default `always` anche su categorie, ADR-108 §2).
+- [x] Lettura pubblica e prova per ruolo superate in dev (`pnpm verify:menu-6_2` con `pnpm dev` su `vma_vd_dev`).
 - [ ] Migrazione applicata su Cloud SQL prod **prima** del push.
-- [ ] **Nomi congelati**: l'elenco di slug e campi riportato nel CHANGELOG come base del contratto con il frontend.
+- [x] **Nomi congelati**: elenco slug e campi nel CHANGELOG `[Unreleased]` (contratto frontend alla chiusura formale dopo prod).
 
 ---
 

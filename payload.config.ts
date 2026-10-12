@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { ActivityLog } from './collections/ActivityLog'
-import { menuTaxonomyCollections } from './collections/menu'
+import { menuContentCollections, menuTaxonomyCollections } from './collections/menu'
 import { Users } from './collections/Users'
 import { MenuGeneral } from './globals/MenuGeneral'
 import { Settings } from './globals/Settings'
@@ -61,7 +61,7 @@ export default buildConfig({
       beforeLogin: ['@/components/auth/AdminGoogleLoginBefore'],
     },
   },
-  collections: [Users, ActivityLog, ...menuTaxonomyCollections],
+  collections: [Users, ActivityLog, ...menuTaxonomyCollections, ...menuContentCollections],
   globals: [Settings, SystemSettings, MenuGeneral],
   plugins: isGoogleOAuthConfigured()
     ? [googleOAuthAdminPlugin(), googleOAuthAppPlugin(), patchUsersAuthStrategiesPlugin()]

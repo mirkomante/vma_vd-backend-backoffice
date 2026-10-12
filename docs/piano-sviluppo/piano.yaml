@@ -202,7 +202,7 @@ fasi:
         note: "Chiusa 2026-10-12. Migrazione 20261012_161048_menu_taxonomies_6_1 su Cloud SQL prod (batch 9; prompt dev mode/data loss per batch -1, yes). Seed prod: prima run 13/16/3/6/14 (allergeni en mancanti pre-fix); seconda post-fix en aggiornati=14. Smoke REST anonima prod OK (countries 13, POST countries 403, allergens en+fallback-locale=none x14, menu-general GET 200 POST 403). Deviazione: push dfcb0c6 prima di migrate ma build fallita senza deploy; migrate prima del primo deploy riuscito. verify-menu-6_1 OK dev; debiti: Admin browser, REST altri ruoli, vma_vd_migr senza super-admin. fase-6-menu-digitale.md §6.1."
       - id: fase-6.2
         nome: "Collection Piatti / Vini / Distillati / Bevande (birra compresa) + menu fissi (campo porzione) + Servizi (emendamenti ad ADR-108)"
-        stato: "da_fare"
+        stato: "in_corso"
         note: "Prerequisiti: contratto ADR-112. po-09 chiuso: campi testuali localized (secondo emendamento ad ADR-108). po-05 chiuso: l'import dei dati esistenti è in fase-6.8. Scaffolda anche la Collection Servizi (emendamento ad ADR-108, 2026-10-04). Terzo emendamento (2026-10-04): la birra è una bevanda con tipologia Birre, nessuna collection dedicata. Nomi e campi proposti in fase-6-menu-digitale.md, congelati alla chiusura di 6.2. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2, riepilogo-sessione-varianti-porzione-piatto.md"
       - id: fase-6.3
         nome: "Collection 'Giorni Speciali'"

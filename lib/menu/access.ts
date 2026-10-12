@@ -36,3 +36,21 @@ export function canReadMenuGeneralRequest(req: PayloadRequest): boolean {
 export function canUpdateMenuGeneralRequest(req: PayloadRequest): boolean {
   return isStaffAdminRequest(req) || isActiveAppManagerRequest(req)
 }
+
+/** Collection contenuti menù (6.2): lettura come tassonomie (anonima + staff/manager App). */
+export function canReadMenuContentRequest(req: PayloadRequest): boolean {
+  return canReadMenuTaxonomiesRequest(req)
+}
+
+/** Creazione e modifica: staff Admin o manager App (ADR-113 §3). */
+export function canWriteMenuContentRequest(req: PayloadRequest): boolean {
+  if (!isStaffAdminRequest(req) && !isActiveAppManagerRequest(req)) {
+    return false
+  }
+  return true
+}
+
+/** Cancellazione fisica: solo staff Admin; il manager usa `disabled` (ADR-113, fase 6.2). */
+export function canDeleteMenuContentRequest(req: PayloadRequest): boolean {
+  return isStaffAdminRequest(req)
+}
