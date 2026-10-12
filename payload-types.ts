@@ -68,6 +68,15 @@ export interface Config {
   blocks: {};
   collections: {
     'activity-log': ActivityLog;
+    'dish-categories': DishCategory;
+    allergens: Allergen;
+    countries: Country;
+    regions: Region;
+    appellations: Appellation;
+    classifications: Classification;
+    'spirit-types': SpiritType;
+    'wine-types': WineType;
+    'drink-types': DrinkType;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -77,6 +86,15 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     'activity-log': ActivityLogSelect<false> | ActivityLogSelect<true>;
+    'dish-categories': DishCategoriesSelect<false> | DishCategoriesSelect<true>;
+    allergens: AllergensSelect<false> | AllergensSelect<true>;
+    countries: CountriesSelect<false> | CountriesSelect<true>;
+    regions: RegionsSelect<false> | RegionsSelect<true>;
+    appellations: AppellationsSelect<false> | AppellationsSelect<true>;
+    classifications: ClassificationsSelect<false> | ClassificationsSelect<true>;
+    'spirit-types': SpiritTypesSelect<false> | SpiritTypesSelect<true>;
+    'wine-types': WineTypesSelect<false> | WineTypesSelect<true>;
+    'drink-types': DrinkTypesSelect<false> | DrinkTypesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -90,10 +108,12 @@ export interface Config {
   globals: {
     settings: Setting;
     'impostazioni-sistema': ImpostazioniSistema;
+    'menu-general': MenuGeneral;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
     'impostazioni-sistema': ImpostazioniSistemaSelect<false> | ImpostazioniSistemaSelect<true>;
+    'menu-general': MenuGeneralSelect<false> | MenuGeneralSelect<true>;
   };
   locale: 'it' | 'en';
   widgets: {
@@ -207,6 +227,124 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Popolata dall’import (6.8); il manager sceglie soltanto.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dish-categories".
+ */
+export interface DishCategory {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * 14 valori normativi UE; condivisi tra piatti e bevande.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "allergens".
+ */
+export interface Allergen {
+  id: number;
+  name: string;
+  /**
+   * Facoltativa; informazione normativa (es. solfiti).
+   */
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries".
+ */
+export interface Country {
+  id: number;
+  name: string;
+  /**
+   * Se disattivato, il paese non compare nelle scelte del manager (6.6).
+   */
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Relazione obbligatoria al paese; solo valori abilitati in scelta manager.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regions".
+ */
+export interface Region {
+  id: number;
+  name: string;
+  country: number | Country;
+  enabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Nomi propri; non localizzati.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "appellations".
+ */
+export interface Appellation {
+  id: number;
+  name: string;
+  region: number | Region;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Sigle normative; non localizzate.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "classifications".
+ */
+export interface Classification {
+  id: number;
+  name: string;
+  country: number | Country;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Popolata dall’import (6.8).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spirit-types".
+ */
+export interface SpiritType {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Popolata dall’import (6.8).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wine-types".
+ */
+export interface WineType {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Popolata dall’import (6.8); «Birre» la crea un admin al primo inserimento.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-types".
+ */
+export interface DrinkType {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -233,6 +371,42 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'activity-log';
         value: number | ActivityLog;
+      } | null)
+    | ({
+        relationTo: 'dish-categories';
+        value: number | DishCategory;
+      } | null)
+    | ({
+        relationTo: 'allergens';
+        value: number | Allergen;
+      } | null)
+    | ({
+        relationTo: 'countries';
+        value: number | Country;
+      } | null)
+    | ({
+        relationTo: 'regions';
+        value: number | Region;
+      } | null)
+    | ({
+        relationTo: 'appellations';
+        value: number | Appellation;
+      } | null)
+    | ({
+        relationTo: 'classifications';
+        value: number | Classification;
+      } | null)
+    | ({
+        relationTo: 'spirit-types';
+        value: number | SpiritType;
+      } | null)
+    | ({
+        relationTo: 'wine-types';
+        value: number | WineType;
+      } | null)
+    | ({
+        relationTo: 'drink-types';
+        value: number | DrinkType;
       } | null)
     | ({
         relationTo: 'users';
@@ -291,6 +465,93 @@ export interface ActivityLogSelect<T extends boolean = true> {
   method?: T;
   collection?: T;
   documentId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dish-categories_select".
+ */
+export interface DishCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "allergens_select".
+ */
+export interface AllergensSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "countries_select".
+ */
+export interface CountriesSelect<T extends boolean = true> {
+  name?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regions_select".
+ */
+export interface RegionsSelect<T extends boolean = true> {
+  name?: T;
+  country?: T;
+  enabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "appellations_select".
+ */
+export interface AppellationsSelect<T extends boolean = true> {
+  name?: T;
+  region?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "classifications_select".
+ */
+export interface ClassificationsSelect<T extends boolean = true> {
+  name?: T;
+  country?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "spirit-types_select".
+ */
+export interface SpiritTypesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "wine-types_select".
+ */
+export interface WineTypesSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "drink-types_select".
+ */
+export interface DrinkTypesSelect<T extends boolean = true> {
+  name?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -451,6 +712,21 @@ export interface ImpostazioniSistema {
   createdAt?: string | null;
 }
 /**
+ * Messaggio immediato sul menù pubblico (alimenta disponibilita.json in 6.4). Nessun campo orario.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-general".
+ */
+export interface MenuGeneral {
+  id: number;
+  /**
+   * Avviso breve (es. «oggi cucina chiusa»); modificabile dal manager nell’App.
+   */
+  globalMessage?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "settings_select".
  */
@@ -510,6 +786,16 @@ export interface ImpostazioniSistemaSelect<T extends boolean = true> {
         email?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menu-general_select".
+ */
+export interface MenuGeneralSelect<T extends boolean = true> {
+  globalMessage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

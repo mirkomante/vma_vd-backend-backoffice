@@ -18,6 +18,8 @@
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "seed:super-admin": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-super-admin.ts",
+    "seed:menu-taxonomies": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-menu-taxonomies.ts",
+    "verify:menu-6_1": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_1.ts",
     "migrate:bootstrap-credentials": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/migrate-bootstrap-credentials.ts",
     "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",

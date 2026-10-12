@@ -101,7 +101,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non indica l'ordine di esecuzione: **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.9 → 6.5**. Prerequisiti: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate. Il frontend pubblico (6.7) è fuori perimetro: vive in un altro progetto. La 6.9 (decisione del 2026-10-12) prepara solo lo scaffold di prova di quel frontend, in un repository separato.
 
 0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — 🔶 in corso (risorse create il 2026-10-12; resta la prova di sovrascrittura del runtime SA, in 6.4; CORS rimandato a 6.9)
-1. Tassonomie e Global «Generali» — 🔲 da fare
+1. Tassonomie e Global «Generali» — 🔶 in corso (schema + seed dev; migrate/seed prod prima del push)
 2. Collection del menù e relazione menu fisso–piatto — 🔲 da fare
 3. Giorni Speciali — 🔲 da fare
 4. Disponibilità, reset ai confini di servizio e `disponibilita.json` — 🔲 da fare

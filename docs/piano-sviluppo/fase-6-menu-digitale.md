@@ -92,7 +92,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.1 — Tassonomie e Global «Generali»
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (codice, migrazione `20261012_161048_menu_taxonomies_6_1`, seed e verifiche in sviluppo; **migrazione Cloud SQL prod** e seed prod ancora da eseguire prima del push)
 
 **Dipende da**: Fase 7 e Fase 8.3 completate (valore `manager` di `adminRole`, `admin.hidden`). Non dipende da 6.0.
 
@@ -134,13 +134,13 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Verifiche tecniche**: prova per ruolo (anonimo, utente senza ruoli, manager App, admin, super-admin) su lettura e scrittura di ogni collection e del Global; il seed non crea duplicati se rieseguito; le relazioni (`regions.country`, `appellations.region`, `classifications.country`) rifiutano un riferimento vuoto.
 
 **Checklist di chiusura sottofase**:
-- [ ] Collection e Global registrati con i nomi della tabella (o con quelli confermati nella validazione).
-- [ ] Campi `localized` secondo la regola; locale predefinita `it`, ripiego incrociato verificato su una lettura `locale=en` con testo mancante.
-- [ ] Seed eseguito e verificato (conteggi: 13 Paesi, 16 regioni, 3 denominazioni, 6 classificazioni, 14 allergeni).
-- [ ] Prova per ruolo superata.
-- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push.
-- [ ] Riportato che «Generali» nasce senza campi orario (come da checklist di 7.2).
-- [ ] CHANGELOG.
+- [x] Collection e Global registrati con i nomi della tabella (slug confermati: `dish-categories`, `allergens`, `countries`, `regions`, `appellations`, `classifications`, `spirit-types`, `wine-types`, `drink-types`, Global `menu-general` con campo `globalMessage`).
+- [x] Campi `localized` secondo la regola; locale predefinita `it` (già in `payload.config.ts`), ripiego incrociato verificato su Local API e REST `locale=en` senza traduzione EN su Paesi (record «Italia»).
+- [x] Seed eseguito e verificato in sviluppo (`pnpm seed:menu-taxonomies` su `vma_vd_dev`: conteggi 13 / 16 / 3 / 6 / 14; seconda esecuzione senza duplicati). **Produzione**: da eseguire dopo migrate prod (Parte D).
+- [x] Prova per ruolo superata (`pnpm verify:menu-6_1`: anonimo; utente senza ruoli; `adminRole: manager` senza `appRole`; `appRole: manager`; `adminRole: manager` + `appRole: manager`; admin/super-admin; relazioni obbligatorie).
+- [ ] Migrazione generata (`migrations/20261012_161048_menu_taxonomies_6_1.ts`), committata e applicata su Cloud SQL prod **prima** del push.
+- [x] «Generali» (`menu-general`) nasce **senza** campi orario/chiusura/`isSpecialPeriod` — solo `globalMessage` localizzato.
+- [x] CHANGELOG (voce sotto `[Unreleased]`; chiusura versione alla fine della sottofase).
 
 ---
 

@@ -6,6 +6,7 @@ import * as migration_20261006_091528_add_impostazioni_sistema_orari_chiusure fr
 import * as migration_20261006_114919_add_impostazioni_sistema_calendario_comunicazioni from './20261006_114919_add_impostazioni_sistema_calendario_comunicazioni';
 import * as migration_20261010_071726_add_admin_role_manager from './20261010_071726_add_admin_role_manager';
 import * as migration_20261011_133256_add_account_created_email_sent_at from './20261011_133256_add_account_created_email_sent_at';
+import * as migration_20261012_161048_menu_taxonomies_6_1 from './20261012_161048_menu_taxonomies_6_1';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20261011_133256_add_account_created_email_sent_at.up,
     down: migration_20261011_133256_add_account_created_email_sent_at.down,
-    name: '20261011_133256_add_account_created_email_sent_at'
+    name: '20261011_133256_add_account_created_email_sent_at',
+  },
+  {
+    up: migration_20261012_161048_menu_taxonomies_6_1.up,
+    down: migration_20261012_161048_menu_taxonomies_6_1.down,
+    name: '20261012_161048_menu_taxonomies_6_1'
   },
 ];
