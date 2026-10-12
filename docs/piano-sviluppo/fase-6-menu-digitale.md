@@ -51,7 +51,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.0 — Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (risorse create il 2026-10-12; resta aperta solo la prova di sovrascrittura del runtime SA, spostata in 6.4; CORS rimandato a 6.9 come previsto). Dettaglio: `docs/operativo/gcp-menu-scheduler.md`.
 
 **Dipende da**: nessuna sottofase di codice. Recupera il debito di Fase 3 (`arco-17`, `arco-25`) **senza riaprirla**. Lavoro dell'**umano** su GCP; Composer scrive solo la documentazione operativa.
 
@@ -76,16 +76,17 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **CORS del bucket** (con `gcloud storage buckets update gs://BUCKET --cors-file=cors.json`): origini `https://<id-progetto>.web.app` e `https://<id-progetto>.firebaseapp.com`, metodi `GET` e `HEAD`; `http://localhost:3000` solo se serve allo sviluppo del frontend. Il dominio definitivo si aggiunge al passaggio in produzione.
 
-**Verifiche tecniche** (non ancora fatte): che l'organizzazione non imponga il blocco dell'accesso pubblico ai bucket; che un oggetto caricato con `Cache-Control: public, max-age=60` sia servito con quell'intestazione (il default di un oggetto pubblico è di un'ora); che la richiesta con `Origin` ottenga le intestazioni CORS.
+**Verifiche tecniche** (esiti del 2026-10-12 in `docs/operativo/gcp-menu-scheduler.md`: blocco dell'accesso pubblico non imposto, OK; `Cache-Control` a 60 secondi, OK; sovrascrittura del runtime SA non verificata, in 6.4; CORS rimandato a 6.9): che l'organizzazione non imponga il blocco dell'accesso pubblico ai bucket; che un oggetto caricato con `Cache-Control: public, max-age=60` sia servito con quell'intestazione (il default di un oggetto pubblico è di un'ora); che la richiesta con `Origin` ottenga le intestazioni CORS.
 
 **Documentazione**: nuovo `docs/operativo/gcp-menu-scheduler.md` (nomi, ruoli assegnati, comandi usati, esito delle verifiche). **Nessun segreto nel file.**
 
 **Checklist di chiusura sottofase**:
-- [ ] Cloud Scheduler abilitato; service account dello Scheduler creato con `run.invoker` sul solo servizio.
-- [ ] Bucket creato, a lettura pubblica; scrittura riservata al runtime SA sul solo bucket.
-- [ ] Due secret creati in Secret Manager (uno per scopo) e accessibili al runtime SA per singolo secret; **valore non scritto in nessun file del repo**.
-- [ ] Oggetto di prova: servito con cache a 60 secondi; CORS verificato con `curl -I -H "Origin: …"` (o rimandato, con nota, se il progetto Firebase non c'è ancora).
-- [ ] `docs/operativo/gcp-menu-scheduler.md` scritto; `piano.yaml` e `00-piano-generale.md` aggiornati.
+- [x] Cloud Scheduler abilitato; service account dello Scheduler creato con `run.invoker` sul solo servizio.
+- [x] Bucket creato, a lettura pubblica; `objectAdmin` del runtime SA assegnato sul solo bucket (binding verificato con `get-iam-policy`).
+- [ ] Sovrascrittura di un oggetto da parte del runtime SA provata: **non verificata** il 2026-10-12 (l'account umano non può impersonare il runtime SA e non si è concesso `serviceAccountTokenCreator`); **da provare in 6.4** con la prima scrittura di `disponibilita.json` da Cloud Run.
+- [x] Due secret creati in Secret Manager (uno per scopo) e accessibili al runtime SA per singolo secret; **valore non scritto in nessun file del repo**.
+- [x] Oggetto di prova: servito con cache a 60 secondi; CORS rimandato a 6.9 (progetto Firebase non ancora creato), comando pronto in `docs/operativo/gcp-menu-scheduler.md`.
+- [x] `docs/operativo/gcp-menu-scheduler.md` scritto; `piano.yaml` e `00-piano-generale.md` aggiornati.
 
 ---
 
@@ -325,6 +326,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [ ] Le tre decisioni sopra prese e annotate qui.
 - [ ] File conforme a `ADR-112` §3; gruppi completi; `globalMessage` assente se vuoto.
 - [ ] Riscrittura su ogni cambio di stato; reset idempotente e protetto.
+- [ ] Sovrascrittura di `disponibilita.json` da Cloud Run riuscita con il solo `roles/storage.objectAdmin` del runtime SA sul bucket (debito di 6.0: non verificabile il 2026-10-12, `docs/operativo/gcp-menu-scheduler.md`); chiudere anche la voce corrispondente di 6.0.
 - [ ] Job creato in Cloud Scheduler con il secret `SCHEDULER_SECRET_AVAILABILITY` nell'intestazione; esecuzione di prova riuscita.
 - [ ] Variabili d'ambiente documentate (sotto) e montate su Cloud Run; secret in Secret Manager.
 - [ ] Migrazione di `activity-log` (`ADR-115`) applicata su Cloud SQL prod prima del push; voci di sistema per il reset e per gli errori di scrittura del file (non una per ogni riscrittura riuscita); CHANGELOG.

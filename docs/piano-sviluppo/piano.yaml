@@ -186,7 +186,7 @@ fasi:
     nome: "Menù digitale (menu.vietnamonamour.com)"
     origine: dominio-applicativo
     file: "fase-6-menu-digitale.md"
-    stato: "da_fare"
+    stato: "in_corso"
     note: >
       Priorità del progetto (2026-10-03): completa e funzionante per prima,
       per la parte CMS, API e backoffice. Il frontend pubblico (6.7) è un'app
@@ -194,8 +194,8 @@ fasi:
     sottofasi:
       - id: fase-6.0
         nome: "Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM (recupero del debito di fase-3)"
-        stato: "da_fare"
-        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e i secret condivisi degli endpoint schedulati (uno per scopo: disponibilità del menù e anonimizzazione GDPR). I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano (in fase-6.9) prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima della prova di lettura del file dal browser in fase-6.9. Il dominio definitivo si aggiunge al passaggio in produzione."
+        stato: "in_corso"
+        note: "Eseguita il 2026-10-12 (docs/operativo/gcp-menu-scheduler.md): API Cloud Scheduler abilitata; vma-vd-scheduler@vma-vd.iam.gserviceaccount.com con run.invoker sul solo servizio; bucket vma-vd-menu-availability (europe-west1, accesso uniforme, allUsers objectViewer, runtime SA objectAdmin sul solo bucket), senza CORS; secret scheduler-secret-availability e scheduler-secret-anonymization (replica automatica, secretAccessor al runtime SA per singolo secret). Verifiche: blocco accesso pubblico non imposto OK; Cache-Control 60 s OK; sovrascrittura del runtime SA non verificata (impersonazione non consentita), da provare in fase-6.4; CORS rimandato a fase-6.9. Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e i secret condivisi degli endpoint schedulati (uno per scopo: disponibilità del menù e anonimizzazione GDPR). I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano (in fase-6.9) prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima della prova di lettura del file dal browser in fase-6.9. Il dominio definitivo si aggiunge al passaggio in produzione."
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia vino/bevanda/distillato) + Global Generali + permessi manager/admin"
         stato: "da_fare"
@@ -211,7 +211,7 @@ fasi:
       - id: fase-6.4
         nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
         stato: "da_fare"
-        note: "Prerequisiti: Cloud Scheduler, bucket GCS e IAM predisposti in fase-6.0 (arco-17); la scrittura di disponibilita.json imposta Cache-Control a 60 secondi (la cache predefinita di un oggetto pubblico è di un'ora); schema di disponibilita.json dal contratto ADR-112; confini di servizio letti da impostazioni-sistema (fase-7.2). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4. Da decidere in 6.4: i job hanno orario fisso, ma i confini di servizio li può cambiare il manager; soluzione candidata: un job frequente il cui endpoint decide da solo se un confine è passato."
+        note: "Prerequisiti: Cloud Scheduler, bucket GCS e IAM predisposti in fase-6.0 (arco-17); eredita da fase-6.0 la prova di sovrascrittura di disponibilita.json con il solo objectAdmin del runtime SA sul bucket (non verificabile il 2026-10-12); la scrittura di disponibilita.json imposta Cache-Control a 60 secondi (la cache predefinita di un oggetto pubblico è di un'ora); schema di disponibilita.json dal contratto ADR-112; confini di servizio letti da impostazioni-sistema (fase-7.2). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4. Da decidere in 6.4: i job hanno orario fisso, ma i confini di servizio li può cambiare il manager; soluzione candidata: un job frequente il cui endpoint decide da solo se un confine è passato."
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
         stato: "da_fare"

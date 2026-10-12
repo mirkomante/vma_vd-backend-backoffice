@@ -29,7 +29,7 @@
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | ✅ fatto (3.1–3.5) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔶 in corso (4.0 ✅; 4.1–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
-| Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔲 da fare | `fase-6-menu-digitale.md` |
+| Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔶 in corso (6.0 🔶: risorse GCP create il 2026-10-12) | `fase-6-menu-digitale.md` |
 | Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | ✅ fatto (7.0–7.4; smoke 7.4 prod 2026-10-06) | `fase-7-impostazioni-sistema.md` |
 | Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔶 in corso (8.1–8.5 ✅; 8.6 ⏸ su 6.6) | `fase-8-shell-app.md` |
 
@@ -100,7 +100,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non indica l'ordine di esecuzione: **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.9 → 6.5**. Prerequisiti: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate. Il frontend pubblico (6.7) è fuori perimetro: vive in un altro progetto. La 6.9 (decisione del 2026-10-12) prepara solo lo scaffold di prova di quel frontend, in un repository separato.
 
-0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — 🔲 da fare
+0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — 🔶 in corso (risorse create il 2026-10-12; resta la prova di sovrascrittura del runtime SA, in 6.4; CORS rimandato a 6.9)
 1. Tassonomie e Global «Generali» — 🔲 da fare
 2. Collection del menù e relazione menu fisso–piatto — 🔲 da fare
 3. Giorni Speciali — 🔲 da fare
@@ -139,7 +139,7 @@ Dettaglio completo in `fase-8-shell-app.md`. Il numero della sottofase non indic
 
 ## Prossimi passi
 
-- **Prossimo passo**: **Fase 6** (menù digitale) — ordine interno 6.0 → … (`fase-6-menu-digitale.md`); prerequisiti 8.1–8.5 soddisfatti. Nella Fase 8 resta solo **8.6** (verifica in produzione login locale App ed email), ⏸ bloccata fino a **6.6** (`fase-8-shell-app.md`). Debiti di verifica su shell (8.2) e Orari (8.5) tracciati in CHANGELOG e checklist di fase. Punto aperto: `po-11`. Fase 7 chiusa in produzione (2026-10-06, smoke 7.4). Fase 3 chiusa ✅ (2026-10-03, § 3.5).
+- **Prossimo passo**: **Fase 6** (menù digitale) — 6.0 🔶 (risorse GCP create il 2026-10-12, `docs/operativo/gcp-menu-scheduler.md`; resta la prova di sovrascrittura in 6.4, CORS in 6.9), poi 6.1 → … (`fase-6-menu-digitale.md`); prerequisiti 8.1–8.5 soddisfatti. Nella Fase 8 resta solo **8.6** (verifica in produzione login locale App ed email), ⏸ bloccata fino a **6.6** (`fase-8-shell-app.md`). Debiti di verifica su shell (8.2) e Orari (8.5) tracciati in CHANGELOG e checklist di fase. Punto aperto: `po-11`. Fase 7 chiusa in produzione (2026-10-06, smoke 7.4). Fase 3 chiusa ✅ (2026-10-03, § 3.5).
 - **Regola di avvio delle sottofasi** (proposta dalla chat di verifica, condivisa dal pianificatore e **confermata dall'umano il 2026-10-04**): Cursor parte da una sottofase quando non restano rilievi B né P che riguardano quella sottofase o quelle che la precedono nell'ordine di esecuzione; i P su sottofasi successive si correggono prima di avviarle; i rilievi A si raccolgono nella tabella «Rinviati e aperti». **Stato condiviso**: `docs/audit/audit-verifica-3-2026-10-04.md` §7, aggiornato da `docs/audit/audit-verifica-4-2026-10-04.md` §5 (tabelle «Concordato» e «Rinviati e aperti»).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.
