@@ -239,15 +239,15 @@ Prototipo della shell (barra laterale, menu utente, tema), della home con e senz
 | P16 (barra di salvataggio a 97 px) | Chiuso (8.5) |
 | P17 (chiavi delle chiusure univoche) | Chiuso (8.5) |
 | P18 (slot della barra sempre disegnato) | Chiuso (8.5) |
-| **P19 (campi orario su iPhone)** | **Aperto**: vedi sotto |
+| P19 (campi orario su iPhone) | **Chiuso il 2026-10-12**: corretto in `77f23a2` e provato da Mirko su iPhone reale (Orari online, campi del ristorante e del B&B). Playwright (WebKit 4 su 4) da solo non l'avrebbe dimostrato |
 | A23 (tema «Sistema» senza ascolto) | Chiuso, verificato |
-| A24 (menu utente diverso dal mockup) | **Deciso il 2026-10-12: si allinea il codice al mockup** (togliere la riga con avatar ed email dentro il menu; icone sole, luna e schermo sulle voci del tema; «Vai all'Admin» con l'icona del pannello a sinistra e la freccia esterna a destra); da implementare |
+| A24 (menu utente diverso dal mockup) | **Chiuso il 2026-10-12**: allineato al mockup in `77f23a2`; verificato negli screenshot a 390 e a 1280 px (nessuna riga utente, icone sole, luna e schermo, un solo separatore). Le due icone di «Vai all'Admin» restano non provate con l'utente manager (nessun accesso all'Admin): da vedere nel livello 3 |
 | A25 (CHANGELOG sul tema) | Chiuso |
-| A26 (home senza larghezza massima) | **Deciso**: `max-w-5xl` (D8); da implementare |
-| A27 («Torna al sito») | **Deciso**: la voce si elimina; da implementare |
+| A26 (home senza larghezza massima) | **Chiuso il 2026-10-12**: verificato a 1920 px (colonna di 1024 px centrata nell'area del contenuto) |
+| A27 («Torna al sito») | **Chiuso il 2026-10-12**: `login-testi` e `login-link-destinazioni` 16 su 16, il collegamento non c'è più |
 | A28–A32 (icona «salvato», ordine dei pulsanti del foglio, «Rimuovi» primario, titolo e «Riprova» nell'errore di caricamento) | Chiusi e verificati |
 
-**P19 — I campi orario escono dalla scheda su iPhone** (rilievo di Mirko su dispositivo reale, 2026-10-12, schermata di Orari in scuro). I due campi «Inizio» e «Fine» di Pranzo e di Cena, e così i due del B&B, si sovrappongono e quello di destra esce dalla scheda. Non si vede in Chromium né nel WebKit di Playwright. Ipotesi, non verificata su iPhone: su iOS `<input type="time">` ha una larghezza intrinseca grande; l'elemento della griglia (`Field` dentro `grid grid-cols-2`) ha `min-width: auto` e non si restringe sotto quella larghezza, anche se la colonna è `minmax(0, 1fr)`. Correzione proposta: `min-w-0` sui `Field` della griglia, e in `app-ui.css` una regola per `input[type="time"]` con `appearance: none`, `min-width: 0`, `max-width: 100%` e testo allineato a sinistra. Se non basta, una sola colonna sotto `sm`. Va riprovata da Mirko su iPhone (livello 3): il lanciatore non vede questa classe di difetti.
+**P19 — I campi orario escono dalla scheda su iPhone** (rilievo di Mirko su dispositivo reale, 2026-10-12, schermata di Orari in scuro). I due campi «Inizio» e «Fine» di Pranzo e di Cena, e così i due del B&B, si sovrappongono e quello di destra esce dalla scheda. Non si vede in Chromium né nel WebKit di Playwright. Ipotesi, non verificata su iPhone: su iOS `<input type="time">` ha una larghezza intrinseca grande; l'elemento della griglia (`Field` dentro `grid grid-cols-2`) ha `min-width: auto` e non si restringe sotto quella larghezza, anche se la colonna è `minmax(0, 1fr)`. Correzione proposta: `min-w-0` sui `Field` della griglia, e in `app-ui.css` una regola per `input[type="time"]` con `appearance: none`, `min-width: 0`, `max-width: 100%` e testo allineato a sinistra. Se non basta, una sola colonna sotto `sm`. Va riprovata da Mirko su iPhone (livello 3): il lanciatore non vede questa classe di difetti. **Esito (2026-10-12)**: Mirko ha provato la correzione su iPhone reale, online, con esito positivo; il rilievo è chiuso.
 
 ### Verifica visiva della 8.2 (2026-10-11)
 
