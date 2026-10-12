@@ -92,7 +92,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.1 — Tassonomie e Global «Generali»
 
-**Stato**: 🔶 in corso (codice, migrazione `20261012_161048_menu_taxonomies_6_1`, seed e verifiche in sviluppo; **migrazione Cloud SQL prod** e seed prod ancora da eseguire prima del push)
+**Stato**: ✅ chiusa (2026-10-12): schema, migrazione e seed su Cloud SQL prod, verifiche dev e smoke REST prod; debiti di verifica tracciati in checklist e CHANGELOG.
 
 **Dipende da**: Fase 7 e Fase 8.3 completate (valore `manager` di `adminRole`, `admin.hidden`). Non dipende da 6.0.
 
@@ -136,11 +136,13 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **Checklist di chiusura sottofase**:
 - [x] Collection e Global registrati con i nomi della tabella (slug confermati: `dish-categories`, `allergens`, `countries`, `regions`, `appellations`, `classifications`, `spirit-types`, `wine-types`, `drink-types`, Global `menu-general` con campo `globalMessage`).
 - [x] Campi `localized` secondo la regola; locale predefinita `it` (già in `payload.config.ts`), ripiego incrociato verificato su Local API e REST `locale=en` senza traduzione EN su Paesi (record «Italia»).
-- [x] Seed eseguito e verificato in sviluppo (`pnpm seed:menu-taxonomies` su `vma_vd_dev`: conteggi 13 / 16 / 3 / 6 / 14; seconda esecuzione senza duplicati). **Produzione**: da eseguire dopo migrate prod (Parte D).
-- [x] Prova per ruolo superata (`pnpm verify:menu-6_1`: anonimo; utente senza ruoli; `adminRole: manager` senza `appRole`; `appRole: manager`; `adminRole: manager` + `appRole: manager`; admin/super-admin; relazioni obbligatorie).
-- [ ] Migrazione generata (`migrations/20261012_161048_menu_taxonomies_6_1.ts`), committata e applicata su Cloud SQL prod **prima** del push.
+- [x] Seed eseguito e verificato in sviluppo (`pnpm seed:menu-taxonomies` su `vma_vd_dev`: conteggi 13 / 16 / 3 / 6 / 14; seconda esecuzione senza duplicati; post-fix allergeni `en` con `verify-menu-6_1`).
+- [x] **Produzione (2026-10-12)**: migrazione `20261012_161048_menu_taxonomies_6_1` su Cloud SQL (batch **9**; prompt «dev mode / data loss» per riga `batch = −1` in `payload_migrations`, risposta **yes**). Seed: prima esecuzione (prima del fix `fallbackLocale: false`) 13/16/3/6/14 con allergeni **senza** nome `en` reale; seconda esecuzione post-fix: creati **0**, **`en aggiornati=14`**. Smoke REST anonima: `GET /api/countries` → `totalDocs` **13**; `POST /api/countries` → **403**; `GET /api/allergens?locale=en&fallback-locale=none` → **14** nomi inglesi; `GET /api/globals/menu-general` → **200**; `POST /api/globals/menu-general` → **403**.
+- [x] Prova per ruolo superata in dev (`pnpm verify:menu-6_1`: anonimo; utente senza ruoli; `adminRole: manager` senza `appRole`; `appRole: manager`; `adminRole: manager` + `appRole: manager`; admin/super-admin; relazioni obbligatorie).
+- [x] Migrazione generata, committata e applicata su Cloud SQL prod. **Deviazione (Ufficiale / Percepito / Osservato)**: la checklist chiede migrate **prima** del push; il push di `dfcb0c6` è avvenuto prima, ma Cloud Build è fallita (TS2352) **senza deploy**; la migrazione prod è stata applicata prima del **primo deploy riuscito** (fix `1437141`).
 - [x] «Generali» (`menu-general`) nasce **senza** campi orario/chiusura/`isSpecialPeriod` — solo `globalMessage` localizzato.
-- [x] CHANGELOG (voce sotto `[Unreleased]`; chiusura versione alla fine della sottofase).
+- [x] CHANGELOG aggiornato con esiti prod e deviazioni.
+- **Debiti dichiarati (non bloccanti per 6.2)**: visibilità voci «Menù digitale» nell’Admin nel browser **non provata** (`admin.hidden` solo in config); scrittura REST per ruoli diversi dall’anonimo **non eseguita** (coperta da Local API in `verify-menu-6_1`); `verify-menu-6_1` su DB vuoto `vma_vd_migr` **senza** super-admin **non eseguito**.
 
 ---
 
