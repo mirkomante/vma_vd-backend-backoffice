@@ -27,7 +27,9 @@ import {
 } from '@/lib/menu/constants'
 import type { User } from '@/payload-types'
 
+import { assertDevDatabaseFromEnv } from './import-menu-vtn-backend/databaseUrl'
 import { runMenuTaxonomiesSeed } from './seed-menu-taxonomies'
+import { maybeInjectControlledFailure } from './verify-menu-inject-fail'
 
 const TEST_RUN_ID = Date.now().toString(36)
 const TEST_EMAIL_PREFIX = `verify-6_2-${TEST_RUN_ID}-`
@@ -275,7 +277,20 @@ async function seedTaxonomiesIfNeeded(payload: PayloadInstance): Promise<void> {
   }
 }
 
-async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
+type CreatedDocRef = { collection: CollectionSlug; id: number | string }
+
+function trackCreated(
+  createdDocIds: CreatedDocRef[],
+  collection: CollectionSlug,
+  id: number | string,
+): void {
+  createdDocIds.push({ collection, id })
+}
+
+async function buildFixtures(
+  payload: PayloadInstance,
+  createdDocIds: CreatedDocRef[],
+): Promise<FixtureIds> {
   const tag = `6_2 ${TEST_RUN_ID}`
 
   const dishCategory = await payload.create({
@@ -285,6 +300,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
     locale: 'it',
     data: { name: `Cat ${tag}` },
   })
+  trackCreated(createdDocIds, DISH_CATEGORIES_SLUG, dishCategory.id)
 
   const dish = await payload.create({
     collection: DISHES_SLUG,
@@ -298,6 +314,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
       category: dishCategory.id,
     },
   })
+  trackCreated(createdDocIds, DISHES_SLUG, dish.id)
 
   const dishDisabled = await payload.create({
     collection: DISHES_SLUG,
@@ -311,6 +328,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
       disabled: true,
     },
   })
+  trackCreated(createdDocIds, DISHES_SLUG, dishDisabled.id)
 
   const wineType = await payload.create({
     collection: WINE_TYPES_SLUG,
@@ -319,6 +337,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
     locale: 'it',
     data: { name: `Vino tipo ${tag}` },
   })
+  trackCreated(createdDocIds, WINE_TYPES_SLUG, wineType.id)
 
   const drinkType = await payload.create({
     collection: DRINK_TYPES_SLUG,
@@ -327,6 +346,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
     locale: 'it',
     data: { name: `Bevanda tipo ${tag}` },
   })
+  trackCreated(createdDocIds, DRINK_TYPES_SLUG, drinkType.id)
 
   const spiritType = await payload.create({
     collection: SPIRIT_TYPES_SLUG,
@@ -335,6 +355,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
     locale: 'it',
     data: { name: `Spirit tipo ${tag}` },
   })
+  trackCreated(createdDocIds, SPIRIT_TYPES_SLUG, spiritType.id)
 
   const italy = await payload.find({
     collection: COUNTRIES_SLUG,
@@ -398,8 +419,9 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
       type: wineType.id,
     },
   })
+  trackCreated(createdDocIds, WINES_SLUG, wineCoherent.id)
 
-  await payload.create({
+  const spiritFixture = await payload.create({
     collection: SPIRITS_SLUG,
     overrideAccess: true,
     depth: 0,
@@ -411,8 +433,9 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
       type: spiritType.id,
     },
   })
+  trackCreated(createdDocIds, SPIRITS_SLUG, spiritFixture.id)
 
-  await payload.create({
+  const drinkFixture = await payload.create({
     collection: DRINKS_SLUG,
     overrideAccess: true,
     depth: 0,
@@ -423,14 +446,16 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
       type: drinkType.id,
     },
   })
+  trackCreated(createdDocIds, DRINKS_SLUG, drinkFixture.id)
 
-  await payload.create({
+  const serviceFixture = await payload.create({
     collection: MENU_SERVICES_SLUG,
     overrideAccess: true,
     depth: 0,
     locale: 'it',
     data: { name: `Servizio ${tag}`, price: 2 },
   })
+  trackCreated(createdDocIds, MENU_SERVICES_SLUG, serviceFixture.id)
 
   const fixedCategory = await payload.create({
     collection: FIXED_MENU_CATEGORIES_SLUG,
@@ -439,6 +464,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
     locale: 'it',
     data: { name: `Cat menu ${tag}`, visibility: 'lunch_only' },
   })
+  trackCreated(createdDocIds, FIXED_MENU_CATEGORIES_SLUG, fixedCategory.id)
 
   const menuService = await payload.create({
     collection: MENU_SERVICES_SLUG,
@@ -447,6 +473,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
     locale: 'it',
     data: { name: `Coperto ${tag}`, price: 3 },
   })
+  trackCreated(createdDocIds, MENU_SERVICES_SLUG, menuService.id)
 
   const fixedMenu = await payload.create({
     collection: FIXED_MENUS_SLUG,
@@ -462,6 +489,7 @@ async function buildFixtures(payload: PayloadInstance): Promise<FixtureIds> {
       services: [menuService.id],
     },
   })
+  trackCreated(createdDocIds, FIXED_MENUS_SLUG, fixedMenu.id)
 
   return {
     dishCategoryId: dishCategory.id,
@@ -541,6 +569,7 @@ async function createProbeDoc(
 }
 
 async function main(): Promise<void> {
+  assertDevDatabaseFromEnv()
   const payload = await getPayload({ config })
   const createdUserIds: (number | string)[] = []
   const createdDocIds: Array<{ collection: CollectionSlug; id: number | string }> = []
@@ -587,16 +616,8 @@ async function main(): Promise<void> {
 
   try {
     await seedTaxonomiesIfNeeded(payload)
-    const fixtureIds = await buildFixtures(payload)
-    createdDocIds.push(
-      { collection: FIXED_MENUS_SLUG, id: fixtureIds.fixedMenuId },
-      { collection: FIXED_MENU_CATEGORIES_SLUG, id: fixtureIds.fixedCategoryId },
-      { collection: MENU_SERVICES_SLUG, id: fixtureIds.menuServiceId },
-      { collection: WINES_SLUG, id: fixtureIds.wineCoherentId },
-      { collection: DISHES_SLUG, id: fixtureIds.dishDisabledId },
-      { collection: DISHES_SLUG, id: fixtureIds.dishId },
-      { collection: DISH_CATEGORIES_SLUG, id: fixtureIds.dishCategoryId },
-    )
+    const fixtureIds = await buildFixtures(payload, createdDocIds)
+    maybeInjectControlledFailure('after-fixtures-6_2')
 
     const noRoleBase = await createUser({
       email: `${TEST_EMAIL_PREFIX}norole@test.local`,
@@ -1352,15 +1373,17 @@ async function main(): Promise<void> {
           throw new Error(`REST GET ${slug}: atteso 200, ${getRes.status}`)
         }
         expectAnonRestWriteStatus(`POST /api/${slug}`, await restFetchAnon(`/api/${slug}`, 'POST', {}))
-        const list = (await getRes.json()) as { docs: Array<{ id: number | string }> }
-        const anyId = list.docs[0]?.id ?? fixtureIds.dishId
+        const probeId = updateProbes[slug]
+        if (probeId == null) {
+          throw new Error(`REST write probe mancante per ${slug}`)
+        }
         expectAnonRestWriteStatus(
-          `PATCH /api/${slug}/${anyId}`,
-          await restFetchAnon(`/api/${slug}/${anyId}`, 'PATCH', { name: 'hack' }),
+          `PATCH /api/${slug}/${probeId}`,
+          await restFetchAnon(`/api/${slug}/${probeId}`, 'PATCH', { name: 'hack' }),
         )
         expectAnonRestWriteStatus(
-          `DELETE /api/${slug}/${anyId}`,
-          await restFetchAnon(`/api/${slug}/${anyId}`, 'DELETE'),
+          `DELETE /api/${slug}/${probeId}`,
+          await restFetchAnon(`/api/${slug}/${probeId}`, 'DELETE'),
         )
       }
       console.log('OK: REST anonimo GET 200 e write 403 su tutte le collection')

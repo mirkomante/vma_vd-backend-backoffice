@@ -27,3 +27,19 @@ export function isDevDatabaseTarget(target: DatabaseTarget): boolean {
     target.database === DEV_DB_NAME
   )
 }
+
+const DEV_DATABASE_DISPLAY = `${DEV_DB_HOST}:${DEV_DB_PORT}/${DEV_DB_NAME}`
+
+/** Rifiuta l'avvio se `DATABASE_URL` non punta al DB dev locale (verify script). */
+export function assertDevDatabaseFromEnv(): void {
+  const url = process.env.DATABASE_URL?.trim()
+  if (!url) {
+    throw new Error('DATABASE_URL mancante')
+  }
+  const target = parseDatabaseTarget(url)
+  if (!isDevDatabaseTarget(target)) {
+    throw new Error(
+      `Script di verifica consentito solo su ${DEV_DATABASE_DISPLAY}, ottenuto ${target.display}`,
+    )
+  }
+}

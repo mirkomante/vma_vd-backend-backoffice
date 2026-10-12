@@ -33,8 +33,10 @@ import {
 } from '@/lib/menu/constants'
 import type { User } from '@/payload-types'
 
+import { assertDevDatabaseFromEnv } from './import-menu-vtn-backend/databaseUrl'
 import { ALLERGENS_SEED } from './menu-taxonomies/seed-data'
 import { runMenuTaxonomiesSeed } from './seed-menu-taxonomies'
+import { maybeInjectControlledFailure } from './verify-menu-inject-fail'
 
 const TEST_RUN_ID = Date.now().toString(36)
 const TEST_EMAIL_PREFIX = `verify-6_1-${TEST_RUN_ID}-`
@@ -370,6 +372,7 @@ function assertAdminHiddenForManagerCms(
 }
 
 async function main(): Promise<void> {
+  assertDevDatabaseFromEnv()
   const payload = await getPayload({ config })
   const createdUserIds: (number | string)[] = []
   const createdDocIds: Array<{ collection: CollectionSlug; id: number | string }> = []
@@ -425,15 +428,27 @@ async function main(): Promise<void> {
 
   async function cleanup(): Promise<void> {
     for (const { collection, id } of [...createdDocIds].reverse()) {
-      await payload.delete({ collection, id, overrideAccess: true, depth: 0 })
+      try {
+        await payload.delete({ collection, id, overrideAccess: true, depth: 0 })
+      } catch {
+        /* best effort */
+      }
     }
     createdDocIds.length = 0
     for (const { collection, id } of [...probeDocIds].reverse()) {
-      await payload.delete({ collection, id, overrideAccess: true, depth: 0 })
+      try {
+        await payload.delete({ collection, id, overrideAccess: true, depth: 0 })
+      } catch {
+        /* best effort */
+      }
     }
     probeDocIds.length = 0
     for (const id of [...createdUserIds].reverse()) {
-      await payload.delete({ collection: 'users', id, overrideAccess: true, depth: 0 })
+      try {
+        await payload.delete({ collection: 'users', id, overrideAccess: true, depth: 0 })
+      } catch {
+        /* best effort */
+      }
     }
     createdUserIds.length = 0
   }
@@ -572,25 +587,18 @@ async function main(): Promise<void> {
       return createLocale(slug)
     }
 
-    async function firstTaxonomyDocId(slug: CollectionSlug): Promise<number | string> {
-      const { docs } = await payload.find({
-        collection: slug,
-        depth: 0,
-        limit: 1,
-        overrideAccess: true,
-        locale: updateLocale(slug) ?? 'it',
-      })
-      const existing = docs[0]?.id
-      if (existing != null) {
-        return existing
-      }
+    /** Probe dedicata per update: non riusa documenti seed/import. */
+    async function createTaxonomyUpdateProbe(slug: CollectionSlug): Promise<number | string> {
       const probe = await payload.create({
         collection: slug,
         overrideAccess: true,
         depth: 0,
         draft: false,
         ...(updateLocale(slug) ? { locale: updateLocale(slug) } : {}),
-        data: minimalCreateData(slug) as never,
+        data: {
+          ...minimalCreateData(slug),
+          name: `Upd probe ${TEST_RUN_ID}`,
+        } as never,
       })
       probeDocIds.push({ collection: slug, id: probe.id })
       return probe.id
@@ -681,7 +689,7 @@ async function main(): Promise<void> {
 
     console.log('--- Scrittura tassonomie: update (ogni slug, manager App negato / staff OK) ---')
     for (const slug of MENU_TAXONOMY_SLUGS) {
-      const docId = await firstTaxonomyDocId(slug)
+      const docId = await createTaxonomyUpdateProbe(slug)
       const doc = await payload.findByID({
         collection: slug,
         id: docId,
@@ -721,6 +729,7 @@ async function main(): Promise<void> {
         updateLocale(slug),
       )
     }
+    maybeInjectControlledFailure('after-taxonomy-update-6_1')
 
     console.log('--- Scrittura tassonomie: create/delete staff (ogni slug) ---')
     for (const slug of MENU_TAXONOMY_SLUGS) {
