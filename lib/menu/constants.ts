@@ -19,6 +19,7 @@ export const DRINKS_SLUG = 'drinks'
 export const MENU_SERVICES_SLUG = 'menu-services'
 export const FIXED_MENU_CATEGORIES_SLUG = 'fixed-menu-categories'
 export const FIXED_MENUS_SLUG = 'fixed-menus'
+export const SPECIAL_DAYS_SLUG = 'special-days'
 
 export const MENU_CONTENT_SLUGS = [
   DISHES_SLUG,

@@ -23,6 +23,8 @@ import { menuVisibilityField } from '@/lib/menu/visibilityField'
 import { validateFixedMenuDishesField } from '@/lib/menu/validateFixedMenuDishes'
 import { validateWineGeography } from '@/lib/menu/validateWineGeography'
 
+import { SpecialDays } from './specialDays'
+
 const disabledField = {
   name: 'disabled',
   type: 'checkbox' as const,
@@ -410,6 +412,16 @@ export const FixedMenus: CollectionConfig = {
     },
     menuVisibilityField(true),
     {
+      name: 'specialOnly',
+      type: 'checkbox',
+      label: 'Solo giorni speciali',
+      defaultValue: false,
+      admin: {
+        description:
+          'Se attivo, il menu non compare nelle pagine normali del menù pubblico (solo tramite giorni speciali).',
+      },
+    },
+    {
       name: 'dishes',
       type: 'array',
       label: 'Piatti',
@@ -454,4 +466,5 @@ export const menuContentCollections: CollectionConfig[] = [
   MenuServices,
   FixedMenuCategories,
   FixedMenus,
+  SpecialDays,
 ]

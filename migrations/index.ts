@@ -8,6 +8,7 @@ import * as migration_20261010_071726_add_admin_role_manager from './20261010_07
 import * as migration_20261011_133256_add_account_created_email_sent_at from './20261011_133256_add_account_created_email_sent_at';
 import * as migration_20261012_161048_menu_taxonomies_6_1 from './20261012_161048_menu_taxonomies_6_1';
 import * as migration_20261012_184106_menu_content_6_2 from './20261012_184106_menu_content_6_2';
+import * as migration_20261012_202100_special_days_6_3 from './20261012_202100_special_days_6_3';
 
 export const migrations = [
   {
@@ -58,6 +59,11 @@ export const migrations = [
   {
     up: migration_20261012_184106_menu_content_6_2.up,
     down: migration_20261012_184106_menu_content_6_2.down,
-    name: '20261012_184106_menu_content_6_2'
+    name: '20261012_184106_menu_content_6_2',
+  },
+  {
+    up: migration_20261012_202100_special_days_6_3.up,
+    down: migration_20261012_202100_special_days_6_3.down,
+    name: '20261012_202100_special_days_6_3'
   },
 ];

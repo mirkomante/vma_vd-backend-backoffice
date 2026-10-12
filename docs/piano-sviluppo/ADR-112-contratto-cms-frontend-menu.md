@@ -77,3 +77,13 @@ Le variabili lato CMS per bucket e Scheduler sono definite in 6.4.
 ## Nota di chiarimento (2026-10-12)
 
 Non modifica il contratto. Il primo consumatore è lo scaffold di sottofase 6.9, in un repository separato: legge a build-time le collection con `locale` esplicito (`it` e `en`) e, dal browser, `disponibilita.json`, con le variabili del §6. Le pagine statiche sono distinte per lingua (`/it/…`, `/en/…`). Un nome o un campo da correggere emerso dallo scaffold è una modifica di schema con migrazione, come per ogni nome congelato alla chiusura di 6.2.
+
+## Nota di chiarimento (2026-10-12) — `special-days` e `specialOnly` (fase 6.3)
+
+Aggiunta al contratto pubblico (dopo il congelamento dei nomi di 6.2):
+
+- **Collection `special-days`**: lettura anonima come le altre collection del menù; campi `date`, `scope`, `content` (`fixedMenus`, `message`), `disabled`. Non compare in `disponibilita.json` (rebuild).
+- **`fixed-menus.specialOnly`**: se `true`, il menu fisso **non** va incluso nelle pagine normali del menù (business lunch, degustazione, ecc.); resta leggibile in REST e si usa quando referenziato da un giorno speciale.
+- **Giorno speciale senza menu attivi**: se `content.fixedMenus` è vuoto (es. dopo cancellazione fisica di tutti i menu collegati — le righe in `special_days_rels` hanno `ON DELETE cascade` verso `fixed_menus`) oppure tutti i menu referenziati hanno `disabled: true`, il giorno speciale **non si applica** e resta il menù normale per quell'ambito/data.
+- **Lettura completa in build**: `GET /api/special-days?depth=3` (o `GET /api/special-days/:id?depth=3`) per ottenere menu fissi, piatti e nomi allergeni nelle relazioni annidate.
+- **Data**: confronto del giorno di calendario in **Europe/Rome** con `date` normalizzato a mezzogiorno UTC (`…T12:00:00.000Z`), come per le chiusure annuali (`ADR-109` / fase 7.2).

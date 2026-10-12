@@ -206,8 +206,8 @@ fasi:
         note: "Chiusa 2026-10-12. Migrazione 20261012_184106_menu_content_6_2 su Cloud SQL prod (commit, migrate, push e deploy in ordine). Smoke REST anonima prod su 7 slug (GET 200, POST/PATCH/DELETE 403); dishes locale=en totalDocs 0 (atteso fino a fase-6.8); regressioni 6.1 OK (countries 13, menu-general GET 200). verify-menu-6_2 OK dev. Nomi congelati in CHANGELOG. Debiti: sidebar Menù digitale Admin nel browser; delete admin con FK (limite noto); localized non campo-per-campo. fase-6-menu-digitale.md §6.2."
       - id: fase-6.3
         nome: "Collection 'Giorni Speciali'"
-        stato: "da_fare"
-        note: "riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.1. I menu speciali attuali (San Valentino: menu fissi con pagina dedicata nel vecchio frontend) non si importano: si ricreano con questo meccanismo (decisione del 2026-10-04)."
+        stato: "in_corso"
+        note: "2026-10-12: schema special-days + fixed-menus.specialOnly; migrazione 20261012_202100_special_days_6_3; verify-menu-6_3 OK dev; prod migrate+smoke in attesa umano. Emendamenti ADR-108/ADR-112. San Valentino non importato: si ricrea a mano (decisione 2026-10-04)."
       - id: fase-6.4
         nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
         stato: "da_fare"

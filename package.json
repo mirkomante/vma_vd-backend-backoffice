@@ -22,6 +22,7 @@
     "import:menu": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/import-menu-vtn-backend.ts",
     "verify:menu-6_1": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_1.ts",
     "verify:menu-6_2": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_2.ts",
+    "verify:menu-6_3": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_3.ts",
     "migrate:bootstrap-credentials": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/migrate-bootstrap-credentials.ts",
     "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",

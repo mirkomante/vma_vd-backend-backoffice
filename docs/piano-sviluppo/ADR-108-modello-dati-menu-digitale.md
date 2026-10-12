@@ -149,7 +149,7 @@ Confermato il principio: **avviso non bloccante**, non hard-validation, per casi
 
 - **Fase 6.1** eredita le quattro tassonomie generiche (§8) e le Collection geografiche a 4 livelli (§5), col seed iniziale già pronto per il popolamento.
 - **Fase 6.2** eredita lo schema completo di "Piatti" (§3), "Vini" (§5), "Birra" (§6) e la relazione `menu_fisso_piatto` col campo `porzione` (§4) — nessun concetto di variante da modellare.
-- **Fase 6.3** eredita l'impianto della Collection "Giorni Speciali" (§1: data, ambito, sostituzione totale per l'ambito coperto); la struttura interna del campo `contenuto` resta un dettaglio implementativo da chiudere in quella sottofase, non deciso qui.
+- **Fase 6.3** eredita l'impianto della Collection "Giorni Speciali" (§1: data, ambito, sostituzione totale per l'ambito coperto); struttura di `contenuto` / `content` chiusa nell'emendamento 2026-10-12 (sotto).
 - **Fase 6.4** (disponibilità + Cloud Scheduler + `disponibilita.json`) eredita i due stati distinti di disponibilità piatti (`terminato-per-servizio`/`disabilitato`, §3) e lo stato binario di vini/birra (§5/§6) come campi da leggere/aggiornare.
 - **Fase 6.6** (Backoffice `(app)` menù) eredita la tabella manager/admin campo-per-campo (§9) come riferimento diretto per i permessi granulari Payload, e il campo `porzione` come editabile dal manager nella composizione dei menu fissi.
 - **Punto esplicitamente aperto e non bloccante**: il meccanismo di validazione allergeni/flag (§10) è deferito a un'implementazione successiva — non condiziona lo schema dati fissato in questo ADR.
@@ -276,3 +276,19 @@ Il primo emendamento (tabella seed) e la §6.1 di `fase-6-menu-digitale.md` assu
 
 **Decisione**: si mantiene il seed 6.1 (nomi normativi UE). Lo script di import (`scripts/import-menu-vtn-backend.ts`) applica la tabella sopra; un nome snapshot senza corrispondenza è un **errore** del report e blocca `--apply`. Il report a secco elenca tutte e 14 le righe con il conteggio piatti per nome snapshot.
 - Applicato in `fase-6-menu-digitale.md` (nomi e campi, in inglese).
+
+### Emendamento (2026-10-12) — Struttura `contenuto` / `content` su Giorni Speciali (fase 6.3)
+
+**Stato dell'emendamento**: accettata (2026-10-12).
+
+Chiude il punto aperto del §1 (struttura interna non specificata nelle sessioni sorgente). Nomi nel codice in **inglese** (contratto 6.2+):
+
+| Campo ADR (concetto) | Nome Payload | Tipo | Note |
+|---|---|---|---|
+| `data` | `date` | `date` dayOnly | Solo `YYYY-MM-DD` o `…T12:00:00.000Z` in scrittura |
+| `ambito` | `scope` | `day` / `lunch` / `dinner` | |
+| `contenuto` | `content` | `group` | |
+| ↳ menu fissi | `content.fixedMenus` | relazione hasMany → menu fissi, obbligatoria | Sostituzione totale per l'ambito |
+| ↳ messaggio | `content.message` | testo, `localized`, facoltativo | Banner |
+
+Su **menu fissi**, campo additivo `specialOnly` (checkbox, default `false`): menu usati solo tramite giorni speciali, fuori dalle pagine normali (`ADR-112`).

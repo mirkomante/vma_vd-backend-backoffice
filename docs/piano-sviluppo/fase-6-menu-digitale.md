@@ -295,32 +295,42 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.3 — Giorni Speciali
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (2026-10-12): schema, migrazione `20261012_202100_special_days_6_3`, verify dev (`pnpm verify:menu-6_3`); **produzione** (migrazione + smoke REST) in attesa dell'umano.
 
 **Dipende da**: 6.2.
 
 **Obiettivo**: la collection `special-days`: un giorno, o un solo servizio, il cui menù **sostituisce del tutto** l'offerta normale (à la carte e menu fissi). Il servizio non coperto segue il menù normale.
 
-**Riferimenti**: `ADR-108` §1, `riepilogo-sessione-requisiti-architettura-menu-digitale.md` §2.1.
+**Riferimenti**: `ADR-108` §1 (emendamento 2026-10-12 su `contenuto`), `ADR-112` (note 2026-10-12 su `special-days` / `specialOnly`), `riepilogo-sessione-requisiti-architettura-menu-digitale.md` §2.1.
 
-**Campi** (slug proposto `special-days`): `date` (solo giorno, obbligatorio), `scope` (`day` / `lunch` / `dinner`, obbligatorio), `content` (da fissare: vedi sotto). Pianificabile in anticipo; un giorno speciale preparato in anticipo è leggibile nella REST pubblica (accettato, nessuna bozza).
+**Campi** (slug `special-days`, aggiunta al contratto dopo il congelamento 6.2):
 
-**Decisione da prendere all'inizio di 6.3: struttura di `content`** (`ADR-108` §1 la rimanda a questa sottofase). Proposta, perché un menù sostitutivo deve portare gli allergeni dei piatti:
-- `content` è una **relazione a uno o più menu fissi** (che già contengono i piatti, le porzioni, il prezzo e gli allergeni), più un `message` (L) facoltativo per il banner;
-- un menu fisso riservato a un giorno speciale deve restare fuori dalle pagine normali: servirebbe un flag `specialOnly` sul menu fisso (**campo nuovo**, da approvare; si aggiunge con una migrazione additiva, consentita anche dopo il congelamento dei nomi, che vieta soltanto ridenominazioni e rimozioni).
+| Campo | Tipo | Note |
+|---|---|---|
+| `date` | `date` dayOnly | Obbligatorio; in scrittura solo `YYYY-MM-DD` o `…T12:00:00.000Z` (mezzogiorno UTC); normalizzato in hook |
+| `scope` | `day` / `lunch` / `dinner` | Obbligatorio |
+| `content` | `group` | |
+| ↳ `content.fixedMenus` | → `fixed-menus`, hasMany, `required: true` | Almeno un menu; FK rel `ON DELETE cascade` sul menu fisso (cancellazione admin rimuove il collegamento) |
+| ↳ `content.message` | testo, (L), facoltativo | Banner |
+| `disabled` | checkbox | Come 6.2 |
 
-**Vincolo di coerenza**: due giorni speciali non possono coprire lo stesso servizio della stessa data (`day` si sovrappone a `lunch` e a `dinner`).
+**`fixed-menus.specialOnly`** (checkbox, default `false`): menu riservati ai giorni speciali, esclusi dalle pagine normali del menù pubblico (`ADR-112`).
 
-**Permessi**: lettura anonima; creazione e modifica `appRole: manager` e admin; cancellazione solo admin (disabilitazione con `disabled`, come le altre voci).
+**Sovrapposizione**: hook su record con `disabled: false`; i record disabilitati non contano; due creazioni simultanee potrebbero entrambe passare (limite documentato).
 
-**Caso di prova**: ricreare San Valentino come menu fisso con `specialOnly` e un giorno speciale `dinner`.
+**Permessi**: come 6.2 (`menuContentAccess`); `SPECIAL_DAYS_SLUG` **non** entra in `MENU_CONTENT_SLUGS` (verify 6_2 / import 6_8 invariati).
+
+**Lettura REST completa**: `GET /api/special-days?depth=3` (menu fisso → piatti → allergeni); vedi `ADR-112`.
+
+**Caso di prova**: San Valentino come menu fisso `specialOnly` + giorno speciale `dinner` (in `verify-menu-6_3.ts`, documenti rimossi in `finally`).
 
 **Checklist di chiusura sottofase**:
-- [ ] Struttura di `content` approvata e documentata qui.
-- [ ] Lettura pubblica con `locale=it` e `en`; validazione della sovrapposizione.
-- [ ] Prova per ruolo.
-- [ ] `special-days` e `specialOnly` (`fixed-menus`) riportati nel CHANGELOG come aggiunta al contratto di 6.2, con una nota di chiarimento ad `ADR-112` (i menu fissi con `specialOnly` vero non compaiono nelle pagine normali del menù).
-- [ ] Migrazione applicata su Cloud SQL prod **prima** del push; CHANGELOG.
+- [x] Struttura di `content` approvata e documentata (tabella sopra + emendamento `ADR-108`).
+- [x] Lettura pubblica `locale=it`/`en`, sovrapposizione, date, `content.fixedMenus` obbligatorio (`pnpm verify:menu-6_3` su `vma_vd_dev`).
+- [x] Prova per ruolo (7 profili × Local API in `verify-menu-6_3`).
+- [x] `special-days` e `specialOnly` nel CHANGELOG; note `ADR-112` / `ADR-108`.
+- [ ] Migrazione su Cloud SQL prod **prima** del push; smoke REST prod (umano).
+- [ ] Regressione hash import: `793f4746ae7d0a4c634191cef90b31ea7755407b0de33d4913ea5805950a5a5e` invariata dopo verify 6_1/6_2/6_3 (due volte) — verificata in dev il 2026-10-12.
 
 ---
 

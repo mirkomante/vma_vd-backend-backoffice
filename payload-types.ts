@@ -84,6 +84,7 @@ export interface Config {
     'menu-services': MenuService;
     'fixed-menu-categories': FixedMenuCategory;
     'fixed-menus': FixedMenu;
+    'special-days': SpecialDay;
     users: User;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -109,6 +110,7 @@ export interface Config {
     'menu-services': MenuServicesSelect<false> | MenuServicesSelect<true>;
     'fixed-menu-categories': FixedMenuCategoriesSelect<false> | FixedMenuCategoriesSelect<true>;
     'fixed-menus': FixedMenusSelect<false> | FixedMenusSelect<true>;
+    'special-days': SpecialDaysSelect<false> | SpecialDaysSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -506,6 +508,10 @@ export interface FixedMenu {
    * Quando il menu o la categoria compare nelle pagine del menù pubblico.
    */
   visibility: 'always' | 'lunch_only' | 'dinner_only';
+  /**
+   * Se attivo, il menu non compare nelle pagine normali del menù pubblico (solo tramite giorni speciali).
+   */
+  specialOnly?: boolean | null;
   dishes?:
     | {
         dish: number | Dish;
@@ -519,6 +525,39 @@ export interface FixedMenu {
   services?: (number | MenuService)[] | null;
   /**
    * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   */
+  disabled?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Sostituisce del tutto l’offerta normale (à la carte e menu fissi) per la data e l’ambito scelti. Richiede rebuild del menù pubblico.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "special-days".
+ */
+export interface SpecialDay {
+  id: number;
+  /**
+   * Giorno di calendario (salvato a mezzogiorno UTC).
+   */
+  date: string;
+  /**
+   * Giornata intera sostituisce pranzo e cena; pranzo o cena lasciano l’altro servizio sul menù normale.
+   */
+  scope: 'day' | 'lunch' | 'dinner';
+  content: {
+    /**
+     * Prima di cancellare un menu fisso usato da un giorno speciale, disabilitalo.
+     */
+    fixedMenus: (number | FixedMenu)[];
+    /**
+     * Banner facoltativo sul giorno speciale.
+     */
+    message?: string | null;
+  };
+  /**
+   * Assenza a tempo indefinito; il manager non elimina: usa questo flag.
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -615,6 +654,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'fixed-menus';
         value: number | FixedMenu;
+      } | null)
+    | ({
+        relationTo: 'special-days';
+        value: number | SpecialDay;
       } | null)
     | ({
         relationTo: 'users';
@@ -870,6 +913,7 @@ export interface FixedMenusSelect<T extends boolean = true> {
   price?: T;
   category?: T;
   visibility?: T;
+  specialOnly?: T;
   dishes?:
     | T
     | {
@@ -878,6 +922,23 @@ export interface FixedMenusSelect<T extends boolean = true> {
         id?: T;
       };
   services?: T;
+  disabled?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "special-days_select".
+ */
+export interface SpecialDaysSelect<T extends boolean = true> {
+  date?: T;
+  scope?: T;
+  content?:
+    | T
+    | {
+        fixedMenus?: T;
+        message?: T;
+      };
   disabled?: T;
   updatedAt?: T;
   createdAt?: T;
