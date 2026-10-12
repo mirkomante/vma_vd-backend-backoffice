@@ -12,6 +12,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Registro dei rilievi UI (2026-10-12; nessuna modifica al codice dell'applicazione): chiusi P19 (provato da Mirko su iPhone reale, online), A24 (verificato negli screenshot a 390 e 1280 px), A26 (verificato a 1920 px), A27 (`login-testi` 16/16). Restano non provati: le due icone di «Vai all'Admin» (nessun utente con accesso all'Admin) e, nel lanciatore, `shell-percorso-voce-attiva` (difetto del controllo, non dell'app).
+
 - Area App — correzioni P19, A26, A27, A24 (2026-10-12): **P19** — griglie orario in `hours-form.tsx` (`min-w-0` sui `Field`, `w-full min-w-0 max-w-full` sugli `Input`) e regole `input[type="time"]` in `app-ui.css`; controllo lanciatore `orari-campi-dentro-scheda` (WebKit Playwright). **A26** — home `/app` con colonna `max-w-5xl` centrata. **A27** — rimosso «Torna al sito» da `/app/login` (resta solo «Password dimenticata?», gap 16 px invariato). **A24** — menu utente senza ripetizione avatar/email, icone tema e Admin come da mockup, un solo separatore. **L2 richiesto**: `app-ui.css`, `app-user-menu.tsx` (shell). Aggiornati attesi login nel lanciatore (`engine.mjs`).
 
 ### Tests
