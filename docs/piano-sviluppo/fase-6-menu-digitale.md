@@ -295,7 +295,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.3 — Giorni Speciali
 
-**Stato**: 🔶 in corso (2026-10-12): schema, migrazione `20261012_202100_special_days_6_3`, verify dev (`pnpm verify:menu-6_3`); **produzione** (migrazione + smoke REST) in attesa dell'umano.
+**Stato**: ✅ chiusa (2026-10-12): commit `2068ac3`, migrazione `20261012_202100_special_days_6_3` su Cloud SQL prod, push e deploy; smoke REST anonima prod OK; verify dev `pnpm verify:menu-6_3`.
 
 **Dipende da**: 6.2.
 
@@ -329,8 +329,10 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 - [x] Lettura pubblica `locale=it`/`en`, sovrapposizione, date, `content.fixedMenus` obbligatorio (`pnpm verify:menu-6_3` su `vma_vd_dev`).
 - [x] Prova per ruolo (7 profili × Local API in `verify-menu-6_3`).
 - [x] `special-days` e `specialOnly` nel CHANGELOG; note `ADR-112` / `ADR-108`.
-- [ ] Migrazione su Cloud SQL prod **prima** del push; smoke REST prod (umano).
-- [ ] Regressione hash import: `793f4746ae7d0a4c634191cef90b31ea7755407b0de33d4913ea5805950a5a5e` invariata dopo verify 6_1/6_2/6_3 (due volte) — verificata in dev il 2026-10-12.
+- [x] Migrazione `20261012_202100_special_days_6_3` su Cloud SQL prod **prima** del push; smoke REST anonima prod (2026-10-12, umano): `GET /api/special-days` **200**, `totalDocs` **0**; `POST`/`PATCH`/`DELETE` **403**; `GET /api/fixed-menus` **200** (schema con `special_only`); regressioni **6.1**/**6.2** (`countries` **13**, `menu-general` **200**, `dishes` **200**).
+- [x] Regressione hash import (9 collection 6.8): `793f4746ae7d0a4c634191cef90b31ea7755407b0de33d4913ea5805950a5a5e` invariata dopo verify 6_1/6_2/6_3 in dev (2026-10-12); pulizia probe 6.3 su `CONTEGGI_PRIMA`/`CONTEGGI_DOPO` (`special-days` / `fixed-menus`).
+
+**Debiti / punti aperti** (non richiesti per ✅ sottofase): `specialOnly` su menu fisso preesistente alla migrazione **non provato** (prod: tabella `fixed_menus` vuota); scrittura giorno speciale **dal browser** (App/Admin) **non provata**; limite noto sovrapposizione con due creazioni simultanee. **Punto aperto da decidere prima del lancio**: cancellazione admin di un allergene → cascade su `dishes_rels` e `drinks_rels`; cancellazione admin di un menu fisso → cascade su collegamenti nei giorni speciali (`special_days_rels`).
 
 ---
 
