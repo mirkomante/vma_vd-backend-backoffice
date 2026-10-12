@@ -226,7 +226,7 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 - [x] Le cinque righe della tabella verificate, comprese quelle senza invio: una seconda attivazione non rimanda l'email (`scripts/verify-users-8_4.ts`, invio reale con Resend configurato).
 - [x] Invio fallito (simulato): il campo resta vuoto e la successiva attivazione riprova (stesso script).
 - [x] `pnpm seed:super-admin` non invia l'email (stesso script: create con `bootstrapCredential*` + skip; comando seed non rieseguito in questa sessione).
-- [ ] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (prove migrate su `vma_vd_migr` vuoto: 2026-10-11 agente; prod: in attesa proxy + `DATABASE_URL` prod).
+- [x] Migrazione generata, committata e applicata su Cloud SQL prod **prima** del push (prove migrate su `vma_vd_migr` vuoto e prod: 2026-10-11).
 - [x] Pulsante: logica di visibilità nel componente Admin (`loginMethodIncludesLocal` + `emailVerified === false`); manager rifiutato dall'endpoint (403, script). **Non provato**: ispezione visiva di ogni combinazione nel form Admin.
 - [x] Il link inviato dal pulsante verifica l'account; quello precedente non funziona (script, invio reale).
 - [x] CHANGELOG.
@@ -267,7 +267,7 @@ Gli utenti `sso-and-local` ricevono solo l'email di attivazione.
 
 **Stato**: ⏸ bloccata
 
-**Condizione di sblocco**: sezioni dell'App sviluppate (6.6 e 8.5; `arco-36`, `arco-37`). **Vincolo**: da completare prima del primo accesso reale dei manager (`po-03`).
+**Condizione di sblocco**: sottofase **6.6** Menù (`arco-36`, `arco-37`; **8.5** chiusa il 2026-10-11). **Vincolo**: da completare prima del primo accesso reale dei manager (`po-03`).
 
 **Perché**: login locale dell'App ed email di attivazione sono coperti solo in sviluppo (Fase 2.10). In Fase 3.3 non sono stati rieseguiti in produzione; la chiave Resend risulta montata su Cloud Run (conferma dell'umano, non verificata sul servizio).
 

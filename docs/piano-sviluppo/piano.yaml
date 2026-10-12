@@ -276,8 +276,9 @@ fasi:
     file: "fase-8-shell-app.md"
     stato: "in_corso"
     note: >
-      Shell condivisa: /app/login operativo; 8.3 chiusa (2026-10-10). shadcn/ui in 8.1
-      (2026-10-06). Ordine esecuzione: meta.ordine_esecuzione. File di fase validato 2026-10-04.
+      Shell condivisa: sottofasi 8.1–8.5 chiuse (ultima 8.5 il 2026-10-11). Resta 8.6
+      (verifica prod), bloccata su fase-6.6. shadcn/ui in 8.1 (2026-10-06). Ordine
+      esecuzione: meta.ordine_esecuzione. File di fase validato 2026-10-04.
     sottofasi:
       - id: fase-8.1
         nome: "Installazione e verifica di shadcn/ui (compatibilità con le versioni di Tailwind e Next in uso)"
@@ -285,24 +286,24 @@ fasi:
         note: "CLI shadcn@4.21.3 init; correzione 8.1b (2026-10-06): app-ui.css con @import tailwindcss e @source (app)+components, layout senza globals.css; utility semantiche verificate su /app/login; globals.css invariato. Correzione 8.1c (2026-10-06): reset * / a fuori @layer rimossi, html/body in @layer base (utility p-/m-/underline non più annullate). Dipendenze pin: shadcn 4.21.2, cn 0.4.0, cva 0.7.1, lucide-react 1.52.0, tw-animate-css 1.4.0."
       - id: fase-8.2
         nome: "Layout (app) mobile-first e navigazione per sezione (menu, hours, reservations)"
-        stato: "da_fare"
-        note: "Dipende da fase-8.1 e da fase-8.3 (la navigazione usa canAccessSection, arco-38): ordine di esecuzione 8.1, 8.3, 8.2."
+        stato: "fatto"
+        note: "Chiusa 2026-10-10 (accettazione parziale; debiti verifica in fase-8 §8.2). Dipende da fase-8.1 e fase-8.3 (arco-38)."
       - id: fase-8.3
         nome: "Ruoli e guardia di accesso: valore manager in adminRole (migrazione), canAccessSection a tre sezioni, admin.hidden per il manager"
         stato: "fatto"
         note: "Chiusa 2026-10-10: migrazione Cloud SQL prod e prove SSO/login (umano). Script verify-roles-8_3-*.ts. po-02 chiuso da ADR-113."
       - id: fase-8.4
         nome: "Email di account per gli utenti dell'Admin: reinvio dell'attivazione (login locale) ed email di account creato (SSO)"
-        stato: "da_fare"
-        note: "Requisito del 2026-10-04: pulsante «reinvia email di attivazione» nell'Admin per gli utenti con login locale non ancora attivati; email «account creato» con indicazioni generali per gli utenti SSO, una sola volta (campo accountCreatedEmailSentAt, con migrazione). Mittente: quello di sistema (env RESEND_FROM_*, primo emendamento di ADR-109). Dettagli nel file di fase."
+        stato: "fatto"
+        note: "Chiusa 2026-10-11: migrazione 20261011_133256_add_account_created_email_sent_at su Cloud SQL prod (2026-10-11); script verify-users-8_4.ts. Dettagli in fase-8 §8.4."
       - id: fase-8.5
         nome: "Sezione Orari dell'App (orari e chiusure del ristorante, orari del B&B)"
-        stato: "da_fare"
-        note: "Legge e scrive impostazioni-sistema (tab Orari e chiusure) con la sessione del manager (ADR-113). Dipende da fase-8.2, fase-8.3 e dai campi di fase-7.2."
+        stato: "fatto"
+        note: "Chiusa 2026-10-11: /app/hours, ui:verify 3.1.x; debiti checklist e prove per ruolo in CHANGELOG voce chiusura 8.5 e fase-8 §8.5."
       - id: fase-8.6
         nome: "Verifica in produzione di login locale App ed email (attivazione, reset, account creato)"
         stato: "bloccata"
-        note: "Rimandata dall'umano il 2026-10-04 a dopo lo sviluppo delle sezioni dell'App (fase-6.6, fase-8.5). Vincolo di po-03: da completare prima del primo accesso reale dei manager. Debito di fase-3.3 (login locale App ed email coperti solo in sviluppo, fase-2.10); RESEND_API_KEY risulta già montato su Cloud Run (conferma dell'umano, non verificata sul servizio)."
+        note: "Sblocco: fase-6.6 (fase-8.5 chiusa il 2026-10-11). Vincolo di po-03: da completare prima del primo accesso reale dei manager. Debito di fase-3.3 (login locale App ed email coperti solo in sviluppo, fase-2.10); RESEND_API_KEY risulta già montato su Cloud Run (conferma dell'umano, non verificata sul servizio)."
 
 # ============================================================================
 # ARCHI
@@ -1084,7 +1085,8 @@ punti_aperti:
     scadenza: "prima di fase-8.3"
     responsabile: "Cursor (correzione in fase-8.3); verifica degli admin attuali già fatta dall'umano il 2026-10-05"
     registrazione: "segnalazione scritta per il template, ora fuori da questo repo (recuperabile con git show 0e82351^:docs/piano-sviluppo/segnalazione-catalogo-escalation-super-admin.md); l'invio è indipendente da questo progetto: il template si aggiorna nel suo progetto per le applicazioni future (decisione dell'umano del 2026-10-04); correzione nel progetto in fase-8.3 con il controllo descritto in fase-8 §8.3 (blocco Controllo di F1), senza attendere il template. Misura provvisoria: elenco degli utenti con adminRole admin verificato dall'umano; nessuna nuova assegnazione di admin fino alla correzione. Controllo degli admin attuali eseguito dall'umano il 2026-10-05, esito OK."
-    stato: "aperto"
+    stato: "chiuso"
+    riferimento: "Chiuso 2026-10-12 perimetro progetto: controllo beforeValidate in fase-8.3 (chiusa 2026-10-10), prove in checklist §8.3 e script verify-roles-8_3*.ts; verifica admin attuali umana 2026-10-05 OK. Aggiornamento del template di catalogo resta fuori da questo repo (decisione 2026-10-04)."
   - id: po-11
     titolo: "Migrazione a Payload 4: quando e con quali prove"
     scadenza: "prima di avviare la migrazione alla 4"
