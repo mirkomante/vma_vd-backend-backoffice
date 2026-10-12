@@ -73,3 +73,11 @@ Non modifica il meccanismo di rebuild; sostituisce il riferimento al repository 
 ## Nota di chiarimento (2026-10-04, un secret per scopo)
 
 Non modifica la decisione. Il secret condiviso è **uno per scopo**: `SCHEDULER_SECRET_AVAILABILITY` per l'endpoint di reset e riscrittura della disponibilità del menù (6.4) e `SCHEDULER_SECRET_ANONYMIZATION` per l'anonimizzazione GDPR delle prenotazioni (5.3). Se uno dei due trapela, l'altro endpoint resta protetto. Il confronto avviene a tempo costante e un secret errato o assente è rifiutato senza dettagli. Nomi dei secret e delle variabili: `fase-6-menu-digitale.md` (6.0).
+
+## Nota di chiarimento (2026-10-12, secondo trigger e scaffold del frontend)
+
+Non modifica la decisione del pulsante manuale. Precisa tre cose:
+
+- **Due trigger, un solo `cloudbuild.yaml`.** Sul repository del progetto menù ci sono due trigger Cloud Build che eseguono la stessa configurazione (installazione, `next build` con export statico, `firebase deploy`): uno **manuale**, avviato dal pulsante con `triggers.run`, per i cambi di contenuto; uno **al push su `main`**, per i cambi di codice del frontend, con l'integrazione nativa Cloud Build↔GitHub. L'indicazione «manuale (non da push)» del punto 1 del meccanismo valeva per il pulsante e resta vera per i contenuti: nessuna modifica del CMS avvia una build in automatico (nessun hook `afterChange`).
+- **Perché Cloud Build.** Per Firebase Hosting l'integrazione ufficiale con GitHub passa da una GitHub Action (documentazione ufficiale, consultata il 2026-10-12), esclusa dal progetto. Firebase App Hosting, che si collega a git da solo, è un servizio con server (Cloud Run) per il rendering lato server: a un sito statico non serve e non si usa.
+- **Il repository del menù non è più «da definire più avanti».** Nasce in sottofase 6.9 come scaffold di prova, da zero, con le stesse caratteristiche del frontend finale (Next con export statico su Firebase Hosting, pagine statiche per lingua `/it/` e `/en/`); il suo nome si scrive nel file di fase alla creazione. Le pagine reali del menù restano fuori perimetro (6.7).

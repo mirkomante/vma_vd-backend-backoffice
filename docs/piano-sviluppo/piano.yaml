@@ -49,7 +49,7 @@ meta:
     - "fase-7.0b (aggiornamento di Payload a 3.90.2; una migrazione), prima di fase-7.1"
     - "fase-7 (impostazioni-sistema: orari e chiusure sono fonte unica per menù e prenotazioni)"
     - "fase-8 (shell (app) + shadcn/ui)"
-    - "fase-6 (menù digitale; 6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)"
+    - "fase-6 (menù digitale: ordine interno 6.0 → 6.1 → 6.2 → 6.8 → 6.3 → 6.4 → 6.6 → 6.9 → 6.5; 6.7 fuori perimetro; la 6.9 è lo scaffold di prova del frontend, in un repository separato, e la 6.5 parte B si prova su di esso)"
     - "poi fase-4.1/4.2/4.3-A/4.4-A, quindi fase-5"
   vincoli_hard:
     - "Payload >= 3.90.0 — correzioni di sicurezza critiche della 3.90.0; CVE-2026-25544 già coperta da 3.73.0"
@@ -190,12 +190,12 @@ fasi:
     note: >
       Priorità del progetto (2026-10-03): completa e funzionante per prima,
       per la parte CMS, API e backoffice. Il frontend pubblico (6.7) è un'app
-      Firebase in un altro progetto. Si esegue dopo fase-7 e fase-8 (8.1–8.5; la 8.6 si esegue dopo la 6.6).
+      Firebase in un altro progetto. Si esegue dopo fase-7 e fase-8 (8.1–8.5; la 8.6 si esegue dopo la 6.6). Dal 2026-10-12 è in perimetro anche lo scaffold di prova del frontend (fase-6.9), in un repository separato.
     sottofasi:
       - id: fase-6.0
         nome: "Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM (recupero del debito di fase-3)"
         stato: "da_fare"
-        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e i secret condivisi degli endpoint schedulati (uno per scopo: disponibilità del menù e anonimizzazione GDPR). I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima di 6.5 Parte B. Il dominio definitivo si aggiunge al passaggio in produzione."
+        note: "Decisione po-04 (2026-10-04). Abilita Cloud Scheduler e crea il service account dedicato (run.invoker sul servizio), il bucket di disponibilita.json (lettura pubblica, CORS per il dominio del menù, scrittura riservata al service account di runtime sul solo bucket) e i secret condivisi degli endpoint schedulati (uno per scopo: disponibilità del menù e anonimizzazione GDPR). I job li creano fase-6.4 e fase-5.3. Il Cloud Build del rebuild resta in fase-6.5. Il CORS del bucket include gli indirizzi web.app e firebaseapp.com del progetto Firebase del menù, quindi dipende dal suo ID: il progetto va creato a mano (in fase-6.9) prima di impostare il CORS; se non esiste ancora, 6.0 crea il bucket senza CORS e il CORS si imposta alla creazione del progetto, comunque prima della prova di lettura del file dal browser in fase-6.9. Il dominio definitivo si aggiunge al passaggio in produzione."
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia vino/bevanda/distillato) + Global Generali + permessi manager/admin"
         stato: "da_fare"
@@ -215,7 +215,7 @@ fasi:
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
         stato: "da_fare"
-        note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end): si prova sul progetto Firebase nuovo che ospiterà il frontend del menù (decisione po-07, 2026-10-04), con un'app Next minimale di prova che mostra messaggi di conferma (ora della build, lettura del CMS a build-time, lettura di disponibilita.json dal browser); non dipende dal frontend vero. Il menù attuale resta in produzione, sul suo Firebase, finché il nuovo non è pronto, quindi nessuna prova lo tocca. Il trigger sta nel progetto GCP VMA-VD e si collega al repository del progetto menù (nome da definire, non il prototipo); il deploy va sul progetto Firebase del menù, ancora da creare: i permessi del service account della build si scrivono per il caso incrociato (build in VMA-VD, deploy su un altro progetto). riepilogo-sessione-bucket-d.md §2"
+        note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end): si prova sul progetto Firebase nuovo che ospiterà il frontend del menù (decisione po-07, 2026-10-04), con lo scaffold di fase-6.9 (repository separato, pagina di prova con controlli OK/KO: ora della build, lettura del CMS a build-time, lettura di disponibilita.json dal browser); non dipende dal frontend vero. Qui si creano i due trigger Cloud Build (manuale e al push su main, un solo cloudbuild.yaml scritto in 6.9) e si prova la sequenza di sei passaggi. Il menù attuale resta in produzione, sul suo Firebase, finché il nuovo non è pronto, quindi nessuna prova lo tocca. Il trigger sta nel progetto GCP VMA-VD e si collega al repository del progetto menù (creato in fase-6.9, non il prototipo); il deploy va sul progetto Firebase del menù, che si crea in fase-6.9: i permessi del service account della build si scrivono per il caso incrociato (build in VMA-VD, deploy su un altro progetto). riepilogo-sessione-bucket-d.md §2"
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "da_fare"
@@ -223,11 +223,30 @@ fasi:
       - id: fase-6.7
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
         stato: "fuori_perimetro"
-        note: "Sviluppato in un altro progetto (app Firebase del menù): fuori dal perimetro di questo piano, confermato il 2026-10-03. Questo piano fornisce solo API di lettura e disponibilita.json secondo il contratto ADR-112. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
+        note: "Sviluppato in un altro progetto (app Firebase del menù): fuori dal perimetro di questo piano, confermato il 2026-10-03. Questo piano fornisce API di lettura e disponibilita.json secondo il contratto ADR-112 e, dal 2026-10-12, lo scaffold tecnico di prova (fase-6.9); le pagine reali, il design e il banner di stato restano fuori. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
         stato: "da_fare"
         note: "Decisione po-05 (2026-10-04), vedi emendamento ad ADR-108: si importano piatti, vini, distillati, bevande, servizi e tassonomie; i menu fissi e le loro categorie si ricompongono a mano. Report a secco, prova in sviluppo, produzione da locale. Dipende da fase-6.2. Procedura di esportazione dello snapshot: docs/operativo/export-menu-vtn-backend.md."
+      - id: fase-6.9
+        nome: "Scaffold del frontend del menù (repository separato, banco di prova dei punti di contatto)"
+        stato: "da_fare"
+        note: >
+          Decisione del 2026-10-12. Repository nuovo, da zero (non il prototipo
+          vtn-menu-ristorante-next), fuori da questo repo: Next.js con export
+          statico su Firebase Hosting, ultime versioni stabili di Node e pnpm
+          verificate all'esecuzione, pagine statiche per lingua (/it/ e /en/)
+          fin dall'inizio, variabili MENU_CMS_URL e
+          NEXT_PUBLIC_MENU_AVAILABILITY_URL (ADR-112 §6). Pagina di prova con
+          controlli OK/KO (ora della build, lettura del CMS in it e in en,
+          lettura di disponibilita.json dal browser). Scrive il
+          cloudbuild.yaml e fa un deploy manuale da locale; i due trigger Cloud
+          Build li crea fase-6.5. Crea il progetto Firebase del menù (po-07) e
+          sblocca il CORS del bucket. Si esegue dopo fase-6.6 per scelta
+          d'ordine, non per dipendenza di codice. Sostituisce l'app Next
+          minimale usa e getta della parte B di fase-6.5. Le pagine reali del
+          menù restano in fase-6.7 (fuori perimetro). Nota di chiarimento ad
+          ADR-105 e ad ADR-112 (2026-10-12).
 
   - id: fase-7
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
@@ -640,6 +659,10 @@ archi:
       -> immagine builder firebase-tools -> firebase deploy) si applicano
       identicamente al rebuild del menù SSG, invocato da un pulsante nel
       backoffice (app) invece che da un hook afterChange automatico.
+      Aggiornamento 2026-10-12 (nota di chiarimento ad ADR-105): sul
+      repository del menù c'è anche un secondo trigger, al push su main, per
+      i cambi di codice del frontend; i cambi di contenuto restano al
+      pulsante.
       Arco informativo (audit 2026-10-04): ADR-105 è accettata e 4.4 non
       produce nulla per 6.5; non impone un ordine di esecuzione (vale
       meta.ordine_esecuzione).
@@ -879,6 +902,38 @@ archi:
     adr: "ADR — Preparazione a Payload 4: convenzioni in 3.x e criterio di migrazione"
     fonte: "ADR-116-preparazione-payload-4.md"
 
+  - id: arco-51
+    da: fase-6.2
+    a: fase-6.9
+    tipo: output
+    descrizione: "Lo scaffold legge a build-time le collection del menù con i nomi congelati alla chiusura di 6.2 (ADR-112 §1) e il parametro locale sempre esplicito."
+    adr: null
+    fonte: "fase-6-menu-digitale.md §6.9 (2026-10-12)"
+
+  - id: arco-52
+    da: fase-6.4
+    a: fase-6.9
+    tipo: output
+    descrizione: "Lo scaffold legge disponibilita.json dal browser: serve il file generato e riscritto da 6.4 (schema di ADR-112 §3)."
+    adr: null
+    fonte: "fase-6-menu-digitale.md §6.9 (2026-10-12)"
+
+  - id: arco-53
+    da: fase-6.0
+    a: fase-6.9
+    tipo: output
+    descrizione: "Il bucket di disponibilita.json e il suo CORS (6.0) servono alla lettura dal browser; il progetto Firebase si crea in 6.9 e il suo ID entra nel CORS prima della prova."
+    adr: null
+    fonte: "fase-6-menu-digitale.md §6.0 e §6.9 (2026-10-12)"
+
+  - id: arco-54
+    da: fase-6.9
+    a: fase-6.5
+    tipo: output
+    descrizione: "Repository del menù, progetto Firebase e cloudbuild.yaml (6.9) sono ciò su cui la 6.5 crea i due trigger e prova il rebuild (parte B). Scelta d'ordine decisa il 2026-10-12: 6.9 prima di 6.5."
+    adr: null
+    fonte: "fase-6-menu-digitale.md §6.5 e §6.9 (2026-10-12)"
+
 # ============================================================================
 # RIEPILOGO — ADR (derivato dagli archi "decisione" sopra)
 # ============================================================================
@@ -912,6 +967,12 @@ adr_da_scrivere:
     archi: ["arco-05", "arco-19"]
     stato: "accettata"
     file: "ADR-105-strategia-rendering-comunicazione-siti-esterni.md"
+    nota: >
+      Nota di chiarimento del 2026-10-12: due trigger Cloud Build sul
+      repository del menù (manuale per il pulsante, al push su main per il
+      codice), un solo cloudbuild.yaml; Firebase Hosting si integra con
+      GitHub solo tramite GitHub Action (esclusa) e App Hosting non serve a un
+      sito statico; il repository del menù nasce in fase-6.9.
   - titolo: "ADR — Ciclo di vita della prenotazione"
     archi: ["arco-09"]
     stato: "accettata"
@@ -1008,6 +1069,8 @@ adr_da_scrivere:
       un altro progetto: serve un'interfaccia fissata lato CMS prima di
       6.2 e 6.4. Nessuna deviazione da un default di catalogo.
       Scritto e accettato il 2026-10-04; chiude po-06.
+      Nota di chiarimento del 2026-10-12: il primo consumatore del
+      contratto è lo scaffold di fase-6.9 (pagine statiche per lingua).
 
   - titolo: "ADR — Ruoli e permessi di Admin e App"
     archi: ["arco-33", "arco-34", "arco-38"]
@@ -1067,7 +1130,7 @@ punti_aperti:
     scadenza: "prima di fase-6.5"
     registrazione: "nota in fase-6-menu-digitale.md"
     stato: "chiuso"
-    riferimento: "Decisione del 2026-10-04: si prova tutto sul progetto Firebase nuovo che ospiterà il frontend del menù (nessun progetto di test separato: il menù attuale resta in produzione sul suo Firebase fino al passaggio). In fase di prova il frontend è un'app Next minimale che mostra messaggi di conferma; la Parte A di fase-6.5 usa uno step di prova senza deploy. Precisazioni del 2026-10-04: il progetto GCP del CMS è VMA-VD; su Firebase non esiste ancora alcun progetto (né per il menù né per i due siti) e il nome di quello del menù arriverà più avanti; il trigger di rebuild si collega al repository del progetto menù (nome da definire), non al prototipo vtn-menu-ristorante-next (nota di chiarimento ad ADR-105). Se il Firebase del menù sia un progetto GCP nuovo o VMA-VD si fissa alla sua creazione: l'IAM del deploy si scrive per il caso incrociato (build in VMA-VD, deploy su un altro progetto), valido anche se coincidono."
+    riferimento: "Decisione del 2026-10-04: si prova tutto sul progetto Firebase nuovo che ospiterà il frontend del menù (nessun progetto di test separato: il menù attuale resta in produzione sul suo Firebase fino al passaggio). In fase di prova il frontend è un'app Next minimale che mostra messaggi di conferma; la Parte A di fase-6.5 usa uno step di prova senza deploy. Precisazioni del 2026-10-04: il progetto GCP del CMS è VMA-VD; su Firebase non esiste ancora alcun progetto (né per il menù né per i due siti) e il nome di quello del menù arriverà più avanti; il trigger di rebuild si collega al repository del progetto menù (nome da definire), non al prototipo vtn-menu-ristorante-next (nota di chiarimento ad ADR-105). Aggiornamento del 2026-10-12: l'app Next minimale di prova diventa lo scaffold del frontend (fase-6.9), repository separato creato da zero; la parte B di fase-6.5 si prova su di esso e il progetto Firebase si crea in fase-6.9. Se il Firebase del menù sia un progetto GCP nuovo o VMA-VD si fissa alla sua creazione: l'IAM del deploy si scrive per il caso incrociato (build in VMA-VD, deploy su un altro progetto), valido anche se coincidono."
   - id: po-08
     titolo: "Lingue d'interfaccia dell'Admin: solo italiano o italiano e inglese"
     scadenza: "prima di fase-4.0"

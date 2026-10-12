@@ -73,3 +73,7 @@ Le variabili lato CMS per bucket e Scheduler sono definite in 6.4.
 - **`ADR-111`** (contratto con i due siti) usa lo stesso meccanismo per gli orari pubblici (ristorante, check-in e check-out).
 - **`po-06` chiuso.**
 - **Non verificato**: `docs/STATO.md` del prototipo non è stato letto a fondo; il comportamento di CORS e cache su GCS si prova in 6.4.
+
+## Nota di chiarimento (2026-10-12)
+
+Non modifica il contratto. Il primo consumatore è lo scaffold di sottofase 6.9, in un repository separato: legge a build-time le collection con `locale` esplicito (`it` e `en`) e, dal browser, `disponibilita.json`, con le variabili del §6. Le pagine statiche sono distinte per lingua (`/it/…`, `/en/…`). Un nome o un campo da correggere emerso dallo scaffold è una modifica di schema con migrazione, come per ogni nome congelato alla chiusura di 6.2.

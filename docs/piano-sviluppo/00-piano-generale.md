@@ -42,7 +42,7 @@ Il numero di fase non indica l'ordine di esecuzione. Priorità decisa il 2026-10
 3. ~~**Fase 7.0b** — aggiornamento di Payload a 3.90.2 (correzioni di sicurezza critiche; una migrazione), prima della 7.1~~ ✅ (2026-10-05)
 4. **Fase 7** — `impostazioni-sistema` (gli orari sono fonte unica per menù e prenotazioni: vanno prima di 6.1 e 5.1) ✅ (2026-10-06)
 5. **Fase 8** — shell `(app)` + shadcn/ui 🔶 in corso (8.1–8.5 ✅; resta 8.6 ⏸)
-6. **Fase 6** — menù digitale (6.7 fuori perimetro; solo 6.5 parte B dipende dal frontend esterno)
+6. **Fase 6** — menù digitale (6.7 fuori perimetro; la 6.9 è lo scaffold di prova del frontend, in un repository separato, e la 6.5 parte B si prova su di esso)
 7. Poi Fase 4.1–4.4 (parte CMS) e Fase 5
 
 Decisioni ancora aperte, ciascuna con scadenza e punto di registrazione: `piano.yaml`, sezione `punti_aperti`.
@@ -98,7 +98,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 ## Fase 6 — Menù digitale, panoramica sottofasi
 
-Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non indica l'ordine di esecuzione: **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.5**. Prerequisiti: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate. Il frontend pubblico (6.7) è fuori perimetro: vive in un altro progetto.
+Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non indica l'ordine di esecuzione: **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.9 → 6.5**. Prerequisiti: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate. Il frontend pubblico (6.7) è fuori perimetro: vive in un altro progetto. La 6.9 (decisione del 2026-10-12) prepara solo lo scaffold di prova di quel frontend, in un repository separato.
 
 0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — 🔲 da fare
 1. Tassonomie e Global «Generali» — 🔲 da fare
@@ -109,6 +109,7 @@ Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non i
 6. Backoffice «Menù» nell'App — 🔲 da fare
 7. Frontend pubblico del menù — ➖ fuori perimetro (confermato il 2026-10-03)
 8. Import dei dati elementari dal vecchio backend — 🔲 da fare
+9. Scaffold del frontend del menù (banco di prova dei punti di contatto) — 🔲 da fare
 
 ## Fase 7 — Impostazioni di sistema, panoramica sottofasi
 

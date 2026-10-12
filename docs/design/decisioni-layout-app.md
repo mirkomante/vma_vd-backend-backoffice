@@ -241,7 +241,7 @@ Prototipo della shell (barra laterale, menu utente, tema), della home con e senz
 | P18 (slot della barra sempre disegnato) | Chiuso (8.5) |
 | P19 (campi orario su iPhone) | **Chiuso il 2026-10-12**: corretto in `77f23a2` e provato da Mirko su iPhone reale (Orari online, campi del ristorante e del B&B). Playwright (WebKit 4 su 4) da solo non l'avrebbe dimostrato |
 | A23 (tema «Sistema» senza ascolto) | Chiuso, verificato |
-| A24 (menu utente diverso dal mockup) | **Chiuso il 2026-10-12**: allineato al mockup in `77f23a2`; verificato negli screenshot a 390 e a 1280 px (nessuna riga utente, icone sole, luna e schermo, un solo separatore). Le due icone di «Vai all'Admin» restano non provate con l'utente manager (nessun accesso all'Admin): da vedere nel livello 3 |
+| A24 (menu utente diverso dal mockup) | **Chiuso il 2026-10-12**: allineato al mockup in `77f23a2`; verificato negli screenshot a 390 e a 1280 px (nessuna riga utente, icone sole, luna e schermo, un solo separatore). Le due icone di «Vai all'Admin»: **provate da Mirko il 2026-10-12, OK** (con un utente che ha accesso all'Admin) |
 | A25 (CHANGELOG sul tema) | Chiuso |
 | A26 (home senza larghezza massima) | **Chiuso il 2026-10-12**: verificato a 1920 px (colonna di 1024 px centrata nell'area del contenuto) |
 | A27 («Torna al sito») | **Chiuso il 2026-10-12**: `login-testi` e `login-link-destinazioni` 16 su 16, il collegamento non c'è più |
