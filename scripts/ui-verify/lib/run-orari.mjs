@@ -1396,32 +1396,55 @@ export async function runOrariChecks(ctx) {
     }
 
     if (runCtx.shouldRun('orari-campi-dentro-scheda')) {
-      const wkBrowser = await webkit.launch()
-      const wkVer = await wkBrowser.version()
-      try {
-        for (const profiloKey of ['telefono-360', 'telefono-390']) {
-          for (const temaKey of ['chiaro', 'scuro']) {
-            progressStep('orari', 'campi-dentro-scheda', profiloKey, temaKey)
-            const { pctx, page } = await newPage(wkBrowser, profiloKey, temaKey, baseUrl)
-            hoursRestoreFrom(snapshotPath)
-            await loginApp(page, baseUrl, testUser.email, testPassword)
-            await gotoHoursReady(page)
-            await waitForPageLayoutStable(page)
-            const r = await checkOrariCampiDentroScheda(page, 0.5)
-            addRow(report, {
-              id: 'orari-campi-dentro-scheda',
-              schermata: 'orari/iniziale',
-              profiloTema: `${profiloKey}/${temaKey}/WebKit ${wkVer}`,
-              esito: r.ok ? 'OK' : 'FALLITO',
-              misurato: r.misurato,
-              atteso: r.atteso,
-              evidenza: 'WebKit Playwright; non sostituisce iPhone reale (P19 L3)',
-            })
-            await pctx.close()
-          }
+      const chromiumVer = (await browser.version?.()) ?? 'Chromium'
+      const browserRuns = [{ label: `Chromium ${chromiumVer}`, instance: browser, close: false }]
+      // WebKit su locale-prod: cookie Secure su http://localhost (ipotesi P19/decisioni §4); campi-ora WebKit in locale-dev L2.
+      if (!baseUrl.includes(':3100')) {
+        browserRuns.push({ label: null, instance: null, close: true })
+      } else if (runCtx.livello >= 2) {
+        report.addNonProvato(
+          'orari-campi-dentro-scheda/WebKit',
+          'locale-prod: login WebKit su http://localhost:3100 non affidabile (cookie Secure); WebKit eseguito in locale-dev L2',
+        )
+      }
+      for (const run of browserRuns) {
+        let b = run.instance
+        let label = run.label
+        if (!b) {
+          b = await webkit.launch()
+          label = `WebKit ${await b.version()}`
         }
-      } finally {
-        await wkBrowser.close()
+        try {
+          for (const profiloKey of ['telefono-360', 'telefono-390']) {
+            for (const temaKey of ['chiaro', 'scuro']) {
+              progressStep('orari', 'campi-dentro-scheda', profiloKey, temaKey)
+              const { ctx, page } = await newPage(b, profiloKey, temaKey, baseUrl)
+              hoursRestoreFrom(snapshotPath)
+              await loginApp(page, baseUrl, testUser.email, testPassword)
+              await gotoHoursReady(page)
+              await waitForPageLayoutStable(page)
+              const r = await checkOrariCampiDentroScheda(page, 0.5)
+              addRow(report, {
+                id: 'orari-campi-dentro-scheda',
+                schermata: 'orari/iniziale',
+                profiloTema: `${profiloKey}/${temaKey}/${label}`,
+                esito: r.ok ? 'OK' : 'FALLITO',
+                misurato: r.misurato,
+                atteso: r.atteso,
+                evidenza: `${label}; non sostituisce iPhone reale (P19 L3)`,
+              })
+              await ctx.close()
+            }
+          }
+        } finally {
+          if (run.close && b) await b.close()
+        }
+      }
+      if (runCtx.livello >= 2) {
+        report.addNonProvato(
+          'P19-iPhone-campi-ora',
+          'livello 3: Orari su iPhone reale (campi dentro scheda e selettore ora); a carico di Mirko — WebKit/Chromium Playwright non riproducono il difetto iOS',
+        )
       }
     }
   } finally {
@@ -1435,6 +1458,68 @@ export async function runOrariChecks(ctx) {
       }
     } catch (e) {
       report.anomalie.push(`verify-snapshot: ${e.message}`)
+    }
+  }
+}
+
+/** WebKit (e Chromium) per orari-campi-dentro-scheda su locale-dev; su prod resta Chromium in runOrariChecks. */
+export async function runOrariCampiDentroSchedaDevBrowsers(ctx) {
+  const { browser, baseUrl, report, runCtx, newPage, loginApp, testUser, testPassword, addRow, progressStep } = ctx
+  if (!runCtx.shouldRun('orari-campi-dentro-scheda') || baseUrl.includes(':3100')) return
+
+  const snapshotPath = hoursSnapshotToTemp()
+  try {
+    const chromiumVer = await browser.version()
+    const runs = [
+      { b: browser, label: `Chromium ${chromiumVer}`, close: false },
+      { b: await webkit.launch(), label: null, close: true },
+    ]
+    for (const run of runs) {
+      let b = run.b
+      let label = run.label ?? `WebKit ${await b.version()}`
+      try {
+        for (const profiloKey of ['telefono-360', 'telefono-390']) {
+          for (const temaKey of ['chiaro', 'scuro']) {
+            progressStep('orari', 'campi-dentro-scheda', profiloKey, temaKey)
+            const { ctx: pctx, page } = await newPage(b, profiloKey, temaKey, baseUrl)
+            hoursRestoreFrom(snapshotPath)
+            await loginApp(page, baseUrl, testUser.email, testPassword)
+            await gotoHoursReady(page)
+            await waitForPageLayoutStable(page)
+            const r = await checkOrariCampiDentroScheda(page, 0.5)
+            addRow(report, {
+              id: 'orari-campi-dentro-scheda',
+              schermata: 'orari/iniziale',
+              profiloTema: `${profiloKey}/${temaKey}/${label}`,
+              esito: r.ok ? 'OK' : 'FALLITO',
+              misurato: r.misurato,
+              atteso: r.atteso,
+              evidenza: `${label}; locale-dev; non sostituisce iPhone reale (P19 L3)`,
+            })
+            await pctx.close()
+          }
+        }
+      } finally {
+        if (run.close && b) await b.close()
+      }
+    }
+    if (runCtx.livello >= 2) {
+      report.addNonProvato(
+        'P19-iPhone-campi-ora',
+        'livello 3: Orari su iPhone reale (campi dentro scheda e selettore ora); a carico di Mirko — WebKit/Chromium Playwright non riproducono il difetto iOS',
+      )
+    }
+  } finally {
+    hoursRestoreFrom(snapshotPath)
+    try {
+      const v = hoursVerifySnapshot(snapshotPath)
+      if (!v.equal) {
+        report.anomalie.push(
+          `verify-snapshot (campi-dev): Global non identico al baseline dopo ripristino`,
+        )
+      }
+    } catch (e) {
+      report.anomalie.push(`verify-snapshot (campi-dev): ${e.message}`)
     }
   }
 }

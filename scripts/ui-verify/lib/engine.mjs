@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.1.6'
+export const LAUNCHER_VERSION = '3.2.0'
 
 export const SEGNAPOSTO_H1 = {
   '/app/menu': 'Piatti',
@@ -253,12 +253,11 @@ export async function checkOrariCampiDentroScheda(page, tol = 0.5) {
         out.push(`sovrapposizione ${idA}/${idB}: ${ra.right.toFixed(1)} > ${rb.left.toFixed(1)}`)
       }
     }
-    for (const input of timeInputs) {
-      const card = input.closest('[data-slot="card-content"]')
-      if (!card) continue
+    const cards = new Set(timeInputs.map((i) => i.closest('[data-slot="card-content"]')).filter(Boolean))
+    for (const card of cards) {
+      const cr = card.getBoundingClientRect()
       for (const btn of card.querySelectorAll('button')) {
         const br = btn.getBoundingClientRect()
-        const cr = card.getBoundingClientRect()
         if (br.right > cr.right + tolerance) {
           out.push(`pulsante «${(btn.textContent ?? '').trim().slice(0, 40)}»: dx oltre scheda`)
         }
@@ -572,6 +571,46 @@ export async function checkHomeColonne(page, profiloKey) {
   return { ok: cols === expected, misurato: `${cols} colonne`, atteso: `${expected}` }
 }
 
+/** D8 / A26: colonna home max 1024 px centrata; a 1280 riempie l'area contenuto; a 1920 si ferma a 1024. */
+export async function checkHomeLarghezza(page, profiloKey, tol = 2) {
+  const data = await page.evaluate(() => {
+    const main = document.querySelector('[data-slot=sidebar-inset] main') ?? document.querySelector('main')
+    const col = main?.querySelector('.max-w-5xl')
+    if (!main || !col) return null
+    const mr = main.getBoundingClientRect()
+    const cr = col.getBoundingClientRect()
+    return {
+      colWidth: cr.width,
+      mainWidth: mr.width,
+      leftMargin: cr.left - mr.left,
+      rightMargin: mr.right - cr.right,
+    }
+  })
+  if (!data) {
+    return { ok: false, misurato: 'colonna max-w-5xl non trovata', atteso: '≤1024 px centrata in main' }
+  }
+  const maxW = 1024
+  const widthOk = data.colWidth <= maxW + tol
+  const centerOk = Math.abs(data.leftMargin - data.rightMargin) <= tol * 2
+  let profileOk = true
+  let profileNote = ''
+  if (profiloKey === 'notebook-1280') {
+    const inner = data.mainWidth - data.leftMargin - data.rightMargin
+    profileOk = withinTolerance(data.colWidth, inner, tol + 1)
+    profileNote = `a 1280 col=${Math.round(data.colWidth)} px nell'area interna (${Math.round(inner)} px)`
+  } else if (profiloKey === 'schermo-1920') {
+    profileOk = withinTolerance(data.colWidth, maxW, tol + 1)
+    profileNote = `a 1920 larghezza ≈${maxW} px`
+  }
+  const ok = widthOk && centerOk && profileOk
+  const misurato = `col=${Math.round(data.colWidth)} main=${Math.round(data.mainWidth)} margini L/R=${Math.round(data.leftMargin)}/${Math.round(data.rightMargin)}; ${profileNote}`
+  return {
+    ok,
+    misurato,
+    atteso: '≤1024 px, centrata; 1280 riempie area; 1920 ferma a 1024',
+  }
+}
+
 export async function checkShellBarraAlta(page) {
   const h = await page.evaluate(() => {
     const bar = document.querySelector('header')
@@ -768,19 +807,57 @@ export async function checkShellMenuUtente(page, { mobilePanelFirst = false, rem
     await openUserMenu(page, { mobilePanelFirst })
   } catch (e) {
     const probe = remountProbe ? ` remounts=${JSON.stringify(remountProbe)}` : ''
-    return { ok: false, misurato: `menu non apribile: ${e.message}${probe}`, atteso: 'Tema+Esci, no Admin' }
+    return {
+      ok: false,
+      misurato: `menu non apribile: ${e.message}${probe}`,
+      atteso: 'Tema+Esci, no riga utente, icone tema; Admin assente',
+      adminIcone: 'NON_PROVATO',
+    }
   }
   const data = await page.evaluate(() => {
-    const items = [...document.querySelectorAll('[role=menuitem], [role=menuitemradio]')].map((e) => e.textContent?.trim())
-    const admin = items.some((t) => t?.includes('Admin'))
-    return { items, admin }
+    const menu = document.querySelector('[role=menu]')
+    const items = [...document.querySelectorAll('[role=menuitem], [role=menuitemradio]')].map((e) =>
+      e.textContent?.trim(),
+    )
+    const adminItem = [...document.querySelectorAll('[role=menuitem]')].find((e) =>
+      e.textContent?.includes('Admin'),
+    )
+    const userRowInMenu = Boolean(
+      menu?.querySelector('[data-slot=avatar], [data-slot=avatar-fallback]') ||
+        menu?.querySelector('[role=menuitem] [data-slot=avatar]') ||
+        [...(menu?.querySelectorAll('[data-slot=dropdown-menu-label]') ?? [])].some((el) =>
+          /@/.test(el.textContent ?? ''),
+        ),
+    )
+    const themeLabels = ['Chiaro', 'Scuro', 'Sistema']
+    const themeIcons = themeLabels.map((label) => {
+      const el = [...document.querySelectorAll('[role=menuitemradio]')].find((e) => e.textContent?.trim() === label)
+      const svgCount = el ? el.querySelectorAll('svg').length : 0
+      return { label, svgCount }
+    })
+    const adminSvg = adminItem ? adminItem.querySelectorAll('svg').length : 0
+    return { items, admin: Boolean(adminItem), userRowInMenu, themeIcons, adminSvg }
   })
   await page.keyboard.press('Escape')
-  const hasTheme = data.items.some((t) => t === 'Chiaro') && data.items.some((t) => t === 'Scuro') && data.items.some((t) => t === 'Sistema')
+  const hasTheme =
+    data.items.some((t) => t === 'Chiaro') &&
+    data.items.some((t) => t === 'Scuro') &&
+    data.items.some((t) => t === 'Sistema')
   const hasEsci = data.items.some((t) => t === 'Esci')
-  const ok = hasTheme && hasEsci && !data.admin
+  const themeIconsOk = data.themeIcons.every((t) => t.svgCount >= 1)
+  let adminIcone = 'NON_PROVATO'
+  if (data.admin) {
+    adminIcone = data.adminSvg >= 2 ? 'OK' : 'FALLITO'
+  }
+  const ok = hasTheme && hasEsci && !data.admin && !data.userRowInMenu && themeIconsOk && adminIcone !== 'FALLITO'
   const probe = remountProbe ? ` remounts=${JSON.stringify(remountProbe)}` : ''
-  return { ok, misurato: JSON.stringify(data.items) + probe, atteso: 'Tema+Esci, no Admin' }
+  const misurato = `voci=${JSON.stringify(data.items)}; rigaUtente=${data.userRowInMenu}; iconeTema=${JSON.stringify(data.themeIcons)}; iconeAdmin=${data.admin ? data.adminSvg : 'assente'}${probe}`
+  return {
+    ok,
+    misurato,
+    atteso: 'Tema+Esci, no riga utente nel menu, svg su Chiaro/Scuro/Sistema; Admin assente (icone Admin NON PROVATO)',
+    adminIcone,
+  }
 }
 
 /** Clic normale su voce tema con diagnostica completa se Playwright va in timeout. */

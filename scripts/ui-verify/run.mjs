@@ -52,6 +52,7 @@ import {
   checkHomeTesti,
   checkHomeNessunaRigaStato,
   checkHomeColonne,
+  checkHomeLarghezza,
   checkShellBarraAlta,
   checkShellMargineContenuto,
   checkShellSticky,
@@ -69,10 +70,15 @@ import {
   probeMobileMenuTriggerRemounts,
   waitForAppHydration,
 } from './lib/engine.mjs'
-import { runOrariChecks, runOrariDevSimulations, runOrariConsole } from './lib/run-orari.mjs'
+import {
+  runOrariChecks,
+  runOrariDevSimulations,
+  runOrariConsole,
+  runOrariCampiDentroSchedaDevBrowsers,
+} from './lib/run-orari.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
-const DATA = '2026-10-11'
+const DATA = '2026-10-12'
 
 /** @type {import('./lib/perimeter.mjs').ReturnType<typeof createRunContext>} */
 let runCtx
@@ -720,7 +726,38 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
             mobilePanelFirst: profiloKey === 'telefono-390',
             remountProbe,
           })
-          addRow(report, { id: 'shell-menu-utente', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
+          addRow(report, {
+            id: 'shell-menu-utente',
+            schermata: sch,
+            profiloTema: pt,
+            esito: resultToEsito(r),
+            misurato: r.misurato,
+            atteso: r.atteso,
+            evidenza: stato.percorso,
+          })
+          if (r.adminIcone === 'NON_PROVATO') {
+            addRow(report, {
+              id: 'shell-menu-utente',
+              schermata: `${sch} (icone Admin)`,
+              profiloTema: pt,
+              esito: 'NON PROVATO',
+              misurato: 'voce «Vai all\'Admin» assente con utente manager',
+              atteso: 'due icone svg (pannello + freccia esterna) se presente',
+              evidenza: 'A24; utente di prova senza canAccessAdminPanel',
+            })
+          }
+        }
+        if (stato.id === 'home' && runCtx.shouldRun('home-larghezza') && profiloKey === 'notebook-1280') {
+          const r = await checkHomeLarghezza(page, profiloKey, 2)
+          addRow(report, {
+            id: 'home-larghezza',
+            schermata: sch,
+            profiloTema: pt,
+            esito: resultToEsito(r),
+            misurato: r.misurato,
+            atteso: r.atteso,
+            evidenza: stato.percorso,
+          })
         }
         r = await checkShellPercorsoVoceAttiva(page, stato.percorso)
         addRow(report, { id: 'shell-percorso-voce-attiva', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
@@ -774,6 +811,30 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
         }
         await ctx.close()
       }
+    }
+  }
+
+  if (runCtx.shouldRun('home-larghezza') && CONTROLLI.profili['schermo-1920']) {
+    for (const temaKey of temiAll) {
+      progressStep('shell', 'home-larghezza', 'schermo-1920', temaKey)
+      const { ctx, page } = await newPage(browser, 'schermo-1920', temaKey, baseUrl)
+      const pt = `schermo-1920/${temaKey}`
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await page.goto('/app', { waitUntil: 'networkidle' })
+      const r = await checkHomeLarghezza(page, 'schermo-1920', 2)
+      addRow(report, {
+        id: 'home-larghezza',
+        schermata: 'shell/home',
+        profiloTema: pt,
+        esito: resultToEsito(r),
+        misurato: r.misurato,
+        atteso: r.atteso,
+        evidenza: '/app',
+      })
+      if (temaKey === 'chiaro') {
+        await screenshot(page, report, `shell-home-schermo-1920-${temaKey}`, temaKey)
+      }
+      await ctx.close()
     }
   }
 
@@ -1120,6 +1181,22 @@ async function main() {
           } catch (e) {
             report.anomalie.push(`runOrariDevSimulations: ${e.stack ?? e.message}`)
           }
+          try {
+            await runOrariCampiDentroSchedaDevBrowsers({
+              browser: devBrowser,
+              baseUrl: devBaseUrl(),
+              report,
+              runCtx,
+              newPage,
+              loginApp,
+              testUser,
+              testPassword,
+              addRow,
+              progressStep,
+            })
+          } catch (e) {
+            report.anomalie.push(`runOrariCampiDentroSchedaDevBrowsers: ${e.stack ?? e.message}`)
+          }
         } else if (!devL2Combined) {
           await runConsoleClean(devBaseUrl(), report, browserVersion)
         }
@@ -1152,7 +1229,16 @@ async function main() {
             livello: 2,
           })
           report.anomalie.push('Regressione shell 8.2 (L2) nella stessa esecuzione locale-prod')
-          await runLocaleProd(prodBaseUrl(), report)
+          await runLocaleProd(prodBaseUrl(), report, { skipAmbienteCheck: true })
+          runCtx = createRunContext(CONTROLLI, {
+            ...cli,
+            schermate: new Set(['login', 'forgot', 'reset', 'verify']),
+            livello: 2,
+          })
+          report.anomalie.push('Regressione accesso 8.2 (L2) nella stessa esecuzione locale-prod')
+          report.replacePacchetto('accesso')
+          report.pacchettoDefault = 'accesso'
+          await runLocaleProd(prodBaseUrl(), report, { skipAmbienteCheck: true })
           CONTROLLI = saved.c
           controlliBasename = saved.b
           runCtx = saved.r

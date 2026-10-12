@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "ambiente": "online",
+    "data": "2026-10-12",
+    "commit": "77f23a27a500",
+    "launcherVersion": "3.2.0",
+    "launcherHeader": "3.2.0",
+    "browsers": "fetch; AMBIENTE Chromium 140.0.7339.186",
+    "controlliBasename": "controlli-8.5.json",
+    "livelloEseguito": "completo",
+    "controlliVersion": 3,
+    "durataMs": 6587,
+    "invalidRun": false
+  },
+  "counts": {
+    "OK": 7,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 1
+  },
+  "distinctControls": 8,
+  "rows": [
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "on1",
+      "schermata": "/app/login",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "200",
+      "atteso": "200 + h1 Area App",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app",
+      "pacchetto": "online"
+    },
+    {
+      "id": "on2",
+      "schermata": "/app",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "307 → /app/login",
+      "atteso": "redirect /app/login",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app",
+      "pacchetto": "online"
+    },
+    {
+      "id": "on3",
+      "schermata": "POST /app/logout",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "303 Location:/app/login",
+      "atteso": "303 + Set-Cookie payload-token",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app",
+      "pacchetto": "online"
+    },
+    {
+      "id": "on4",
+      "schermata": "/app/login/reset",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "0",
+      "atteso": "0",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app",
+      "pacchetto": "online"
+    },
+    {
+      "id": "on5",
+      "schermata": "reset token+resetFailed",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "alert+campo",
+      "atteso": "avviso e password",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app",
+      "pacchetto": "online"
+    },
+    {
+      "id": "on6",
+      "schermata": "/app/login/verify",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "200",
+      "atteso": "200 + messaggio verify",
+      "evidenza": "https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app",
+      "pacchetto": "online"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "nonProvato": [
+    {
+      "id": "verify-link-valido",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "anomalie": [],
+  "screenshotHashes": []
+}
