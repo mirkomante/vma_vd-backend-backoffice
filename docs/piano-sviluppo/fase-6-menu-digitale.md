@@ -32,7 +32,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.9 → 6.5.** Gli identificativi non indicano l'ordine di esecuzione.
 - 6.1 precede 6.2 (`arco-14`: le collection del menù puntano alle tassonomie).
 - 6.2 precede 6.3, 6.4, 6.6 e 6.8 (`arco-16`, `arco-15`, `arco-39`); 6.0 e Fase 7.2 precedono 6.4 (`arco-17`, `arco-29`); 6.4 precede 6.5 (`arco-18`); Fase 8 precede 6.6 (`arco-30`).
-- **6.8 subito dopo 6.2** (prova in sviluppo): così 6.3, 6.4 e 6.6 si verificano su dati reali. L'esecuzione in produzione si fa prima del lancio, con uno snapshot del giorno.
+- **6.8 subito dopo 6.2** (prova in sviluppo): così 6.3, 6.4 e 6.6 si verificano su dati reali. L'esecuzione in produzione si fa **una sola volta, alla chiusura della 6.6 e prima della 6.9**, con uno snapshot del giorno (sezione «Esecuzione in produzione» di 6.8).
 - **6.9 dopo 6.6 e prima di 6.5** (decisione del 2026-10-12): lo scaffold del frontend legge il contratto (6.2, `arco-51`), il file di disponibilità (6.4, `arco-52`) e il bucket con il suo CORS (6.0, `arco-53`), e dà alla 6.5 il repository e il progetto Firebase su cui provare il rebuild (`arco-54`). L'ordine dopo la 6.6 è una scelta, non una dipendenza di codice: la 6.9 non usa la sezione Menù dell'App.
 - **6.5 dopo 6.6**: il pulsante «Ricompila il menù pubblico» sta nella sezione Menù dell'App (`arco-40`). La 6.6 si esegue dopo la 6.4 per verificare sul file i cambi di stato: è una scelta d'ordine, non una dipendenza di codice.
 - Una chat Composer per sottofase. 6.1 e 6.2 modificano entrambe lo schema: si eseguono in sequenza.
@@ -214,9 +214,9 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 ## 6.8 — Import dei dati elementari dal vecchio backend
 
-**Stato**: 🔶 in corso (sviluppo verificato 2026-10-12; produzione prima del lancio)
+**Stato**: 🔶 in corso (sviluppo verificato 2026-10-12; produzione dopo la 6.6 e prima della 6.9)
 
-**Dipende da**: 6.2 (`arco-39`). Si esegue subito dopo, in sviluppo; la produzione si esegue prima del lancio.
+**Dipende da**: 6.2 (`arco-39`). Si esegue subito dopo, in sviluppo; la produzione si esegue dopo la 6.6 e prima della 6.9 (sezione «Esecuzione in produzione»).
 
 **Obiettivo**: popolare piatti, vini, distillati, bevande, servizi e le tassonomie con i dati del vecchio sistema, in italiano. Il nuovo menù ne è un'evoluzione: l'import **migliora i dati, non li copia alla lettera**.
 
@@ -251,10 +251,17 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 **Revisione nell'App prima del lancio** (a carico dell'umano, con 6.6): ricomposizione delle 2 categorie e degli 8 menu fissi (3 Degustazione, 5 Business lunch) con `visibility` (Degustazione sempre, Business lunch solo a pranzo), `portion` e collegamento ai servizi (oggi il coperto è su due business lunch); traduzioni inglesi manuali; i **9 piatti su 44 senza allergeni dichiarati**, da rileggere con il ristorante.
 
+**Esecuzione in produzione** (decisione del 2026-10-12): **una volta sola, alla chiusura della 6.6 e prima della 6.9**, il giorno in cui parte la revisione a mano nell'App.
+- **Perché non prima**: il vecchio sito resta la fonte di verità fino al lancio (prezzi, voci nascoste e piatti nuovi cambiano lì), e dopo la revisione l'import non si può rilanciare (vedi «Rilancio»). Prima della 6.6 non esiste lo strumento per rivedere.
+- **Perché prima della 6.9**: la pagina di prova dello scaffold legge il CMS di produzione e ha bisogno di dati veri.
+- **Prerequisiti**: 6.6 chiusa e in produzione; migrazioni di 6.1 e 6.2 già applicate; rivalutazione dell'HA chiusa (2026-10-12, nessuna HA); snapshot esportato il giorno stesso.
+- **Sequenza**: (1) snapshot del giorno, come in `docs/operativo/export-menu-vtn-backend.md`; (2) report a secco sul database di produzione: zero errori e conteggi coerenti; (3) **backup su richiesta di Cloud SQL prima della scrittura**: in produzione non c'è un annullamento (lo script di svuotamento esiste solo per lo sviluppo), il ritorno indietro è un ripristino da backup; (4) `--apply` con `--allow-non-dev-database`, poi controlli REST sui conteggi; (5) da quel momento, le modifiche fatte nel vecchio sistema si riportano a mano nell'App.
+- **Rilancio**: non su un database già rivisto a mano (una voce rinominata verrebbe ricreata come duplicato). Variante: se il vecchio sistema ha aggiunto voci prima della revisione, un nuovo report a secco con lo snapshot aggiornato le elenca e un `--apply` crea solo quelle; vale finché nessuno ha rinominato voci.
+
 **Checklist di chiusura sottofase**:
 - [x] Report a secco: conteggi per entità, duplicati di chiave naturale, valori non abbinati, tabella allergeni 14 righe, capacità e `prezzoCalice`. Nessun errore sullo snapshot del 2026-10-12 (`~/vtn-export-2026-10-12`, fuori repo).
 - [x] Prova in sviluppo su `vma_vd_dev` (`pnpm import:menu`); secondo `--apply` con 0 creati; hash SHA-256 del contenuto (`depth=2`) invariato tra due letture consecutive (`scripts/verify-menu-6_8-import-idempotency.ts`).
-- [ ] Esecuzione in produzione da locale con uno snapshot del giorno; conteggi coincidenti.
+- [ ] Esecuzione in produzione da locale con uno snapshot del giorno, alla chiusura della 6.6 e prima della 6.9; backup su richiesta di Cloud SQL eseguito prima dell'`--apply`; conteggi coincidenti.
 - [x] Rivalutazione esplicita dell'alta affidabilità di Cloud SQL (`ADR-110` §3, `arco-27`): **decisione del 2026-10-12, nessuna HA per il go-live del menù**; da rivalutare prima dei dati reali delle prenotazioni (5.3). Annotata in `docs/operativo/cloud-sql-produzione.md` e in una nota di chiarimento ad `ADR-110`. La voce per la Fase 5 (`arco-26`) resta aperta nella checklist di chiusura di 5.3.
 - [x] Lettura pubblica REST dev `locale=it` (`depth=2`): campione piatto/bevanda/distillato/vino; piatto nascosto `disabled: true`; `locale=en` con ripiego vs `fallback-locale=none` su piatto importato.
 - [x] CHANGELOG (esiti dev); elenco revisione manuale per l'umano nel CHANGELOG.
@@ -390,6 +397,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 - [ ] «Terminato» e «disabilita» da telefono: il file di disponibilità cambia entro pochi secondi.
 - [ ] Un menu fisso composto con `portion`, ordine e `visibility`; i due menu con «2 Nem» (revisione di 6.8) usano il piatto base.
 - [ ] Menu a tendina di Paesi e regioni filtrati nella query.
+- [ ] A chiusura: esecuzione dell'import di produzione di 6.8 (con backup su richiesta) e inizio della revisione a mano; vedi 6.8, «Esecuzione in produzione».
 - [ ] CHANGELOG.
 
 ---
@@ -429,7 +437,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Decisioni da prendere all'inizio di 6.9**:
 1. Nome del repository e ID del progetto Firebase (progetto GCP nuovo o `vma-vd`: `po-07`).
-2. **Dati per la prova**: il CMS di produzione potrebbe non avere ancora piatti (l'import di produzione di 6.8 è prima del lancio). Serve almeno un piatto creato a mano o l'import già eseguito. La build locale legge il CMS di produzione, perché lo sviluppo locale non è raggiungibile da Cloud Build.
+2. **Dati per la prova**: il CMS di produzione potrebbe non avere ancora piatti (l'import di produzione di 6.8 si esegue alla chiusura della 6.6, prima della 6.9, e risolve il punto). Se la 6.9 si anticipa prima della 6.6, serve almeno un piatto creato a mano. La build locale legge il CMS di produzione, perché lo sviluppo locale non è raggiungibile da Cloud Build.
 
 **Fuori perimetro**: pagine del menù, design, sezioni (`ADR-112` §2), banner di stato (`isOpen`, `activeSlot`, `isHoliday`), traduzioni inglesi dei contenuti, dominio definitivo.
 
@@ -535,5 +543,5 @@ Un nome per variabile, nessun alias.
 - **Allergeni sui vini** (solfiti): non previsti; `ADR-108` li cita solo per i piatti e per le birre. Non si decide qui.
 - **Non verificati**: contenuto dello snapshot; permessi minimi esatti su GCS e Firebase (verifica nelle prove di 6.0 e 6.5); regione del trigger Cloud Build; listino di Cloud Scheduler; comportamento di `admin.hidden` per ruolo a runtime.
 - **Nome del repository del menù e ID del progetto Firebase**: si fissano all'inizio di 6.9 (`po-07`: progetto GCP nuovo o `vma-vd`).
-- **Dati per la pagina di prova (6.9)**: il CMS di produzione potrebbe non avere ancora piatti; serve almeno un piatto creato a mano o l'import di produzione già eseguito. Da decidere all'inizio di 6.9.
+- **Dati per la pagina di prova (6.9)**: risolto dalla sequenza di 6.8 (2026-10-12): l'import di produzione precede la 6.9. Se la 6.9 si anticipa prima della 6.6, serve almeno un piatto creato a mano.
 - **Routing per lingua senza l'i18n di Next (6.9)**: l'integrazione i18n di Next non si applica all'export statico; da verificare sulla guida della versione scelta. Non verificato.

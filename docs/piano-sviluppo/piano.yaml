@@ -227,7 +227,7 @@ fasi:
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
         stato: "in_corso"
-        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione resta aperta; rivalutazione ADR-110 §3 chiusa il 2026-10-12 (nessuna HA per il menù, da rivedere prima di fase-5.3). Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md."
+        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione resta aperta (una volta sola, alla chiusura di fase-6.6 e prima di fase-6.9, con backup su richiesta di Cloud SQL); rivalutazione ADR-110 §3 chiusa il 2026-10-12 (nessuna HA per il menù, da rivedere prima di fase-5.3). Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md."
       - id: fase-6.9
         nome: "Scaffold del frontend del menù (repository separato, banco di prova dei punti di contatto)"
         stato: "da_fare"
