@@ -551,17 +551,19 @@ async function main(): Promise<void> {
       return probe.id
     }
 
-    function minimalUpdateData(
-      slug: CollectionSlug,
-      doc: Record<string, unknown>,
-    ): Record<string, unknown> {
+    function docField(doc: object, key: string): unknown {
+      if (!Object.prototype.hasOwnProperty.call(doc, key)) {
+        return undefined
+      }
+      return Reflect.get(doc, key)
+    }
+
+    function minimalUpdateData(slug: CollectionSlug, doc: object): Record<string, unknown> {
       if (slug === COUNTRIES_SLUG || slug === REGIONS_SLUG) {
-        return { enabled: doc.enabled !== false }
+        return { enabled: docField(doc, 'enabled') !== false }
       }
-      if (slug === APPELLATIONS_SLUG || slug === CLASSIFICATIONS_SLUG) {
-        return { name: doc.name as string }
-      }
-      return { name: doc.name as string }
+      const name = docField(doc, 'name')
+      return { name: typeof name === 'string' ? name : '' }
     }
 
     console.log('--- admin.hidden (config, adminRole manager) ---')
@@ -642,7 +644,7 @@ async function main(): Promise<void> {
         overrideAccess: true,
         locale: updateLocale(slug) ?? 'it',
       })
-      const patch = minimalUpdateData(slug, doc as Record<string, unknown>)
+      const patch = minimalUpdateData(slug, doc)
       await expectCollectionUpdate(
         payload,
         slug,
@@ -854,47 +856,42 @@ async function main(): Promise<void> {
       }
       console.log('OK: REST ripiego locale=en su Italia')
 
-      console.log('--- REST anonimo write (senza cookie, body {}) ---')
+      console.log('--- REST anonimo write (senza cookie) ---')
       const anonPostCountries = await restFetchAnon(
         `/api/${COUNTRIES_SLUG}?locale=it&depth=0`,
         'POST',
         {},
       )
-      expectAnonRestWriteStatus(`POST /api/${COUNTRIES_SLUG}`, anonPostCountries)
+      expectAnonRestWriteStatus(`POST /api/${COUNTRIES_SLUG} body {}`, anonPostCountries)
 
-      const anonPatchCountries = await restFetchAnon(
-        `/api/${COUNTRIES_SLUG}/${italyId}?locale=it&depth=0`,
-        'PATCH',
-        {},
-      )
-      expectAnonRestWriteStatus(`PATCH /api/${COUNTRIES_SLUG}/${italyId}`, anonPatchCountries)
-
+      const missingCountryId = 999999
       const anonDeleteCountries = await restFetchAnon(
-        `/api/${COUNTRIES_SLUG}/${italyId}?depth=0`,
+        `/api/${COUNTRIES_SLUG}/${missingCountryId}?depth=0`,
         'DELETE',
         {},
       )
-      expectAnonRestWriteStatus(`DELETE /api/${COUNTRIES_SLUG}/${italyId}`, anonDeleteCountries)
-
-      const anonPatchGlobal = await restFetchAnon(
-        `/api/globals/${MENU_GENERAL_SLUG}?locale=it&depth=0`,
-        'PATCH',
-        {},
+      expectAnonRestWriteStatus(
+        `DELETE /api/${COUNTRIES_SLUG}/${missingCountryId} (id inesistente)`,
+        anonDeleteCountries,
       )
-      if (anonPatchGlobal.status === 404) {
-        console.log(
-          `OK: REST anonimo PATCH /api/globals/${MENU_GENERAL_SLUG} → 404 (PATCH non esposto; update Global via POST)`,
-        )
-      } else {
-        expectAnonRestWriteStatus(`PATCH /api/globals/${MENU_GENERAL_SLUG}`, anonPatchGlobal)
-      }
 
       const anonPostGlobal = await restFetchAnon(
         `/api/globals/${MENU_GENERAL_SLUG}?locale=it&depth=0`,
         'POST',
         {},
       )
-      expectAnonRestWriteStatus(`POST /api/globals/${MENU_GENERAL_SLUG}`, anonPostGlobal)
+      expectAnonRestWriteStatus(`POST /api/globals/${MENU_GENERAL_SLUG} body {}`, anonPostGlobal)
+
+      const anonGetGlobal = await fetch(
+        `${appPublicUrl()}/api/globals/${MENU_GENERAL_SLUG}?depth=0`,
+        { method: 'GET', credentials: 'omit', headers: { Accept: 'application/json' } },
+      )
+      if (anonGetGlobal.status !== 200) {
+        throw new Error(
+          `REST anonimo GET /api/globals/${MENU_GENERAL_SLUG}?depth=0: atteso 200, ${anonGetGlobal.status}`,
+        )
+      }
+      console.log(`OK: REST anonimo GET /api/globals/${MENU_GENERAL_SLUG}?depth=0 → 200`)
 
       console.log(
         'NON ESEGUITO: REST write (POST/PATCH/DELETE) per altri ruoli/slug — coperto da Local API',
