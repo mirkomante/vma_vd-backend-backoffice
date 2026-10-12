@@ -182,7 +182,7 @@ Aggiunge la Collection «Servizi», sostituisce la tabella del seed iniziale del
    | Regione (16, di cui 15 abilitate) | le 15 del §5 più Sicilia |
    | Denominazione (3) | Carso, Collio, Franciacorta (Valdobbiadene esiste nel vecchio sistema ma non è usata: non si crea) |
    | Classificazione (6) | invariata: D.O.C.G., D.O.C., I.G.T., D.O.P. (Italia); A.O.C., A.O.P. (Francia) |
-   | Allergeni (14) | i 14 normativi, già coincidenti per nome con quelli del vecchio sistema |
+   | Allergeni (14) | i 14 normativi UE nel seed 6.1; quattro nomi nell'API del vecchio backend differiscono (vedi nota 2026-10-12 sotto) |
 
    `abilitato` è **vero** per i valori usati da voci in carta oggi (12 Paesi, 15 regioni), secondo il criterio già deciso per il seed («popolamento basato solo su dati reali oggi in carta», `riepilogo-sessione-criterio-manager-admin-menu.md`), ed è **falso** per Libano e Sicilia, usati solo da voci nascoste. Libano e Sicilia esistono perché le voci nascoste importate come `disabilitato` mantengano la loro geografia, ma il manager non li vede.
 3. **Import dei dati esistenti.** Il nuovo menù è un'evoluzione del vecchio: l'import ne migliora i dati e non li copia alla lettera.
@@ -262,4 +262,17 @@ Aggiunge due tassonomie che il modello non prevedeva e **sostituisce il §6** (C
 - **Fase 6.1** scaffolda `wine-types` e `drink-types`; **6.2** ne usa il riferimento (obbligatorio) e aggiunge `abv`, `volume` e `allergens` alle bevande; **6.8** le popola per nome.
 - **`ADR-112`**: nessuna modifica. Le tassonomie sono già in lettura pubblica e non serve un gruppo `beers` nel file.
 - **Da verificare all'import**: i valori delle tipologie di vino e di distillato sullo snapshot. «Vietnamite» è una tipologia per origine e si sovrappone a «Calde» e «Fredde»: si importa com'è, da rivedere con il ristorante.
+
+### Nota di chiarimento (2026-10-12) — Nomi allergeni seed vs snapshot API
+
+Il primo emendamento (tabella seed) e la §6.1 di `fase-6-menu-digitale.md` assumevano che i nomi italiani degli allergeni nel vecchio sistema **coincidessero già** con quelli normativi del seed. Lo snapshot JSON dell'API v1 (verificato in fase **6.8**, 2026-10-12) usa invece **quattro etichette diverse** su `allergeni.json` e nei join dei piatti:
+
+| Nome nello snapshot | Nome nel seed 6.1 |
+|---|---|
+| Cereali | Cereali contenenti glutine |
+| Latte vaccino | Latte |
+| Sesamo | Semi di sesamo |
+| Solfiti | Anidride solforosa e solfiti |
+
+**Decisione**: si mantiene il seed 6.1 (nomi normativi UE). Lo script di import (`scripts/import-menu-vtn-backend.ts`) applica la tabella sopra; un nome snapshot senza corrispondenza è un **errore** del report e blocca `--apply`. Il report a secco elenca tutte e 14 le righe con il conteggio piatti per nome snapshot.
 - Applicato in `fase-6-menu-digitale.md` (nomi e campi, in inglese).

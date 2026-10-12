@@ -19,6 +19,7 @@
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "seed:super-admin": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-super-admin.ts",
     "seed:menu-taxonomies": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed-menu-taxonomies.ts",
+    "import:menu": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/import-menu-vtn-backend.ts",
     "verify:menu-6_1": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_1.ts",
     "verify:menu-6_2": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_2.ts",
     "migrate:bootstrap-credentials": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/migrate-bootstrap-credentials.ts",

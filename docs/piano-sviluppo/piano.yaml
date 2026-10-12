@@ -226,8 +226,8 @@ fasi:
         note: "Sviluppato in un altro progetto (app Firebase del menù): fuori dal perimetro di questo piano, confermato il 2026-10-03. Questo piano fornisce API di lettura e disponibilita.json secondo il contratto ADR-112 e, dal 2026-10-12, lo scaffold tecnico di prova (fase-6.9); le pagine reali, il design e il banner di stato restano fuori. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
-        stato: "da_fare"
-        note: "Decisione po-05 (2026-10-04), vedi emendamento ad ADR-108: si importano piatti, vini, distillati, bevande, servizi e tassonomie; i menu fissi e le loro categorie si ricompongono a mano. Report a secco, prova in sviluppo, produzione da locale. Dipende da fase-6.2. Procedura di esportazione dello snapshot: docs/operativo/export-menu-vtn-backend.md."
+        stato: "in_corso"
+        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione e rivalutazione ADR-110 §3 restano aperti. Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md."
       - id: fase-6.9
         nome: "Scaffold del frontend del menù (repository separato, banco di prova dei punti di contatto)"
         stato: "da_fare"

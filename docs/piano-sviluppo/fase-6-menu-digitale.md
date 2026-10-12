@@ -116,7 +116,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 (L) = `localized`. Denominazioni e classificazioni **non** sono `localized` (nomi propri e sigle). Il seed completo di Paesi e Regioni è la tabella di `ADR-108`, primo emendamento; le tipologie di vino e di bevanda sono introdotte dal terzo emendamento. **Le tassonomie senza seed (categorie dei piatti e tipologie) nascono vuote in 6.1 e si popolano con l'import (6.8)**, dai nomi dello snapshot: i valori «attesi» qui sopra vengono dalla documentazione del prototipo (vino e distillato) e dall'API del vecchio backend letta il 2026-10-04 (bevanda), e vanno **verificati sullo snapshot**. Il manager sceglie soltanto; le tipologie le crea l'admin.
 
-**Allergeni, denominazioni di riferimento** (Reg. UE 1169/2011, allegato II): cereali contenenti glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, semi di sesamo, anidride solforosa e solfiti, lupini, molluschi (inglese: cereals containing gluten, crustaceans, eggs, fish, peanuts, soybeans, milk, tree nuts, celery, mustard, sesame seeds, sulphur dioxide and sulphites, lupin, molluscs). **Il seed usa i nomi italiani del vecchio sistema** (ADR-108: coincidono già); le traduzioni inglesi qui sopra sono una proposta da rivedere.
+**Allergeni, denominazioni di riferimento** (Reg. UE 1169/2011, allegato II): cereali contenenti glutine, crostacei, uova, pesce, arachidi, soia, latte, frutta a guscio, sedano, senape, semi di sesamo, anidride solforosa e solfiti, lupini, molluschi (inglese: cereals containing gluten, crustaceans, eggs, fish, peanuts, soybeans, milk, tree nuts, celery, mustard, sesame seeds, sulphur dioxide and sulphites, lupin, molluscs). **Il seed 6.1 usa i nomi normativi UE in italiano**; l'API del vecchio backend espone quattro etichette diverse (Cereali, Latte vaccino, Sesamo, Solfiti) — l'import 6.8 le abbina al seed con una tabella fissa (nota 2026-10-12 in `ADR-108`). Le traduzioni inglesi qui sopra sono una proposta da rivedere.
 
 **Global «Generali»** (slug proposto `menu-general`): **un solo campo**, `globalMessage` (`localized`, testo breve: l'avviso immediato, per esempio «oggi cucina chiusa»; alimenta `disponibilita.json`, quindi cambia senza rebuild). **Nessun campo di orario o di chiusura e nessun `isSpecialPeriod`** (`ADR-109` §2). Il prototipo ha anche `messaggioChiusura`, che non si porta: il banner di chiusura lo compone il frontend da orari e chiusure annuali (`label`). Se il ristorante volesse un testo libero a locale chiuso, si aggiunge dopo con una migrazione.
 
@@ -214,7 +214,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 ## 6.8 — Import dei dati elementari dal vecchio backend
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (sviluppo verificato 2026-10-12; produzione prima del lancio)
 
 **Dipende da**: 6.2 (`arco-39`). Si esegue subito dopo, in sviluppo; la produzione si esegue prima del lancio.
 
@@ -252,12 +252,37 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 **Revisione nell'App prima del lancio** (a carico dell'umano, con 6.6): ricomposizione delle 2 categorie e degli 8 menu fissi (3 Degustazione, 5 Business lunch) con `visibility` (Degustazione sempre, Business lunch solo a pranzo), `portion` e collegamento ai servizi (oggi il coperto è su due business lunch); traduzioni inglesi manuali; i **9 piatti su 44 senza allergeni dichiarati**, da rileggere con il ristorante.
 
 **Checklist di chiusura sottofase**:
-- [ ] Report a secco: conteggi per entità, duplicati di chiave naturale, valori non abbinati. Nessun errore.
-- [ ] Prova in sviluppo; secondo `--apply` senza duplicati (idempotenza).
+- [x] Report a secco: conteggi per entità, duplicati di chiave naturale, valori non abbinati, tabella allergeni 14 righe, capacità e `prezzoCalice`. Nessun errore sullo snapshot del 2026-10-12 (`~/vtn-export-2026-10-12`, fuori repo).
+- [x] Prova in sviluppo su `vma_vd_dev` (`pnpm import:menu`); secondo `--apply` con 0 creati; hash SHA-256 del contenuto (`depth=2`) invariato tra due letture consecutive (`scripts/verify-menu-6_8-import-idempotency.ts`).
 - [ ] Esecuzione in produzione da locale con uno snapshot del giorno; conteggi coincidenti.
 - [ ] Rivalutazione esplicita dell'alta affidabilità di Cloud SQL (`ADR-110` §3, `arco-26`, `arco-27`): decisione e data annotate in `docs/operativo/cloud-sql-produzione.md`. La stessa voce sta nella checklist di chiusura di 5.3.
-- [ ] Lettura pubblica `locale=it` di un piatto, un vino e un distillato importati; una voce nascosta con `disabled: true`.
-- [ ] CHANGELOG; elenco della revisione consegnato all'umano.
+- [x] Lettura pubblica REST dev `locale=it` (`depth=2`): campione piatto/bevanda/distillato/vino; piatto nascosto `disabled: true`; `locale=en` con ripiego vs `fallback-locale=none` su piatto importato.
+- [x] CHANGELOG (esiti dev); elenco revisione manuale per l'umano nel CHANGELOG.
+- [x] Script `scripts/import-menu-vtn-backend.ts`, comando `pnpm import:menu`; nota in testata script: **non rilanciare su DB già rivisto a mano**.
+- [x] Solo dev: `scripts/wipe-menu-import-dev.ts` (svuota le 9 collection import; rifiuta se `DATABASE_URL` ≠ `127.0.0.1:5432/vma_vd_dev`).
+
+**Produzione (dopo import, verifica REST)** — host `vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app` (senza ripetere `https://` negli esempi sotto: prefisso unico `https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app`):
+
+```bash
+BASE=https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app
+
+curl -s "$BASE/api/dishes?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'          # 44
+curl -s "$BASE/api/wines?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'           # 90
+curl -s "$BASE/api/spirits?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'          # 38
+curl -s "$BASE/api/drinks?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'         # 13
+curl -s "$BASE/api/menu-services?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'    # 3
+curl -s "$BASE/api/dish-categories?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'  # 6
+curl -s "$BASE/api/wine-types?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'       # 5
+curl -s "$BASE/api/spirit-types?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'     # 7
+curl -s "$BASE/api/drink-types?locale=it&limit=100" | grep -o '"totalDocs":[0-9]*'      # 3
+
+# disabled: true (conteggio occorrenze nel JSON; atteso 3 / 13 / 6)
+curl -s "$BASE/api/dishes?locale=it&limit=100" | grep -o '"disabled":true' | wc -l
+curl -s "$BASE/api/wines?locale=it&limit=100" | grep -o '"disabled":true' | wc -l
+curl -s "$BASE/api/spirits?locale=it&limit=100" | grep -o '"disabled":true' | wc -l
+```
+
+Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con `DATABASE_URL` e `PAYLOAD_SECRET` prod inline; `pnpm import:menu` report poi `--apply --allow-non-dev-database`.
 
 ---
 
