@@ -178,7 +178,7 @@ export async function checkLoginTexts(page) {
     const labels = [...document.querySelectorAll('label')].map((l) => l.textContent?.trim())
     const textLinks = [...document.querySelectorAll('main a')].filter((a) => {
       const d = getComputedStyle(a).textDecorationLine
-      return d.includes('underline') || a.textContent?.includes('Password') || a.textContent?.includes('Torna al sito')
+      return d.includes('underline') || a.textContent?.includes('Password')
     }).map((a) => a.textContent?.trim())
     return { h1, desc, google, accedi, sep, labels, textLinks }
   })
@@ -188,7 +188,7 @@ export async function checkLoginTexts(page) {
     google: 'Accedi con Google',
     accedi: 'Accedi',
     labels: ['Email', 'Password'],
-    textLinks: ['Password dimenticata?', 'Torna al sito'],
+    textLinks: ['Password dimenticata?'],
   }
   const ok =
     data.h1 === atteso.h1 &&
@@ -210,12 +210,66 @@ export async function checkLoginLinkDestinazioni(page) {
     })
     return map
   })
-  const ok =
-    data['Password dimenticata?'] === '/app/login/forgot' && (data['Torna al sito'] === '/' || data['Torna al sito'] === '')
+  const ok = data['Password dimenticata?'] === '/app/login/forgot' && data['Torna al sito'] == null
   return {
     ok,
     misurato: JSON.stringify(data),
-    atteso: '{"Password dimenticata?":"/app/login/forgot","Torna al sito":"/"}',
+    atteso: '{"Password dimenticata?":"/app/login/forgot"}',
+  }
+}
+
+/** P19: campi ora dentro la scheda e coppie Inizio/Fine senza sovrapposizione (WebKit Playwright). */
+export async function checkOrariCampiDentroScheda(page, tol = 0.5) {
+  const failures = await page.evaluate((tolerance) => {
+    const out = []
+    const pairs = [
+      ['hours-lunch-start', 'hours-lunch-end'],
+      ['hours-dinner-start', 'hours-dinner-end'],
+      ['hours-bnb-check-in', 'hours-bnb-check-out'],
+    ]
+    const timeInputs = [...document.querySelectorAll('main input[type="time"]')]
+    for (const input of timeInputs) {
+      const card = input.closest('[data-slot="card-content"]')
+      if (!card) {
+        out.push(`${input.id}: card-content assente`)
+        continue
+      }
+      const ir = input.getBoundingClientRect()
+      const cr = card.getBoundingClientRect()
+      if (ir.right > cr.right + tolerance) {
+        out.push(`${input.id}: dx ${ir.right.toFixed(1)} > scheda ${cr.right.toFixed(1)}`)
+      }
+    }
+    for (const [idA, idB] of pairs) {
+      const a = document.getElementById(idA)
+      const b = document.getElementById(idB)
+      if (!a || !b) {
+        out.push(`coppia ${idA}/${idB}: elemento assente`)
+        continue
+      }
+      const ra = a.getBoundingClientRect()
+      const rb = b.getBoundingClientRect()
+      if (ra.right > rb.left + tolerance) {
+        out.push(`sovrapposizione ${idA}/${idB}: ${ra.right.toFixed(1)} > ${rb.left.toFixed(1)}`)
+      }
+    }
+    for (const input of timeInputs) {
+      const card = input.closest('[data-slot="card-content"]')
+      if (!card) continue
+      for (const btn of card.querySelectorAll('button')) {
+        const br = btn.getBoundingClientRect()
+        const cr = card.getBoundingClientRect()
+        if (br.right > cr.right + tolerance) {
+          out.push(`pulsante «${(btn.textContent ?? '').trim().slice(0, 40)}»: dx oltre scheda`)
+        }
+      }
+    }
+    return out
+  }, tol)
+  return {
+    ok: failures.length === 0,
+    misurato: failures.length ? failures.join('; ') : 'tutti i campi dentro scheda, nessuna sovrapposizione',
+    atteso: 'nessuna uscita dalla scheda e nessuna sovrapposizione',
   }
 }
 

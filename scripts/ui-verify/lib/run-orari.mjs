@@ -1,6 +1,7 @@
 import { existsSync, readFileSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 import { spawn, spawnSync } from 'node:child_process'
+import { webkit } from '@playwright/test'
 
 import {
   checkScrollOrizzontale,
@@ -10,6 +11,7 @@ import {
   installNoLampoObserver,
   checkNoLampo,
   checkTemaCambioSistema,
+  checkOrariCampiDentroScheda,
   withinTolerance,
   openMobileSidebar,
   isMobileSidebarOpen,
@@ -1391,6 +1393,36 @@ export async function runOrariChecks(ctx) {
         evidenza: 'login path reused',
       })
       await pctx.close()
+    }
+
+    if (runCtx.shouldRun('orari-campi-dentro-scheda')) {
+      const wkBrowser = await webkit.launch()
+      const wkVer = await wkBrowser.version()
+      try {
+        for (const profiloKey of ['telefono-360', 'telefono-390']) {
+          for (const temaKey of ['chiaro', 'scuro']) {
+            progressStep('orari', 'campi-dentro-scheda', profiloKey, temaKey)
+            const { pctx, page } = await newPage(wkBrowser, profiloKey, temaKey, baseUrl)
+            hoursRestoreFrom(snapshotPath)
+            await loginApp(page, baseUrl, testUser.email, testPassword)
+            await gotoHoursReady(page)
+            await waitForPageLayoutStable(page)
+            const r = await checkOrariCampiDentroScheda(page, 0.5)
+            addRow(report, {
+              id: 'orari-campi-dentro-scheda',
+              schermata: 'orari/iniziale',
+              profiloTema: `${profiloKey}/${temaKey}/WebKit ${wkVer}`,
+              esito: r.ok ? 'OK' : 'FALLITO',
+              misurato: r.misurato,
+              atteso: r.atteso,
+              evidenza: 'WebKit Playwright; non sostituisce iPhone reale (P19 L3)',
+            })
+            await pctx.close()
+          }
+        }
+      } finally {
+        await wkBrowser.close()
+      }
     }
   } finally {
     hoursRestoreFrom(snapshotPath)

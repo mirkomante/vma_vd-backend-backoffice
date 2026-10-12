@@ -12,18 +12,20 @@ export default async function AppHomePage() {
 
   if (cards.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed border-border p-6 text-center">
-        <h1 className="text-xl font-semibold tracking-tight">Nessuna sezione disponibile</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Il tuo account non ha accesso a nessuna sezione. Se ritieni di dover avere accesso,
-          contatta l&apos;amministratore.
-        </p>
+      <div className="mx-auto w-full max-w-5xl">
+        <div className="rounded-lg border border-dashed border-border p-6 text-center">
+          <h1 className="text-xl font-semibold tracking-tight">Nessuna sezione disponibile</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Il tuo account non ha accesso a nessuna sezione. Se ritieni di dover avere accesso,
+            contatta l&apos;amministratore.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-5">
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Area App</h1>
         <p className="text-sm text-muted-foreground">Scegli una sezione.</p>

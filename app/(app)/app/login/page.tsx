@@ -31,12 +31,7 @@ export default async function AppLoginPage({ searchParams }: AppLoginPageProps) 
     <AppAuthPage
       title="Area App"
       description="Accedi con Google oppure con email e password."
-      links={
-        <>
-          <AppAuthLink href="/app/login/forgot">Password dimenticata?</AppAuthLink>
-          <AppAuthLink href="/" muted>Torna al sito</AppAuthLink>
-        </>
-      }
+      links={<AppAuthLink href="/app/login/forgot">Password dimenticata?</AppAuthLink>}
     >
       {authFailed ? <AppAuthAlert variant="error">{GENERIC_LOGIN_FAILURE_MESSAGE}</AppAuthAlert> : null}
       {resetOk ? <AppAuthAlert variant="success">{RESET_SUCCESS_MESSAGE}</AppAuthAlert> : null}

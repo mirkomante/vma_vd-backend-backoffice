@@ -358,12 +358,13 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
                 <FieldSet>
                   <FieldLegend variant="label">Pranzo</FieldLegend>
                   <div className="grid grid-cols-2 gap-3">
-                    <Field data-invalid={Boolean(fieldErrors['lunch.startTime'])}>
+                    <Field className="min-w-0" data-invalid={Boolean(fieldErrors['lunch.startTime'])}>
                       <FieldLabel htmlFor={HOURS_FIELD_DOM_IDS['lunch.startTime']}>Inizio</FieldLabel>
                       <Input
                         id={HOURS_FIELD_DOM_IDS['lunch.startTime']}
                         type="time"
                         step={60}
+                        className="w-full min-w-0 max-w-full"
                         autoComplete="off"
                         aria-invalid={Boolean(fieldErrors['lunch.startTime'])}
                         value={values.lunch.startTime}
@@ -378,12 +379,13 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
                       />
                       <FieldError>{fieldErrors['lunch.startTime']}</FieldError>
                     </Field>
-                    <Field data-invalid={Boolean(fieldErrors['lunch.endTime'])}>
+                    <Field className="min-w-0" data-invalid={Boolean(fieldErrors['lunch.endTime'])}>
                       <FieldLabel htmlFor={HOURS_FIELD_DOM_IDS['lunch.endTime']}>Fine</FieldLabel>
                       <Input
                         id={HOURS_FIELD_DOM_IDS['lunch.endTime']}
                         type="time"
                         step={60}
+                        className="w-full min-w-0 max-w-full"
                         autoComplete="off"
                         aria-invalid={Boolean(fieldErrors['lunch.endTime'])}
                         value={values.lunch.endTime}
@@ -403,12 +405,13 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
                 <FieldSet>
                   <FieldLegend variant="label">Cena</FieldLegend>
                   <div className="grid grid-cols-2 gap-3">
-                    <Field data-invalid={Boolean(fieldErrors['dinner.startTime'])}>
+                    <Field className="min-w-0" data-invalid={Boolean(fieldErrors['dinner.startTime'])}>
                       <FieldLabel htmlFor={HOURS_FIELD_DOM_IDS['dinner.startTime']}>Inizio</FieldLabel>
                       <Input
                         id={HOURS_FIELD_DOM_IDS['dinner.startTime']}
                         type="time"
                         step={60}
+                        className="w-full min-w-0 max-w-full"
                         autoComplete="off"
                         aria-invalid={Boolean(fieldErrors['dinner.startTime'])}
                         value={values.dinner.startTime}
@@ -423,12 +426,13 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
                       />
                       <FieldError>{fieldErrors['dinner.startTime']}</FieldError>
                     </Field>
-                    <Field data-invalid={Boolean(fieldErrors['dinner.endTime'])}>
+                    <Field className="min-w-0" data-invalid={Boolean(fieldErrors['dinner.endTime'])}>
                       <FieldLabel htmlFor={HOURS_FIELD_DOM_IDS['dinner.endTime']}>Fine</FieldLabel>
                       <Input
                         id={HOURS_FIELD_DOM_IDS['dinner.endTime']}
                         type="time"
                         step={60}
+                        className="w-full min-w-0 max-w-full"
                         autoComplete="off"
                         aria-invalid={Boolean(fieldErrors['dinner.endTime'])}
                         value={values.dinner.endTime}
@@ -615,12 +619,13 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
-                <Field data-invalid={Boolean(fieldErrors['bnb.checkInTime'])}>
+                <Field className="min-w-0" data-invalid={Boolean(fieldErrors['bnb.checkInTime'])}>
                   <FieldLabel htmlFor={HOURS_FIELD_DOM_IDS['bnb.checkInTime']}>Check-in</FieldLabel>
                   <Input
                     id={HOURS_FIELD_DOM_IDS['bnb.checkInTime']}
                     type="time"
                     step={60}
+                    className="w-full min-w-0 max-w-full"
                     autoComplete="off"
                     aria-invalid={Boolean(fieldErrors['bnb.checkInTime'])}
                     value={values.bnb.startTime}
@@ -634,12 +639,13 @@ export function HoursForm({ initialValues, initialLoadError }: HoursFormProps) {
                   />
                   <FieldError>{fieldErrors['bnb.checkInTime']}</FieldError>
                 </Field>
-                <Field data-invalid={Boolean(fieldErrors['bnb.checkOutTime'])}>
+                <Field className="min-w-0" data-invalid={Boolean(fieldErrors['bnb.checkOutTime'])}>
                   <FieldLabel htmlFor={HOURS_FIELD_DOM_IDS['bnb.checkOutTime']}>Check-out</FieldLabel>
                   <Input
                     id={HOURS_FIELD_DOM_IDS['bnb.checkOutTime']}
                     type="time"
                     step={60}
+                    className="w-full min-w-0 max-w-full"
                     autoComplete="off"
                     aria-invalid={Boolean(fieldErrors['bnb.checkOutTime'])}
                     value={values.bnb.endTime}

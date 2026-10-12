@@ -151,4 +151,17 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* P19: campi ora su iOS/WebKit — restringibili in griglia a due colonne */
+  input[type='time'] {
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+    text-align: left;
+  }
+
+  input[type='time']::-webkit-date-and-time-value {
+    text-align: left;
+    min-height: 1.2em;
+  }
 }

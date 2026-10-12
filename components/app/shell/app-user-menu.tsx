@@ -1,6 +1,14 @@
 'use client'
 
-import { ChevronsUpDown, ExternalLink, LogOut } from 'lucide-react'
+import {
+  ChevronsUpDown,
+  ExternalLink,
+  LogOut,
+  Monitor,
+  Moon,
+  PanelsTopLeft,
+  Sun,
+} from 'lucide-react'
 import { useState } from 'react'
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -71,17 +79,6 @@ export function AppUserMenu({ email, showAdminLink }: AppUserMenuProps) {
           sideOffset={4}
         >
           <DropdownMenuGroup>
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="size-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg">{initialsFromEmail(email)}</AvatarFallback>
-                </Avatar>
-                <span className="truncate font-medium">{email}</span>
-              </div>
-            </DropdownMenuLabel>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
             <DropdownMenuLabel>Tema</DropdownMenuLabel>
             <DropdownMenuRadioGroup
               value={theme}
@@ -91,24 +88,31 @@ export function AppUserMenu({ email, showAdminLink }: AppUserMenuProps) {
                 applyThemeToDocument(next)
               }}
             >
-              <DropdownMenuRadioItem value="light">Chiaro</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">Scuro</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="system">Sistema</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="light">
+                <Sun />
+                Chiaro
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark">
+                <Moon />
+                Scuro
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="system">
+                <Monitor />
+                Sistema
+              </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuGroup>
-          {showAdminLink ? (
-            <>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                nativeButton={false}
-                render={<a href="/admin" target="_blank" rel="noopener" />}
-              >
-                <ExternalLink />
-                Vai all&apos;Admin
-              </DropdownMenuItem>
-            </>
-          ) : null}
           <DropdownMenuSeparator />
+          {showAdminLink ? (
+            <DropdownMenuItem
+              nativeButton={false}
+              render={<a href="/admin" target="_blank" rel="noopener" />}
+            >
+              <PanelsTopLeft />
+              Vai all&apos;Admin
+              <ExternalLink className="ml-auto" />
+            </DropdownMenuItem>
+          ) : null}
           <DropdownMenuItem
             onClick={() => {
               const form = document.getElementById(LOGOUT_FORM_ID)

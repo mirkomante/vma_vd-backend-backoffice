@@ -12,6 +12,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- Area App — correzioni P19, A26, A27, A24 (2026-10-12): **P19** — griglie orario in `hours-form.tsx` (`min-w-0` sui `Field`, `w-full min-w-0 max-w-full` sugli `Input`) e regole `input[type="time"]` in `app-ui.css`; controllo lanciatore `orari-campi-dentro-scheda` (WebKit Playwright). **A26** — home `/app` con colonna `max-w-5xl` centrata. **A27** — rimosso «Torna al sito» da `/app/login` (resta solo «Password dimenticata?», gap 16 px invariato). **A24** — menu utente senza ripetizione avatar/email, icone tema e Admin come da mockup, un solo separatore. **L2 richiesto**: `app-ui.css`, `app-user-menu.tsx` (shell). Aggiornati attesi login nel lanciatore (`engine.mjs`).
+
+### Tests
+
+- Area App correzioni 2026-10-12: **verificato** — `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` OK; **verificato** — `orari-campi-dentro-scheda` su WebKit 26.0 a 360 e 390 px (chiaro/scuro) su `localhost:3000` (dev): 4/4 OK («tutti i campi dentro scheda, nessuna sovrapposizione»). **Non provato su iPhone reale; va provato da Mirko** (P19 può restare su iOS nonostante WebKit OK). **Non eseguito** `ui:verify` (istruzione esplicita). **Non verificato** `home-larghezza` (controllo L1 non rieseguito in questa sessione).
+
+### Changed
+
 - Design Area App (2026-10-12; nessuna modifica al codice dell'applicazione): tabella dello stato dei rilievi in `decisioni-layout-app.md`; aperto P19 (campi orario di Orari fuori dalla scheda su iPhone, rilievo di Mirko su dispositivo reale); deciso A26 (home con `max-w-5xl`), A-24 (menù utenrte) e A27 (tolto «Torna al sito» dall'accesso); specifica di accesso e controlli aggiornati. **Non verificato**: la correzione di P19 su iPhone reale.
 
 - **Allineamento piano post-8.5** (2026-10-12): `piano.yaml` — stati `fatto` per fase-8.2, 8.4, 8.5; nota nodo `fase-8` e sblocco 8.6 solo su 6.6; **`po-10` chiuso** (perimetro progetto: F1 in 8.3, verifica admin 2026-10-05). `00-piano-generale.md` — tabella Fase 8, ordine di esecuzione, panoramica 8.4–8.6, **Prossimo passo** → Fase 6 con 8.6 in attesa di 6.6. `fase-8-shell-app.md` — checklist migrazione 8.4 su prod (2026-10-11) spuntata; condizione sblocco 8.6 aggiornata. **Checklist ancora `[ ]` (debiti voluti, sottofase comunque ✅)**: **8.2** — URL sezione negata; login/reset `/app/login` senza regressione; **8.5** — prove per ruolo manager/admin/senza ruolo; rifiuto valori non `HH:mm` e parità righe festività con Admin; round-trip modifiche Admin ↔ App.
