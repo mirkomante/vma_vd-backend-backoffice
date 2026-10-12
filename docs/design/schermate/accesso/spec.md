@@ -51,7 +51,7 @@ Comune alle quattro pagine (`data-block` dai mockup):
 | `modulo-accesso` | Campi e pulsante di invio | `FieldGroup`, `Field`, `FieldLabel`, `Input`, `Button (default, lg)` nelle pagine con il solo modulo (forgot, reset); `Button (outline, lg)` nel login, dove è l'accesso secondario |
 | `collegamenti` | Collegamenti sotto la scheda | `<a>` o `Link` con le classi di `buttonVariants({ variant: "link" })`, sottolineati (aspetto di `Button (link)`; niente `Button render`, vedi la regola UI) |
 
-Pagine: **login** (avviso facoltativo, Google, separatore, modulo email e password, «Password dimenticata?», «Torna al sito»); **forgot** (avviso facoltativo, modulo con la sola email, «Torna al login»); **reset** (avviso facoltativo, modulo con la nuova password se c'è il token, «Torna al login»); **verify** (solo l'avviso, «Vai al login»).
+Pagine: **login** (avviso facoltativo, Google, separatore, modulo email e password, «Password dimenticata?»); **forgot** (avviso facoltativo, modulo con la sola email, «Torna al login»); **reset** (avviso facoltativo, modulo con la nuova password se c'è il token, «Torna al login»); **verify** (solo l'avviso, «Vai al login»).
 
 ## 4. Layout e regole responsive
 
@@ -84,7 +84,7 @@ Tutti in italiano. I messaggi degli avvisi sono quelli di `lib/` (sezione 2).
 
 | Pagina | Testi |
 |---|---|
-| login | Titolo «Area App»; descrizione «Accedi con Google oppure con email e password.»; pulsanti «Accedi con Google» e «Accedi»; separatore «oppure»; campi «Email» e «Password»; collegamenti «Password dimenticata?» e «Torna al sito» (porta a `/`) |
+| login | Titolo «Area App»; descrizione «Accedi con Google oppure con email e password.»; pulsanti «Accedi con Google» e «Accedi»; separatore «oppure»; campi «Email» e «Password»; collegamento «Password dimenticata?» (non c'è più «Torna al sito»: tolto il 2026-10-12, A27) |
 | forgot | Titolo «Password dimenticata»; descrizione «Inserisci l’email dell’account locale. Se è in archivio riceverai le istruzioni.»; campo «Email»; pulsante «Invia istruzioni»; collegamento «Torna al login» |
 | reset | Titolo «Nuova password»; descrizione «Scegli una password di almeno 8 caratteri, con una maiuscola, una minuscola e una cifra.»; campo «Nuova password»; pulsante «Aggiorna password»; collegamento «Torna al login» |
 | verify | Titolo «Conferma email»; nessuna descrizione; collegamento «Vai al login» |
@@ -135,7 +135,7 @@ Valgono i controlli comuni **C1, C2, C3, C5, C6, C9, C10** del modello di specif
 - Scheda centrata con icona e titolo sopra, al posto della colonna senza scheda di oggi.
 - Collegamenti sempre sottolineati.
 - Titolo del documento «Accesso · Area App».
-- «Torna al sito» resta, con stile attenuato.
+- «Torna al sito» **non c'è più** (2026-10-12): `/` non è una pagina pensata per l'utente e il sito pubblico è un altro progetto. La pagina di accesso ha un solo collegamento sotto la scheda.
 
 **Da decidere o verificare**
 - **Utente già autenticato che apre `/app/login`**: oggi vede comunque la pagina di accesso; si può reindirizzare a `/app`. Non deciso.

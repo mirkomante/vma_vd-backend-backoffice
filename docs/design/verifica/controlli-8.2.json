@@ -1,7 +1,7 @@
 {
  "versione": 3,
  "fase": "8.2",
- "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri. Revisione 2026-10-11c: /app/hours tolta dai segnaposto (ora Orari); durate di L1 e L2 riviste sui dati misurati.",
+ "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri. Revisione 2026-10-11c: /app/hours tolta dai segnaposto (ora Orari); durate di L1 e L2 riviste sui dati misurati. Revisione 2026-10-12: tolto «Torna al sito» (A27); home con max-w-5xl (A26) controllata da home-larghezza. A24 (2026-10-12): shell-menu-utente include icone e assenza della riga utente.",
  "fonti": [
   "docs/design/decisioni-layout-app.md",
   "docs/design/schermate/shell/spec.md",
@@ -62,6 +62,12 @@
   "notebook-1280": {
    "larghezza": 1280,
    "altezza": 900,
+   "scala": 1,
+   "tocco": false
+  },
+  "schermo-1920": {
+   "larghezza": 1920,
+   "altezza": 1080,
    "scala": 1,
    "tocco": false
   }
@@ -141,7 +147,7 @@
    "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto.",
    "fonte": "decisioni D6",
    "elementi": "button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
-   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?» e «Torna al sito») e gli elementi nascosti",
+   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?») e gli elementi nascosti",
    "livello": 1
   },
   {
@@ -247,14 +253,13 @@
        "Password"
       ],
       "collegamenti_di_testo": [
-       "Password dimenticata?",
-       "Torna al sito"
+       "Password dimenticata?"
       ]
      },
      "solo_su": [
       "login"
      ],
-     "nota": "«Accedi con Google» è un collegamento con l'aspetto di un pulsante: NON va nell'elenco dei collegamenti di testo.",
+     "nota": "«Accedi con Google» è un collegamento con l'aspetto di un pulsante: NON va nell'elenco dei collegamenti di testo. Dal 2026-10-12 «Torna al sito» non esiste più: il solo collegamento di testo è «Password dimenticata?».",
      "livello": 1
     },
     {
@@ -263,12 +268,10 @@
      "atteso": {
       "Password dimenticata?": {
        "href": "/app/login/forgot"
-      },
-      "Torna al sito": {
-       "href": "/"
       }
      },
-     "livello": 1
+     "livello": 1,
+     "nota": "«Torna al sito» tolto il 2026-10-12 (A27): sotto la scheda c'è un solo collegamento."
     },
     {
      "id": "login-campi",
@@ -782,10 +785,13 @@
       "assente": [
        "Vai all'Admin"
       ],
-      "nota_admin": "«Vai all'Admin» compare solo con canAccessAdminPanel: con l'utente di prova solo App deve essere ASSENTE"
+      "nota_admin": "«Vai all'Admin» compare solo con canAccessAdminPanel: con l'utente di prova solo App deve essere ASSENTE",
+      "senza_riga_utente": "nessuna riga con avatar ed email dentro il menu (A24)",
+      "icone": "ogni voce del tema ha un'icona svg; «Vai all'Admin», se presente, ne ha due (pannello a sinistra, freccia a destra)"
      },
      "fonte": "shell/spec.md checklist 5, decisioni D3",
-     "livello": 2
+     "livello": 2,
+     "nota": " Aggiornato il 2026-10-12 per A24."
     },
     {
      "id": "shell-nomi-accessibili",
@@ -852,6 +858,19 @@
      ],
      "fonte": "decisioni D3 (nuova scheda, 2026-10-11)",
      "livello": 2
+    },
+    {
+     "id": "home-larghezza",
+     "tipo": "misura",
+     "livello": 1,
+     "fonte": "decisioni D8 (A26, 2026-10-12)",
+     "profili": [
+      "notebook-1280"
+     ],
+     "tolleranza_px": 2,
+     "misura": "larghezza della colonna della home",
+     "atteso": "non oltre 1024 px (max-w-5xl) e centrata nell'area del contenuto; a 1280 px con la barra laterale da 256 px il contenuto è 1024 px, quindi la colonna riempie l'area; si verifica davvero con un profilo largo (per esempio 1920) oltre che a 1280",
+     "nota": "Aggiungere il profilo 'schermo-1920' (1920×1080, senza tocco) solo per questo controllo."
     }
    ]
   }

@@ -1,7 +1,7 @@
 {
  "versione": 3,
  "fase": "8.5",
- "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato. Revisione 2026-10-11b: simulazioni degli errori con le variabili di sviluppo dichiarate da Composer nella 8.5 (APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1 e APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1); l'uscita con modifiche è implementata con beforeunload e intercettazione dei collegamenti. Revisione 2026-10-11c: durate dei livelli riviste (L1 3 min, L2 15 min).",
+ "nota": "Controlli della schermata Orari (/app/hours), ricavati da docs/design/schermate/orari/spec.md (sezioni 4-9) e dai controlli comuni. I controlli che scrivono sul Global lavorano SOLO sul database di sviluppo e ripristinano lo stato originale in un try/finally; mai produzione, mai online. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. Un controllo con stato_prova 'non provato' va riportato NON PROVATO, non aggirato. Revisione 2026-10-11b: simulazioni degli errori con le variabili di sviluppo dichiarate da Composer nella 8.5 (APP_HOURS_DEV_SIMULATE_LOAD_ERROR=1 e APP_HOURS_DEV_SIMULATE_SAVE_ERROR=1); l'uscita con modifiche è implementata con beforeunload e intercettazione dei collegamenti. Revisione 2026-10-11c: durate dei livelli riviste (L1 3 min, L2 15 min). Revisione 2026-10-12: controllo orari-campi-dentro-scheda e voce di livello 3 per il campo ora su iPhone (P19).",
  "fonti": [
   "docs/design/schermate/orari/spec.md",
   "docs/design/decisioni-layout-app.md",
@@ -831,6 +831,24 @@
       "notebook-1280"
      ],
      "passi": "oltre al caricamento: apri il foglio, la finestra di conferma, premi Salva, apri il menu utente; zero error e warning, compresi quelli di Base UI"
+    },
+    {
+     "id": "orari-campi-dentro-scheda",
+     "tipo": "misura",
+     "livello": 1,
+     "fonte": "decisioni P19 (2026-10-12)",
+     "profili": [
+      "telefono-360",
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "tolleranza_px": 0.5,
+     "misura": "per ogni campo orario e per ogni pulsante: bordo destro non oltre il bordo destro del contenuto della scheda che lo contiene; e i due campi di una coppia (Inizio/Fine, Check-in/Check-out) non si sovrappongono (bordo destro del primo minore o uguale al bordo sinistro del secondo)",
+     "atteso": "nessuna uscita dalla scheda e nessuna sovrapposizione",
+     "nota": "LIMITE: in Chromium e nel WebKit di Playwright il campo ora è più stretto che su iOS, quindi questo controllo passa anche quando su iPhone il difetto c'è. Non sostituisce la prova su iPhone reale (livello 3)."
     }
    ],
    "immagini": {
@@ -881,5 +899,9 @@
     "nota": "I riferimenti stanno in docs/design/schermate/orari/. Il confronto visivo lo fa la chat di design sugli screenshot; l'agente non giudica l'aspetto."
    }
   }
+ ],
+ "livello_3": [
+  "Orari su iPhone reale: i quattro campi del ristorante e i due del B&B restano dentro la scheda, senza sovrapporsi, in chiaro e scuro (P19)",
+  "Aprire il selettore dell'ora e salvare"
  ]
 }

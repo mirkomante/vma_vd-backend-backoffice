@@ -131,6 +131,7 @@ Non ancora adattati perché non usati finora: radio, calendario, paginazione, li
 - **Gruppi di scelta** (giorni di riposo): su schermo largo voci compatte da 56 px (`sm:w-14`, gruppo di 392 px); su telefono occupano la riga.
 - **Pagine con tabelle** (elenco prenotazioni): colonna centrata larga al massimo `max-w-5xl` (64 rem; a 1280 px è 976 px, oltre i 1280 px si ferma a 1024 px). Su telefono tutta la larghezza, con schede al posto della tabella.
 - La barra di salvataggio e il banner seguono la stessa colonna.
+- **Home `/app`** (A26, deciso il 2026-10-12): colonna centrata larga al massimo `max-w-5xl`, come le pagine con tabelle, così su schermi molto larghi le schede non si allargano oltre 1024 px. Su telefono e fino a 1024 px non cambia nulla.
 
 ### D9 — Elenchi di record: ogni azione si salva subito
 
@@ -225,6 +226,29 @@ Prototipo della shell (barra laterale, menu utente, tema), della home con e senz
 - **A22 — Descrizioni delle schede della home**: parlano anche di sottovoci non ancora abilitate; restano quelle definitive.
 - **Verificato**: i marcatori D6 e T1 di `ui:check` passano sui venti componenti modificati del prototipo e falliscono su quelli stock; mockup statici identici ai prototipi a 1280 px (0,0 % in chiaro e in scuro) per tutte le sei schermate; nessuno scorrimento orizzontale e nessun elemento sotto 44 px nelle dieci pagine di accesso.
 
+### Stato dei rilievi al 2026-10-12 (fine della 8.5)
+
+| Rilievo | Stato |
+|---|---|
+| P10 (`LoginFailureNotice` serve all'Admin) | Chiuso: specifica corretta |
+| P11 (icona, spazi e padding dell'accesso) | Chiuso, verificato su build di produzione (160 su 160) e su Cloud Run |
+| P12 (reset con link scaduto: avviso e modulo) | Chiuso e verificato |
+| P13 («Esci» verso `0.0.0.0`) | Chiuso: reindirizzamento relativo; verificato da te su Cloud Run |
+| P14 (cartella del prototipo nel repo) | Chiuso: nel repo c'è lo zip |
+| P15 (pannello del menu su telefono) | Chiuso: 288 px misurati a 767, 430 e 390 px |
+| P16 (barra di salvataggio a 97 px) | Chiuso (8.5) |
+| P17 (chiavi delle chiusure univoche) | Chiuso (8.5) |
+| P18 (slot della barra sempre disegnato) | Chiuso (8.5) |
+| **P19 (campi orario su iPhone)** | **Aperto**: vedi sotto |
+| A23 (tema «Sistema» senza ascolto) | Chiuso, verificato |
+| A24 (menu utente diverso dal mockup) | **Deciso il 2026-10-12: si allinea il codice al mockup** (togliere la riga con avatar ed email dentro il menu; icone sole, luna e schermo sulle voci del tema; «Vai all'Admin» con l'icona del pannello a sinistra e la freccia esterna a destra); da implementare |
+| A25 (CHANGELOG sul tema) | Chiuso |
+| A26 (home senza larghezza massima) | **Deciso**: `max-w-5xl` (D8); da implementare |
+| A27 («Torna al sito») | **Deciso**: la voce si elimina; da implementare |
+| A28–A32 (icona «salvato», ordine dei pulsanti del foglio, «Rimuovi» primario, titolo e «Riprova» nell'errore di caricamento) | Chiusi e verificati |
+
+**P19 — I campi orario escono dalla scheda su iPhone** (rilievo di Mirko su dispositivo reale, 2026-10-12, schermata di Orari in scuro). I due campi «Inizio» e «Fine» di Pranzo e di Cena, e così i due del B&B, si sovrappongono e quello di destra esce dalla scheda. Non si vede in Chromium né nel WebKit di Playwright. Ipotesi, non verificata su iPhone: su iOS `<input type="time">` ha una larghezza intrinseca grande; l'elemento della griglia (`Field` dentro `grid grid-cols-2`) ha `min-width: auto` e non si restringe sotto quella larghezza, anche se la colonna è `minmax(0, 1fr)`. Correzione proposta: `min-w-0` sui `Field` della griglia, e in `app-ui.css` una regola per `input[type="time"]` con `appearance: none`, `min-width: 0`, `max-width: 100%` e testo allineato a sinistra. Se non basta, una sola colonna sotto `sm`. Va riprovata da Mirko su iPhone (livello 3): il lanciatore non vede questa classe di difetti.
+
 ### Verifica visiva della 8.2 (2026-10-11)
 
 Screenshot di Mirko sulla versione su Cloud Run (revisione `vma-vd-backend-backoffice-git-00086-ndp`, commit `27227a7`), Safari su Mac in modalità responsive (iPhone) e in finestra normale, più i log del server. Confronto a coppie con i PNG di `schermate/shell/` e `schermate/accesso/`, e lettura del codice (classi dei componenti, sorgente di Payload 3.90.2). L'app non è stata eseguita nella chat di design.
@@ -290,7 +314,7 @@ Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` 
 - Come gestire il tema rispetto a `next-themes` e al `Toaster` (A6).
 - **Debito: paginazione delle liste oltre 100 voci** (oggi i piatti sono 44). Predisposta: ricerca, filtri e ordine nella richiesta, avviso di elenco parziale; da aggiungere «Mostra altri piatti» quando serve.
 - **Debito: casella «solo per menu fisso» sui piatti** (`soloMenuFissi`): migrazione additiva, da aggiungere quando il frontend pubblico la leggerà e se esisterà un piatto che non va alla carta.
-- **Uscita («Esci»)**: implementata in 8.2 (`POST /app/logout`). Da correggere il reindirizzamento (P13). Restano da verificare la sessione dell'Admin (stesso cookie: uscendo dall'App si dovrebbe uscire anche dall'Admin) e la riga `logout` nel registro attività. Con `useSessions: false` il logout scade solo il cookie, non invalida il token lato server (nota per la revisione).
+- **Uscita («Esci»)**: implementata in 8.2 (`POST /app/logout`), con reindirizzamento relativo dopo P13. Verificato il 2026-10-11 su Cloud Run (da te, a mano): la pagina finale è `/app/login` sul dominio pubblico. Restano da verificare la sessione dell'Admin dopo l'uscita (stesso cookie) e la riga `logout` nel registro attività su produzione (livello 3). Con `useSessions: false` il logout scade solo il cookie, non invalida il token lato server (nota per la revisione).
 - **Utente già autenticato su `/app/login`**: oggi vede la pagina; si può reindirizzare a `/app`. Non deciso.
 - **Percorsi delle sottovoci del menu**: da fissare con le sottofasi 5.5 e 6.6.
 
