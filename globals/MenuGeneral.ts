@@ -3,6 +3,7 @@ import type { GlobalConfig } from 'payload'
 import { hideFromAdminRoleManager } from '@/lib/auth/adminPanelVisibility'
 import { canReadMenuGeneralRequest, canUpdateMenuGeneralRequest } from '@/lib/menu/access'
 import { MENU_GENERAL_SLUG } from '@/lib/menu/constants'
+import { menuGeneralAvailabilityAfterChange } from '@/lib/menu/availability/menuAvailabilityHooks'
 import { menuGeneralGlobalMessageFieldAccess } from '@/lib/menu/fieldAccess'
 
 /** Global «Generali» del menù: solo `globalMessage` (ADR-109 §2, fase 6.1). */
@@ -19,6 +20,9 @@ export const MenuGeneral: GlobalConfig = {
   access: {
     read: ({ req }) => canReadMenuGeneralRequest(req),
     update: ({ req }) => canUpdateMenuGeneralRequest(req),
+  },
+  hooks: {
+    afterChange: [menuGeneralAvailabilityAfterChange],
   },
   fields: [
     {

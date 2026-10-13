@@ -23,6 +23,8 @@
     "verify:menu-6_1": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_1.ts",
     "verify:menu-6_2": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_2.ts",
     "verify:menu-6_3": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_3.ts",
+    "verify:menu-6_4": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-menu-6_4.ts",
+    "verify:menu-6_4:migrate": "bash scripts/verify-menu-6_4-migrate.sh",
     "migrate:bootstrap-credentials": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/migrate-bootstrap-credentials.ts",
     "migrate": "cross-env NODE_OPTIONS=--no-deprecation payload migrate",
     "migrate:status": "cross-env NODE_OPTIONS=--no-deprecation payload migrate:status",
@@ -30,6 +32,7 @@
   },
   "dependencies": {
     "@base-ui/react": "1.9.0",
+    "@google-cloud/storage": "8.2.0",
     "@payloadcms/db-postgres": "3.90.2",
     "@payloadcms/email-resend": "3.90.2",
     "@payloadcms/next": "3.90.2",

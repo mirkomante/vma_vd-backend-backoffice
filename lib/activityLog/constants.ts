@@ -7,6 +7,17 @@ export const ACTIVITY_LOG_EVENT_TYPES = [
   'create',
   'update',
   'delete',
+  'systemAction',
+] as const
+
+/** Prefissi ammessi per `detail` delle azioni di sistema (ADR-115). */
+export const SYSTEM_ACTION_DETAIL_PREFIXES = [
+  'availability-reset',
+  'availability-realigned',
+  'availability-write-failed',
+  'rebuild-started',
+  'revalidation',
+  'anonymization',
 ] as const
 
 export type ActivityLogEventType = (typeof ACTIVITY_LOG_EVENT_TYPES)[number]

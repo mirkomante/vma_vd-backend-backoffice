@@ -87,3 +87,10 @@ Aggiunta al contratto pubblico (dopo il congelamento dei nomi di 6.2):
 - **Giorno speciale senza menu attivi**: se `content.fixedMenus` è vuoto (es. dopo cancellazione fisica di tutti i menu collegati — le righe in `special_days_rels` hanno `ON DELETE cascade` verso `fixed_menus`) oppure tutti i menu referenziati hanno `disabled: true`, il giorno speciale **non si applica** e resta il menù normale per quell'ambito/data.
 - **Lettura completa in build**: `GET /api/special-days?depth=3` (o `GET /api/special-days/:id?depth=3`) per ottenere menu fissi, piatti e nomi allergeni nelle relazioni annidate.
 - **Data**: confronto del giorno di calendario in **Europe/Rome** con `date` normalizzato a mezzogiorno UTC (`…T12:00:00.000Z`), come per le chiusure annuali (`ADR-109` / fase 7.2).
+
+## Nota di implementazione (2026-10-13, fase 6.4)
+
+- **Variabili** (§6 del contratto, nomi fissati in 6.4): `MENU_AVAILABILITY_GCS_BUCKET` sul servizio Cloud Run; oggetto `disponibilita.json` nella root del bucket; `Cache-Control: public, max-age=60` e `Content-Type: application/json` a ogni scrittura.
+- **`updatedAt`**: istante UTC dell'**ultima scrittura effettiva** del file (hook o job), non il timestamp del documento CMS.
+- **`globalMessage`**: da Global `menu-general`; se `en` è assente nel CMS si ripiega su `globalMessage.en` copiando il testo `it` (stesso comportamento del generatore in `buildAvailabilityDocument`).
+- **Sync**: il file può essere temporaneamente avanti rispetto al DB se una transazione viene annullata dopo l'hook (Payload 3.90.2: hook prima del commit); il job Scheduler ogni ~5 minuti riconcilia confrontando il CMS con l'oggetto su GCS (confronto canonico senza `updatedAt`).

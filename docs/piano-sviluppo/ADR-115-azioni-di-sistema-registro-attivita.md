@@ -38,4 +38,10 @@
 ## Precisazioni (2026-10-04) — accettate dall'umano il 2026-10-04
 
 1. `users.beforeDelete` e `purgeActivityLogForUserBeforeDelete` restano invariati: la cancellazione di un utente elimina le sue voci; le voci di sistema (`user` vuoto) non sono toccate.
-2. `detail` comincia con una chiave di azione da un elenco chiuso (`availability-reset`, `availability-write-failed`, `rebuild-started`, `revalidation`, `anonymization`), seguita da esito e dettagli. `availability-write-failed` registra solo gli errori di scrittura del file: le riscritture riuscite non si registrano (ce n'è una per ogni cambio di stato del manager).
+2. `detail` comincia con una chiave di azione da un elenco chiuso (`availability-reset`, `availability-realigned`, `availability-write-failed`, `rebuild-started`, `revalidation`, `anonymization`), seguita da esito e dettagli. `availability-write-failed` registra solo gli errori di scrittura del file: le riscritture riuscite non si registrano (ce n'è una per ogni cambio di stato del manager). `availability-realigned` solo quando il job Scheduler riscrive perché il file su GCS differiva dal CMS (ignorando `updatedAt`).
+
+## Implementazione (2026-10-13, sottofase 6.4)
+
+- Migrazione applicata: `migrations/20261013_110424_activity_log_6_4.ts` (primo consumatore; su Cloud SQL prod **prima** del push che contiene il codice 6.4).
+- `logSystemAction` in `lib/activityLog/logSystemAction.ts`.
+- Reset Scheduler: `detail` tipo `availability-reset: ok; boundary=<ISO>` o `availability-reset: baseline; boundary=<ISO>` (primo tick senza stato precedente: solo baseline, nessun azzeramento `soldOut`).

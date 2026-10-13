@@ -14,6 +14,8 @@ import {
 import type { CollectionSlug } from 'payload'
 
 import type { MenuContentSlug } from '@/lib/menu/constants'
+import { SUPPRESS_MENU_AVAILABILITY_SYNC_CONTEXT_KEY } from '@/lib/menu/availability/constants'
+import { syncMenuAvailabilityFile } from '@/lib/menu/availability/syncMenuAvailabilityFile'
 import {
   ALLOWED_APPELLATION_NAMES,
   KNOWN_MANUAL_REVIEW_WINE_NAMES,
@@ -678,6 +680,7 @@ export async function runApply(
   cache: LookupCache,
 ): Promise<ApplyStats> {
   const stats: ApplyStats = {}
+  const importBulkContext = { [SUPPRESS_MENU_AVAILABILITY_SYNC_CONTEXT_KEY]: true }
 
   async function ensureLocalizedTaxonomy(collection: CollectionSlug, names: string[]): Promise<void> {
     let created = 0
@@ -692,6 +695,7 @@ export async function runApply(
         locale: 'it',
         depth: 0,
         overrideAccess: true,
+        context: importBulkContext,
         data: { name },
       })
       map.set(name, doc.id as number)
@@ -760,6 +764,7 @@ export async function runApply(
       locale: 'it',
       depth: 0,
       overrideAccess: true,
+      context: importBulkContext,
       data: {
         name,
         price: price.value,
@@ -808,6 +813,7 @@ export async function runApply(
       locale: 'it',
       depth: 0,
       overrideAccess: true,
+      context: importBulkContext,
       data: {
         name,
         ...(p.descrizione?.trim() ? { description: p.descrizione.trim() } : {}),
@@ -881,6 +887,7 @@ export async function runApply(
       locale: 'it',
       depth: 0,
       overrideAccess: true,
+      context: importBulkContext,
       data: {
         name,
         ...(w.descrizione?.trim() ? { description: w.descrizione.trim() } : {}),
@@ -934,6 +941,7 @@ export async function runApply(
       locale: 'it',
       depth: 0,
       overrideAccess: true,
+      context: importBulkContext,
       data: {
         name,
         ...(l.descrizione?.trim() ? { description: l.descrizione.trim() } : {}),
@@ -978,6 +986,7 @@ export async function runApply(
       locale: 'it',
       depth: 0,
       overrideAccess: true,
+      context: importBulkContext,
       data: {
         name,
         ...(b.descrizione?.trim() ? { description: b.descrizione.trim() } : {}),
@@ -990,6 +999,13 @@ export async function runApply(
     drinksCreated += 1
   }
   stats[DRINKS_SLUG] = { created: drinksCreated }
+
+  const syncResult = await syncMenuAvailabilityFile(payload)
+  if (syncResult.skippedNoBucket) {
+    payload.logger.warn(
+      'Import: sincronizzazione disponibilita.json saltata (bucket o credenziali GCS non disponibili); in produzione il job Scheduler riallinea entro circa 5 minuti.',
+    )
+  }
 
   return stats
 }

@@ -103,12 +103,12 @@ Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non i
 0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — 🔶 in corso (risorse create il 2026-10-12; resta la prova di sovrascrittura del runtime SA, in 6.4; CORS rimandato a 6.9)
 1. Tassonomie e Global «Generali» — ✅ (2026-10-12: migrate batch 9 + seed prod, smoke REST; debiti in fase-6 §6.1)
 2. Collection del menù e relazione menu fisso–piatto — ✅ (2026-10-12: migrate prod + smoke REST; debiti in fase-6 §6.2)
-3. Giorni Speciali — 🔲 da fare
-4. Disponibilità, reset ai confini di servizio e `disponibilita.json` — 🔲 da fare
+3. Giorni Speciali — ✅ (2026-10-12)
+4. Disponibilità, reset ai confini di servizio e `disponibilita.json` — 🔶 in corso (codice dev 2026-10-13; prod non eseguita)
 5. Rebuild manuale del menù (Cloud Build) — 🔲 da fare
 6. Backoffice «Menù» nell'App — 🔲 da fare
 7. Frontend pubblico del menù — ➖ fuori perimetro (confermato il 2026-10-03)
-8. Import dei dati elementari dal vecchio backend — 🔲 da fare
+8. Import dei dati elementari dal vecchio backend — 🔶 in corso (dev verificato)
 9. Scaffold del frontend del menù (banco di prova dei punti di contatto) — 🔲 da fare
 
 ## Fase 7 — Impostazioni di sistema, panoramica sottofasi

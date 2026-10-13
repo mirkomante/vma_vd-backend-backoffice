@@ -120,6 +120,40 @@ curl -sI -H "Origin: https://ID_PROGETTO.web.app" \
 # atteso: access-control-allow-origin: https://ID_PROGETTO.web.app
 ```
 
+## Job Cloud Scheduler — disponibilità (6.4)
+
+**Stato**: da creare in produzione (non eseguito il 2026-10-13). L'applicazione espone `POST /api/menu/availability-scheduler` (config Payload `endpoints`).
+
+| Campo | Valore |
+|-------|--------|
+| Frequenza | `*/5 * * * *` |
+| Fuso | `Europe/Rome` |
+| Metodo | `POST` |
+| URL | `https://<host-cloud-run>/api/menu/availability-scheduler` |
+| OIDC / SA | `vma-vd-scheduler@vma-vd.iam.gserviceaccount.com` (come gli altri job HTTP verso Cloud Run) |
+| Intestazione | `X-Scheduler-Availability-Secret: <valore>` — il valore è quello del secret `scheduler-secret-availability` in Secret Manager; **non** leggerlo né stamparlo nei log |
+
+Esempio di creazione (sostituire `HOST` con l'URL del servizio; il secret va passato senza eco in shell):
+
+```bash
+P=vma-vd
+HOST="https://vma-vd-backend-backoffice-git-XXXX.europe-west1.run.app"
+# Valore del secret: recuperarlo in subshell locale, mai in echo né in questo file
+read -s SCHED_SECRET && export SCHED_SECRET
+gcloud scheduler jobs create http menu-availability-reset \
+  --project=$P --location=europe-west1 \
+  --schedule="*/5 * * * *" --time-zone="Europe/Rome" \
+  --uri="${HOST}/api/menu/availability-scheduler" \
+  --http-method=POST \
+  --oidc-service-account-email="vma-vd-scheduler@vma-vd.iam.gserviceaccount.com" \
+  --headers="X-Scheduler-Availability-Secret=${SCHED_SECRET}"
+unset SCHED_SECRET
+```
+
+**Cloud Run** (dopo il deploy 6.4): variabile `MENU_AVAILABILITY_GCS_BUCKET=vma-vd-menu-availability`; montaggio secret → env `SCHEDULER_SECRET_AVAILABILITY` (versione corrente o pin, come per `DATABASE_URL`).
+
+**Verifica post-deploy**: `gcloud scheduler jobs run menu-availability-reset --location=europe-west1 --project=$P`; nel registro attività una voce `systemAction` con `availability-reset` o `availability-realigned`; `curl -I` su `https://storage.googleapis.com/vma-vd-menu-availability/disponibilita.json`.
+
 ## Deviazioni dal piano
 
 - **Esecuzione.** **Ufficiale**: 6.0 è «lavoro dell'umano su GCP; Composer scrive solo la documentazione». **Percepito**: l'umano ha chiesto all'agente di eseguire i comandi dopo un'unica conferma, con il proprio account. **Osservato**: comandi eseguiti dall'agente con `mirko@vietnamonamour.com` dopo il «procedi»; le credenziali erano scadute ed è stato l'umano a rinnovarle (`gcloud auth login`), l'agente non ha tentato il login.

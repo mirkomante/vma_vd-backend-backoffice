@@ -9,6 +9,7 @@ import * as migration_20261011_133256_add_account_created_email_sent_at from './
 import * as migration_20261012_161048_menu_taxonomies_6_1 from './20261012_161048_menu_taxonomies_6_1';
 import * as migration_20261012_184106_menu_content_6_2 from './20261012_184106_menu_content_6_2';
 import * as migration_20261012_202100_special_days_6_3 from './20261012_202100_special_days_6_3';
+import * as migration_20261013_110424_activity_log_6_4 from './20261013_110424_activity_log_6_4';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20261012_202100_special_days_6_3.up,
     down: migration_20261012_202100_special_days_6_3.down,
-    name: '20261012_202100_special_days_6_3'
+    name: '20261012_202100_special_days_6_3',
+  },
+  {
+    up: migration_20261013_110424_activity_log_6_4.up,
+    down: migration_20261013_110424_activity_log_6_4.down,
+    name: '20261013_110424_activity_log_6_4'
   },
 ];

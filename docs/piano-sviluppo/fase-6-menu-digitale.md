@@ -338,7 +338,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.4 — Disponibilità, reset ai confini di servizio e `disponibilita.json`
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (codice e verifiche dev 2026-10-13; produzione: migrate, env, job e prova GCS **non eseguiti** — vedi checklist e «Produzione» sotto).
 
 **Dipende da**: 6.0 (risorse GCP), 6.2 (campi), Fase 7.2 (confini di servizio, `arco-29`).
 
@@ -346,37 +346,39 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Riferimenti**: `ADR-112` §§3 e 4, `ADR-108` §§3 e 5, `ADR-105` (secret condiviso), `docs/operativo/gcp-menu-scheduler.md` (6.0).
 
-**Primo passo: registro attività** (`ADR-115`): migrazione additiva di `activity-log` (`user` facoltativo, `eventType` `systemAction`, campo `detail`), `condition` di `collection` e `documentId` estesa a `systemAction`, e una funzione `logSystemAction` in `lib/activityLog`. È il primo consumatore nell'ordine di esecuzione: 6.5, 4.4 Parte A e 5.3 la riusano senza altre migrazioni. Migrazione applicata su Cloud SQL prod **prima** del push.
+**Decisioni (sessione 2026-10-12 / implementazione 2026-10-13)**:
+1. **Confine = `startTime` del servizio successivo** (decisione di Mirko del 2026-10-12; da verificare con l'uso se cambiare). Conseguenza accettata: un «terminato» segnato tra due servizi o la sera per il pranzo del giorno dopo viene cancellato all'apertura del servizio successivo. La regola è in **una sola funzione pura** (`lib/menu/availability/serviceBoundaries.ts`, `boundaryInstantRome` / `listServiceStartBoundariesBetween`); passare a `endTime` è sostituire `startTime` con `endTime` in quel modulo.
+2. **Un job Cloud Scheduler ogni 5 minuti** (`*/5 * * * *`, fuso `Europe/Rome`); l'endpoint decide se un confine è passato. Stato «ultimo confine gestito» nel **registro attività** (`availability-reset: ok` o `availability-reset: baseline`; finestra confini **7 giorni**). Primo tick senza stato: riga **baseline** sull'ultimo confine passato, **nessun** azzeramento; primo reset vero al confine successivo. Reset eseguito anche nei **giorni chiusi** (idempotente).
+3. **Variabili**: `MENU_AVAILABILITY_GCS_BUCKET`, `SCHEDULER_SECRET_AVAILABILITY`, intestazione **`X-Scheduler-Availability-Secret`**. Secret assente/errato/non configurato → **403** con corpo fisso `{"ok":false}`; **200** solo se autorizzato.
 
-**Generazione del file** (schema esatto di `ADR-112` §3): ogni gruppo (`dishes`, `wines`, `drinks`, `spirits`, `fixedMenus`, `services`) elenca **tutte** le voci con lo stato corrente: `available`, `soldOut` (solo piatti) o `hidden` (`disabled`). Chiavi: gli identificativi numerici di Payload come stringhe. `updatedAt` in UTC; `schemaVersion: 1`. `globalMessage` dal Global «Generali», con `it` ed `en`, **assente** se non c'è un messaggio.
+**Registro attività** (`ADR-115`, primo passo): migrazione `20261013_110424_activity_log_6_4`; `logSystemAction` in `lib/activityLog/logSystemAction.ts`. Voci: `availability-reset`, `availability-realigned` (solo se il file su GCS differiva), `availability-write-failed` (errori di scrittura; **non** una voce per ogni sync riuscita).
 
-**Scrittura**: un solo oggetto sul bucket, con `Cache-Control: public, max-age=60` e tipo `application/json`, impostati **a ogni scrittura** (non c'è un default utile). Dipendenza proposta: la libreria ufficiale di Cloud Storage per Node.
+**Generazione e sync**: generatore puro `buildAvailabilityDocument`; hook `afterChange`/`afterDelete` (collection menù in file + Global `menu-general`) leggono il CMS con il **`req` dell'hook** (Payload 3.90.2: hook prima del commit), generano il JSON e **attendono** l'upload GCS (timeout 8 s). Se la transazione DB viene annullata dopo l'hook, il file può restare avanti di una modifica finché il job Scheduler **riconcilia** (confronto con oggetto GCS, ignorando `updatedAt`) entro ~5 minuti. Operazioni di massa: `context` Local API con `suppressMenuAvailabilitySync`; import 6.8 — una sync finale (se bucket/credenziali assenti: skip con avviso; il job riallinea).
 
-**Quando si riscrive**:
-- a ogni salvataggio di una voce che cambia `disabled` o `soldOut`, di una voce nuova o eliminata, o del `globalMessage` (hook `afterChange` e `afterDelete`): il file deve seguire il manager in tempo breve;
-- a ogni reset ai confini di servizio.
+**Orari**: `Europe/Rome`, `Intl` senza librerie aggiuntive. **Ora legale**: se `HH:mm` non esiste nel giorno (es. 02:30 il 29 marzo), il confine è il **primo istante successivo** dello stesso giorno di calendario Roma con orario parete oltre quello richiesto (tipicamente 03:00).
 
-**Reset ai confini di servizio**: un endpoint custom, protetto dal secret `SCHEDULER_SECRET_AVAILABILITY` (intestazione, confronto a tempo costante), **idempotente**, che azzera `soldOut` e riscrive il file. Un secret errato o assente è rifiutato senza dettagli. L'esito va nel registro attività come `systemAction` (`ADR-115`).
+**Dipendenza**: `@google-cloud/storage@8.2.0` (pubblicata 2026-09-17; pin esatto; policy ≥14 giorni dalla release — esclusa 8.4.0 del 2026-10-09; `engines.node >= 22`, compatibile con Node 24 del Dockerfile).
 
-**Decisioni da prendere all'inizio di 6.4**:
-1. **Che cosa significa «confine»**: reset **a fine servizio** (il piatto torna disponibile e il manager può già prepararsi) oppure **a inizio del successivo** (come dice `riepilogo-sessione-requisiti-architettura-menu-digitale.md` §2.6). Cambia anche chi marca «terminato» prima dell'apertura.
-2. **Orari fissi o job frequente**: i job hanno un orario fisso, ma i confini li può cambiare il manager (dall'App, 8.5). Soluzione candidata: un job a intervalli brevi il cui endpoint decide da solo se un confine è passato, in modo da tollerare job saltati e cambi di orario. Il **numero di job e il listino di Cloud Scheduler** si verificano prima di decidere (il costo è un vincolo del cliente).
-3. **Nomi delle variabili d'ambiente** del CMS (bucket; i secret sono fissati in 6.0): `ADR-112` §6 le rimanda a questa sottofase.
+**Endpoint**: `POST /api/menu/availability-scheduler` (config Payload `endpoints`).
 
-**Orari**: i confini si leggono da `impostazioni-sistema` (testo `HH:mm` in ora locale) e si confrontano con l'ora **Europe/Rome** (con le API di internazionalizzazione di Node, senza dipendenze nuove). Giorni di riposo e chiusure annuali si valutano allo stesso modo.
+**Script**: `pnpm verify:menu-6_4`.
 
-**Sviluppo locale**: se la variabile del bucket non è impostata la scrittura si salta con un avviso nel log. La verifica reale si fa su un bucket di sviluppo (`gcloud auth application-default login`) oppure in produzione.
-
-**Verifiche tecniche**: il file generato è valido rispetto allo schema; intestazioni `Cache-Control` e CORS lette da un browser sul dominio di prova; reset ripetuto due volte con lo stesso effetto; secret errato rifiutato; una modifica di `disabled` si vede nel file entro pochi secondi; creazione del job in sviluppo o in produzione a cura dell'umano.
+**Produzione** (ordine obbligatorio; **non eseguire senza via passo passo**):
+1. Commit locale (quando richiesto).
+2. Migrazione registro su Cloud SQL prod (`./scripts/prod-db.sh -- pnpm payload migrate:status` prima/dopo; `pnpm payload migrate` con `DATABASE_URL` prod inline, mai dal `.env` dev).
+3. Push (umano).
+4. Cloud Run: env `MENU_AVAILABILITY_GCS_BUCKET=vma-vd-menu-availability`; montaggio secret `scheduler-secret-availability` → `SCHEDULER_SECRET_AVAILABILITY` (mai leggere il valore).
+5. Prova scrittura: prima richiesta autorizzata allo Scheduler o sync in prod; `curl -I` su `https://storage.googleapis.com/vma-vd-menu-availability/disponibilita.json` (200, `Cache-Control: public, max-age=60`, `Content-Type: application/json`).
+6. Job Scheduler HTTP POST sull'URL Cloud Run `/api/menu/availability-scheduler`, header `X-Scheduler-Availability-Secret` con valore da Secret Manager (sostituzione comando, **mai stampato**); esecuzione di prova; controllo registro `systemAction`.
 
 **Checklist di chiusura sottofase**:
-- [ ] Le tre decisioni sopra prese e annotate qui.
-- [ ] File conforme a `ADR-112` §3; gruppi completi; `globalMessage` assente se vuoto.
-- [ ] Riscrittura su ogni cambio di stato; reset idempotente e protetto.
-- [ ] Sovrascrittura di `disponibilita.json` da Cloud Run riuscita con il solo `roles/storage.objectAdmin` del runtime SA sul bucket (debito di 6.0: non verificabile il 2026-10-12, `docs/operativo/gcp-menu-scheduler.md`); chiudere anche la voce corrispondente di 6.0.
-- [ ] Job creato in Cloud Scheduler con il secret `SCHEDULER_SECRET_AVAILABILITY` nell'intestazione; esecuzione di prova riuscita.
-- [ ] Variabili d'ambiente documentate (sotto) e montate su Cloud Run; secret in Secret Manager.
-- [ ] Migrazione di `activity-log` (`ADR-115`) applicata su Cloud SQL prod prima del push; voci di sistema per il reset e per gli errori di scrittura del file (non una per ogni riscrittura riuscita); CHANGELOG.
+- [x] Decisioni annotate (confine, job, env, sync, baseline, riconciliazione).
+- [x] File conforme a `ADR-112` §3 in dev (`verify-menu-6_4` + validatore).
+- [x] Hook e suppress import; endpoint 403/200; migrazione generata e provata su `vma_vd_migr` ricreato.
+- [ ] Sovrascrittura da Cloud Run con runtime SA (**non provata**).
+- [ ] Job Scheduler creato ed eseguito in prod (**non provato**).
+- [ ] Env e secret montati su Cloud Run prod (**non provato**).
+- [ ] Migrazione `activity-log` su Cloud SQL prod **prima** del push (**non eseguita**).
 
 ---
 
@@ -525,7 +527,7 @@ Pagine reali del menù, design, sezioni (`ADR-112` §2), banner di stato e tradu
 |---|---|---|---|
 | `SCHEDULER_SECRET_AVAILABILITY` | Cloud Run (da Secret Manager, `scheduler-secret-availability`) | secret dell'endpoint di reset e riscrittura della disponibilità, chiamato da Cloud Scheduler | 6.0, usata in 6.4 |
 | `SCHEDULER_SECRET_ANONYMIZATION` | Cloud Run (da Secret Manager, `scheduler-secret-anonymization`) | secret dell'endpoint di anonimizzazione GDPR, chiamato da Cloud Scheduler | 6.0, usata in 5.3 |
-| variabile del bucket | Cloud Run | nome del bucket di `disponibilita.json` (nome da fissare in 6.4) | 6.4 |
+| `MENU_AVAILABILITY_GCS_BUCKET` | Cloud Run | nome del bucket di `disponibilita.json` (prod: `vma-vd-menu-availability`) | 6.4 |
 | `MENU_CMS_URL`, `NEXT_PUBLIC_MENU_AVAILABILITY_URL` | repository del menù (non questo repo): ambiente locale e variabili di sostituzione dei trigger Cloud Build | `ADR-112` §6; usate dallo scaffold di 6.9 e passate dai trigger di 6.5. URL pubblici, non segreti; la seconda è incorporata nel JavaScript alla build | 6.9, 6.5 |
 
 Un nome per variabile, nessun alias.

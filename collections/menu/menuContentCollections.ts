@@ -23,6 +23,8 @@ import { menuVisibilityField } from '@/lib/menu/visibilityField'
 import { validateFixedMenuDishesField } from '@/lib/menu/validateFixedMenuDishes'
 import { validateWineGeography } from '@/lib/menu/validateWineGeography'
 
+import { menuAvailabilityCollectionHooks } from '@/lib/menu/availability/menuAvailabilityHooks'
+
 import { SpecialDays } from './specialDays'
 
 const disabledField = {
@@ -42,6 +44,7 @@ export const Dishes: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
+  hooks: menuAvailabilityCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -121,6 +124,7 @@ export const Wines: CollectionConfig = {
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
   hooks: {
+    ...menuAvailabilityCollectionHooks,
     beforeValidate: [
       async ({ data, originalDoc, req }) => {
         if (!data) {
@@ -218,6 +222,7 @@ export const Spirits: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
+  hooks: menuAvailabilityCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -277,6 +282,7 @@ export const Drinks: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta('Include le birre (tipologia «Birre»).'),
   access: menuContentAccess,
+  hooks: menuAvailabilityCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -338,6 +344,7 @@ export const MenuServices: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta('Coperto, diritto di dolce, diritto di tappo'),
   access: menuContentAccess,
+  hooks: menuAvailabilityCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -383,6 +390,7 @@ export const FixedMenus: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
+  hooks: menuAvailabilityCollectionHooks,
   fields: [
     {
       name: 'name',

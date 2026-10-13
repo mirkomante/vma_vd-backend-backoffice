@@ -34,10 +34,10 @@ export const ActivityLog: CollectionConfig = {
       name: 'user',
       type: 'relationship',
       relationTo: 'users',
-      required: true,
+      required: false,
       index: true,
       admin: {
-        description: 'Utente coinvolto nell’evento.',
+        description: 'Utente coinvolto nell’evento. Vuoto per le azioni di sistema.',
       },
     },
     {
@@ -64,6 +64,14 @@ export const ActivityLog: CollectionConfig = {
       },
     },
     {
+      name: 'detail',
+      type: 'text',
+      admin: {
+        description: 'Sintesi azione di sistema (es. availability-reset: ok). Nessun dato personale.',
+        condition: (_, siblingData) => siblingData?.eventType === 'systemAction',
+      },
+    },
+    {
       name: 'collection',
       type: 'text',
       admin: {
@@ -71,7 +79,8 @@ export const ActivityLog: CollectionConfig = {
         condition: (_, siblingData) =>
           siblingData?.eventType === 'create' ||
           siblingData?.eventType === 'update' ||
-          siblingData?.eventType === 'delete',
+          siblingData?.eventType === 'delete' ||
+          siblingData?.eventType === 'systemAction',
       },
     },
     {
@@ -82,7 +91,8 @@ export const ActivityLog: CollectionConfig = {
         condition: (_, siblingData) =>
           siblingData?.eventType === 'create' ||
           siblingData?.eventType === 'update' ||
-          siblingData?.eventType === 'delete',
+          siblingData?.eventType === 'delete' ||
+          siblingData?.eventType === 'systemAction',
       },
     },
   ],

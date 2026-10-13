@@ -168,18 +168,22 @@ export interface UserAuthOperations {
 export interface ActivityLog {
   id: number;
   /**
-   * Utente coinvolto nell’evento.
+   * Utente coinvolto nell’evento. Vuoto per le azioni di sistema.
    */
-  user: number | User;
+  user?: (number | null) | User;
   /**
    * Area applicativa (Admin o App), quando applicabile.
    */
   area?: ('admin' | 'app') | null;
-  eventType: 'login' | 'logout' | 'accessDenied' | 'create' | 'update' | 'delete';
+  eventType: 'login' | 'logout' | 'accessDenied' | 'create' | 'update' | 'delete' | 'systemAction';
   /**
    * Metodo di autenticazione (eventi auth).
    */
   method?: ('sso' | 'local') | null;
+  /**
+   * Sintesi azione di sistema (es. availability-reset: ok). Nessun dato personale.
+   */
+  detail?: string | null;
   /**
    * Collection interessata (eventi CRUD futuri, non ancora attivi).
    */
@@ -714,6 +718,7 @@ export interface ActivityLogSelect<T extends boolean = true> {
   area?: T;
   eventType?: T;
   method?: T;
+  detail?: T;
   collection?: T;
   documentId?: T;
   updatedAt?: T;

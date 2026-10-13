@@ -210,8 +210,8 @@ fasi:
         note: "Chiusa 2026-10-12. Commit 2068ac3; migrazione 20261012_202100_special_days_6_3 su Cloud SQL prod (commit, migrate, push e deploy in ordine). verify-menu-6_3 OK dev. Smoke REST anonima prod: special-days GET 200 totalDocs 0, write 403; fixed-menus GET 200 (special_only); regressioni countries 13, menu-general 200, dishes 200. Debiti: specialOnly pre-migrazione non provato; scrittura browser non provata; overlap race; punto aperto cascade allergene/menu fisso. fase-6-menu-digitale.md §6.3."
       - id: fase-6.4
         nome: "Disponibilità (terminato/disabilitato) + Cloud Scheduler reset + disponibilita.json su GCS"
-        stato: "da_fare"
-        note: "Prerequisiti: Cloud Scheduler, bucket GCS e IAM predisposti in fase-6.0 (arco-17); eredita da fase-6.0 la prova di sovrascrittura di disponibilita.json con il solo objectAdmin del runtime SA sul bucket (non verificabile il 2026-10-12); la scrittura di disponibilita.json imposta Cache-Control a 60 secondi (la cache predefinita di un oggetto pubblico è di un'ora); schema di disponibilita.json dal contratto ADR-112; confini di servizio letti da impostazioni-sistema (fase-7.2). riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.6/§4.4. Da decidere in 6.4: i job hanno orario fisso, ma i confini di servizio li può cambiare il manager; soluzione candidata: un job frequente il cui endpoint decide da solo se un confine è passato."
+        stato: "in_corso"
+        note: "Codice e verify dev 2026-10-13 (pnpm verify:menu-6_4; migrazione 20261013_110424_activity_log_6_4 su vma_vd_migr). Decisioni: confine=startTime; job */5 Europe/Rome; MENU_AVAILABILITY_GCS_BUCKET; X-Scheduler-Availability-Secret; sync hook con req pre-commit; riconciliazione GCS ogni tick; baseline primo tick. @google-cloud/storage@8.2.0. Chiusura prod: migrate activity-log prima push; env+secret Cloud Run; job Scheduler; prova scrittura runtime SA (debito 6.0). fase-6-menu-digitale.md §6.4, gcp-menu-scheduler.md § job 6.4."
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
         stato: "da_fare"
