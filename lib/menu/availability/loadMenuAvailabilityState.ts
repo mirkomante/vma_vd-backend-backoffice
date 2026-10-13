@@ -10,6 +10,7 @@ import {
   WINES_SLUG,
 } from '@/lib/menu/constants'
 
+import type { MenuAvailabilityStateOverlay } from './stateOverlay'
 import type { MenuAvailabilityCmsState } from './types'
 
 const AVAILABILITY_COLLECTIONS = [
@@ -66,12 +67,62 @@ async function readGlobalMessage(
   return typeof message === 'string' ? message : ''
 }
 
+function applyOverlay(
+  state: MenuAvailabilityCmsState,
+  overlay?: MenuAvailabilityStateOverlay,
+): MenuAvailabilityCmsState {
+  if (!overlay) {
+    return state
+  }
+  let next = state
+  if (overlay.globalMessageIt !== undefined) {
+    next = { ...next, globalMessageIt: overlay.globalMessageIt }
+  }
+  if (overlay.globalMessageEn !== undefined) {
+    next = { ...next, globalMessageEn: overlay.globalMessageEn }
+  }
+  if (overlay.dishPatch) {
+    const { id, disabled, soldOut } = overlay.dishPatch
+    next = {
+      ...next,
+      dishes: next.dishes.map((d) =>
+        d.id === id
+          ? {
+              ...d,
+              ...(disabled !== undefined ? { disabled } : {}),
+              ...(soldOut !== undefined ? { soldOut } : {}),
+            }
+          : d,
+      ),
+    }
+  }
+  if (overlay.binaryItemPatch) {
+    const { collection, id, disabled } = overlay.binaryItemPatch
+    const patch = (items: { id: number | string; disabled?: boolean | null }[]) =>
+      items.map((d) => (d.id === id && disabled !== undefined ? { ...d, disabled } : d))
+    if (collection === WINES_SLUG) {
+      next = { ...next, wines: patch(next.wines) }
+    } else if (collection === DRINKS_SLUG) {
+      next = { ...next, drinks: patch(next.drinks) }
+    } else if (collection === SPIRITS_SLUG) {
+      next = { ...next, spirits: patch(next.spirits) }
+    } else if (collection === FIXED_MENUS_SLUG) {
+      next = { ...next, fixedMenus: patch(next.fixedMenus) }
+    } else if (collection === MENU_SERVICES_SLUG) {
+      next = { ...next, services: patch(next.services) }
+    }
+  }
+  return next
+}
+
 /**
- * Legge lo stato per `disponibilita.json`. Con `req` (hook) vede anche modifiche non ancora committate.
+ * Legge lo stato per `disponibilita.json`. Con `req` (hook) vede anche modifiche non ancora committate,
+ * salvo campi localizzati del Global: usare `overlay` dal `doc` dell'hook (REST Admin).
  */
 export async function loadMenuAvailabilityState(
   payload: Payload,
   req?: PayloadRequest,
+  overlay?: MenuAvailabilityStateOverlay,
 ): Promise<MenuAvailabilityCmsState> {
   const [dishes, wines, drinks, spirits, fixedMenus, services, globalMessageIt, globalMessageEn] =
     await Promise.all([
@@ -97,14 +148,17 @@ export async function loadMenuAvailabilityState(
       readGlobalMessage(payload, 'en', req),
     ])
 
-  return {
-    dishes,
-    wines,
-    drinks,
-    spirits,
-    fixedMenus,
-    services,
-    globalMessageIt,
-    globalMessageEn,
-  }
+  return applyOverlay(
+    {
+      dishes,
+      wines,
+      drinks,
+      spirits,
+      fixedMenus,
+      services,
+      globalMessageIt,
+      globalMessageEn,
+    },
+    overlay,
+  )
 }

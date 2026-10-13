@@ -22,6 +22,20 @@
 6. **Migrazione additiva e non distruttiva**: la colonna `user_id` perde il vincolo NOT NULL, si aggiunge il valore dell'enum e la colonna `detail`. Si esegue come **primo passo di 6.4** (il primo consumatore nell'ordine di esecuzione); 6.5, 4.4 Parte A e 5.3 la riusano senza altre migrazioni. Applicata su Cloud SQL prod **prima** del push.
 7. **Cloud Logging resta** per i log tecnici (errori, tracce): non viene sostituito.
 
+### Registro tecnico sync disponibilità (§7, 2026-10-13)
+
+- Ogni esecuzione di `syncMenuAvailabilityFile` emette un log **INFO** strutturato con `msg: menu-availability-sync`, campi `origin` (es. `global:menu-general`, `collection:dishes`, `job:availability-scheduler`), `outcome` (`written` | `identical` | `no-bucket` | `write-failed`) e `globalMessagePresent` (boolean: messaggio IT o EN non vuoto nello stato usato per generare il file). **Nessun** testo del messaggio global né segreti.
+- Implementazione: `lib/menu/availability/availabilitySyncTechnicalLog.ts`. Non va nel registro attività (`activity-log`): resta osservabilità per Cloud Logging (decisione §7 punto 7).
+- Gli errori che impediscono la scrittura del file continuano a generare `availability-write-failed:` nel registro attività **e** `outcome: write-failed` nel log tecnico; il salvataggio CMS (REST Admin incluso) non deve fallire per errori di sync.
+
+### Bug sync REST Global `menu-general` (2026-10-13, post-6.4)
+
+- **Sintomo**: salvataggio Admin REST (`POST /api/globals/menu-general?locale=it`) aggiorna il DB ma non GCS fino al job; log tecnico `outcome: identical`, `globalMessagePresent: false`.
+- **Causa osservata (non spiegata fino al livello Payload/DB)**: nell’hook `afterChange`, `findGlobal(..., { req, locale: 'it' })` dentro la stessa richiesta REST restituisce ancora il `globalMessage` **precedente**, mentre `doc` dell’hook contiene il valore **nuovo** (confronto solo in dev con `MENU_AVAILABILITY_DEBUG_HOOK_READ=1`, log `menu-availability-hook-read-compare`). **Aggiramento**: `stateOverlay` dal `doc` dell’hook (e patch analoghe sulle collection `dishes` / binari).
+- **Letture potenzialmente stale con `req` nella stessa richiesta**: Global `menu-general` (`globalMessage` localizzato); collection menù con `disabled` / `soldOut` (`dishes`, `wines`, `drinks`, `spirits`, `fixed-menus`, `menu-services`) se si ricostruisse lo stato solo da `find`/`findGlobal` con `req` invece che dall’overlay.
+- **Produzione**: vietate con `NODE_ENV=production` (elenco unico in `MENU_AVAILABILITY_FORBIDDEN_IN_PRODUCTION_ENV_KEYS`): `MENU_AVAILABILITY_IN_MEMORY`, `MENU_AVAILABILITY_WRITE_TRACE_FILE`, `MENU_AVAILABILITY_MIRROR_FILE`, `MENU_AVAILABILITY_DISABLE_STATE_OVERLAY`, `MENU_AVAILABILITY_DEBUG_HOOK_READ`, `MENU_AVAILABILITY_SYNC_DEBUG_FILE` — `devOnlyEnvGuard.ts` → `resolveAvailabilityStorage`.
+- **Collection**: overlay applicato anche alle collection per precauzione; il difetto REST stale è **dimostrato sul Global**; nelle prove locali senza overlay la collection REST (`soldOut`/`disabled`) resta allineata al DB.
+
 ## Alternative considerate
 
 - **Solo Cloud Logging**: scartata. Gli staff admin non lo vedono dall'Admin, retention e accesso sono separati, e le checklist delle sottofasi già prevedono «voce nel registro attività».

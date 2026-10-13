@@ -2,6 +2,16 @@
  * Verifica fase 6.4 — richiede vma_vd_dev e `pnpm dev` (salvo VERIFY_MENU_6_4_SKIP_DEV=1).
  * Login/logout REST obbligatori (salvo VERIFY_MENU_6_4_SKIP_LOGIN=1).
  *
+ * Per le prove REST su `disponibilita.json` il processo `pnpm dev` (o lo standalone di produzione)
+ * deve usare lo stesso trace/mirror del verify, ad esempio:
+ *   MENU_AVAILABILITY_IN_MEMORY=1 \
+ *   MENU_AVAILABILITY_WRITE_TRACE_FILE=/tmp/vma-verify-menu-6_4-availability-writes.log \
+ *   MENU_AVAILABILITY_MIRROR_FILE=/tmp/vma-verify-menu-6_4-availability.json \
+ *   MENU_AVAILABILITY_SYNC_DEBUG_FILE=/tmp/vma-verify-menu-6_4-availability-sync.jsonl \
+ *   pnpm dev
+ * Build standalone (opzionale): VERIFY_MENU_6_4_STANDALONE_URL=http://localhost:3002 dopo
+ *   pnpm build && PORT=3002 NODE_ENV=production … node .next/standalone/server.js
+ *
  *   pnpm verify:menu-6_4
  *   pnpm verify:menu-6_4:migrate   # vma_vd_migr ricreato
  */
@@ -62,7 +72,20 @@ import {
   SCHEDULER_OK,
   snapshotCounts,
   snapshotExists,
+  availabilityMirrorContainsGlobalMessageIt,
+  countAvailabilityWriteTraceLines,
+  readAvailabilityMirrorJson,
+  dishStatusInRawJson,
+  READ_TIMEOUT_PROBE_MS,
+  restPatchDish,
+  restPostMenuGeneral,
+  recordProductionMenuAvailabilityEnvGuard,
+  signRestJwtAdmin,
+  verifyMenu64AvailabilityMirrorPath,
+  verifyMenu64AvailabilityTracePath,
+  wrapStorageFailingOnRead,
   wrapStorageFailingOnWrite,
+  wrapStorageReadTimeout,
 } from './verify-menu-6_4-lib'
 
 const TEST_RUN_ID = Date.now().toString(36)
@@ -219,6 +242,163 @@ async function runRestLoginLogoutProbe(
   record('registro logout', `id=${logoutLog.id} user=${String(logoutLog.user)}`)
 }
 
+async function runRestAvailabilityFileSync(
+  payload: PayloadInstance,
+  dishId: number | string,
+  createdUsers: { id: number | string }[],
+): Promise<void> {
+  const tracePath = verifyMenu64AvailabilityTracePath()
+  const mirrorPath = verifyMenu64AvailabilityMirrorPath()
+  record('REST disponibilità trace', tracePath)
+  record('REST disponibilità mirror', mirrorPath)
+
+  const adminEmail = `verify64-admin-rest-${TEST_RUN_ID}@example.test`
+  const managerEmail = `verify64-mgr-rest-${TEST_RUN_ID}@example.test`
+
+  const adminUser = await payload.create({
+    collection: 'users',
+    overrideAccess: true,
+    depth: 0,
+    data: {
+      email: adminEmail,
+      adminRole: 'admin',
+      appRole: 'none',
+      loginMethod: 'sso',
+      active: true,
+      emailVerified: true,
+    },
+  })
+  createdUsers.push({ id: adminUser.id })
+
+  const managerUser = await payload.create({
+    collection: 'users',
+    overrideAccess: true,
+    depth: 0,
+    data: {
+      email: managerEmail,
+      adminRole: 'none',
+      appRole: 'manager',
+      loginMethod: 'sso',
+      active: true,
+      emailVerified: true,
+    },
+  })
+  createdUsers.push({ id: managerUser.id })
+
+  const adminToken = await signRestJwtAdmin(payload, adminUser as never)
+  const managerToken = await signRestJwtAdmin(payload, managerUser as never)
+
+  const bases: { label: string; url: string }[] = [{ label: 'dev', url: appPublicUrl() }]
+  const standaloneUrl = process.env.VERIFY_MENU_6_4_STANDALONE_URL?.trim()
+  if (standaloneUrl) {
+    bases.push({ label: 'standalone', url: standaloneUrl })
+  } else {
+    record('REST disponibilità standalone', 'non provato (VERIFY_MENU_6_4_STANDALONE_URL assente)')
+  }
+
+  const msgIt = `Verify64 REST global ${TEST_RUN_ID}`
+
+  await payload.update({
+    id: dishId,
+    collection: DISHES_SLUG,
+    depth: 0,
+    overrideAccess: true,
+    data: { disabled: false, soldOut: false },
+    context: importBulkContext,
+  })
+
+  for (const base of bases) {
+    const traceBeforeGlobal = countAvailabilityWriteTraceLines(tracePath)
+    const globalRes = await restPostMenuGeneral(base.url, adminToken, { globalMessage: msgIt }, 'it')
+    const traceAfterGlobal = countAvailabilityWriteTraceLines(tracePath)
+    const globalWrites = traceAfterGlobal - traceBeforeGlobal
+    const hasMsg = availabilityMirrorContainsGlobalMessageIt(
+      readAvailabilityMirrorJson(mirrorPath),
+      msgIt,
+    )
+    if (globalRes.status !== 200) {
+      throw new Error(
+        `${base.label} REST menu-general: atteso 200, ${globalRes.status} (dev con MENU_AVAILABILITY_IN_MEMORY=1?)`,
+      )
+    }
+    if (globalWrites < 1 || !hasMsg) {
+      throw new Error(
+        `${base.label} REST globalMessage: scritture=${globalWrites} nel file=${hasMsg} (overlay hook / trace dev server)`,
+      )
+    }
+    record(
+      `${base.label} REST globalMessage admin`,
+      `status=${globalRes.status}; scritture=${globalWrites}; mirror contiene messaggio=${hasMsg}`,
+    )
+
+    const traceBeforeDish = countAvailabilityWriteTraceLines(tracePath)
+    const dishRes = await restPatchDish(
+      base.url,
+      managerToken,
+      dishId,
+      { soldOut: true },
+      'it',
+    )
+    const traceAfterDish = countAvailabilityWriteTraceLines(tracePath)
+    const dishWrites = traceAfterDish - traceBeforeDish
+    const dishDoc = await payload.findByID({
+      collection: DISHES_SLUG,
+      id: dishId,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const mirrorRaw = readAvailabilityMirrorJson(mirrorPath)
+    const statusInFile = dishStatusInRawJson(mirrorRaw, dishId)
+    if (dishRes.status !== 200) {
+      throw new Error(`${base.label} REST dish soldOut: atteso 200, ${dishRes.status}`)
+    }
+    if (dishWrites < 1) {
+      throw new Error(`${base.label} REST dish: scritture=${dishWrites} (atteso ≥1)`)
+    }
+    assertDishStatusMatchesDb(mirrorRaw, dishId, dishDoc as never)
+    record(
+      `${base.label} REST dish soldOut manager`,
+      `status=${dishRes.status}; scritture=${dishWrites}; status file=${statusInFile}`,
+    )
+
+    const traceBeforeDisabled = countAvailabilityWriteTraceLines(tracePath)
+    const disabledRes = await restPatchDish(
+      base.url,
+      managerToken,
+      dishId,
+      { disabled: true },
+      'it',
+    )
+    const disabledWrites = countAvailabilityWriteTraceLines(tracePath) - traceBeforeDisabled
+    const dishDisabledDoc = await payload.findByID({
+      collection: DISHES_SLUG,
+      id: dishId,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const mirrorDisabled = readAvailabilityMirrorJson(mirrorPath)
+    if (disabledRes.status !== 200 || disabledWrites < 1) {
+      throw new Error(
+        `${base.label} REST dish disabled: status=${disabledRes.status} scritture=${disabledWrites}`,
+      )
+    }
+    assertDishStatusMatchesDb(mirrorDisabled, dishId, dishDisabledDoc as never)
+    record(
+      `${base.label} REST dish disabled manager`,
+      `status=${disabledRes.status}; scritture=${disabledWrites}; status file=${dishStatusInRawJson(mirrorDisabled, dishId)}`,
+    )
+
+    await payload.update({
+      id: dishId,
+      collection: DISHES_SLUG,
+      depth: 0,
+      overrideAccess: true,
+      data: { disabled: false, soldOut: false },
+      context: importBulkContext,
+    })
+  }
+}
+
 async function findLatestAuthLog(
   payload: PayloadInstance,
   eventType: 'login' | 'logout',
@@ -254,8 +434,10 @@ async function main(): Promise<void> {
   }
 
   assertDevDatabaseFromEnv()
+  recordProductionMenuAvailabilityEnvGuard()
   const payload = await getPayload({ config })
   const created: CreatedRef[] = []
+  const restProbeUserIds: { id: number | string }[] = []
   let createdUserId: number | string | null = null
   const memory = createMemoryAvailabilityStorage()
   setAvailabilityStorageForTests(memory)
@@ -406,6 +588,37 @@ async function main(): Promise<void> {
       throw new Error('Manca availability-write-failed')
     }
     record('scrittura fallita (salvataggio OK)', `detail=${failDetail}`)
+    setAvailabilityStorageForTests(memory)
+
+    setAvailabilityStorageForTests(wrapStorageFailingOnRead(memory))
+    await payload.updateGlobal({
+      slug: MENU_GENERAL_SLUG,
+      depth: 0,
+      overrideAccess: true,
+      locale: 'it',
+      data: { globalMessage: `Verify64 readfail ${TEST_RUN_ID}` },
+    })
+    const readFailDetail = await findLatestDetailPrefix(payload, 'availability-write-failed:')
+    if (!readFailDetail?.startsWith('availability-write-failed:')) {
+      throw new Error('Manca availability-write-failed dopo lettura GCS fallita')
+    }
+    record('lettura remota fallita (salvataggio Global OK)', `detail=${readFailDetail}`)
+    setAvailabilityStorageForTests(memory)
+
+    await deleteProbeSystemActions(payload)
+    setAvailabilityStorageForTests(wrapStorageReadTimeout(memory, READ_TIMEOUT_PROBE_MS))
+    await payload.updateGlobal({
+      slug: MENU_GENERAL_SLUG,
+      depth: 0,
+      overrideAccess: true,
+      locale: 'it',
+      data: { globalMessage: `Verify64 readtimeout ${TEST_RUN_ID}` },
+    })
+    const timeoutDetail = await findLatestDetailPrefix(payload, 'availability-write-failed: Timeout')
+    if (!timeoutDetail?.includes('Timeout')) {
+      throw new Error(`Atteso availability-write-failed con Timeout, ricevuto ${timeoutDetail}`)
+    }
+    record('lettura remota timeout (salvataggio Global OK)', `detail=${timeoutDetail}`)
     setAvailabilityStorageForTests(memory)
 
     memory.reset()
@@ -685,6 +898,8 @@ async function main(): Promise<void> {
       })
       record('activity-log GET anonimo', `${anonLog.status} (atteso 403)`)
 
+      await runRestAvailabilityFileSync(payload, dish.id, restProbeUserIds)
+
       if (skipLogin) {
         console.warn(
           '\n*** VERIFY_MENU_6_4_SKIP_LOGIN=1: login/logout REST SALTATI (non valido per commit) ***\n',
@@ -729,6 +944,19 @@ async function main(): Promise<void> {
       try {
         await payload.delete({
           collection: ref.collection,
+          id: ref.id,
+          depth: 0,
+          overrideAccess: true,
+        })
+      } catch {
+        /* best effort */
+      }
+    }
+    for (const ref of restProbeUserIds) {
+      try {
+        await deleteAuthLogsForUser(payload, ref.id)
+        await payload.delete({
+          collection: 'users',
           id: ref.id,
           depth: 0,
           overrideAccess: true,

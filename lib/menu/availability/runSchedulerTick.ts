@@ -44,7 +44,10 @@ export async function runSchedulerAvailabilityTick(
   })
   const services = serviceRowsFromGlobal(settings)
 
-  const syncResult = await syncMenuAvailabilityFile(payload, { logRealignOnDiff: true })
+  const syncResult = await syncMenuAvailabilityFile(payload, {
+    logRealignOnDiff: true,
+    origin: { kind: 'job' },
+  })
   const realigned = syncResult.written
 
   const state = await loadSchedulerBoundaryState(payload)

@@ -1,9 +1,17 @@
+import { appendFile, writeFile } from 'node:fs/promises'
+
 import {
   MENU_AVAILABILITY_GCS_BUCKET_ENV,
   MENU_AVAILABILITY_GCS_UPLOAD_TIMEOUT_MS,
   MENU_AVAILABILITY_OBJECT_PATH,
 } from './constants'
+import { assertMenuAvailabilityDevOnlyEnvAllowed } from './devOnlyEnvGuard'
+import { createMemoryAvailabilityStorage, type MemoryAvailabilityStorage } from './testMemoryStorage'
 import type { AvailabilityDocumentV1 } from './types'
+
+const MENU_AVAILABILITY_IN_MEMORY_ENV = 'MENU_AVAILABILITY_IN_MEMORY'
+const MENU_AVAILABILITY_WRITE_TRACE_FILE_ENV = 'MENU_AVAILABILITY_WRITE_TRACE_FILE'
+const MENU_AVAILABILITY_MIRROR_FILE_ENV = 'MENU_AVAILABILITY_MIRROR_FILE'
 
 export type AvailabilityObjectReader = {
   readCurrentObject(): Promise<string | null>
@@ -16,6 +24,44 @@ export type AvailabilityObjectWriter = {
 export type AvailabilityStorage = AvailabilityObjectReader & AvailabilityObjectWriter
 
 let testAvailabilityStorage: AvailabilityStorage | null = null
+let devMemoryAvailabilityStorage: MemoryAvailabilityStorage | null = null
+
+function wrapWithWriteTrace(storage: AvailabilityStorage, tracePath: string): AvailabilityStorage {
+  return {
+    async readCurrentObject(): Promise<string | null> {
+      return storage.readCurrentObject()
+    },
+    async writeObject(json: string, contentType: string): Promise<void> {
+      await appendFile(tracePath, `write ${Date.now()}\n`, 'utf8')
+      await storage.writeObject(json, contentType)
+    },
+  }
+}
+
+function wrapWithMirror(storage: AvailabilityStorage, mirrorPath: string): AvailabilityStorage {
+  return {
+    async readCurrentObject(): Promise<string | null> {
+      return storage.readCurrentObject()
+    },
+    async writeObject(json: string, contentType: string): Promise<void> {
+      await writeFile(mirrorPath, json, 'utf8')
+      await storage.writeObject(json, contentType)
+    },
+  }
+}
+
+function applyDevStorageWrappers(storage: AvailabilityStorage): AvailabilityStorage {
+  const mirrorPath = process.env[MENU_AVAILABILITY_MIRROR_FILE_ENV]?.trim()
+  const tracePath = process.env[MENU_AVAILABILITY_WRITE_TRACE_FILE_ENV]?.trim()
+  let wrapped = storage
+  if (mirrorPath) {
+    wrapped = wrapWithMirror(wrapped, mirrorPath)
+  }
+  if (tracePath) {
+    wrapped = wrapWithWriteTrace(wrapped, tracePath)
+  }
+  return wrapped
+}
 
 /** Solo per script di verifica (6.4): storage in memoria al posto di GCS. */
 export function setAvailabilityStorageForTests(storage: AvailabilityStorage | null): void {
@@ -54,9 +100,20 @@ async function getGcsClient(): Promise<import('@google-cloud/storage').Storage> 
   return gcsClientPromise
 }
 
+export function getDevMemoryAvailabilityStorage(): MemoryAvailabilityStorage | null {
+  return devMemoryAvailabilityStorage
+}
+
 export function resolveAvailabilityStorage(): AvailabilityStorage | null {
+  assertMenuAvailabilityDevOnlyEnvAllowed()
   if (testAvailabilityStorage) {
     return testAvailabilityStorage
+  }
+  if (process.env[MENU_AVAILABILITY_IN_MEMORY_ENV] === '1') {
+    if (!devMemoryAvailabilityStorage) {
+      devMemoryAvailabilityStorage = createMemoryAvailabilityStorage()
+    }
+    return applyDevStorageWrappers(devMemoryAvailabilityStorage)
   }
   const bucketName = getMenuAvailabilityBucketName()
   if (!bucketName) {
