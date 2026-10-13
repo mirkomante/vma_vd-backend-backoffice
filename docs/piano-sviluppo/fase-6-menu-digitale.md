@@ -51,7 +51,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.0 — Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM
 
-**Stato**: 🔶 in corso (risorse create il 2026-10-12; resta aperta solo la prova di sovrascrittura del runtime SA, spostata in 6.4; CORS rimandato a 6.9 come previsto). Dettaglio: `docs/operativo/gcp-menu-scheduler.md`.
+**Stato**: ✅ chiusa (2026-10-13 in produzione: sovrascrittura runtime SA verificata in 6.4; **CORS** rimandato a 6.9). Dettaglio: `docs/operativo/gcp-menu-scheduler.md`.
 
 **Dipende da**: nessuna sottofase di codice. Recupera il debito di Fase 3 (`arco-17`, `arco-25`) **senza riaprirla**. Lavoro dell'**umano** su GCP; Composer scrive solo la documentazione operativa.
 
@@ -76,14 +76,14 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **CORS del bucket** (con `gcloud storage buckets update gs://BUCKET --cors-file=cors.json`): origini `https://<id-progetto>.web.app` e `https://<id-progetto>.firebaseapp.com`, metodi `GET` e `HEAD`; `http://localhost:3000` solo se serve allo sviluppo del frontend. Il dominio definitivo si aggiunge al passaggio in produzione.
 
-**Verifiche tecniche** (esiti del 2026-10-12 in `docs/operativo/gcp-menu-scheduler.md`: blocco dell'accesso pubblico non imposto, OK; `Cache-Control` a 60 secondi, OK; sovrascrittura del runtime SA non verificata, in 6.4; CORS rimandato a 6.9): che l'organizzazione non imponga il blocco dell'accesso pubblico ai bucket; che un oggetto caricato con `Cache-Control: public, max-age=60` sia servito con quell'intestazione (il default di un oggetto pubblico è di un'ora); che la richiesta con `Origin` ottenga le intestazioni CORS.
+**Verifiche tecniche** (esiti in `docs/operativo/gcp-menu-scheduler.md`: blocco dell'accesso pubblico non imposto, OK; `Cache-Control` a 60 secondi, OK; sovrascrittura del runtime SA **OK** in produzione 2026-10-13; CORS rimandato a 6.9): che l'organizzazione non imponga il blocco dell'accesso pubblico ai bucket; che un oggetto caricato con `Cache-Control: public, max-age=60` sia servito con quell'intestazione (il default di un oggetto pubblico è di un'ora); che la richiesta con `Origin` ottenga le intestazioni CORS.
 
 **Documentazione**: nuovo `docs/operativo/gcp-menu-scheduler.md` (nomi, ruoli assegnati, comandi usati, esito delle verifiche). **Nessun segreto nel file.**
 
 **Checklist di chiusura sottofase**:
 - [x] Cloud Scheduler abilitato; service account dello Scheduler creato con `run.invoker` sul solo servizio.
 - [x] Bucket creato, a lettura pubblica; `objectAdmin` del runtime SA assegnato sul solo bucket (binding verificato con `get-iam-policy`).
-- [ ] Sovrascrittura di un oggetto da parte del runtime SA provata: **non verificata** il 2026-10-12 (l'account umano non può impersonare il runtime SA e non si è concesso `serviceAccountTokenCreator`); **da provare in 6.4** con la prima scrittura di `disponibilita.json` da Cloud Run.
+- [x] Sovrascrittura di un oggetto da parte del runtime SA provata in produzione (2026-10-13, 6.4): quattro sovrascritture osservate nella cronologia del bucket con il solo `roles/storage.objectAdmin` sul bucket.
 - [x] Due secret creati in Secret Manager (uno per scopo) e accessibili al runtime SA per singolo secret; **valore non scritto in nessun file del repo**.
 - [x] Oggetto di prova: servito con cache a 60 secondi; CORS rimandato a 6.9 (progetto Firebase non ancora creato), comando pronto in `docs/operativo/gcp-menu-scheduler.md`.
 - [x] `docs/operativo/gcp-menu-scheduler.md` scritto; `piano.yaml` e `00-piano-generale.md` aggiornati.
@@ -338,7 +338,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.4 — Disponibilità, reset ai confini di servizio e `disponibilita.json`
 
-**Stato**: 🔶 in corso (codice e verifiche dev 2026-10-13; produzione: migrate, env, job e prova GCS **non eseguiti** — vedi checklist e «Produzione» sotto).
+**Stato**: ✅ chiusa (2026-10-13): codice, verify dev, deploy produzione, migrazione registro, env/secret Cloud Run, job Scheduler e esiti GCS/registro/log come in checklist e «Produzione» sotto.
 
 **Dipende da**: 6.0 (risorse GCP), 6.2 (campi), Fase 7.2 (confini di servizio, `arco-29`).
 
@@ -363,22 +363,23 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Script**: `pnpm verify:menu-6_4`.
 
-**Produzione** (ordine obbligatorio; **non eseguire senza via passo passo**):
-1. Commit locale (quando richiesto).
-2. Migrazione registro su Cloud SQL prod (`./scripts/prod-db.sh -- pnpm payload migrate:status` prima/dopo; `pnpm payload migrate` con `DATABASE_URL` prod inline, mai dal `.env` dev).
-3. Push (umano).
-4. Cloud Run: env `MENU_AVAILABILITY_GCS_BUCKET=vma-vd-menu-availability`; montaggio secret `scheduler-secret-availability` → `SCHEDULER_SECRET_AVAILABILITY` (mai leggere il valore).
-5. Prova scrittura: prima richiesta autorizzata allo Scheduler o sync in prod; `curl -I` su `https://storage.googleapis.com/vma-vd-menu-availability/disponibilita.json` (200, `Cache-Control: public, max-age=60`, `Content-Type: application/json`).
-6. Job Scheduler HTTP POST sull'URL Cloud Run `/api/menu/availability-scheduler`, header `X-Scheduler-Availability-Secret` con valore da Secret Manager (sostituzione comando, **mai stampato**); esecuzione di prova; controllo registro `systemAction`.
+**Produzione** (ordine eseguito il 2026-10-13):
+1. [x] Commit locale, poi migrazione **`20261013_110424_activity_log_6_4`** su Cloud SQL prod, push, aggiornamento Cloud Run (`gcloud run services update` con `--update-env-vars=MENU_AVAILABILITY_GCS_BUCKET=…` e `--update-secrets=SCHEDULER_SECRET_AVAILABILITY=scheduler-secret-availability:latest` — **mai** `--set-secrets`, che sostituirebbe i secret esistenti). Dopo l'aggiornamento: **13** variabili sul servizio (le 11 precedenti più le due nuove).
+2. [x] Job Cloud Scheduler **`menu-availability-reset`**: `*/5 * * * *`, `Europe/Rome`, POST, OIDC `vma-vd-scheduler@…`, intestazione secret da Secret Manager (sostituzione comando, valore **mai** stampato). Dettaglio comandi: `docs/operativo/gcp-menu-scheduler.md`.
+3. [x] Prima scrittura del file dal job (**13:23:22 UTC**): JSON valido, `schemaVersion: 1`, sei gruppi vuoti, `globalMessage` assente; `curl -I`: 200, `application/json`, `cache-control: public, max-age=60`. Registro: `availability-reset: baseline; boundary=2026-10-13T10:30:00.000Z; service=lunch; date=2026-10-13`.
+4. [x] **Difetto pre-fix** (salvataggio `globalMessage` dall'Admin): nessuna scrittura in cronologia bucket al salvataggio **14:17:29**; il job ha riparato con `availability-realigned: ok` al tick **16:20** (ora locale). *Ufficiale*: verify 6.4 e `pnpm dev` coprivano sync via Local API; *Percepito*: «se il DB è aggiornato, il file segue subito»; *Osservato*: in prod REST Admin non scriveva GCS fino al job (~5 min). **Post-fix** (revisione **00141**, overlay + log `menu-availability-sync`): salvataggi **15:27:55**, **15:28:58**, **15:47:00** → scrittura immediata, nessuna riscrittura del job ai tick successivi; `globalMessage` assente dopo messaggio vuoto; righe log `menu-availability-sync` alle 15:27:55 e 15:28:58.
+5. **Osservazione** (prod): l'`updatedAt` del Global `menu-general` **non** cambia quando cambia solo un campo localizzato (restato **14:17:29** dopo più salvataggi). In **6.6** e **6.9** non usarlo per capire se il messaggio è cambiato: usare l'`updatedAt` di `disponibilita.json`.
 
 **Checklist di chiusura sottofase**:
 - [x] Decisioni annotate (confine, job, env, sync, baseline, riconciliazione).
 - [x] File conforme a `ADR-112` §3 in dev (`verify-menu-6_4` + validatore).
 - [x] Hook e suppress import; endpoint 403/200; migrazione generata e provata su `vma_vd_migr` ricreato.
-- [ ] Sovrascrittura da Cloud Run con runtime SA (**non provata**).
-- [ ] Job Scheduler creato ed eseguito in prod (**non provato**).
-- [ ] Env e secret montati su Cloud Run prod (**non provato**).
-- [ ] Migrazione `activity-log` su Cloud SQL prod **prima** del push (**non eseguita**).
+- [x] Sovrascrittura da Cloud Run con runtime SA (debito 6.0 chiuso).
+- [x] Job Scheduler creato ed eseguito in prod.
+- [x] Env e secret montati su Cloud Run prod (13 variabili).
+- [x] Migrazione `activity-log` su Cloud SQL prod prima del push.
+
+**Debiti / punti aperti** (non richiesti per ✅ sottofase): reset `soldOut` su **dati reali** non provato in produzione (nessun piatto in prod; da osservare al confine dopo import 6.8, voce `availability-reset: ok` nel registro); **non provato**: cancellazione del solo testo italiano con inglese ancora presente (contenuto slot `it` nel file); due creazioni simultanee possono entrambe scrivere; etichette campi registro attività in Admin in inglese e descrizione collection senza azioni di sistema (sottofase successiva); variabili `SEED_SUPERADMIN_EMAIL` e `SEED_SUPERADMIN_PASSWORD` ancora sul servizio Cloud Run (valutare rimozione post-6.4, decisione Mirko); prova standalone locale senza bucket GCS di sviluppo dedicato (mai bucket di produzione).
 
 ---
 
@@ -397,7 +398,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 - **Azioni rapide dall'elenco**: «terminato» per i piatti (`soldOut`) e abilita/disabilita per ogni voce. Sono l'operatività quotidiana: un tocco, risultato immediato (e file riscritto, 6.4).
 - **Moduli di creazione e modifica** con scelta della lingua per i campi `localized` (italiano predefinito, inglese facoltativo, ripiego sull'italiano se manca). Le tassonomie sono **a sola scelta**: nessun pulsante per crearle. Per Paesi e regioni il menu a tendina elenca solo i valori con `enabled` vero, **filtrati nella query, non solo nascosti nell'interfaccia**.
 - **Composizione dei menu fissi**: scelta dei piatti, ordine, `portion`, `visibility`, servizi collegati.
-- **Messaggio globale**: modifica di `globalMessage` nelle due lingue.
+- **Messaggio globale**: modifica di `globalMessage` nelle due lingue. **Non** usare l'`updatedAt` del Global per sapere se il messaggio è aggiornato sul menù pubblico (in prod non cambia con sole modifiche localizzate, osservato 2026-10-13): usare l'`updatedAt` di `disponibilita.json` (6.4).
 - **Pulsante «Ricompila il menù pubblico»** (6.5), con una nota su che cosa lo richiede: voci nuove, modifiche ai contenuti, ai servizi, agli orari, alle chiusure e ai giorni speciali.
 - **Nessuna cancellazione**: si disabilita. Un filtro «senza allergeni dichiarati» aiuta la revisione di 6.8; **non è una validazione**.
 
@@ -440,7 +441,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 | Ora della build | build | la pagina mostra l'istante di generazione (serve a 6.5 per vedere che un rebuild è avvenuto) |
 | Lettura del CMS in italiano | build | `locale=it`, `limit=100`: numero dei piatti e nome del primo |
 | Lettura del CMS in inglese | build | come sopra con `locale=en` (con il ripiego sull'italiano dove manca la traduzione) |
-| Lettura di `disponibilita.json` | browser | file raggiungibile (CORS e rete), `schemaVersion` 1, `updatedAt` e stato di un piatto visibili; rilegge ogni 30 secondi in prova invece che ogni 5 minuti |
+| Lettura di `disponibilita.json` | browser | file raggiungibile (CORS e rete), `schemaVersion` 1, `updatedAt` e stato di un piatto visibili; rilegge ogni 30 secondi in prova invece che ogni 5 minuti. Per il messaggio globale usare `globalMessage` e l'`updatedAt` **del file**, non l'`updatedAt` del Global `menu-general` (osservato 2026-10-13: non cambia con sole modifiche localizzate) |
 
 - Se la richiesta al CMS **fallisce** (rete, errore HTTP) la **build fallisce**: il sito resta alla versione precedente, come deve fare anche il frontend vero (meglio il sito di prima di un menù vuoto). Se risponde ma i dati mancano (nessun piatto, nessuna traduzione) il controllo mostra KO.
 - Il controllo del file mostra un messaggio esplicito per ogni causa distinguibile (CORS, rete, schema non riconosciuto).
