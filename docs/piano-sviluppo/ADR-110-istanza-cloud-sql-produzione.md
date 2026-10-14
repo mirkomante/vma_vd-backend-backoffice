@@ -59,3 +59,11 @@ Chiude la rivalutazione di §3 per il **menù digitale** (`arco-27`). Non modifi
 - **Configurazione verificata** (2026-10-12, `gcloud sql instances describe vma-vd-database`): `db-f1-micro`, `ZONAL`, `ENTERPRISE`. Il riquadro dell'edizione nella console («99,95% di disponibilità garantita dallo SLA», manutenzione pianificata sotto i 60 secondi) descrive l'edizione Enterprise in generale, non questa istanza: vale la definizione di «servizio coperto» dello SLA, che esclude shared-core e zona singola. La riga sui 60 secondi non è stata verificata.
 - **Costo, per riferimento**: `db-f1-micro` on-demand, 0,0105 USD/ora in zona singola e 0,021 USD/ora con HA (circa 7,7 e 15,3 USD al mese). Cifre dalla pagina dei prezzi ufficiale, letta in una copia datata e senza indicazione della regione: **non verificate per `europe-west1`**. Prezzi di una macchina a core dedicato con HA: non raccolti.
 - **Rischio accettato**: la durata di un fermo di zona non è garantita da nessun impegno contrattuale. I dati restano protetti dai backup automatici e dal ripristino a un istante preciso (7 giorni), indipendenti dall'HA.
+
+## Nota di chiarimento (2026-10-13, nuovo criterio di rivalutazione dell'HA)
+
+Sostituisce il criterio temporale di §3 e quello della nota del 2026-10-12 per **entrambi** gli archi (`arco-26` Fase 5, `arco-27` Fase 6). Non modifica i parametri dell'istanza.
+
+- **Decisione** (Mirko, 2026-10-13): l'alta affidabilità si rivaluta **dopo la conclusione dello sviluppo e dopo il primo mese di utilizzo reale**, non più «prima che dati reali di prenotazioni entrino su questa istanza». Fino ad allora l'istanza resta in **zona singola, senza HA e senza SLA**, anche quando ospiterà le prenotazioni. Punto aperto `po-12`.
+- **Cosa implica**: le prenotazioni conterranno dati personali dei clienti. I dati restano protetti da backup automatici e ripristino a un istante preciso (7 giorni), indipendenti dall'HA. Il rischio accettato è la **durata di un fermo di zona**, che nessun impegno contrattuale limita.
+- **Alla rivalutazione**: verificare i prezzi aggiornati (le cifre della nota del 2026-10-12 non sono verificate per `europe-west1`) e tenere presente che uno SLA richiede HA **e** un core dedicato, cioè un cambio di tipo di macchina.

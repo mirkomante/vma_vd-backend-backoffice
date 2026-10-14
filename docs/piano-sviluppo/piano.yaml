@@ -533,6 +533,10 @@ archi:
       migra dati reali di prenotazioni. Prima che quel go-live entri in
       produzione, l'attivazione di HA va rivalutata esplicitamente come
       voce della checklist di chiusura fase, non lasciata implicita.
+      Aggiornato il 2026-10-13 (nota di chiarimento ad ADR-110): la
+      rivalutazione si fa dopo la conclusione dello sviluppo e dopo il
+      primo mese di utilizzo reale, non più prima dei dati reali di
+      prenotazioni (po-12).
     adr: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     fonte: "ADR-110-istanza-cloud-sql-produzione.md §3"
 
@@ -546,8 +550,9 @@ archi:
       da questa istanza finché fase-6 non la porta in produzione reale —
       a quel punto l'HA va rivalutata esplicitamente, non lasciata
       implicita. Chiuso il 2026-10-12 (nota di chiarimento ad ADR-110):
-      nessuna HA per il menù, da rivalutare prima dei dati reali delle
-      prenotazioni; arco-26 resta aperto per fase-5.
+      nessuna HA per il menù. Aggiornato il 2026-10-13: da rivalutare
+      dopo la conclusione dello sviluppo e dopo il primo mese di utilizzo
+      reale (po-12), stesso criterio di arco-26.
     adr: "ADR — Istanza Cloud SQL for PostgreSQL di produzione: dedicata, sizing, disponibilità"
     fonte: "ADR-110-istanza-cloud-sql-produzione.md §3"
 
@@ -1023,6 +1028,9 @@ adr_da_scrivere:
       2026-10-12: rivalutazione dell'HA chiusa per il menù (arco-27),
       nessuna HA; l'istanza db-f1-micro non ha SLA (shared-core e zona
       singola esclusi dalla documentazione ufficiale, anche con HA).
+      Nota del 2026-10-13: la rivalutazione si fa dopo la conclusione dello
+      sviluppo e dopo il primo mese di utilizzo reale (po-12), per arco-26 e
+      arco-27.
   - titolo: "ADR — Contratto CMS <-> siti esterni (preview e revalidation)"
     archi: ["arco-28"]
     stato: "da_scrivere"
@@ -1162,3 +1170,19 @@ punti_aperti:
     registrazione: "ADR-116"
     stato: "aperto"
     riferimento: "Criterio (ADR-116, accettata il 2026-10-05): solo con una RC o una stabile della 4, dopo le Fasi 7, 8 e 6; prima, una prova su ramo con la canary per chiudere due incognite (JWT con disableLocalStrategy: { enableFields: true }; compatibilita di payload-oauth2). Report: docs/audit/payload-upgrade-2026-10-04.md, sezione 2."
+
+  - id: po-12
+    titolo: "Alta affidabilità di Cloud SQL: rivalutazione dopo lo sviluppo e il primo mese di utilizzo reale"
+    scadenza: "dopo la conclusione dello sviluppo e dopo il primo mese di utilizzo reale"
+    responsabile: "umano e pianificatore"
+    registrazione: "ADR-110 (note di chiarimento del 2026-10-12 e del 2026-10-13)"
+    stato: "aperto"
+    riferimento: "Decisione di Mirko del 2026-10-13: nessuna HA fino a quel momento, anche con le prenotazioni (dati personali dei clienti) sull'istanza. L'istanza db-f1-micro non ha SLA (documentazione ufficiale consultata il 2026-10-12); i dati restano protetti da backup e ripristino a 7 giorni; il rischio accettato è la durata di un fermo di zona. Alla rivalutazione verificare i prezzi aggiornati e, per avere uno SLA, valutare HA con core dedicato (cambio di tipo di macchina). Sostituisce il criterio «prima dei dati reali delle prenotazioni» di ADR-110 §3 per arco-26 e arco-27."
+
+  - id: po-13
+    titolo: "Traccia della cancellazione di un allergene (o di un menu fisso collegato): registro attività e avviso in Admin"
+    scadenza: "non bloccante; da pianificare dopo la 6.6"
+    responsabile: "pianificatore"
+    registrazione: "ADR-108 (nota di chiarimento del 2026-10-13)"
+    stato: "aperto"
+    riferimento: "Decisione di Mirko del 2026-10-13: l'admin può sempre cancellare, nessun permesso cambia. La cancellazione di un allergene lo toglie in silenzio da piatti e bevande (cascade su dishes_rels e drinks_rels); quella di un menu fisso dai giorni speciali (special_days_rels); quella di un servizio dai menu fissi (fixed_menus_rels). Lavoro proposto, non ancora pianificato: una riga nel registro attività con il nome e il numero di voci che lo usavano, e un avviso nell'Admin prima della cancellazione."

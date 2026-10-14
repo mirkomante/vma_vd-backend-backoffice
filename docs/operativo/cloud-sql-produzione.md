@@ -82,7 +82,7 @@ Con `push` disattivato (`NODE_ENV=production` via `prod-db.sh` o inline) non si 
 - **Verificato il 2026-10-12** con `gcloud sql instances describe`: `db-f1-micro`, `ZONAL`, `ENTERPRISE`. Il riquadro dell'edizione nella console («99,95% … garantita dallo SLA») descrive l'edizione, non questa istanza: conta la definizione di «servizio coperto» dello SLA.
 - **Decisione** (Mirko, 2026-10-12): per il go-live del menù non si attiva l'HA. Un fermo del database non è critico per questo tipo di applicazione (menù statico, stato delle voci in un bucket).
 - **Protezione dei dati**: backup automatici con ripristino a un istante preciso, 7 giorni, indipendenti dall'HA.
-- **Da rivalutare** prima che dati reali di prenotazioni (5.3) entrino su questa istanza, o prima di aggiungere altri servizi, o se il menù diventa critico. Nota di chiarimento in `ADR-110`.
+- **Da rivalutare** dopo la conclusione dello sviluppo e dopo il primo mese di utilizzo reale (decisione di Mirko, 2026-10-13, `po-12`): sostituisce il criterio del 2026-10-12 («prima dei dati reali delle prenotazioni»). Fino ad allora l'istanza resta senza HA e senza SLA anche quando conterrà le prenotazioni (dati personali dei clienti): i dati restano protetti da backup e ripristino a 7 giorni, il rischio accettato è la durata di un fermo. Note di chiarimento in `ADR-110`.
 
 ## Helper
 

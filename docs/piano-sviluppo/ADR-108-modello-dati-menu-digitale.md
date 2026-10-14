@@ -292,3 +292,11 @@ Chiude il punto aperto del §1 (struttura interna non specificata nelle sessioni
 | ↳ messaggio | `content.message` | testo, `localized`, facoltativo | Banner |
 
 Su **menu fissi**, campo additivo `specialOnly` (checkbox, default `false`): menu usati solo tramite giorni speciali, fuori dalle pagine normali (`ADR-112`).
+
+## Nota di chiarimento (2026-10-13, cancellazione di record collegati)
+
+Non modifica i permessi.
+
+- **Decisione** (Mirko, 2026-10-13): l'admin deve poter **cancellare sempre**. Nessun permesso cambia; il manager non cancella mai (si disabilita).
+- **Comportamento verificato nelle migrazioni del repo (6.2 e 6.3)**: le relazioni a più valori hanno `ON DELETE cascade` (`dishes_rels.allergens_id`, `drinks_rels.allergens_id`, `fixed_menus_rels.menu_services_id`, `special_days_rels.fixed_menus_id`). Cancellare un **allergene** lo toglie in silenzio da tutti i piatti e le bevande che lo riportano; cancellare un **servizio** lo toglie da tutti i menu fissi; cancellare un **menu fisso** toglie il collegamento dai giorni speciali (un giorno speciale senza menu fissi attivi non si applica, `ADR-112`). Le relazioni singole o dentro un array (categoria del piatto, piatto in un menu fisso) rifiutano invece la cancellazione con un errore del database (limite noto di 6.2).
+- **Rischio accettato**: nessuna cancellazione è bloccata. Una traccia nel registro attività (nome e numero di voci che lo usavano) e un avviso nell'Admin prima della cancellazione sono lavoro successivo non pianificato: punto aperto `po-13`, non bloccante.
