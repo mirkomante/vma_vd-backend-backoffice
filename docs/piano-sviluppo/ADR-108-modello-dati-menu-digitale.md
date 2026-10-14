@@ -117,6 +117,8 @@ Non più prodotti dal ristorante: nessuna Collection creata ora. Percorso esplic
 
 ### 9. Criterio manager/admin — principio e tabella campo per campo
 
+> **Superato in parte il 2026-10-14**: il manager può cancellare fisicamente piatti, vini, bevande, distillati, servizi, menù fissi e giorni speciali (non le categorie dei menù fissi né le tassonomie). Vedi «Emendamento (2026-10-14)» in fondo e `ADR-113`. Il resto del §9 è invariato.
+
 **Principio applicato**: operatività quotidiana (CRUD completo su piatti/vini/bevande/distillati/menù, purché si scelga tra valori tassonomici già esistenti) → **manager**; configurazione strutturale/tassonomica (creazione di nuove voci di tassonomia) → **admin**. Cancellazione **sempre soft-delete**: nessuna entità gestita dal manager viene mai eliminata fisicamente — si usa lo stato "disabilitato", esteso dal pattern di disponibilità piatti a tutte le entità gestibili dal manager.
 
 | Entità/Tassonomia | Gestione | Campo `abilitato` | Note |
@@ -300,3 +302,23 @@ Non modifica i permessi.
 - **Decisione** (Mirko, 2026-10-13): l'admin deve poter **cancellare sempre**. Nessun permesso cambia; il manager non cancella mai (si disabilita).
 - **Comportamento verificato nelle migrazioni del repo (6.2 e 6.3)**: le relazioni a più valori hanno `ON DELETE cascade` (`dishes_rels.allergens_id`, `drinks_rels.allergens_id`, `fixed_menus_rels.menu_services_id`, `special_days_rels.fixed_menus_id`). Cancellare un **allergene** lo toglie in silenzio da tutti i piatti e le bevande che lo riportano; cancellare un **servizio** lo toglie da tutti i menu fissi; cancellare un **menu fisso** toglie il collegamento dai giorni speciali (un giorno speciale senza menu fissi attivi non si applica, `ADR-112`). Le relazioni singole o dentro un array (categoria del piatto, piatto in un menu fisso) rifiutano invece la cancellazione con un errore del database (limite noto di 6.2).
 - **Rischio accettato**: nessuna cancellazione è bloccata. Una traccia nel registro attività (nome e numero di voci che lo usavano) e un avviso nell'Admin prima della cancellazione sono lavoro successivo non pianificato: punto aperto `po-13`, non bloccante.
+
+## Emendamento (2026-10-14) — Cancellazione dei contenuti del menù da parte del manager
+
+**Stato**: accettato da Mirko il 2026-10-14. Vedi l'emendamento di `ADR-113` §3 per contesto, alternative e conseguenze.
+
+Sostituisce, per i soli permessi di cancellazione:
+- il principio del §9 («Cancellazione **sempre soft-delete**: nessuna entità gestita dal manager viene mai eliminata fisicamente»);
+- la riga «Piatti, Vini, Bevande, Distillati, Menù (CRUD)» della tabella del §9 («cancellazione = soft-delete»);
+- l'emendamento del 2026-10-04 sui Servizi («con cancellazione soft come le altre entità del menù»);
+- la frase «il manager non cancella mai (si disabilita)» della nota del 2026-10-13.
+
+Tabella aggiornata:
+
+| Entità | Gestione | Cancellazione |
+|---|---|---|
+| Piatti, Vini, Bevande, Distillati, Servizi, Menù fissi, Giorni speciali | Manager (CRUD) | Il manager e l'admin cancellano; si può anche disabilitare |
+| Categorie dei menù fissi | Manager (crea, modifica, disabilita) | Solo admin |
+| Tassonomie (categorie dei piatti, allergeni, tipologie, paesi, regioni, denominazioni, classificazioni) | Admin | Solo admin |
+
+La nota del 2026-10-13 sul comportamento delle relazioni (cascade e rifiuti del database) vale anche per le cancellazioni del manager. Il rischio che quella nota accetta per l'admin (cascade silenzioso su servizi e menù fissi) si estende al manager, con la differenza che la conferma dell'App lo dichiara prima. Per i piatti il rifiuto del database è comunicato prima, con l'elenco dei menù fissi che li usano.

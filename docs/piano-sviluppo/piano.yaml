@@ -219,7 +219,7 @@ fasi:
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "da_fare"
-        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2. I form offrono la scelta della lingua per i campi localized (po-09)."
+        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2. I form offrono la scelta della lingua per i campi localized (po-09). Dal 2026-10-14: navigazione a otto voci, cancellazione del manager su sette collection (emendamenti di ADR-113 e ADR-108, 6.6 Parte 0), categorie dei menù fissi nella scheda «Categorie» di «Menù fissi», design una schermata alla volta in docs/design/schermate/."
       - id: fase-6.7
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
         stato: "fuori_perimetro"
@@ -1185,4 +1185,4 @@ punti_aperti:
     responsabile: "pianificatore"
     registrazione: "ADR-108 (nota di chiarimento del 2026-10-13)"
     stato: "aperto"
-    riferimento: "Decisione di Mirko del 2026-10-13: l'admin può sempre cancellare, nessun permesso cambia. La cancellazione di un allergene lo toglie in silenzio da piatti e bevande (cascade su dishes_rels e drinks_rels); quella di un menu fisso dai giorni speciali (special_days_rels); quella di un servizio dai menu fissi (fixed_menus_rels). Lavoro proposto, non ancora pianificato: una riga nel registro attività con il nome e il numero di voci che lo usavano, e un avviso nell'Admin prima della cancellazione."
+    riferimento: "Decisione di Mirko del 2026-10-13: l'admin può sempre cancellare, nessun permesso cambia. La cancellazione di un allergene lo toglie in silenzio da piatti e bevande (cascade su dishes_rels e drinks_rels); quella di un menu fisso dai giorni speciali (special_days_rels); quella di un servizio dai menu fissi (fixed_menus_rels). Lavoro proposto, non ancora pianificato: una riga nel registro attività con il nome e il numero di voci che lo usavano, e un avviso nell'Admin prima della cancellazione. Aggiornamento del 2026-10-14: la riga di registro per le cancellazioni di piatti, vini, distillati, bevande, servizi, menù fissi e giorni speciali (del manager e dell'admin) entra nella 6.6, Parte 0 (ADR-115, nota del 2026-10-14); a po-13 restano l'avviso nell'Admin e la traccia per le tassonomie, allergeni compresi."

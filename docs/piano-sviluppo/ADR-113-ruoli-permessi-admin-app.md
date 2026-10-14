@@ -41,7 +41,7 @@ CMS dei siti per il manager:
 | `super-admin`, `admin` | Tutte e tre. L'accesso è **derivato da `adminRole`**: non serve nessun `appRole` |
 | `manager` (`appRole`) | Menù, orari, prenotazioni, con i limiti sotto |
 
-- **Menù**: creazione, modifica e disabilitazione di piatti, vini, bevande, distillati, menù e del campo `porzione`. La cancellazione è sempre «soft» (disabilita). Le tassonomie sono in sola scelta; la loro gestione resta agli admin, nell'Admin (`riepilogo-sessione-criterio-manager-admin-menu.md` §2, confermato).
+- **Menù**: creazione, modifica, disabilitazione e **cancellazione** di piatti, vini, bevande, distillati, servizi, menù fissi e giorni speciali, e del campo `porzione` (emendamento del 2026-10-14: prima la cancellazione era sempre «soft»). Le categorie dei menù fissi: creazione, modifica e disabilitazione, **senza cancellazione**. Le tassonomie sono in sola scelta; la loro gestione resta agli admin, nell'Admin (`riepilogo-sessione-criterio-manager-admin-menu.md` §2, confermato).
 - **Prenotazioni**: lettura e scrittura su Prenotazioni, Eccezioni giorno e «Impostazioni prenotazioni» (capienza, durata slot, soglia gruppo numeroso). Le azioni dipendono dallo stato come da `ADR-106`.
 - **Orari**: orari e chiusure del ristorante e orari del B&B di vietnamonamour.com, in `impostazioni-sistema` (tab Orari e chiusure, `ADR-109`, terzo emendamento). Si modificano **solo nell'App**.
 
@@ -73,3 +73,34 @@ CMS dei siti per il manager:
 ## Nota di chiarimento (2026-10-04)
 
 Non modifica la decisione. La lettura anonima della sola tab Orari e chiusure di `impostazioni-sistema` è già decisa in `ADR-112` §1 e in `fase-7-impostazioni-sistema.md` §7.4; ADR-111 stabilisce soltanto se i siti usano quella stessa REST per gli orari pubblici (ristorante, check-in, check-out).
+
+## Emendamento (2026-10-14) — Cancellazione dei contenuti del menù da parte del manager
+
+**Stato**: accettato da Mirko il 2026-10-14, durante il design della 6.6. Modifica la riga «Menù» del §3 («la cancellazione è sempre «soft»»); il resto dell'ADR è invariato.
+
+### Contesto
+
+La regola «cancellazione sempre soft» (§3 di questo ADR, `ADR-108` §9, `riepilogo-sessione-criterio-manager-admin-menu.md` §1) esclude che il manager elimini qualunque voce. Per il lavoro quotidiano Mirko vuole che il manager gestisca in autonomia piatti, vini, bevande, distillati, servizi e menù fissi: creare, modificare, **cancellare**. Gli allergeni, ad esempio, restano all'admin.
+
+### Decisione
+
+1. Il manager (`appRole`) cancella fisicamente `dishes`, `wines`, `spirits`, `drinks`, `menu-services`, `fixed-menus` e `special-days`. I giorni speciali non erano nell'elenco iniziale e sono stati aggiunti da Mirko lo stesso giorno.
+2. Il manager **non** cancella `fixed-menu-categories` (si disabilita) né le tassonomie (categorie dei piatti, allergeni, tipologie, paesi, regioni, denominazioni, classificazioni) né `menu-general`. Admin e super-admin cancellano tutto, come prima (`ADR-108`, nota del 2026-10-13).
+3. Disabilitare resta possibile e distinto: «Disabilita» toglie la voce dal menù senza perderla; «Elimina» la cancella.
+4. **Cascade**, come per l'admin (`ADR-108`, nota del 2026-10-13): un servizio eliminato sparisce dai menù fissi, un menu fisso dai giorni speciali. Un **piatto** in un menù fisso non si cancella: il database rifiuta (`fixed_menus_dishes.dish_id` è `NOT NULL` con `ON DELETE set null`) e l'App lo comunica prima, con l'elenco dei menù.
+5. Ogni cancellazione lascia una riga nel registro attività (`ADR-115`, nota del 2026-10-14).
+
+### Alternative considerate
+
+- **Mantenere il soft per tutti**: scartata, contro la richiesta di autonomia.
+- **Blocco «se in uso» anche per servizi e menù fissi**: scartata da Mirko, che ha scelto il cascade come per l'admin; la conferma lo dichiara prima.
+- **Cascade reale per i piatti** (migrazione che cancella le righe di composizione): scartata, perché toglierebbe in silenzio piatti da menù fissi pubblicati; il rifiuto con messaggio chiaro è più sicuro e non richiede migrazioni.
+
+### Conseguenze
+
+- **Codice (6.6, Parte 0)**: `canDeleteMenuContentRequest` ammette anche il manager App attivo; `fixed-menu-categories` ha un `access` a parte con cancellazione solo staff Admin (oggi `menuContentAccess` è condiviso da otto collection). Nessuna migrazione di schema.
+- **Prove**: le matrici di `verify-menu-6_2` e `verify-menu-6_3` per `delete` cambiano (il manager era rifiutato ovunque).
+- **REST**: il manager cancella con la propria sessione anche via REST, non solo dall'App; la regola è unica.
+- **Documenti**: `fase-6` §§6.2, 6.3 e 6.6, `ADR-108` §9 (emendamento), `ADR-115` (nota), `docs/design/decisioni-layout-app.md` (D13, D14).
+- **`riepilogo-sessione-criterio-manager-admin-menu.md`** (nella project knowledge) resta come documento storico: sulla cancellazione è superato da questo emendamento.
+- **Non verificato**: il comportamento del rifiuto del database per un piatto in un menù fisso a runtime (limite noto di 6.2, dichiarato in `ADR-108`).

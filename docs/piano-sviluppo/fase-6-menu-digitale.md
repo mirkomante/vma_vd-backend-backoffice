@@ -20,7 +20,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - **Contratto** (`ADR-112`): REST standard di Payload senza token, `locale=it|en` sempre esplicito, `limit=100`, **voci disabilitate incluse con il flag `disabled`**, sezioni nel codice del frontend, `disponibilita.json` con chiavi inglesi (`dishes`, `wines`, `drinks`, `spirits`, `fixedMenus`, `services`, `globalMessage`), cache di 60 secondi, polling del browser di circa 5 minuti. **Orari, chiusure e giorni speciali non sono nel file**: una loro modifica richiede il rebuild.
 - **Nomi congelati** alla chiusura di 6.2 (slug delle collection e `name` dei campi); l'elenco va nel CHANGELOG come base del contratto.
 - **Menù bilingue** (`ADR-108`, secondo emendamento): italiano e inglese, traduzione manuale, campi testuali `localized` fin dallo scaffolding. Locale predefinita `it`, con ripiego incrociato.
-- **Ruoli** (`ADR-113`): nell'App il manager (`appRole`) gestisce il menù; admin e super-admin accedono per `adminRole`. Le tassonomie sono in sola scelta per il manager e si gestiscono nell'Admin. **Cancellazione sempre soft** per il manager (si disabilita, non si elimina).
+- **Ruoli** (`ADR-113`): nell'App il manager (`appRole`) gestisce il menù; admin e super-admin accedono per `adminRole`. Le tassonomie sono in sola scelta per il manager e si gestiscono nell'Admin. **Cancellazione** (emendata il 2026-10-14, `ADR-113` §3 e `ADR-108` §9): il manager elimina piatti, vini, distillati, bevande, servizi, menù fissi e giorni speciali; **non** elimina le categorie dei menù fissi né le tassonomie (si disabilitano; le tassonomie sono dell'admin). Prima del 2026-10-14 la cancellazione era sempre soft.
 - **Foto escluse**; nessun concetto di «variante» del piatto (la quantità sta in `portion` sul menu fisso); **cocktail non modellati**; **la birra non ha una collection**: è una bevanda con tipologia «Birre» (terzo emendamento).
 - **Import** (`ADR-108`, primo emendamento): solo dati elementari, da snapshot JSON, in 6.8; i menu fissi e le loro categorie si ricompongono a mano.
 - **Orari e chiusure** vivono in `impostazioni-sistema` (Fase 7): il Global «Generali» del menù **nasce senza quei campi** e senza `isSpecialPeriod` (`ADR-109` §2).
@@ -156,7 +156,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 **Riferimenti**: `ADR-108` §§1–4, 6, 9 e emendamenti, `ADR-112` §1, `ADR-113` §§3–4.
 
-**Nomi e campi** (proposti; **diventano il contratto alla chiusura**). (L) = `localized`. Tutte hanno `disabled` (checkbox, falso): la cancellazione del manager è la disabilitazione.
+**Nomi e campi** (proposti; **diventano il contratto alla chiusura**). (L) = `localized`. Tutte hanno `disabled` (checkbox, falso): la cancellazione del manager era la disabilitazione; **dal 2026-10-14 il manager cancella anche fisicamente sette collection (vedi 6.6, Parte 0)**.
 
 `dishes` — Piatti
 
@@ -194,12 +194,12 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 |---|---|
 | Richiesta anonima | Sola lettura (`ADR-112`), voci disabilitate incluse |
 | `admin`, `super-admin` | Tutto, compresa la cancellazione fisica |
-| `appRole: manager` | Lettura, creazione e modifica (`canAccessSection(user, 'menu')`); **nessuna cancellazione** |
+| `appRole: manager` | Lettura, creazione e modifica (`canAccessSection(user, 'menu')`). Cancellazione: **nessuna** secondo la chiusura 6.2; **dal 2026-10-14 sì** su `dishes`, `wines`, `spirits`, `drinks`, `menu-services`, `fixed-menus` e `special-days`, **no** su `fixed-menu-categories` (emendamento di `ADR-113` §3; si applica nella 6.6, Parte 0) |
 | `adminRole: manager` | Nessun accesso nell'Admin (`admin.hidden`) |
 
 **Pubblicazione**: nessuna bozza (`versions` non attivi): ciò che si salva è subito leggibile. Voci nuove e modifiche ai contenuti compaiono sul menù pubblico dopo il rebuild (6.5); gli stati `disabled` e `soldOut` passano dal file di disponibilità (6.4).
 
-**Verifiche tecniche**: lettura anonima `GET /api/dishes?locale=it&limit=100&depth=2` e con `locale=en`; la REST restituisce anche le voci disabilitate con `disabled: true`; prova per ruolo su ogni collection (creazione, modifica, cancellazione); un manager che tenta la cancellazione è rifiutato.
+**Verifiche tecniche**: lettura anonima `GET /api/dishes?locale=it&limit=100&depth=2` e con `locale=en`; la REST restituisce anche le voci disabilitate con `disabled: true`; prova per ruolo su ogni collection (creazione, modifica, cancellazione); un manager che tenta la cancellazione è rifiutato (esito della chiusura 6.2; **dal 2026-10-14 la prova cambia**: vedi 6.6, Parte 0).
 
 **Checklist di chiusura sottofase**:
 - [x] Collection registrate con i nomi confermati; sezione «Menù digitale» nella barra laterale dell'Admin per admin e super-admin (**visibilità nel browser Admin**: non provata, solo `admin.hidden` in config).
@@ -318,7 +318,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Sovrapposizione**: hook su record con `disabled: false`; i record disabilitati non contano; due creazioni simultanee potrebbero entrambe passare (limite documentato).
 
-**Permessi**: come 6.2 (`menuContentAccess`); `SPECIAL_DAYS_SLUG` **non** entra in `MENU_CONTENT_SLUGS` (verify 6_2 / import 6_8 invariati).
+**Permessi**: come 6.2 (`menuContentAccess`), con la cancellazione del manager dal 2026-10-14 (6.6, Parte 0); `SPECIAL_DAYS_SLUG` **non** entra in `MENU_CONTENT_SLUGS` (verify 6_2 / import 6_8 invariati).
 
 **Lettura REST completa**: `GET /api/special-days?depth=3` (menu fisso → piatti → allergeni); vedi `ADR-112`.
 
@@ -391,27 +391,40 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Obiettivo**: la sezione `/app/menu` in cui il manager gestisce il menù, **mobile-first**, con shadcn/ui.
 
-**Riferimenti**: `ADR-113` §3, `ADR-108` §§9 e 10 e secondo emendamento, `fase-8-shell-app.md` (shell e componenti).
+**Riferimenti**: `ADR-113` §3 (con l'emendamento del 2026-10-14), `ADR-108` §§9 e 10, secondo emendamento ed emendamento del 2026-10-14, `ADR-115` (nota del 2026-10-14), `fase-8-shell-app.md` (shell e componenti), `docs/design/decisioni-layout-app.md` (D1, D9, D13, D14) e i pacchetti `docs/design/schermate/<nome>/` (`piatti` rivisto il 2026-10-14; le altre schermate si disegnano una alla volta).
+
+**Design**: una schermata alla volta, ciascuna con la propria specifica e approvazione (`docs/design/README.md`). Ordine: piatti (corretto il 2026-10-14), vini, distillati, bevande, servizi, menù fissi con la scheda «Categorie», giorni speciali, messaggio globale, integrazione (navigazione, home, «Ricompila»).
+
+**Parte 0 — permessi di cancellazione** (prima del resto, senza migrazione di schema; decisione del 2026-10-14):
+- In `lib/menu/access.ts` la cancellazione dei contenuti del menù ammette anche il manager App attivo (`isActiveAppManagerRequest`), oltre a staff Admin. `menuContentAccess` è oggi condiviso da otto collection (le sette di `MENU_CONTENT_SLUGS` più `special-days`): serve un secondo oggetto di `access` per **`fixed-menu-categories`**, con cancellazione riservata allo staff Admin. Le tassonomie e `menu-general` non cambiano.
+- Ogni cancellazione lascia una riga nel registro attività (`eventType: delete`, `user`, `area`, collection, identificativo, nome e numero di riferimenti, nessun dato personale) con un hook `afterDelete` per collection, quindi anche per le cancellazioni fatte dall'Admin (`ADR-115`, nota del 2026-10-14). Nessuna migrazione: `delete` è già nell'enum. Un errore di scrittura del registro non blocca la cancellazione.
+- Prove: la matrice di `verify-menu-6_2` (7 profili × 7 collection, `delete`) e quella di `verify-menu-6_3` cambiano: il manager è consentito su sei collection più i giorni speciali, rifiutato su `fixed-menu-categories`; utente senza ruolo e `adminRole: manager` senza `appRole` rifiutati ovunque; la riga di registro esiste dopo ogni cancellazione. Un piatto in un menù fisso resta non cancellabile (rifiuto del database, `ADR-108` nota del 2026-10-13) e un servizio o un menù fisso eliminati spariscono dai menù fissi e dai giorni speciali (cascade).
 
 **Contenuto**:
-- **Elenchi** di piatti, vini, distillati, bevande, servizi, menu fissi e giorni speciali, con ricerca e filtro per categoria o tipologia, e per «disabilitati».
-- **Azioni rapide dall'elenco**: «terminato» per i piatti (`soldOut`) e abilita/disabilita per ogni voce. Sono l'operatività quotidiana: un tocco, risultato immediato (e file riscritto, 6.4).
-- **Moduli di creazione e modifica** con scelta della lingua per i campi `localized` (italiano predefinito, inglese facoltativo, ripiego sull'italiano se manca). Le tassonomie sono **a sola scelta**: nessun pulsante per crearle. Per Paesi e regioni il menu a tendina elenca solo i valori con `enabled` vero, **filtrati nella query, non solo nascosti nell'interfaccia**.
-- **Composizione dei menu fissi**: scelta dei piatti, ordine, `portion`, `visibility`, servizi collegati.
+- **Navigazione**: otto voci sotto «Menù» (D1): Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali, Messaggio globale.
+- **Elenchi** di piatti, vini, distillati, bevande, servizi, menu fissi e giorni speciali, con ricerca e filtro per categoria o tipologia, e per «disabilitati». Vini, distillati e bevande sono raggruppati per tipologia; i piatti per categoria.
+- **Azioni di riga** (D13): matita per modificare; per vini, distillati, bevande, servizi e giorni speciali l'interruttore «Disponibile» abilita e disabilita; per i piatti «Terminato» (`soldOut`) più l'occhio per disabilitare; per le categorie dei menù fissi l'interruttore «Attiva»; cestino per eliminare (D14). Sono l'operatività quotidiana: un tocco, risultato immediato (e file riscritto, 6.4).
+- **Eliminazione** (D14): conferma «Eliminare {nome}?» con «Non si può annullare.»; per un **piatto** in uno o più menù fissi, la finestra «Non si può eliminare» con l'elenco dei menù, letto prima con la sessione dell'utente; per servizi e menù fissi la conferma dice dove verranno tolti (cascade). Nessun cestino sulle categorie dei menù fissi.
+- **«Terminato» dei piatti**: si azzera all'inizio del servizio successivo (6.4); la riga, l'avviso e il modulo dicono «fino all’apertura della cena» (o «del pranzo»), calcolato dagli orari con una funzione di `lib/menu/availability/serviceBoundaries.ts` (il prossimo confine dopo un istante).
+- **Moduli di creazione e modifica** con scelta della lingua per i campi `localized` (italiano predefinito, inglese facoltativo, ripiego sull'italiano se manca). Le tassonomie sono **a sola scelta**: nessun pulsante per crearle. Per Paesi e regioni il menu a tendina elenca solo i valori con `enabled` vero, **filtrati nella query, non solo nascosti nell'interfaccia**. Nel **vino** la cascata è paese → regione → denominazione (regione e denominazione disabilitate finché manca il livello superiore o non esistono valori; il cambio del livello alto svuota quelli sotto) e la **classificazione** mostra quelle del paese scelto: è un aiuto dell'interfaccia, non una validazione, e un valore già salvato resta visibile anche se fuori filtro. Gli errori di coerenza geografica di `validateWineGeography` restano come rete di sicurezza.
+- **Composizione dei menu fissi**: scelta dei piatti, ordine, `portion`, `visibility`, servizi collegati; ogni piatto mostra il suo stato (Disabilitato, Terminato). Il campo Categoria, senza categorie, resta vuoto e dice «Nessuna categoria: creane una nella scheda Categorie»; il pulsante «Nuovo menù fisso» resta attivo.
+- **Categorie dei menù fissi** (`fixed-menu-categories`): sono contenuti, non tassonomie, e le gestisce il manager nella **scheda «Categorie»** della schermata «Menù fissi»: crea, modifica, disabilita; non elimina. Campi: nome (it/en), visibilità (Sempre, Solo pranzo, Solo cena), disabilitata. L'import non le crea: la revisione dopo l'import parte da qui.
 - **Messaggio globale**: modifica di `globalMessage` nelle due lingue. **Non** usare l'`updatedAt` del Global per sapere se il messaggio è aggiornato sul menù pubblico (in prod non cambia con sole modifiche localizzate, osservato 2026-10-13): usare l'`updatedAt` di `disponibilita.json` (6.4).
-- **Pulsante «Ricompila il menù pubblico»** (6.5), con una nota su che cosa lo richiede: voci nuove, modifiche ai contenuti, ai servizi, agli orari, alle chiusure e ai giorni speciali.
-- **Nessuna cancellazione**: si disabilita. Un filtro «senza allergeni dichiarati» aiuta la revisione di 6.8; **non è una validazione**.
+- **Pulsante «Ricompila il menù pubblico»** (6.5), con una nota su che cosa lo richiede: voci nuove, modifiche ai contenuti, ai servizi, agli orari, alle chiusure e ai giorni speciali; le eliminazioni.
+- Un filtro «senza allergeni dichiarati» aiuta la revisione di 6.8; **non è una validazione**.
 
 **Vincoli**:
-- Legge e scrive con la Local API **con la sessione dell'utente** (`overrideAccess: false`), così valgono i permessi di 6.2.
+- Legge e scrive con la Local API **con la sessione dell'utente** (`overrideAccess: false`), così valgono i permessi di 6.2 e della Parte 0.
 - Messaggi di errore in italiano; target di tocco adatti al telefono; conferma del salvataggio.
-- **Fuori perimetro**: la validazione allergeni/flag (`ADR-108` §10) e il frontend pubblico.
+- **Fuori perimetro**: la validazione allergeni/flag (`ADR-108` §10), il frontend pubblico, la traccia e l'avviso in Admin di `po-13`.
 
 **Checklist di chiusura sottofase**:
-- [ ] Prova per ruolo: il manager crea, modifica e disabilita; non può cancellare né creare tassonomie; l'admin pure; un utente senza ruolo è rifiutato.
-- [ ] «Terminato» e «disabilita» da telefono: il file di disponibilità cambia entro pochi secondi.
-- [ ] Un menu fisso composto con `portion`, ordine e `visibility`; i due menu con «2 Nem» (revisione di 6.8) usano il piatto base.
-- [ ] Menu a tendina di Paesi e regioni filtrati nella query.
+- [ ] Parte 0: permessi di cancellazione applicati; matrici `verify-menu-6_2` e `verify-menu-6_3` aggiornate; riga di registro per ogni cancellazione; le categorie dei menù fissi non sono cancellabili dal manager.
+- [ ] Prova per ruolo: il manager crea, modifica, disabilita ed elimina le sette collection; non elimina le categorie dei menù fissi né le tassonomie e non le crea; l'admin pure; un utente senza ruolo è rifiutato.
+- [ ] «Terminato» e «disabilita» da telefono: il file di disponibilità cambia entro pochi secondi; «terminato» scade all'apertura indicata.
+- [ ] Un piatto in un menù fisso non si elimina (messaggio con l'elenco dei menù); un servizio e un menù fisso eliminati spariscono dai collegamenti (cascade).
+- [ ] Un menu fisso composto con `portion`, ordine e `visibility`; i due menu con «2 Nem» (revisione di 6.8) usano il piatto base; le due categorie create nella scheda «Categorie».
+- [ ] Menu a tendina di Paesi e regioni filtrati nella query; cascata del vino.
 - [ ] A chiusura: esecuzione dell'import di produzione di 6.8 (con backup su richiesta) e inizio della revisione a mano; vedi 6.8, «Esecuzione in produzione».
 - [ ] CHANGELOG.
 
@@ -553,7 +566,7 @@ Un nome per variabile, nessun alias.
 
 - **Valori di tipologia da verificare sullo snapshot** (vino e distillato vengono dalla documentazione del prototipo). «Vietnamite» è una tipologia di bevanda per origine e si sovrappone a «Calde» e «Fredde»: l'import la porta com'è (una tipologia per bevanda); da rivedere con il ristorante dopo l'import.
 - **`descrizione` degli allergeni**: `ADR-108` §3 la elenca tra i campi del piatto, ma nel vecchio schema è un campo dell'allergene. Qui è `allergens.description`, facoltativo.
-- **Categorie dei menu fissi, giorni speciali e servizi** sono assegnati al manager (come «Menù (CRUD)» di `ADR-108` §9): assunzione, non scritta in `ADR-108`.
+- **Categorie dei menu fissi, giorni speciali e servizi** sono assegnati al manager (come «Menù (CRUD)» di `ADR-108` §9): assunzione, **confermata da Mirko il 2026-10-14**; con la cancellazione fisica del manager su servizi e giorni speciali, e senza cancellazione sulle categorie (`ADR-113`, emendamento del 2026-10-14).
 - **`sigla` di `Nazione`** non si porta (non è nel modello di `ADR-108`). Se serve al frontend, si aggiunge prima del congelamento.
 - **Allergeni sui vini** (solfiti): non previsti; `ADR-108` li cita solo per i piatti e per le birre. Non si decide qui.
 - **Non verificati**: contenuto dello snapshot; permessi minimi esatti su GCS e Firebase (verifica nelle prove di 6.0 e 6.5); regione del trigger Cloud Build; listino di Cloud Scheduler; comportamento di `admin.hidden` per ruolo a runtime.

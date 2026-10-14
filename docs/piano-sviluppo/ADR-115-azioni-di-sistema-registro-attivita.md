@@ -36,6 +36,10 @@
 - **Produzione**: vietate con `NODE_ENV=production` (elenco unico in `MENU_AVAILABILITY_FORBIDDEN_IN_PRODUCTION_ENV_KEYS`): `MENU_AVAILABILITY_IN_MEMORY`, `MENU_AVAILABILITY_WRITE_TRACE_FILE`, `MENU_AVAILABILITY_MIRROR_FILE`, `MENU_AVAILABILITY_DISABLE_STATE_OVERLAY`, `MENU_AVAILABILITY_DEBUG_HOOK_READ`, `MENU_AVAILABILITY_SYNC_DEBUG_FILE` — `devOnlyEnvGuard.ts` → `resolveAvailabilityStorage`.
 - **Collection**: overlay applicato anche alle collection per precauzione; il difetto REST stale è **dimostrato sul Global**; nelle prove locali senza overlay la collection REST (`soldOut`/`disabled`) resta allineata al DB.
 
+### Nota (2026-10-14) — Traccia delle cancellazioni dei contenuti del menù
+
+Non modifica la decisione. Ogni cancellazione di `dishes`, `wines`, `spirits`, `drinks`, `menu-services`, `fixed-menus` e `special-days` lascia una riga nel registro attività, scritta da un hook `afterDelete` di collection (quindi anche per le cancellazioni dell'Admin): `eventType: delete` (valore già nell'enum, nessuna migrazione), `user`, `area`, `collection`, `documentId` e `detail` con il nome della voce e il numero di riferimenti che la usavano (per esempio i menù fissi che contenevano un servizio). **Nessun dato personale.** È il primo uso di `eventType: delete` per un'azione utente. Un errore di scrittura del registro non blocca la cancellazione, come per `logSystemAction`. Motivo: `ADR-113`, emendamento del 2026-10-14 (il manager cancella). L'avviso nell'Admin prima della cancellazione e la traccia per le tassonomie (allergeni) restano `po-13`.
+
 ## Alternative considerate
 
 - **Solo Cloud Logging**: scartata. Gli staff admin non lo vedono dall'Admin, retention e accesso sono separati, e le checklist delle sottofasi già prevedono «voce nel registro attività».

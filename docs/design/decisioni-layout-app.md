@@ -10,7 +10,7 @@
 
 ## 0. Requisito di base
 
-Ogni funzione dell'App (leggere, modificare, aggiungere, cancellare) deve poter essere usata sia da telefono sia da notebook. Non esistono funzioni solo desktop o solo telefono. Cambia la forma, non l'insieme delle azioni. Dove un ADR prevede una cancellazione «soft» (es. menù: disabilita), il pulsante si chiama «Disabilita», ma l'azione c'è su entrambi i dispositivi.
+Ogni funzione dell'App (leggere, modificare, aggiungere, cancellare) deve poter essere usata sia da telefono sia da notebook. Non esistono funzioni solo desktop o solo telefono. Cambia la forma, non l'insieme delle azioni. Dove un ADR prevede una cancellazione «soft» (es. categorie dei menù fissi: disabilita), il pulsante si chiama «Disabilita», ma l'azione c'è su entrambi i dispositivi. Dal 2026-10-14 il manager può anche eliminare sette tipi di contenuto del menù (D14): il cestino c'è su telefono e su notebook.
 
 ## 1. Stile
 
@@ -27,7 +27,7 @@ Componente `Sidebar` di shadcn, **layout «gruppi con tutte le destinazioni visi
 
 | Gruppo | Voci |
 |---|---|
-| Menù | Piatti, Vini, Bevande, Distillati, Menù fissi |
+| Menù | Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali, Messaggio globale |
 | Orari | Orari |
 | Prenotazioni | Elenco, Eccezioni giorno, Impostazioni |
 
@@ -36,7 +36,8 @@ Componente `Sidebar` di shadcn, **layout «gruppi con tutte le destinazioni visi
 - Il blocco «Area App» in cima alla barra è il collegamento alla home (`/app`).
 - Variante della barra: quella standard (non inset né floating). La variante è una proprietà del componente e si può cambiare in seguito senza toccare le schermate.
 - **Nome della sottoarea «Menù fissi»** (non «Menù») per evitare la voce doppia.
-- Le sottoaree del Menù sono ricavate da `ADR-113` §3. **Da verificare con `fase-6-menu-digitale.md`** (non letto in questa sessione). I nomi «Elenco», «Eccezioni giorno», «Impostazioni» sono quelli di `ADR-113`/`fase-8`; «Elenco» è provvisorio.
+- **Menù: otto voci** (Mirko, 2026-10-14, dopo la prova su prototipo): le cinque originali nell'ordine di D1 più **Servizi, Giorni speciali e Messaggio globale**, tutte visibili, nessuna a scomparsa e nessun sottogruppo (i gruppi restano tre). Icone: Piatti, Vini, Bevande e Menù fissi come ora; **Distillati `martini`** (non più `beer`: la birra è una Bevanda); Servizi `concierge-bell`; Giorni speciali `calendar-heart`; Messaggio globale `megaphone` (presenti in `lucide-react`; vanno aggiunte ad `AppNavIconKey`). Percorsi proposti: `/app/menu/services`, `/app/menu/special-days`, `/app/menu/message`, da confermare con la 6.6. Le **categorie dei menù fissi** non sono una voce: sono la scheda «Categorie» dentro «Menù fissi». **Misura** (prototipo, 390 px): il pannello ha 716 px di contenuto; a 844 px di altezza entra tutto, a 667 px le voci scorrono e restano fissi il blocco «Area App» in cima e il blocco utente. Non provato su un iPhone vero. La descrizione della scheda «Menù» in home (A22) elenca ancora cinque voci e si riscrive con la schermata di integrazione.
+- Le sottoaree di Prenotazioni sono quelle di `ADR-113`/`fase-8`; «Elenco» è provvisorio.
 - Le voci mostrate passano da `canAccessSection(user, section)`.
 
 ### D2 — Contenuto di `/app`: home «Oggi»
@@ -141,11 +142,11 @@ Il salvataggio con barra unica (D7) vale per le **pagine-modulo** (Orari, impost
 - **Azioni irreversibili** (cancella, rifiuta, segna no-show, anonimizza): finestra di conferma con la frase «Non si può annullare.» e, dove previsto, un motivo facoltativo. Le azioni positive (conferma) sono immediate.
 - **Esito**: avviso in pagina con il nome e la data; resta fino alla prossima azione.
 - **Errore dell'azione**: avviso rosso nel punto da cui è partita (finestra o foglio), nessuna modifica, si può riprovare. Mentre si salva: pulsanti disabilitati, `Spinner`, «Salvataggio…».
-- **Scorciatoie su notebook**: menu «⋯» di riga con le stesse azioni del dettaglio.
+- **Scorciatoie su notebook**: menu «⋯» di riga con le stesse azioni del dettaglio. Vale per le prenotazioni, che hanno tre o più azioni per stato; per gli elenchi di contenuto del menù vale D13.
 - **Cose che richiedono attenzione** (es. prenotazioni da confermare) hanno una scheda propria con il conteggio e le azioni in vista, invece di restare sparse nell'elenco.
 - **Righe non attive** attenuate e escluse dai totali; **righe anonimizzate** con «Dati anonimizzati» in corsivo e senza azioni.
 - **Ordine delle liste**: per nome, come il contratto del menù pubblico (`ADR-112` §1), finché non esiste un campo di ordinamento esplicito; ricerca, filtri e ordine si applicano nella richiesta, non nel browser.
-- **Azioni rapide dall'elenco** (piatti: «Terminato» con un interruttore, abilita/disabilita dal menu «⋯»): un tocco, effetto immediato, avviso con il testo di che cosa succede sul menù pubblico.
+- **Azioni rapide dall'elenco** (piatti: «Terminato» con un interruttore, abilita/disabilita con l'occhio, D13): un tocco, effetto immediato, avviso con il testo di che cosa succede sul menù pubblico.
 - **Foglio con modulo lungo**: i pulsanti restano agganciati in fondo (bordo superiore, sfondo pieno) e, se sono due, affiancati (77 px di altezza invece di 130). Vale per tutti i fogli (`SheetFooter`).
 - **Azione di pagina principale in alto su telefono**: nelle intestazioni con più pulsanti, «Nuovo …» sta sopra l'azione secondaria (su notebook l'azione principale è a destra).
 
@@ -160,6 +161,29 @@ Le quattro pagine (`login`, `forgot`, `reset`, `verify`) restano **fuori dalla s
 ### D12 — Utente e ruolo nella shell
 
 L'utente nella barra laterale si mostra con l'**email** e le **iniziali** ricavate dall'email: la collection `users` non ha un campo nome. Il ruolo sta sotto «Area App» in cima alla barra: «Super-admin», «Admin» o «Manager» (con `adminRole` che prevale su `appRole`). Voci del menu non ancora abilitate (la cui pagina non esiste) non si mostrano: nella 8.2 sono tre (Piatti, Orari, Elenco), ciascuna con una pagina segnaposto. Specifica in `schermate/shell/`.
+
+### D13 — Azioni di riga negli elenchi di contenuto: icone visibili, niente «⋯»
+
+Deciso da Mirko il 2026-10-14, dopo aver visto le bozze di Piatti, Vini e Categorie dei menù fissi. Vale per gli elenchi di contenuto del menù (piatti, vini, distillati, bevande, servizi, categorie dei menù fissi, menù fissi, giorni speciali); le prenotazioni restano con il menu «⋯» di D9, perché hanno tre o più azioni per stato.
+
+- **Modifica**: sempre la matita (`Pencil`), come nelle chiusure annuali di Orari. Il nome non è un collegamento e la scheda non è tappabile: un solo modo per aprire il modulo.
+- **Abilita e disabilita**: dove la riga ha già un interruttore di disponibilità (vini, distillati, bevande, servizi, giorni speciali) è l'**interruttore** l'azione (etichetta «Disponibile»; per le categorie dei menù fissi «Attiva») e non c'è un'altra icona. Dove l'interruttore ha un altro significato (piatti: «Terminato») ci sono l'**occhio barrato** («Disabilita {nome}») e l'occhio aperto («Abilita {nome}», sulle righe disabilitate). L'icona indica l'azione, non lo stato; il nome accessibile la dice per esteso.
+- **Elimina**: il **cestino** (`Trash2`) nelle righe dei sette tipi di contenuto di D14, con la conferma di D14. Non c'è sulle categorie dei menù fissi, che si disabilitano soltanto. Il cestino è un'azione diversa dall'occhio: l'occhio toglie dal menù e si può rimettere, il cestino cancella.
+- **Tocco**: ogni icona è un `Button (ghost, icon)` da 44 × 44 px con tocco (D6); misurato nel prototipo a 390 px.
+- **Costo accettato**: nelle schede dei piatti su telefono, con interruttore, matita, occhio e cestino, il nome ha circa 137 px su 358 (misurato): i nomi lunghi si troncano con i puntini e il nome intero si legge nel modulo. Con interruttore, matita e cestino (vini e simili) i nomi hanno circa 172 px.
+- **Scelta tra le alternative**: tra quattro controlli e tre (occhio spostato nel modulo, nome a 181 px) Mirko ha scelto i quattro.
+- **Quando il «⋯» è giusto**: tre o più azioni, o azioni rare. Nessuna schermata del menù lo richiede.
+
+### D14 — Cancellazione dei contenuti del menù da parte del manager
+
+Deciso da Mirko il 2026-10-14. Emenda `ADR-113` §3 e `ADR-108` §9 («cancellazione sempre soft»); vedi gli emendamenti negli ADR.
+
+- **Il manager elimina**: piatti, vini, distillati, bevande, servizi, menù fissi e giorni speciali. **Non** elimina le categorie dei menù fissi (il menu fisso ne ha una obbligatoria) né alcuna tassonomia (categorie dei piatti, allergeni, tipologie, paesi, regioni, denominazioni, classificazioni): restano all'admin, nell'Admin. Disabilitare resta possibile per tutti.
+- **Cosa succede alle voci collegate** (verificato nelle migrazioni; `ADR-108`, nota del 2026-10-13): vini, distillati e bevande non sono usati da nessuno. Un **servizio** eliminato sparisce in silenzio dai menù fissi; un **menu fisso** eliminato sparisce dai giorni speciali, che possono restare senza menù (`ADR-112`: un giorno speciale senza menù attivi non si applica); un **giorno speciale** non è usato da nessuno. Per queste due voci vale il cascade accettato per l'admin il 2026-10-13 e la finestra di conferma lo dice prima di «Non si può annullare.» («Verrà tolto anche da {N} menù fissi: {nomi}.» e «… dai giorni speciali: {date}.», nomi al massimo tre, poi «e altri {N}»; testo da fissare con le loro schermate).
+- **Il piatto è un caso a parte**: se è in un menù fisso il database rifiuta la cancellazione (`fixed_menus_dishes.dish_id` è `NOT NULL` con `ON DELETE set null`). L'App lo sa prima di mostrare la finestra: legge i menù fissi che contengono il piatto e, se ce n'è uno, mostra «Non si può eliminare {nome}» con l'elenco e il solo pulsante «Chiudi». Il rifiuto del database resta come rete di sicurezza (messaggio generico di errore).
+- **Conferma** (D9, azione irreversibile): «Eliminare {nome}?», «Non si può annullare.», «Indietro» ed «Elimina» (`AlertDialog`). La finestra non suggerisce di disabilitare: l'occhio è nella riga.
+- **Registro attività**: ogni cancellazione di queste collection lascia una riga (`eventType: delete`, `area`, collection, identificativo, nome e numero di riferimenti, nessun dato personale), anche se fatta dall'Admin, perché è un hook di collection (`ADR-115`, nota del 2026-10-14). Nessuna migrazione: il valore `delete` esiste. L'avviso nell'Admin di `po-13` resta non pianificato.
+- **Dopo l'eliminazione**: avviso «{Tipo} eliminato» con il richiamo alla ricompilazione; `disponibilita.json` si riscrive subito.
 
 ## 3. Prova su Orari (§8.5), 2026-10-10
 
@@ -199,14 +223,14 @@ Prototipo con i componenti reali, dati di esempio, le regole di `ADR-106` e `ADR
 
 ### Piatti (elenco e modulo)
 
-Prototipo con elenco per categoria (in ordine per nome), interruttore «Terminato», menu «⋯», filtri, modulo con traduzione a scomparsa, allergeni a scelta multipla, caratteristiche e disponibilità, ricompilazione del menù pubblico, e gli stati di caricamento, errore, vuoto e nessun risultato. Specifica e screenshot: `schermate/piatti/`. Il piatto non ha varianti (`riepilogo-sessione-varianti-porzione-piatto.md`): la quantità vive nella composizione del menu fisso.
+Prototipo con elenco per categoria (in ordine per nome), interruttore «Terminato», menu «⋯», filtri, modulo con traduzione a scomparsa, allergeni a scelta multipla, caratteristiche e disponibilità, ricompilazione del menù pubblico, e gli stati di caricamento, errore, vuoto e nessun risultato. Specifica e screenshot: `schermate/piatti/`. Il piatto non ha varianti (`riepilogo-sessione-varianti-porzione-piatto.md`): la quantità vive nella composizione del menu fisso. **Rivisto il 2026-10-14**: azioni di riga in D13 e D14 (matita, occhio, cestino al posto del menu «⋯»), reset di «terminato» in A16.
 
 - **P4 — Due difetti reali nelle aree di tocco, trovati con una misura più severa**: la casella di spunta aveva un'area di 42 × 42 px, non 44 (l'estensione parte dal bordo interno e il bordo di 1 px per lato ne toglie due), e il collegamento corto della briciola di pane era largo 36 px. Corretti (`-inset-4` per la casella, `-inset-3.5` su tutti i lati per il collegamento; registro D6). La misura ora prova a 21,5 px dal centro nelle quattro direzioni, porta ogni elemento al centro dello schermo e salta quelli coperti dal velo.
 - **P5 — Pulsanti di un modulo lungo fuori vista**: nel modulo del piatto «Salva» era a oltre 1800 px da scorrere. Ora il footer del foglio è agganciato in fondo, per tutti i fogli (D9). Con i due pulsanti affiancati occupa 77 px invece di 130. Gli screenshot di Orari (foglio della chiusura) e di Prenotazioni (fogli) sono stati rigenerati.
 - **A14 — Stato «Disponibile»**: con quasi tutti i piatti disponibili, un badge scuro su ciascuno nascondeva le eccezioni. Ora Disponibile è un testo discreto (nessun badge su telefono) e il badge resta per Terminato e Disabilitato.
 - **A15 — Ordine dei pulsanti su telefono**: nell'intestazione, l'azione principale va sopra la secondaria. L'ordine visivo e quello della tastiera sono invertiti su telefono (accettato).
 - **P6 — Assunzione sbagliata sull'ordine dell'elenco**: avevo scritto «ordine di inserimento» senza aver letto `ADR-112`, che prescrive l'ordine per nome (come il menù pubblico). Trovato rileggendo gli ADR su richiesta di Mirko e corretto: categorie e piatti per nome, e ricerca, filtri e ordine nella richiesta, non nel browser.
-- **A16 — Reset di «terminato»** (risolto): vale per il servizio in cui è segnato e si azzera tra la fine di quel servizio e l'inizio del successivo; il momento esatto e il caso «segnato fuori da un servizio» restano alla 6.4.
+- **A16 — Reset di «terminato»** (riscritto il 2026-10-14 dopo la decisione di Mirko del 2026-10-12): «terminato» si azzera all'**inizio del servizio successivo** (`startTime` di pranzo e cena in Impostazioni di sistema; `fase-6` §6.4). Un «terminato» segnato tra i due servizi, o la sera per il pranzo del giorno dopo, sparisce all'apertura: conseguenza accettata, «da verificare con l'uso se cambiare». Il design la rende visibile con la riga «fino all’apertura della cena» (senza l'orario, scelta di Mirko del 2026-10-14), calcolata dagli orari. La versione del 2026-10-10 («si azzera tra la fine di quel servizio e l'inizio del successivo») è superata.
 - **A17 — Paginazione, piatto disabilitato nei menù fissi, `soloMenuFissi`** (risolti il 2026-10-10): la paginazione è un debito futuro (con la richiesta già predisposta e l'avviso «Mostrati 100 piatti su N» per non troncare in silenzio); un piatto disabilitato (e anche uno terminato) lo è ovunque; `soloMenuFissi` non si aggiunge ora.
 - **A18 — «Tris di nem»** (mix di tre tipi): è un piatto a sé; la quantità di un piatto base in un menu fisso resta `portion`.
 
@@ -294,6 +318,12 @@ Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` 
 
 **Limiti dell'esecuzione**: gli esiti committati di `locale-prod` sono precedenti alle correzioni del lanciatore (intestazione «Browser: —», `CONSOLE` e `on1`–`on6` elencati come non provati), quindi vanno rigenerati. Mancano gli screenshot a 1280 px in chiaro di home e menu utente.
 
+### Design del Menù (6.6), rilievi del 2026-10-14
+
+- **A33 — `assets/mockup.css` non riproducibile dai sorgenti**: rigenerato dal prototipo del repo è lungo 110.131 byte contro 110.736 (tre blocchi in più, tra cui le classi del pannello P15, e nove in meno). Causa non verificata. Nessun mockup ne risente: tutte le classi usate dai mockup sono in entrambe le versioni. Non riconsegnato.
+- **A34 — Il pacchetto `piatti/` del 2026-10-10 partiva da due assunzioni poi cambiate**: il reset di «terminato» (A16) e le azioni di riga (D13, D14). Rigenerati mockup e screenshot.
+- **A35 — Colonna delle azioni nella tabella dei piatti**: con tre icone la colonna passa da 56 a 144 px (`w-36`); a 1280 px la tabella resta nella colonna da 976 px.
+
 ## 5. Verifiche tecniche fatte in questa sessione
 
 - Sorgenti dei componenti: repository `shadcn-ui/ui`, commit `2d3f1cd` (2026-10-09), cartelle `apps/v4/registry/bases/base/ui` e `styles/style-nova.css`. **`base-nova` poggia su `@base-ui/react`, non su Radix.** Le classi `cn-*` dei componenti si risolvono con `style-nova.css`: 422 blocchi, tutti `@apply` semplici.
@@ -303,7 +333,7 @@ Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` 
 
 ## 6. Punti aperti
 
-- Verifica delle sottoaree del Menù con `fase-6-menu-digitale.md`; nome definitivo di «Elenco».
+- Sottoaree del Menù: risolte il 2026-10-14 (otto voci, D1). Resta provvisorio il nome «Elenco» di Prenotazioni.
 - Filtro per data e filtri di ogni lista (specifica per schermata).
 - Stato vuoto della home per un utente senza sezioni.
 - Testi definitivi delle righe di stato della home (con le sottofasi 5.5, 6.6, 8.5).
@@ -316,7 +346,7 @@ Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` 
 - **Debito: casella «solo per menu fisso» sui piatti** (`soloMenuFissi`): migrazione additiva, da aggiungere quando il frontend pubblico la leggerà e se esisterà un piatto che non va alla carta.
 - **Uscita («Esci»)**: implementata in 8.2 (`POST /app/logout`), con reindirizzamento relativo dopo P13. Verificato il 2026-10-11 su Cloud Run (da te, a mano): la pagina finale è `/app/login` sul dominio pubblico. Restano da verificare la sessione dell'Admin dopo l'uscita (stesso cookie) e la riga `logout` nel registro attività su produzione (livello 3). Con `useSessions: false` il logout scade solo il cookie, non invalida il token lato server (nota per la revisione).
 - **Utente già autenticato su `/app/login`**: oggi vede la pagina; si può reindirizzare a `/app`. Non deciso.
-- **Percorsi delle sottovoci del menu**: da fissare con le sottofasi 5.5 e 6.6.
+- **Percorsi delle sottovoci**: per il Menù proposti in D1 (`/app/menu/services`, `/app/menu/special-days`, `/app/menu/message`), da confermare con la 6.6; per Prenotazioni da fissare con la 5.5.
 
 ## 7. Impatto sul piano
 
