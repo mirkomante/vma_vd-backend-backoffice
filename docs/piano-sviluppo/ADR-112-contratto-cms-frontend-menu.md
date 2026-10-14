@@ -94,3 +94,7 @@ Aggiunta al contratto pubblico (dopo il congelamento dei nomi di 6.2):
 - **`updatedAt`**: istante UTC dell'**ultima scrittura effettiva** del file (hook o job), non il timestamp del documento CMS.
 - **`globalMessage`**: da Global `menu-general`; se `en` è assente nel CMS si ripiega su `globalMessage.en` copiando il testo `it` (stesso comportamento del generatore in `buildAvailabilityDocument`).
 - **Sync**: il file può essere temporaneamente avanti rispetto al DB se una transazione viene annullata dopo l'hook (Payload 3.90.2: hook prima del commit); il job Scheduler ogni ~5 minuti riconcilia confrontando il CMS con l'oggetto su GCS (confronto canonico senza `updatedAt`).
+
+## Nota di chiarimento (2026-10-14, formati dei vini)
+
+Non cambia il contratto (nomi e tipi dei campi invariati: `year`, `volume`, `abv` restano stringhe). Dal 2026-10-14 le stringhe hanno una **forma canonica** (`ADR-108`, nota di pari data): `volume` «25 cl», «33 cl», «37,5 cl», «50 cl», «75 cl» o «150 cl»; `abv` «13%» o «13,5%» (virgola decimale, simbolo attaccato); `year` quattro cifre oppure «NV», che il frontend mostra come preferisce. Il frontend le legge come testo e non deve aspettarsi altre forme per i record nuovi; i record importati sono normalizzati dall'import prima della produzione.

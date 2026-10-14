@@ -185,6 +185,17 @@ Deciso da Mirko il 2026-10-14. Emenda `ADR-113` §3 e `ADR-108` §9 («cancellaz
 - **Registro attività**: ogni cancellazione di queste collection lascia una riga (`eventType: delete`, `area`, collection, identificativo, nome e numero di riferimenti, nessun dato personale), anche se fatta dall'Admin, perché è un hook di collection (`ADR-115`, nota del 2026-10-14). Nessuna migrazione: il valore `delete` esiste. L'avviso nell'Admin di `po-13` resta non pianificato.
 - **Dopo l'eliminazione**: avviso «{Tipo} eliminato» con il richiamo alla ricompilazione; `disponibilita.json` si riscrive subito.
 
+### D15 — Campi con valori uniformi: a scelta o validati, e imposti dal server
+
+Deciso da Mirko il 2026-10-14, per i vini; vale come regola anche per distillati e bevande, con gli elenchi da fissare nelle loro schermate.
+
+- **Insiemi chiusi → select.** Capacità e grado sono elenchi. Capacità dei vini: 25, 33, 37,5, 50, 75 e 150 cl. Grado: da 5% a 20% a passi di 0,5 («13%», «13,5%»). Il campo facoltativo ha come prima voce «Non indicata» o «Non indicato».
+- **Valori continui → campo validato.** L'anno è un campo numerico (solo cifre, quattro al massimo) tra 1900 e l'anno corrente, con la casella «Senza annata (NV)» che salva «NV». Un select con 78 voci sarebbe lungo da scorrere su telefono e non dà più uniformità di una validazione.
+- **Il server impone la forma**: funzioni `validate` sui campi `year`, `volume`, `abv` (il tipo resta testo: contratto congelato in 6.2, nessuna migrazione), quindi vale anche per Admin e REST. Un valore salvato e non modificato non blocca il salvataggio (da provare in Parte A).
+- **L'import** normalizza anche anno e grado (oggi solo la capacità) e il report a secco elenca le forme distinte, per fissare gli elenchi sui dati reali prima dell'import di produzione.
+- **Valore salvato fuori elenco**: resta visibile e salvabile finché non lo si cambia.
+- **Ogni select facoltativo** (anche regione, denominazione e classificazione) ha come prima voce «Nessuna …» o «Non indicato» per svuotarlo: senza, un valore scelto non si poteva più togliere.
+
 ## 3. Prova su Orari (§8.5), 2026-10-10
 
 Mockup funzionante costruito con i componenti reali, le dimensioni di tocco di D6 applicate dentro i componenti, i campi e i testi del Global `impostazioni-sistema` (`globals/SystemSettings.ts`, `lib/systemSettings/`). Struttura: quattro schede (Servizi del ristorante, Giorni di riposo settimanali, Chiusure annuali con le festività, B&B), una barra di salvataggio che compare solo con modifiche non salvate, un foglio per modificare o aggiungere una chiusura, una conferma per «Rimuovi festività di un anno».
@@ -320,9 +331,16 @@ Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` 
 
 ### Design del Menù (6.6), rilievi del 2026-10-14
 
-- **A33 — `assets/mockup.css` non riproducibile dai sorgenti**: rigenerato dal prototipo del repo è lungo 110.131 byte contro 110.736 (tre blocchi in più, tra cui le classi del pannello P15, e nove in meno). Causa non verificata. Nessun mockup ne risente: tutte le classi usate dai mockup sono in entrambe le versioni. Non riconsegnato.
+- **A33 — `assets/mockup.css` non riproducibile dai sorgenti** (aggiornato il 2026-10-14 con Vini): rigenerato dal prototipo del repo è lungo 110.131 byte contro 110.736 (tre blocchi in più, tra cui le classi del pannello P15, e nove in meno), causa non verificata. Con Vini serve `table-fixed`, assente dal CSS del repo: il CSS rigenerato viene riconsegnato dopo aver verificato che gli otto mockup esistenti si rendano **identici** con il vecchio e il nuovo CSS (0 pixel di differenza a 1280 px, in chiaro e in scuro) e che nessuna classe usata dai mockup sia solo nel vecchio.
 - **A34 — Il pacchetto `piatti/` del 2026-10-10 partiva da due assunzioni poi cambiate**: il reset di «terminato» (A16) e le azioni di riga (D13, D14). Rigenerati mockup e screenshot.
 - **A35 — Colonna delle azioni nella tabella dei piatti**: con tre icone la colonna passa da 56 a 144 px (`w-36`); a 1280 px la tabella resta nella colonna da 976 px.
+
+- **A36 — Vini: tolta la colonna «Stato»** della tabella: con l'interruttore «Disponibile» era ridondante («Stato: Disponibile» accanto a un interruttore acceso). Resta il badge «Disabilitato» accanto al nome e la riga attenuata. Piatti ha un'altra colonna «Stato» perché lì l'interruttore è «Terminato».
+- **A37 — Vini: 90 voci nello snapshot di riferimento** (13 nascoste; `docs/operativo/export-menu-vtn-backend.md`) contro il `limit=100` di `ADR-112`: il caso «elenco parziale» è vicino. Il design dei vini prevede da subito il pulsante «Mostra altri vini» (confermato da Mirko il 2026-10-14); Piatti (44) resta con il solo avviso.
+- **A38 — Tabelle a colonne fisse**: Vini usa `table-fixed` con larghezze dichiarate (Origine 14 rem, Prezzo 7 rem, Disponibile 7 rem, azioni 6 rem) perché con il layout automatico le colonne si spostavano da un gruppo all'altro. Le tabelle dei piatti hanno ancora il difetto: da allineare quando si implementa.
+- **A39 — Cascata dell'origine del vino** (Mirko, 2026-10-14): regione e denominazione disabilitate finché manca il livello superiore o non esistono valori, con il motivo nel segnaposto; classificazione che segue il paese; valore salvato fuori filtro sempre visibile. Misurato nel prototipo con un paese senza regioni (Giappone).
+- **A40 — Select facoltativi senza modo di svuotarli**: nel primo prototipo dei vini, scelta una regione o una classificazione non c'era modo di tornare al campo vuoto. Aggiunta come prima voce «Nessuna regione», «Nessuna denominazione», «Nessuna classificazione», «Non indicata», «Non indicato» (D15). Vale per tutti i select facoltativi delle schermate seguenti.
+- **A41 — Filtro per origine nei vini** (Mirko, 2026-10-14): Paese → Regione → Denominazione a cascata nel foglio dei filtri, come nel modulo; la classificazione non è un filtro. Le opzioni sono i valori delle tassonomie, non solo quelli che hanno vini (quest'ultima variante richiederebbe un'interrogazione in più).
 
 ## 5. Verifiche tecniche fatte in questa sessione
 

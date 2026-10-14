@@ -322,3 +322,7 @@ Tabella aggiornata:
 | Tassonomie (categorie dei piatti, allergeni, tipologie, paesi, regioni, denominazioni, classificazioni) | Admin | Solo admin |
 
 La nota del 2026-10-13 sul comportamento delle relazioni (cascade e rifiuti del database) vale anche per le cancellazioni del manager. Il rischio che quella nota accetta per l'admin (cascade silenzioso su servizi e menù fissi) si estende al manager, con la differenza che la conferma dell'App lo dichiara prima. Per i piatti il rifiuto del database è comunicato prima, con l'elenco dei menù fissi che li usano.
+
+## Nota di chiarimento (2026-10-14, formati di anno, capacità e grado dei vini)
+
+Non cambia i campi né i tipi di `wines` (`year`, `volume`, `abv` restano testo, nomi congelati in 6.2). **Decisione** (Mirko, 2026-10-14): i tre campi hanno una forma canonica imposta da una funzione `validate` del server, quindi valida per App, Admin e REST: `volume` una tra «25 cl», «33 cl», «37,5 cl», «50 cl», «75 cl», «150 cl»; `abv` «N%» o «N,5%» da 5% a 20%; `year` quattro cifre tra 1900 e l'anno corrente oppure «NV» (senza annata). Il campo vuoto resta ammesso. Un valore già salvato e non modificato non blocca il salvataggio. L'import (6.8) normalizza anno e grado come già la capacità, e il suo report a secco elenca le forme distinte per fissare le regole sui dati reali (lo snapshot è fuori dal repo). Vale come regola anche per distillati e bevande, con gli elenchi da fissare nelle loro schermate (`docs/design/decisioni-layout-app.md`, D15).
