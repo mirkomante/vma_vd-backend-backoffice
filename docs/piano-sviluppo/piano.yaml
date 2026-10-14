@@ -219,7 +219,7 @@ fasi:
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "da_fare"
-        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2. I form offrono la scelta della lingua per i campi localized (po-09). Dal 2026-10-14: formati canonici di anno, capacità e grado dei vini e di grado e invecchiamento dei distillati (validate nel server, ADR-108 note di pari data), filtro per origine e elenco con «Mostra altri vini»; navigazione a otto voci, cancellazione del manager su sette collection (emendamenti di ADR-113 e ADR-108, 6.6 Parte 0), categorie dei menù fissi nella scheda «Categorie» di «Menù fissi», design una schermata alla volta in docs/design/schermate/."
+        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2. I form offrono la scelta della lingua per i campi localized (po-09). Dal 2026-10-14: formati canonici di anno, capacità e grado dei vini di grado e invecchiamento dei distillati e di capacità e grado delle bevande (validate nel server, ADR-108 note di pari data), filtro per origine e elenco con «Mostra altri vini»; navigazione a otto voci, cancellazione del manager su sette collection (emendamenti di ADR-113 e ADR-108, 6.6 Parte 0), categorie dei menù fissi nella scheda «Categorie» di «Menù fissi», design una schermata alla volta in docs/design/schermate/."
       - id: fase-6.7
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
         stato: "fuori_perimetro"
@@ -227,7 +227,7 @@ fasi:
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
         stato: "in_corso"
-        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione resta aperta (una volta sola, alla chiusura di fase-6.6 e prima di fase-6.9, con backup su richiesta di Cloud SQL); rivalutazione ADR-110 §3 chiusa il 2026-10-12 (nessuna HA per il menù, da rivedere prima di fase-5.3). Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md. Dal 2026-10-14: prima della produzione si aggiungono la normalizzazione di anno e grado dei vini e di grado e invecchiamento dei distillati e il report a secco esteso alle forme distinte (ADR-108, nota del 2026-10-14)."
+        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione resta aperta (una volta sola, alla chiusura di fase-6.6 e prima di fase-6.9, con backup su richiesta di Cloud SQL); rivalutazione ADR-110 §3 chiusa il 2026-10-12 (nessuna HA per il menù, da rivedere prima di fase-5.3). Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md. Dal 2026-10-14: prima della produzione si aggiungono la normalizzazione di anno e grado dei vini di grado e invecchiamento dei distillati e di grado delle bevande, e il report a secco esteso alle forme distinte (ADR-108, nota del 2026-10-14)."
       - id: fase-6.9
         nome: "Scaffold del frontend del menù (repository separato, banco di prova dei punti di contatto)"
         stato: "da_fare"
