@@ -98,3 +98,7 @@ Aggiunta al contratto pubblico (dopo il congelamento dei nomi di 6.2):
 ## Nota di chiarimento (2026-10-14, formati dei vini)
 
 Non cambia il contratto (nomi e tipi dei campi invariati: `year`, `volume`, `abv` restano stringhe). Dal 2026-10-14 le stringhe hanno una **forma canonica** (`ADR-108`, nota di pari data): `volume` «25 cl», «33 cl», «37,5 cl», «50 cl», «75 cl» o «150 cl»; `abv` «13%» o «13,5%» (virgola decimale, simbolo attaccato); `year` quattro cifre oppure «NV», che il frontend mostra come preferisce. Il frontend le legge come testo e non deve aspettarsi altre forme per i record nuovi; i record importati sono normalizzati dall'import prima della produzione.
+
+## Nota di chiarimento (2026-10-14, distillati)
+
+Non cambia il contratto (nomi e tipi invariati). Per i distillati le stringhe hanno una forma canonica (`ADR-108`, nota di pari data): `abv` «30%»…«45%»; `aging` «5 anni», «7 anni», «10 anni», «12 anni», «18 anni» o «24 anni». `price` è il prezzo del **bicchiere** (non c'è prezzo della bottiglia). `volume` **non è più mantenuto dall'App**: può avere il valore scritto dall'import («75 cl», «50 cl») o essere vuoto, e il frontend non deve contare su di esso per i distillati.

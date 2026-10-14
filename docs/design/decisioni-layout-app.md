@@ -187,7 +187,7 @@ Deciso da Mirko il 2026-10-14. Emenda `ADR-113` §3 e `ADR-108` §9 («cancellaz
 
 ### D15 — Campi con valori uniformi: a scelta o validati, e imposti dal server
 
-Deciso da Mirko il 2026-10-14, per i vini; vale come regola anche per distillati e bevande, con gli elenchi da fissare nelle loro schermate.
+Deciso da Mirko il 2026-10-14, per i vini e i distillati; vale come regola anche per le bevande, con gli elenchi da fissare nella loro schermata. **Distillati**: grado a scelta da 30% a 45% e invecchiamento a scelta (5, 7, 10, 12, 18, 24 anni); la capacità non si gestisce nell'App (i distillati si servono solo al bicchiere, il prezzo è unico).
 
 - **Insiemi chiusi → select.** Capacità e grado sono elenchi. Capacità dei vini: 25, 33, 37,5, 50, 75 e 150 cl. Grado: da 5% a 20% a passi di 0,5 («13%», «13,5%»). Il campo facoltativo ha come prima voce «Non indicata» o «Non indicato».
 - **Valori continui → campo validato.** L'anno è un campo numerico (solo cifre, quattro al massimo) tra 1900 e l'anno corrente, con la casella «Senza annata (NV)» che salva «NV». Un select con 78 voci sarebbe lungo da scorrere su telefono e non dà più uniformità di una validazione.
@@ -341,6 +341,7 @@ Esecuzione di `pnpm ui:verify` (lanciatore 2.0.0, controlli v2) su `locale-dev` 
 - **A39 — Cascata dell'origine del vino** (Mirko, 2026-10-14): regione e denominazione disabilitate finché manca il livello superiore o non esistono valori, con il motivo nel segnaposto; classificazione che segue il paese; valore salvato fuori filtro sempre visibile. Misurato nel prototipo con un paese senza regioni (Giappone).
 - **A40 — Select facoltativi senza modo di svuotarli**: nel primo prototipo dei vini, scelta una regione o una classificazione non c'era modo di tornare al campo vuoto. Aggiunta come prima voce «Nessuna regione», «Nessuna denominazione», «Nessuna classificazione», «Non indicata», «Non indicato» (D15). Vale per tutti i select facoltativi delle schermate seguenti.
 - **A41 — Filtro per origine nei vini** (Mirko, 2026-10-14): Paese → Regione → Denominazione a cascata nel foglio dei filtri, come nel modulo; la classificazione non è un filtro. Le opzioni sono i valori delle tassonomie, non solo quelli che hanno vini (quest'ultima variante richiederebbe un'interrogazione in più).
+- **A42 — Distillati: differenze dai vini** (Mirko, 2026-10-14): niente geografia a cascata (solo paese), niente anno né prezzo al calice; con l'invecchiamento e il grado **a scelta** (D15); **capacità tolta dall'App** (campo `volume` invariato, possibile integrazione futura); **prezzo unico al bicchiere** (etichetta «Prezzo al bicchiere (€)»). Il pacchetto è la schermata dei vini senza ciò che non serve: stessi gruppi, interruttore, matita, cestino, «Mostra altri distillati». Assunzione da confermare: il grado a passi di 1 (non di 0,5).
 
 ## 5. Verifiche tecniche fatte in questa sessione
 

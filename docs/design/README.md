@@ -25,6 +25,6 @@ Design UI/UX dell'Area App `(app)`. L'Admin è quello standard di Payload e non 
 - I PNG sono riferimenti per il confronto visivo. Sul telefono il confronto si fa con misure geometriche, non con la differenza di pixel (due acquisizioni dello stesso prototipo differiscono del 6,6 %).
 - Il mockup statico è identico al prototipo su notebook (differenza 0,0 % a 1280 px, in chiaro e in scuro).
 
-**Pacchetti presenti**: `schermate/shell/` (shell e home), `schermate/accesso/` (le quattro pagine di accesso), `schermate/orari/`, `schermate/prenotazioni/`, `schermate/piatti/`, `schermate/vini/`.
+**Pacchetti presenti**: `schermate/shell/` (shell e home), `schermate/accesso/` (le quattro pagine di accesso), `schermate/orari/`, `schermate/prenotazioni/`, `schermate/piatti/`, `schermate/vini/`, `schermate/distillati/`.
 
 **Regola e controllo per Cursor** (fuori da questa cartella): `.cursor/rules/ui/01-ui-app-invarianti.mdc` (la regola UI di progetto) e `scripts/ui-check.mjs`, da lanciare con `pnpm ui:check` dopo aver aggiunto lo script a `package.json`.
