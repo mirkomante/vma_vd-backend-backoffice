@@ -1,6 +1,6 @@
 # Servizi, elenco e modulo — specifica di schermata (`/app/menu/services`, voce Servizi)
 
-**Stato**: design chiuso il 2026-10-14, **scelte da confermare** (sezione 10). È la schermata più semplice del Menù: tre campi (nome localizzato, prezzo, disabilitato), elenco piatto senza gruppi, ricerca né filtri. Struttura e comportamenti sono quelli di `schermate/vini/spec.md` e `schermate/bevande/spec.md`; qui si dicono per intero testi e differenze.
+**Stato**: design chiuso il 2026-10-14; le prime quattro assunzioni della sezione 10 sono **confermate da Mirko il 2026-10-14**, le altre tre restano da confermare. È la schermata più semplice del Menù: tre campi (nome localizzato, prezzo, disabilitato), elenco piatto senza gruppi, ricerca né filtri. Struttura e comportamenti sono quelli di `schermate/vini/spec.md` e `schermate/bevande/spec.md`; qui si dicono per intero testi e differenze.
 
 **Si implementa in**: `fase-6` sottofase 6.6 (backoffice «Menù»; non ancora nel repo). Dipende da 8.2 (shell), 8.3 (guardia), 6.2 (collection `menu-services`), 6.4 (disponibilità), 6.5 (ricompilazione) e dalla Parte 0 di 6.6 (permessi di cancellazione e registro). Chi usa i servizi è la schermata dei menù fissi (da disegnare).
 
@@ -150,7 +150,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 
 ## 10. Scelte, assunzioni e debiti
 
-**Da confermare da Mirko** (il design le usa)
+**Assunzioni** (il design le usa; 1–4 confermate da Mirko il 2026-10-14, 5–7 da confermare)
 1. **Nessuna ricerca né filtro**, elenco piatto in ordine per nome: i servizi sono tre.
 2. **La conferma dichiara il cascade** («Verrà tolto anche da {N} menù fissi: …»), come previsto da D14; l'eliminazione non è bloccata.
 3. **Nessun avviso quando si disabilita** un servizio usato dai menù fissi (è reversibile).

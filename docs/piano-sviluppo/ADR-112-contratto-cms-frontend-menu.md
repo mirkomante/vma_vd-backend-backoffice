@@ -106,3 +106,7 @@ Non cambia il contratto (nomi e tipi invariati). Per i distillati le stringhe ha
 ## Nota di chiarimento (2026-10-14, bevande)
 
 Non cambia il contratto (nomi e tipi invariati). Per le bevande le stringhe hanno una forma canonica (`ADR-108`, nota di pari data): `volume` «25 cl», «33 cl», «50 cl» o «75 cl»; `abv` da «3%» a «12%» a passi di 0,5 («5%», «5,5%»; virgola decimale, simbolo attaccato), vuoto per le analcoliche. `allergens` **non è mantenuto dall'App**: può essere vuoto o impostato dall'Admin, e il frontend non deve darlo per completo.
+
+## Nota di chiarimento (2026-10-14, visibilità dei menù fissi)
+
+Non cambia il contratto (nomi e tipi invariati). Il frontend applica la **visibilità efficace** di un menù fisso come l'incrocio della `visibility` del menù e di quella della sua `category` (`ADR-108`, nota di pari data): un menù compare nella pagina del pranzo solo se menù e categoria consentono il pranzo, nella pagina della cena solo se entrambi consentono la cena, in ogni caso `always` consente tutto. L'ordine dei piatti di un menù fisso (`dishes`) è l'ordine di visualizzazione, e le categorie disabilitate seguono la regola di ogni voce disabilitata (6.4).
