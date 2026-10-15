@@ -1,6 +1,6 @@
 # Menù fissi, elenco, categorie e composizione — specifica di schermata (`/app/menu/fixed`, voce Menù fissi)
 
-**Stato**: design chiuso il 2026-10-14 con le risposte di Mirko alle quattro domande di impostazione (foglio con due viste, frecce per l'ordine, almeno un piatto, visibilità precompilata dalla categoria); restano da confermare le assunzioni della sezione 10. È la schermata più ricca del Menù: **due schede** («Menù fissi» e «Categorie») e un modulo che compone il menù scegliendo i piatti. Struttura e comportamenti comuni sono quelli di `schermate/vini/spec.md` e `schermate/servizi/spec.md`; qui si dicono per intero testi e differenze.
+**Stato**: design chiuso il 2026-10-14 con le risposte di Mirko alle quattro domande di impostazione (foglio con due viste, frecce per l'ordine, almeno un piatto, visibilità precompilata dalla categoria); le otto assunzioni della sezione 10 sono **confermate da Mirko il 2026-10-15**. È la schermata più ricca del Menù: **due schede** («Menù fissi» e «Categorie») e un modulo che compone il menù scegliendo i piatti. Struttura e comportamenti comuni sono quelli di `schermate/vini/spec.md` e `schermate/servizi/spec.md`; qui si dicono per intero testi e differenze.
 
 **Si implementa in**: `fase-6` sottofase 6.6 (backoffice «Menù»; non ancora nel repo). Dipende da 8.2 (shell), 8.3 (guardia), 6.2 (collection `fixed-menus`, `fixed-menu-categories`, `dishes`, `menu-services`), 6.3 (giorni speciali), 6.4 (disponibilità), 6.5 (ricompilazione) e dalla Parte 0 di 6.6 (permessi di cancellazione e registro). Nella revisione di produzione di 6.8 questa è la schermata con cui si ricompongono a mano le 2 categorie e gli 8 menù fissi dopo l'import.
 
@@ -49,7 +49,7 @@ Collection `fixed-menus` (`fase-6` §6.2) e `fixed-menu-categories`, con la Loca
 **Operazioni**: abilita/disabilita un menù o una categoria (aggiorna `disabled`); salva un menù (crea o modifica, con la validazione sopra); salva una categoria; elimina un menù (cancellazione fisica, D14, dopo conferma). Il salvataggio di un menù riscrive in blocco il suo elenco di piatti e di servizi.
 
 **Effetti sul menù pubblico**
-- Abilita/disabilita riscrive `disponibilita.json` (6.4), entro pochi secondi, senza ricompilazione.
+- Abilita/disabilita riscrive `disponibilita.json` (6.4) entro pochi secondi; il menù pubblico lo rilegge circa ogni cinque minuti (`ADR-112`) e lo mostra entro pochi minuti, senza ricompilazione.
 - Menù e categorie nuovi e modifiche ai contenuti compaiono **dopo la ricompilazione** (6.5): l'avviso lo ricorda.
 - **Eliminazione**: l'hook `afterDelete` riscrive il file di disponibilità; il menù sparisce dai giorni speciali subito e dal menù pubblico alla ricompilazione; ogni cancellazione lascia una riga nel registro attività (`eventType: delete`, `area: app`, collection, identificativo, nome e numero dei giorni speciali che lo usavano, nessun dato personale; `ADR-115`, nota del 2026-10-14). Un giorno speciale può restare senza menù attivi (`ADR-112`: in quel caso non si applica).
 
@@ -123,7 +123,7 @@ Tutti in italiano; `{…}` sono dinamici.
 | Riga | Sotto il nome «{1 piatto \| N piatti}»; badge «Solo giorni speciali» e «Disabilitato»; prezzo «{18,00} €»; su telefono «{prezzo} · {visibilità} · {N piatti}» |
 | Stato | Nome accessibile dell'interruttore «Disponibile: {nome}»; etichetta visibile «Disponibile» su telefono |
 | Azioni di riga | «Modifica {nome}» ed «Elimina {nome}» (nomi accessibili, nessun testo visibile) |
-| Avvisi rapidi | Menù fisso abilitato · Menù fisso disabilitato / «Il menù pubblico si aggiorna entro pochi secondi.» |
+| Avvisi rapidi | Menù fisso abilitato · Menù fisso disabilitato / «Il menù pubblico si aggiorna entro pochi minuti.» |
 | Avvisi di salvataggio | Menù fisso aggiunto · Menù fisso salvato / «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».» |
 | Elimina | «Eliminare {nome}?» / menù usato: «Verrà tolto anche da {1 giorno speciale \| N giorni speciali}: {date}. Non si può annullare.» (date al massimo tre, poi «e altri {N}»); menù non usato: «Non si può annullare.» / Indietro, Elimina. Esito: «Menù fisso eliminato» / «Per toglierlo dal menù pubblico serve «Ricompila il menù pubblico».» |
 | Scheda Categorie | «{1 categoria \| N categorie}, in ordine per nome.» · Nuova categoria; riga: «{visibilità} · {1 menù \| N menù}», badge «Disabilitata», interruttore «Attiva: {nome}» con etichetta «Attiva»; vuoto: «Nessuna categoria. Creane una per poter comporre i menù fissi.» (+ «Nuova categoria») |
@@ -204,7 +204,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 - **Visibilità precompilata dalla categoria** e regola dell'intersezione per il menù pubblico (nota di `ADR-108` e `ADR-112`).
 - Già deciso prima: scheda «Categorie» dentro «Menù fissi», senza cestino sulle categorie; campo Categoria vuoto con il messaggio e «Nuovo menù fisso» attivo; interruttore, matita, cestino sui menù (D13, D14); cascade dichiarato nella conferma.
 
-**Assunzioni ancora da confermare** (il design le usa; vanno confermate prima di consegnare la schermata a Cursor)
+**Assunzioni** (il design le usa; **confermate da Mirko il 2026-10-15**)
 1. **Elenco senza ricerca né filtri**, raggruppato per categoria, con nome, prezzo, visibilità, numero di piatti e badge.
 2. **Nuovi piatti aggiunti in fondo** all'elenco; per metterli altrove si usano le frecce.
 3. **«Togli» senza conferma**, perché non elimina il piatto e «Aggiungi piatti» lo rimette.

@@ -48,7 +48,7 @@ Collection `drinks` (`fase-6` §6.2), con la Local API **con la sessione dell'ut
 **Operazioni**: abilita/disabilita (aggiorna `disabled`, effetto immediato); salva (crea o modifica, con la validazione sopra); elimina (cancellazione fisica, D14, dopo conferma).
 
 **Effetti sul menù pubblico**
-- Abilita/disabilita riscrive `disponibilita.json` (6.4), entro pochi secondi, senza ricompilazione.
+- Abilita/disabilita riscrive `disponibilita.json` (6.4) entro pochi secondi; il menù pubblico lo rilegge circa ogni cinque minuti (`ADR-112`) e lo mostra entro pochi minuti, senza ricompilazione.
 - Bevande nuove e modifiche ai contenuti compaiono **dopo la ricompilazione** (6.5): l'avviso lo ricorda.
 - **Eliminazione**: l'hook `afterDelete` riscrive il file di disponibilità; la bevanda sparisce dal menù pubblico alla ricompilazione; ogni cancellazione lascia una riga nel registro attività (`eventType: delete`, `area: app`, collection, identificativo, nome, nessun dato personale; `ADR-115`, nota del 2026-10-14).
 
@@ -110,7 +110,7 @@ Tutti in italiano, **al femminile** («bevanda»); `{…}` sono dinamici.
 | Riga | Sotto il nome: «{capacità} · {grado}» (le parti vuote non compaiono); prezzo «{4,50} €»; su telefono «{prezzo} · {paese}», senza il paese se manca |
 | Stato | Badge «Disabilitata»; nome accessibile dell'interruttore «Disponibile: {nome}»; etichetta visibile «Disponibile» su telefono |
 | Azioni di riga | «Modifica {nome}» ed «Elimina {nome}» (nomi accessibili, nessun testo visibile) |
-| Avvisi rapidi | Bevanda abilitata · Bevanda disabilitata / «Il menù pubblico si aggiorna entro pochi secondi.» |
+| Avvisi rapidi | Bevanda abilitata · Bevanda disabilitata / «Il menù pubblico si aggiorna entro pochi minuti.» |
 | Avvisi di salvataggio | Bevanda aggiunta · Bevanda salvata / «Per vederla sul menù pubblico serve «Ricompila il menù pubblico».» |
 | Elimina | «Eliminare {nome}?» / «Non si può annullare.» / Indietro, Elimina. Esito: «Bevanda eliminata» / «Per toglierla dal menù pubblico serve «Ricompila il menù pubblico».» |
 | Modulo, titolo | Nuova bevanda («La bevanda compare nel menù pubblico dopo la ricompilazione.») · Modifica bevanda («{nome}») |

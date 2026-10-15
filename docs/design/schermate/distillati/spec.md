@@ -47,7 +47,7 @@ Collection `spirits` (`fase-6` §6.2), con la Local API **con la sessione dell'u
 **Operazioni**: abilita/disabilita (aggiorna `disabled`, effetto immediato); salva (crea o modifica, con la validazione sopra); elimina (cancellazione fisica, D14, dopo conferma).
 
 **Effetti sul menù pubblico**
-- Abilita/disabilita riscrive `disponibilita.json` (6.4), entro pochi secondi, senza ricompilazione.
+- Abilita/disabilita riscrive `disponibilita.json` (6.4) entro pochi secondi; il menù pubblico lo rilegge circa ogni cinque minuti (`ADR-112`) e lo mostra entro pochi minuti, senza ricompilazione.
 - Distillati nuovi e modifiche ai contenuti compaiono **dopo la ricompilazione** (6.5): l'avviso lo ricorda.
 - **Eliminazione**: l'hook `afterDelete` riscrive il file di disponibilità; il distillato sparisce dal menù pubblico alla ricompilazione; ogni cancellazione lascia una riga nel registro attività (`eventType: delete`, `area: app`, collection, identificativo, nome, nessun dato personale; `ADR-115`, nota del 2026-10-14).
 
@@ -110,7 +110,7 @@ Tutti in italiano; `{…}` sono dinamici.
 | Riga | Sotto il nome: «{invecchiamento} · {grado}» (le parti vuote non compaiono); prezzo «{9,00} €»; su telefono «{prezzo} · {paese}» |
 | Stato | Badge «Disabilitato»; nome accessibile dell'interruttore «Disponibile: {nome}»; etichetta visibile «Disponibile» su telefono |
 | Azioni di riga | «Modifica {nome}» ed «Elimina {nome}» (nomi accessibili, nessun testo visibile) |
-| Avvisi rapidi | Distillato abilitato · Distillato disabilitato / «Il menù pubblico si aggiorna entro pochi secondi.» |
+| Avvisi rapidi | Distillato abilitato · Distillato disabilitato / «Il menù pubblico si aggiorna entro pochi minuti.» |
 | Avvisi di salvataggio | Distillato aggiunto · Distillato salvato / «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».» |
 | Elimina | «Eliminare {nome}?» / «Non si può annullare.» / Indietro, Elimina. Esito: «Distillato eliminato» / «Per toglierlo dal menù pubblico serve «Ricompila il menù pubblico».» |
 | Modulo, titolo | Nuovo distillato («Il distillato compare nel menù pubblico dopo la ricompilazione.») · Modifica distillato («{nome}») |

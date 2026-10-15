@@ -55,7 +55,7 @@ Collection `wines` (`fase-6` §6.2), con la Local API **con la sessione dell'ute
 - Elimina: cancellazione fisica (D14), dopo conferma.
 
 **Effetti sul menù pubblico**
-- Abilita/disabilita riscrive `disponibilita.json` (6.4) e compare entro pochi secondi, senza ricompilazione.
+- Abilita/disabilita riscrive `disponibilita.json` (6.4) entro pochi secondi; il menù pubblico lo rilegge circa ogni cinque minuti (`ADR-112`) e lo mostra entro pochi minuti, senza ricompilazione.
 - Vini nuovi e modifiche ai contenuti compaiono **dopo la ricompilazione** (6.5): l'avviso lo ricorda.
 - **Eliminazione**: l'hook `afterDelete` riscrive il file di disponibilità; il vino sparisce dal menù pubblico alla ricompilazione; ogni cancellazione lascia una riga nel registro attività (`eventType: delete`, `area: app`, collection, identificativo, nome, nessun dato personale; `ADR-115`, nota del 2026-10-14).
 
@@ -137,7 +137,7 @@ Tutti in italiano; `{…}` sono dinamici.
 | Riga | Sotto il nome: «{cantina} · {anno}» (le parti vuote non compaiono); origine «{paese} · {regione}» (solo il paese se manca la regione); prezzo «{28,00} €» e, sotto, «calice {7,00} €» se c'è |
 | Stato | Badge «Disabilitato» (nessun badge sul vino disponibile); nome accessibile dell'interruttore «Disponibile: {nome}»; etichetta visibile «Disponibile» su telefono |
 | Azioni di riga | Nomi accessibili «Modifica {nome}» ed «Elimina {nome}». Nessun testo visibile: sono icone (D13) |
-| Avvisi rapidi | Vino abilitato · Vino disabilitato / «Il menù pubblico si aggiorna entro pochi secondi.» |
+| Avvisi rapidi | Vino abilitato · Vino disabilitato / «Il menù pubblico si aggiorna entro pochi minuti.» |
 | Avvisi di salvataggio | Vino aggiunto · Vino salvato / «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».» |
 | Elimina | «Eliminare {nome}?» / «Non si può annullare.» / Indietro, Elimina. Esito: «Vino eliminato» / «Per toglierlo dal menù pubblico serve «Ricompila il menù pubblico».» Errore imprevisto: «Operazione non riuscita» / «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» |
 | Modulo, titolo | Nuovo vino («Il vino compare nel menù pubblico dopo la ricompilazione.») · Modifica vino («{nome}») |
