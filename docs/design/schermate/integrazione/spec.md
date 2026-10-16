@@ -1,6 +1,6 @@
 # Integrazione del Menù nella shell — specifica di schermata (navigazione, home «Oggi», briciole)
 
-**Stato**: design chiuso il 2026-10-15 con le risposte di Mirko (riga di stato dei piatti terminati; «Ricompila il menù pubblico» resta nell'intestazione di ogni elenco, scelta A; descrizione della scheda «Menù») e la conferma della demo; restano da confermare le assunzioni della sezione 10. Non è una schermata nuova: raccorda le otto schermate del Menù (`piatti`, `vini`, `bevande`, `distillati`, `menu-fissi`, `servizi`, `giorni-speciali`, `messaggio-globale`) con la shell e la home della 8.2, e corregge due difetti trovati nel codice.
+**Stato**: design chiuso il 2026-10-15, **rivisto il 2026-10-16** (conteggio che esclude i disabilitati anche con `soldOut` vero, regola del titolo della home, periodo senza il pulsante «Ricompila»: sezioni 3 e 5) con le risposte di Mirko (riga di stato dei piatti terminati; «Ricompila il menù pubblico» resta nell'intestazione di ogni elenco, scelta A; descrizione della scheda «Menù») e la conferma della demo; le assunzioni 1–5 della sezione 11 sono confermate (2026-10-16), la 6, la 7 e l'8 restano da confermare. Non è una schermata nuova: raccorda le otto schermate del Menù (`piatti`, `vini`, `bevande`, `distillati`, `menu-fissi`, `servizi`, `giorni-speciali`, `messaggio-globale`) con la shell e la home della 8.2, e corregge due difetti trovati nel codice.
 
 **Si implementa in**: `fase-6` sottofase 6.6, **a partire da questa parte** (la Parte 0, i permessi, non dipende da essa) e insieme alle singole schermate, che si accendono nella navigazione man mano. Dipende dalla shell di 8.2 (`schermate/shell/spec.md`), da 8.3 (guardia) e dalla Parte 0 di 6.6 per il conteggio dei piatti con la sessione dell'utente.
 
@@ -67,11 +67,12 @@ Una scheda per ogni sezione consentita (D2), nell'ordine Prenotazioni, Menù, Or
 | Orari | «Ristorante, B&B, giorni di riposo, chiusure» | invariata (8.5) |
 
 **Riga del Menù** (D2, che diceva «N piatti non disponibili»; scelta di Mirko del 2026-10-15):
-- Conta i piatti con `soldOut` vero **in quel momento** (`payload.count` su `dishes` con `where: { soldOut: { equals: true } }`, `overrideAccess: false`, sessione dell'utente, nessuna cache: si calcola a ogni richiesta di `/app`). I piatti **disabilitati non contano**: sono assenze volute e stabili, e la riga serve a sapere «che cosa manca stasera».
+- Conta i piatti con `soldOut` vero **in quel momento** (`payload.count` su `dishes` con `where: { and: [{ soldOut: { equals: true } }, { disabled: { not_equals: true } }] }`, `overrideAccess: false`, sessione dell'utente, nessuna cache: si calcola a ogni richiesta di `/app`). I piatti **disabilitati non contano**: sono assenze volute e stabili, e la riga serve a sapere «che cosa manca stasera».
 - «Terminato» vale fino all'inizio del servizio successivo (`schermate/piatti/spec.md`): tra un servizio e l'altro la riga conta piatti che si azzereranno all'apertura.
 - Stati (D2): **dati** → la riga con il testo; **zero** → «Nessun piatto terminato»; **caricamento** → `Skeleton` alla stessa altezza della riga; **errore di lettura** → la riga non compare e la scheda resta navigabile.
 - La riga compare solo per chi vede la sezione Menù (`canAccessSection(user, 'menu')`), come la scheda.
 - La scheda collega a `/app/menu` (Piatti), come oggi.
+- **Titolo della home** (precisazione del 2026-10-16): «Oggi» e «Situazione di oggi e accesso alle sezioni.» **appena almeno una scheda ha una riga di stato attiva**, cioè dalla chat I1 della 6.6 per chi vede il Menù; «Area App» e «Scegli una sezione.» se nessuna riga è attiva. Le righe di Prenotazioni e Orari si accendono con le loro sottofasi e non sono richieste dalla 6.6.
 
 ## 4. Titoli di pagina
 
@@ -80,6 +81,8 @@ Titolo del documento «{Pagina} · Area App» (`schermate/shell/spec.md`): Piatt
 ## 5. «Ricompila il menù pubblico»
 
 **Resta nell'intestazione di ogni elenco** (scelta A di Mirko, 2026-10-15), come già disegnato: Piatti, Vini, Bevande, Distillati, Menù fissi (sopra le schede, quindi presente anche in «Categorie»), Servizi, Giorni speciali. **Non c'è** nel Messaggio globale (cambia senza ricompilare) né in home. È un solo componente con una sola logica (`schermate/piatti/spec.md`). Non si aggiunge il pulsante dentro gli avvisi né nella scheda della home.
+
+**Periodo senza il pulsante (precisazione del 2026-10-16: la bandiera spenta è scelta di Mirko; l'omissione della frase negli avvisi è un'assunzione da confermare)**: la 6.5 viene dopo la 6.6 e la 6.9. Fino ad allora il componente esiste ma sta dietro un'unica bandiera spenta: il pulsante e la finestra di conferma **non compaiono** in nessuna schermata, e gli avvisi di salvataggio e di eliminazione che nominano «Ricompila il menù pubblico» («Per vederlo sul menù pubblico serve …», «Per toglierlo dal menù pubblico serve …») hanno **solo il titolo** (per esempio «Piatto salvato»). Gli avvisi di abilitazione, disabilitazione e «terminato» non cambiano. Le specifiche e gli screenshot delle schermate descrivono il risultato finale con il pulsante: nel periodo senza, la differenza è un rilievo A, non P.
 
 ## 6. Stati
 
@@ -127,12 +130,12 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 2. **Voce attiva unica** per ogni percorso della tabella della sezione 2, in particolare `/app/menu/wines` (solo Vini) e `/app/reservations/day-exceptions` (solo Eccezioni giorno). Test unitario e prova nel browser.
 3. **Briciole** per tutti i percorsi della tabella, comprese «Menù › Menù fissi › Categorie» e il collegamento «Menù fissi»; test unitari in `breadcrumb.test.ts`.
 4. **Schede dei Menù fissi come percorsi**: `/app/menu/fixed/categories` apre la scheda «Categorie»; il ricarico e il tasto indietro la conservano.
-5. **Home**: la descrizione della scheda «Menù» è «Piatti, vini, bevande, menù fissi e altro»; la riga dice «3 piatti terminati» con tre piatti `soldOut` veri, «1 piatto terminato» con uno, «Nessun piatto terminato» con zero; un piatto disabilitato non conta; segnando «terminato» un piatto e riaprendo la home il numero cambia.
+5. **Home**: la descrizione della scheda «Menù» è «Piatti, vini, bevande, menù fissi e altro»; la riga dice «3 piatti terminati» con tre piatti `soldOut` veri, «1 piatto terminato» con uno, «Nessun piatto terminato» con zero; un piatto disabilitato non conta, **nemmeno se ha `soldOut` vero**; segnando «terminato» un piatto e riaprendo la home il numero cambia; con almeno una riga di stato attiva il titolo è «Oggi».
 6. **Riga con sessione utente**: la scheda e la riga compaiono per manager, admin e super-admin; un utente senza la sezione Menù non le vede (`canAccessSection(user, 'menu')`). La lettura usa `overrideAccess: false`.
 7. **Stati della riga**: caricamento con `Skeleton` alla stessa altezza; con un errore di lettura simulato la riga non compare e la scheda resta navigabile. *Provato nel prototipo.*
 8. **Nessuno scorrimento orizzontale** a 360, 390 e 1280 px in home e con il pannello aperto; **nessun elemento sotto 44 px** a 390 px con tocco simulato. *Misurato nel prototipo il 2026-10-15: home a 360, 390 e 1280 px, pannello aperto a 390 px, nessuno.*
 9. **Pannello su telefono**: a 844 px di altezza entra tutto; a 667 px le voci scorrono e restano fissi il blocco «Area App» e il blocco utente. *Misurato nel prototipo il 2026-10-14 (D1).*
-10. **Ricompila**: presente nelle intestazioni di Piatti, Vini, Bevande, Distillati, Menù fissi (anche nella scheda «Categorie»), Servizi e Giorni speciali; assente nel Messaggio globale e in home.
+10. **Ricompila**: **con la bandiera spenta (tutta la 6.6)** il pulsante, la finestra e la frase sul pulsante negli avvisi sono assenti da tutte le schermate (controllo comune RICOMPILA-ASSENTE); **alla 6.5**, con la bandiera accesa: presente nelle intestazioni di Piatti, Vini, Bevande, Distillati, Menù fissi (anche nella scheda «Categorie»), Servizi e Giorni speciali; assente nel Messaggio globale e in home (RICOMPILA-PRESENTE, NON PROVATO fino ad allora).
 11. **Titoli di pagina** «{Pagina} · Area App» per le otto voci.
 12. **Temi, accesso, `pnpm ui:check`**: C3, C4 (`canAccessSection(user, 'menu')`), C9.
 13. **Confronto visivo** con i PNG di riferimento a 390 e 1280 px, in tema chiaro e scuro (C10).
@@ -145,12 +148,15 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 - **Descrizione della scheda «Menù»**: «Piatti, vini, bevande, menù fissi e altro».
 - Già deciso prima: otto voci in un gruppo, icone di Distillati, Servizi, Giorni speciali e Messaggio globale, percorsi `/app/menu/…` (D1).
 
-**Assunzioni ancora da confermare**
+**Assunzioni** (1–5 confermate da Mirko il 2026-10-16; 6, 7 e 8 da confermare)
 1. **Icona di «Menù fissi»**: `book-open` (come nel design) al posto di `list` del codice.
 2. **Schede dei Menù fissi come percorsi** (`/app/menu/fixed` e `/app/menu/fixed/categories`), non come stato della pagina.
 3. **Regola del percorso più lungo** per voce attiva e briciole, con le sotto-pagine in una costante.
 4. **Nessuna cache** sul conteggio della riga: una piccola richiesta a ogni apertura di `/app`.
 5. **Home senza il pulsante «Ricompila»**: nessuna scorciatoia in home.
+6. **Titolo della home «Oggi»** appena una riga di stato è attiva (non solo quando lo sono tutte e tre).
+7. **Conteggio con i disabilitati esclusi** anche se `soldOut` è vero.
+8. **Avvisi senza la frase sul pulsante** finché la bandiera di «Ricompila» è spenta (sezione 5).
 
 **Debiti futuri e punti aperti**
 - **Stato di pubblicazione** del menù (cambiamenti non ancora ricompilati): non tracciato; oggi gli avvisi dopo ogni modifica lo ricordano.

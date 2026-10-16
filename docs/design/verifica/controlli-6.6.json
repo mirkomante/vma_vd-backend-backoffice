@@ -1,0 +1,1444 @@
+{
+ "versione": 1,
+ "fase": "6.6",
+ "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti}/spec.md (le altre schermate si aggiungono una alla volta) e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
+ "fonti": [
+  "docs/design/schermate/integrazione/spec.md",
+  "docs/design/schermate/piatti/spec.md",
+  "docs/design/decisioni-layout-app.md",
+  "docs/design/modello-specifica-schermata.md",
+  "docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md"
+ ],
+ "ambienti": {
+  "locale-dev": {
+   "avvio": "pnpm dev",
+   "url": "http://localhost:3000",
+   "database": "sviluppo",
+   "serve_per": "console senza avvisi di Base UI (la produzione non li stampa)"
+  },
+  "locale-prod": {
+   "avvio": "pnpm build && pnpm start",
+   "url": "http://localhost:3000",
+   "database": "sviluppo",
+   "serve_per": "misure, tema senza lampo, flussi (più vicino a Cloud Run)"
+  },
+  "online": {
+   "avvio": "nessuno",
+   "url": "valore di BASE_URL (dominio pubblico di Cloud Run)",
+   "database": "produzione: MAI credenziali, MAI utenti di prova",
+   "serve_per": "solo i controlli di 'online-senza-credenziali'"
+  }
+ },
+ "profili": {
+  "telefono-360": {
+   "larghezza": 360,
+   "altezza": 800,
+   "scala": 3,
+   "tocco": true
+  },
+  "telefono-390": {
+   "larghezza": 390,
+   "altezza": 844,
+   "scala": 3,
+   "tocco": true
+  },
+  "soglia-767": {
+   "larghezza": 767,
+   "altezza": 1000,
+   "scala": 2,
+   "tocco": true
+  },
+  "soglia-768": {
+   "larghezza": 768,
+   "altezza": 1000,
+   "scala": 2,
+   "tocco": true
+  },
+  "tablet-820": {
+   "larghezza": 820,
+   "altezza": 1180,
+   "scala": 2,
+   "tocco": true
+  },
+  "notebook-1280": {
+   "larghezza": 1280,
+   "altezza": 900,
+   "scala": 1,
+   "tocco": false
+  },
+  "schermo-1920": {
+   "larghezza": 1920,
+   "altezza": 1080,
+   "scala": 1,
+   "tocco": false
+  },
+  "telefono-390-basso": {
+   "larghezza": 390,
+   "altezza": 667,
+   "scala": 3,
+   "tocco": true,
+   "nota": "solo per nav-pannello-telefono (iPhone con schermo basso)"
+  }
+ },
+ "temi": {
+  "chiaro": {
+   "cookie_app-theme": "light",
+   "colorScheme": "light",
+   "html_dark": false
+  },
+  "scuro": {
+   "cookie_app-theme": "dark",
+   "colorScheme": "light",
+   "html_dark": true
+  },
+  "sistema-chiaro": {
+   "cookie_app-theme": "system",
+   "colorScheme": "light",
+   "html_dark": false
+  },
+  "sistema-scuro": {
+   "cookie_app-theme": "system",
+   "colorScheme": "dark",
+   "html_dark": true
+  }
+ },
+ "livelli": {
+  "1": {
+   "descrizione": "Mirato: a fine di ogni passaggio che tocca una schermata",
+   "profili": [
+    "telefono-390",
+    "notebook-1280"
+   ],
+   "temi": [
+    "chiaro",
+    "scuro"
+   ],
+   "webkit": false,
+   "schermate": "solo quelle indicate con --schermata",
+   "ambienti": [
+    "locale-prod",
+    "locale-dev (solo CONSOLE della schermata)"
+   ],
+   "durata_obiettivo": "3 minuti"
+  },
+  "2": {
+   "descrizione": "Esteso: solo ai trigger di docs/design/verifica/policy-test.md sezione 4",
+   "profili": "tutti",
+   "temi": "tutti",
+   "webkit": true,
+   "schermate": "tutte",
+   "ambienti": [
+    "locale-prod",
+    "locale-dev",
+    "online"
+   ],
+   "durata_obiettivo": "15 minuti"
+  },
+  "S": {
+   "descrizione": "Smoke dopo ogni deploy",
+   "ambienti": [
+    "online"
+   ],
+   "controlli": "online-senza-credenziali",
+   "durata_obiettivo": "1 minuto"
+  }
+ },
+ "comuni": [
+  {
+   "id": "AMBIENTE",
+   "tipo": "assenza",
+   "ambienti": [
+    "locale-prod",
+    "online"
+   ],
+   "selettore": "indicatore di sviluppo di Next (cerchio «N» in basso a sinistra; di norma l'elemento <nextjs-portal>: verifica sul DOM e riporta il selettore usato)",
+   "atteso": "assente",
+   "se_fallisce": "l'ambiente NON è di produzione: tutti gli esiti di misura di quell'esecuzione sono NON VALIDI e vanno rifatti con `pnpm build && pnpm start` su una porta libera",
+   "nota": "Eseguire prima di ogni altro controllo. La prima esecuzione di 'locale-prod' mostrava l'indicatore nei suoi screenshot.",
+   "fonte": "README sezione 4",
+   "livello": 1
+  },
+  {
+   "id": "C1",
+   "tipo": "scroll-orizzontale",
+   "profili": [
+    "telefono-360",
+    "telefono-390",
+    "notebook-1280"
+   ],
+   "atteso": "document.documentElement.scrollWidth <= window.innerWidth",
+   "si_applica_a": "ogni stato di ogni schermata",
+   "fonte": "modello C1",
+   "livello": 1
+  },
+  {
+   "id": "C2",
+   "tipo": "tocco-minimo",
+   "profili": [
+    "telefono-390",
+    "tablet-820"
+   ],
+   "minimo_px": 44,
+   "algoritmo": "docs/design/verifica/misura-tocco.md",
+   "atteso": "nessun elemento in elenco",
+   "fonte": "modello C2, decisioni D6",
+   "livello": 1
+  },
+  {
+   "id": "C2-mouse",
+   "tipo": "altezza-mouse",
+   "profili": [
+    "notebook-1280"
+   ],
+   "min_px": 28,
+   "max_px": 48,
+   "gravita": "avviso",
+   "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto.",
+   "fonte": "decisioni D6",
+   "elementi": "button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
+   "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?») e gli elementi nascosti",
+   "livello": 1
+  },
+  {
+   "id": "C3",
+   "tipo": "tema-classe",
+   "temi": [
+    "chiaro",
+    "scuro",
+    "sistema-chiaro",
+    "sistema-scuro"
+   ],
+   "atteso": "<html> ha la classe 'dark' se e solo se html_dark è vero",
+   "fonte": "modello C3, decisioni D4",
+   "livello": 1
+  },
+  {
+   "id": "C3-no-lampo",
+   "tipo": "tema-no-lampo",
+   "temi": [
+    "scuro",
+    "sistema-scuro"
+   ],
+   "atteso": "nessuna variazione della classe di <html> dopo DOMContentLoaded (osservare con MutationObserver installato prima della pagina)",
+   "fonte": "decisioni D4",
+   "livello": 2
+  },
+  {
+   "id": "C3-cambio-sistema",
+   "tipo": "tema-cambio-sistema",
+   "passi": "con cookie app-theme=system e colorScheme chiaro, cambia a scuro a pagina aperta (emulateMedia) senza ricaricare",
+   "atteso": "la classe 'dark' compare; con cookie 'light' o 'dark' non cambia",
+   "fonte": "A23",
+   "livello": 2
+  },
+  {
+   "id": "CONSOLE",
+   "tipo": "console-pulita",
+   "ambienti": [
+    "locale-dev"
+   ],
+   "atteso": "zero messaggi console di livello error o warning, zero pageerror, zero richieste fallite (4xx/5xx non attesi)",
+   "nota": "Gli avvisi di Base UI compaiono solo in sviluppo.",
+   "fonte": "regola UI 01, sezione Insidie note",
+   "passi": "oltre al caricamento di ogni pagina: nelle pagine della shell apri il pannello del menu (telefono), apri il menu utente, scegli Chiaro, Scuro e Sistema, poi richiudi; gli avvisi di Base UI compaiono proprio all'apertura dei menu. Profili: notebook-1280 e telefono-390. Non visitare mai indirizzi con segnaposto (per esempio <token reale>).",
+   "livello": 1
+  },
+  {
+   "id": "C9",
+   "tipo": "comando",
+   "comando": "pnpm ui:check",
+   "atteso": "codice di uscita 0",
+   "fonte": "modello C9",
+   "livello": 1
+  },
+  {
+   "id": "NO-OVERRIDE",
+   "tipo": "comando",
+   "comando": "grep -rn \"overrideAccess: true\" \"app/(app)\" components/app lib/app lib/menu/ui",
+   "atteso": "nessuna corrispondenza (codice di uscita 1 di grep): le schermate leggono e scrivono con la sessione dell'utente (overrideAccess: false). Se una cartella non esiste ancora, si ignora",
+   "fonte": "fase-6 6.6 Vincoli, Blocco comune regola 4",
+   "livello": 1,
+   "nota": "Il percorso dei blocchi condivisi è quello scelto dalla chat I1: se lib/menu/ui non esiste, usare la cartella che I1 ha dichiarato in Parte A."
+  },
+  {
+   "id": "RICOMPILA-ASSENTE",
+   "tipo": "assenza",
+   "si_applica_a": "ogni schermata del Menù e la home, finché la bandiera di «Ricompila» è spenta (tutta la 6.6)",
+   "selettore": "qualunque elemento con testo «Ricompila il menù pubblico» o «Ricompilare il menù pubblico?»; negli avvisi, la frase «serve «Ricompila il menù pubblico»»",
+   "atteso": "assente: il pulsante e la finestra non compaiono, e gli avvisi di salvataggio e di eliminazione hanno solo il titolo (per esempio «Piatto salvato») e non nominano il pulsante",
+   "fonte": "esecuzione-6.6 §1 punto 1; integrazione/spec.md §5",
+   "livello": 1,
+   "nota": "Le specifiche descrivono il risultato finale con il pulsante. Fino alla 6.5 il componente c'è ma è dietro una bandiera spenta (Mirko, 2026-10-16)."
+  },
+  {
+   "id": "RICOMPILA-PRESENTE",
+   "tipo": "presenza",
+   "rinviato_a": "6.5",
+   "si_applica_a": "Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali; assente in Messaggio globale e in home",
+   "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, con la finestra di conferma e gli esiti di piatti/spec.md; avvisi con la frase sul pulsante",
+   "fonte": "integrazione/spec.md §5",
+   "livello": 2,
+   "stato_prova": "NON PROVABILE fino alla 6.5: la bandiera è spenta; esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
+   "nota": "Non si esegue nella 6.6. Non è un FALLITO: va nei debiti con scritto che si prova nella 6.5."
+  }
+ ],
+ "dati_e_sicurezza": {
+  "database": "solo sviluppo; i dati di prova hanno il prefisso «verify-ui-», si creano con la Local API (piatti, categorie dei menù fissi, menù fissi) e si cancellano SEMPRE in try/finally; il Global impostazioni-sistema (orari) si salva e si ripristina se un controllo lo modifica. Mai produzione, mai online",
+  "utenti_di_prova": {
+   "manager": "appRole manager, adminRole none, login locale, email verificata (come per la shell e Orari)",
+   "senza_ruolo": "appRole none, adminRole none",
+   "admin_e_super_admin": "non hanno login locale: si provano con la Local API passando il documento utente (sso, active) come 'user' e overrideAccess false, sul modello di scripts/verify-roles-8_3.ts"
+  },
+  "simulazioni": {
+   "errore_server": "server di SVILUPPO separato (porta 3200, mai in production) con APP_MENU_DEV_SIMULATE_SAVE_ERROR=1 e puntato al database di sviluppo",
+   "errore_caricamento": "idem con APP_MENU_DEV_SIMULATE_LOAD_ERROR=1",
+   "caricamento_lento": "idem con APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS=2500",
+   "nota": "Le variabili vivono in lib/app/menu/devSimulate.ts (chat I1 della 6.6), come lib/app/hours/devSimulate.ts, e non agiscono con NODE_ENV production. Valgono per tutte le schermate del Menù."
+  },
+  "bandiera_ricompila": "spenta in tutta la 6.6 (esecuzione-6.6 §1 punto 1): la accende la 6.5. Dei controlli sul pulsante vale RICOMPILA-ASSENTE; quelli sul pulsante presente sono NON PROVATI, rinviati alla 6.5"
+ },
+ "schermate": [
+  {
+   "id": "home",
+   "percorso": "/app",
+   "auth": "manager di prova",
+   "stati": [
+    {
+     "id": "iniziale",
+     "nota": "tre schede; nel Menù la riga di stato con il conteggio dei piatti terminati"
+    },
+    {
+     "id": "un-piatto",
+     "come": "un solo piatto terminato"
+    },
+    {
+     "id": "zero",
+     "come": "nessun piatto terminato"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-lettura",
+     "come": "errore di lettura simulato: la riga non compare"
+    },
+    {
+     "id": "pannello",
+     "come": "telefono-390: apri «Apri o chiudi il menu»"
+    }
+   ],
+   "controlli": [
+    {
+     "id": "home-riga-menu-testo",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "scheda": "Menù",
+      "riga_di_stato": "«{N} piatti terminati», «1 piatto terminato» se N vale 1, «Nessun piatto terminato» se N vale 0",
+      "N": "numero letto con la Local API (count su dishes con soldOut vero e disabled non vero, utente manager, overrideAccess false) nello stesso momento"
+     },
+     "fonte": "integrazione/spec.md §3 (riga del Menù), decisioni D2 e A56"
+    },
+    {
+     "id": "home-riga-menu-casi",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "leggi N0 con la Local API (come sopra)",
+      "crea cinque piatti di prova «verify-ui-p1»…«verify-ui-p5»: p1, p2, p3 con soldOut vero; p4 con disabled vero e soldOut vero; p5 con disabled vero e soldOut falso",
+      "ricarica /app",
+      "porta p1 a soldOut falso con la Local API e ricarica /app",
+      "porta p2 e p3 a disabled vero e ricarica /app",
+      "elimina i piatti di prova (try/finally)"
+     ],
+     "atteso": [
+      "dopo il primo ricaricamento la riga dice N0+3 (p4 e p5 non contano: i disabilitati non contano nemmeno se soldOut è vero)",
+      "dopo il secondo N0+2 (nessuna cache: il numero cambia a ogni apertura)",
+      "dopo il terzo N0",
+      "con N pari a 1 il testo è al singolare «1 piatto terminato», con N pari a 0 è «Nessun piatto terminato»"
+     ],
+     "fonte": "integrazione/spec.md §3, §10 punto 5; decisioni A56"
+    },
+    {
+     "id": "home-riga-menu-stati",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "caricamento_lento e errore_caricamento",
+     "passi": [
+      "server separato con caricamento_lento: apri /app e osserva la scheda Menù prima che compaia la riga",
+      "server separato con errore_caricamento: apri /app"
+     ],
+     "atteso": [
+      "durante l'attesa la scheda Menù mostra uno Skeleton (aria-busy) alto quanto la riga di testo (±2 px) e le altre schede sono già visibili; poi compare la riga",
+      "con l'errore la riga non compare, la scheda Menù resta con titolo e descrizione, il collegamento a /app/menu funziona, nessun avviso di errore nella home e nessun pageerror"
+     ],
+     "fonte": "integrazione/spec.md §3, decisioni D2 (stati di ogni riga)"
+    },
+    {
+     "id": "home-riga-menu-altezza",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "misura": "altezza della scheda Menù nello stato di caricamento (Skeleton) e nello stato con la riga di testo",
+     "atteso": "uguale nei due stati (la scheda non salta quando arriva il dato)",
+     "fonte": "decisioni D2 (Skeleton alla stessa altezza)"
+    }
+   ]
+  },
+  {
+   "id": "navigazione",
+   "percorso": null,
+   "auth": "manager di prova",
+   "nota": "Controlli sulla navigazione e sulle briciole dopo l'integrazione del Menù. Ogni caso si esegue SOLO se la pagina esiste (la voce è enabled in lib/app/navigation.ts); le altre sono NON PROVATO con scritto «voce non ancora accesa», non FALLITO.",
+   "stati": [
+    {
+     "id": "menu-fisso-notebook",
+     "come": "notebook-1280: barra laterale fissa"
+    },
+    {
+     "id": "pannello-aperto",
+     "come": "telefono-390: apri «Apri o chiudi il menu»"
+    },
+    {
+     "id": "pannello-basso",
+     "come": "telefono-390-basso: pannello aperto"
+    }
+   ],
+   "controlli": [
+    {
+     "id": "nav-voci-menu",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "gruppo": "Menù",
+      "voci_in_ordine_e_href": [
+       {
+        "etichetta": "Piatti",
+        "href": "/app/menu"
+       },
+       {
+        "etichetta": "Vini",
+        "href": "/app/menu/wines"
+       },
+       {
+        "etichetta": "Bevande",
+        "href": "/app/menu/drinks"
+       },
+       {
+        "etichetta": "Distillati",
+        "href": "/app/menu/spirits"
+       },
+       {
+        "etichetta": "Menù fissi",
+        "href": "/app/menu/fixed"
+       },
+       {
+        "etichetta": "Servizi",
+        "href": "/app/menu/services"
+       },
+       {
+        "etichetta": "Giorni speciali",
+        "href": "/app/menu/special-days"
+       },
+       {
+        "etichetta": "Messaggio globale",
+        "href": "/app/menu/message"
+       }
+      ],
+      "solo": "quelle con enabled vero in lib/navigation (le altre non esistono nel DOM: né testo, né collegamento, né icona)"
+     },
+     "fonte": "integrazione/spec.md §2, decisioni D1",
+     "nota": "Il sottoinsieme abilitato si legge da lib/app/navigation.ts, non si copia."
+    },
+    {
+     "id": "nav-icone",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "per_voce": {
+       "Piatti": "svg aria-hidden con classe lucide-utensils-crossed",
+       "Vini": "svg aria-hidden con classe lucide-wine",
+       "Bevande": "svg aria-hidden con classe lucide-cup-soda",
+       "Distillati": "svg aria-hidden con classe lucide-martini",
+       "Menù fissi": "svg aria-hidden con classe lucide-book-open",
+       "Servizi": "svg aria-hidden con classe lucide-concierge-bell",
+       "Giorni speciali": "svg aria-hidden con classe lucide-calendar-heart",
+       "Messaggio globale": "svg aria-hidden con classe lucide-megaphone"
+      },
+      "assenti": [
+       "lucide-beer",
+       "lucide-list"
+      ]
+     },
+     "fonte": "integrazione/spec.md §2 (chiavi AppNavIconKey)"
+    },
+    {
+     "id": "nav-voce-attiva",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "casi": [
+      {
+       "percorso": "/app",
+       "voce_attiva": null,
+       "nota": "nella home nessuna voce evidenziata"
+      },
+      {
+       "percorso": "/app/menu",
+       "voce_attiva": "Piatti",
+       "non_attive": [
+        "Vini",
+        "Bevande",
+        "Distillati",
+        "Menù fissi",
+        "Servizi",
+        "Giorni speciali",
+        "Messaggio globale"
+       ]
+      },
+      {
+       "percorso": "/app/menu/wines",
+       "voce_attiva": "Vini",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/drinks",
+       "voce_attiva": "Bevande",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/spirits",
+       "voce_attiva": "Distillati",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/fixed",
+       "voce_attiva": "Menù fissi",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/fixed/categories",
+       "voce_attiva": "Menù fissi",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/services",
+       "voce_attiva": "Servizi",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/special-days",
+       "voce_attiva": "Giorni speciali",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/menu/message",
+       "voce_attiva": "Messaggio globale",
+       "non_attive": [
+        "Piatti"
+       ]
+      },
+      {
+       "percorso": "/app/hours",
+       "voce_attiva": "Orari"
+      },
+      {
+       "percorso": "/app/reservations",
+       "voce_attiva": "Elenco"
+      },
+      {
+       "percorso": "/app/reservations/day-exceptions",
+       "voce_attiva": "Eccezioni giorno",
+       "non_attive": [
+        "Elenco"
+       ]
+      }
+     ],
+     "atteso": "per ogni caso con la pagina esistente: UNA sola voce evidenziata (aria-current=\"page\" o l'attributo di stato attivo della barra), quella indicata; le voci elencate in non_attive NON lo sono. È il difetto del primo prefisso: con «Piatti» su /app/menu, /app/menu/wines non deve evidenziare anche Piatti",
+     "fonte": "integrazione/spec.md §2 (regola del percorso più lungo), decisioni A52"
+    },
+    {
+     "id": "nav-briciole",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "casi": [
+      {
+       "percorso": "/app",
+       "parti": [
+        "Area App (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Piatti (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/wines",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Vini (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/drinks",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Bevande (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/spirits",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Distillati (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/fixed",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Menù fissi (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/fixed/categories",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Menù fissi (collegamento a /app/menu/fixed)",
+        "Categorie (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/services",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Servizi (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/special-days",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Giorni speciali (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/menu/message",
+       "parti": [
+        "Menù (collegamento a /app/menu)",
+        "Messaggio globale (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/hours",
+       "parti": [
+        "Orari (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/reservations",
+       "parti": [
+        "Prenotazioni (collegamento a /app/reservations)",
+        "Elenco (pagina)"
+       ]
+      },
+      {
+       "percorso": "/app/reservations/day-exceptions",
+       "parti": [
+        "Prenotazioni (collegamento a /app/reservations)",
+        "Eccezioni giorno (pagina)"
+       ]
+      }
+     ],
+     "atteso": "per ogni caso con la pagina esistente: le parti in ordine, con il collegamento dove indicato; l'ultima parte è la pagina corrente",
+     "fonte": "integrazione/spec.md §2 (tabella)"
+    },
+    {
+     "id": "nav-titoli-pagina",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "document.title = «{Pagina} · Area App» con Pagina = Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali, Messaggio globale (solo pagine esistenti); la pagina «Categorie» ha il titolo di «Menù fissi»; la home «Area App»",
+     "fonte": "integrazione/spec.md §4"
+    },
+    {
+     "id": "nav-casi-unit",
+     "tipo": "comando",
+     "livello": 1,
+     "comando": "pnpm payload run scripts/verify-lib-app-8_2.ts",
+     "atteso": "codice di uscita 0",
+     "nota": "Lo script lo aggiorna la chat I1 e poi ogni chat che accende voci (attende l'elenco delle voci abilitate). I test node:test di lib/app (breadcrumb.test.ts, con tutti i casi della tabella di integrazione/spec.md §2) li esegue l'agente di implementazione in L0 e ne riporta l'esito: non sono nel lanciatore.",
+     "fonte": "integrazione/spec.md §9"
+    },
+    {
+     "id": "nav-pannello-telefono",
+     "tipo": "misura",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "telefono-390-basso"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "condizione": "solo con tutte le otto voci del Menù abilitate; altrimenti NON PROVATO («voci non ancora tutte accese»)",
+     "atteso": {
+      "telefono-390": "contenuto del pannello alto circa 716 px: a 844 px di altezza entra tutto senza scorrimento della lista",
+      "telefono-390-basso": "a 667 px le voci scorrono; il blocco «Area App» in cima e il blocco utente in fondo restano fissi (la loro posizione non cambia dopo 200 px di scorrimento della lista)"
+     },
+     "fonte": "decisioni D1 (misura del 2026-10-14), integrazione/spec.md §10 punto 9"
+    }
+   ]
+  },
+  {
+   "id": "piatti",
+   "percorso": "/app/menu",
+   "auth": "manager di prova",
+   "nota": "Dal 2026-10-16: /app/menu è Piatti dalla chat I2 della 6.6. I controlli sul pulsante «Ricompila» e sul frontend di prova sono NON PROVATI con l'evidenza «rinviato alla 6.5» (bandiera spenta). Le stringhe attese sono quelle della sezione 6 di piatti/spec.md, carattere per carattere (apostrofi tipografici compresi); quelle delle costanti di lib/ si leggono dal codice.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "gruppi per categoria, righe disabilitate attenuate"
+    },
+    {
+     "id": "terminato",
+     "come": "interruttore «Terminato» su un piatto"
+    },
+    {
+     "id": "disabilita",
+     "come": "occhio barrato su un piatto"
+    },
+    {
+     "id": "elimina-libero",
+     "come": "cestino su un piatto non usato"
+    },
+    {
+     "id": "elimina-bloccato",
+     "come": "cestino su un piatto in un menù fisso"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "filtri",
+     "come": "pulsante «Filtri»"
+    },
+    {
+     "id": "filtri-attivi",
+     "come": "filtri applicati"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su un piatto"
+    },
+    {
+     "id": "modulo-allergeni",
+     "come": "modulo scorso fino agli allergeni"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuovo piatto»"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "errore-azione",
+     "come": "azione con errore del server simulato"
+    },
+    {
+     "id": "piu-di-100",
+     "come": "101 piatti di prova"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessun piatto nel database"
+    },
+    {
+     "id": "nessun-risultato",
+     "come": "ricerca senza risultati"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "filtri",
+    "filtri-attivi",
+    "modulo",
+    "modulo-allergeni",
+    "modulo-inglese-aperto",
+    "nuovo",
+    "nuovo-errori",
+    "elimina-libero",
+    "elimina-bloccato",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento",
+    "vuoto",
+    "nessun-risultato"
+   ],
+   "controlli": [
+    {
+     "id": "piatti-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Piatti",
+      "descrizione": "Il menù digitale del ristorante.",
+      "pulsante_principale": "Nuovo piatto",
+      "ricerca_segnaposto": "Cerca un piatto",
+      "pulsante_filtri": "Filtri",
+      "gruppo": "{Categoria} {1 piatto | N piatti}"
+     },
+     "fonte": "piatti/spec.md §6 (Titolo, Ricerca, Gruppo), §9 punti 14 e 21"
+    },
+    {
+     "id": "piatti-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px (mai più di 1024), si vede la tabella e non le schede; tabella a cinque colonne",
+      "telefono-390": "si vedono le schede e non la tabella; nome della scheda largo circa 137 px su 358 (avviso se fuori di 10 px)"
+     },
+     "fonte": "piatti/spec.md §4, §9 punto 3"
+    },
+    {
+     "id": "piatti-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuovo piatto» a tutta larghezza della colonna, alto almeno 44 px",
+      "notebook-1280": "«Nuovo piatto» a destra del titolo, in riga"
+     },
+     "rinviato": "la coppia con «Ricompila il menù pubblico» (sopra o a sinistra) è NON PROVATO, rinviato alla 6.5",
+     "fonte": "piatti/spec.md §4, §9 punto 4"
+    },
+    {
+     "id": "piatti-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "per_riga": "tre pulsanti icona: matita «Modifica {nome}», occhio «Disabilita {nome}» oppure «Abilita {nome}», cestino «Elimina {nome}»",
+      "aree_di_tocco": "44 px con tocco simulato",
+      "interruttore": "«Terminato: {nome}» (disabilitato sui piatti disabilitati)",
+      "assenti": "collegamento sul nome, menu «⋯» di riga, testo visibile nei tre pulsanti",
+      "nome_accessibile_scheda": "{nome}, {prezzo}, {stato}"
+     },
+     "fonte": "piatti/spec.md §6 (Azioni di riga, Stati), §9 punto 21; decisioni D13"
+    },
+    {
+     "id": "piatti-terminato",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea un piatto di prova «verify-ui-terminato» con orari configurati nel Global",
+      "tocca l'interruttore «Terminato» della sua riga",
+      "applica il filtro Stato «Terminati»"
+     ],
+     "atteso": [
+      "l'interruttore è attivo, compare il badge «Terminato» e sotto la riga «fino all’apertura della {cena | del pranzo}» corretta per l'ora corrente (calcolata dalla funzione di lib/ con gli orari del Global)",
+      "avviso «Piatto segnato come terminato» con «Il menù pubblico si aggiorna entro pochi minuti.» e «Torna disponibile da solo all’apertura della {cena | del pranzo}.»",
+      "soldOut vero letto con la Local API; il piatto compare nel filtro «Terminati» e non in «Disponibili»",
+      "il secondo tocco: «Piatto di nuovo disponibile»"
+     ],
+     "nota": "I tre casi di scadenza (prima del pranzo, tra pranzo e cena, dopo la cena, con «di domani»), il passaggio dell'ora legale e gli orari non configurati sono test unitari di lib/ (L0, chat I2): qui si prova solo il caso dell'ora corrente. Il file di disponibilità (storage in memoria del server di sviluppo) non è leggibile dal lanciatore: il cambio del file è provato da pnpm verify:menu-6_4 e dal controllo L3 su Cloud Run.",
+     "fonte": "piatti/spec.md §9 punti 5 e 20"
+    },
+    {
+     "id": "piatti-disabilita",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "tocca l'occhio barrato di «verify-ui-terminato»",
+      "tocca l'occhio aperto"
+     ],
+     "atteso": [
+      "avviso «Piatto disabilitato»; la riga si attenua; l'interruttore «Terminato» è disabilitato; l'occhio diventa «Abilita {nome}»; disabled vero con la Local API; il piatto passa a «Disabilitati»",
+      "avviso «Piatto abilitato» e la riga torna normale"
+     ],
+     "fonte": "piatti/spec.md §9 punto 5; decisioni D13"
+    },
+    {
+     "id": "piatti-elimina-libero",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-libero» non usato in nessun menù fisso",
+      "tocca il cestino della sua riga",
+      "tocca «Indietro»",
+      "tocca di nuovo il cestino e poi «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare verify-ui-libero?» con «Non si può annullare.» e due pulsanti «Indietro» ed «Elimina»; «Indietro» chiude senza cambiare nulla",
+      "dopo «Elimina»: la riga sparisce dall'elenco, avviso «Piatto eliminato» (con la bandiera spenta, solo il titolo), il piatto non esiste più per la Local API"
+     ],
+     "fonte": "piatti/spec.md §6 (Elimina), §9 punto 22a"
+    },
+    {
+     "id": "piatti-elimina-registro",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione di «verify-ui-libero» leggi il registro attività con la Local API (lettura di controllo del lanciatore, solo sviluppo)"
+     ],
+     "atteso": "esiste una riga con eventType delete, area app, collection dishes, documentId dell'eliminato, user il manager di prova, e nel detail il nome e il numero di riferimenti (0); nessun dato personale",
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "piatti/spec.md §9 punto 22a; ADR-115 nota del 2026-10-14"
+    },
+    {
+     "id": "piatti-elimina-bloccato",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "crea «verify-ui-in-uso», una categoria «verify-ui-cat» dei menù fissi e un menù fisso «verify-ui-menu-1» che contiene il piatto",
+      "tocca il cestino del piatto",
+      "chiudi; aggiungi il piatto ad altri tre menù di prova «verify-ui-menu-2», «-3», «-4»; riapri la finestra"
+     ],
+     "atteso": [
+      "finestra «Non si può eliminare verify-ui-in-uso» con «È usato in 1 menù fisso: verify-ui-menu-1. Toglilo da lì, poi potrai eliminarlo.» e un solo pulsante «Chiudi»; nessuna richiesta di cancellazione; il piatto resta",
+      "con quattro menù: «È usato in 4 menù fissi: …», con i primi tre nomi in ordine (verify-ui-menu-1, verify-ui-menu-2, verify-ui-menu-3) seguiti da «e altri 1» (al massimo tre nomi, poi «e altri N»); i separatori esatti sono quelli della costante di lib/ (testo_da), che la specifica non fissa",
+      "nessun testo suggerisce di disabilitare"
+     ],
+     "fonte": "piatti/spec.md §6 (Elimina), §9 punto 22b"
+    },
+    {
+     "id": "piatti-elimina-concorrenza",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-corsa» non usato; apri la finestra «Eliminare…»",
+      "con la Local API aggiungi il piatto a un menù fisso di prova",
+      "premi «Elimina»"
+     ],
+     "atteso": [
+      "il database rifiuta la cancellazione e la finestra mostra «Operazione non riuscita» con «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.»",
+      "il piatto resta e nessuna riga di registro viene scritta"
+     ],
+     "fonte": "piatti/spec.md §9 punto 22c; ADR-108 nota del 2026-10-13"
+    },
+    {
+     "id": "piatti-elimina-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "manager: elimina dalla pagina un piatto di prova non usato",
+      "utente senza ruolo: prova a eliminare un piatto con la Local API (overrideAccess false)",
+      "admin e super-admin: eliminano un piatto di prova con la Local API passando il documento utente"
+     ],
+     "atteso": [
+      "manager, admin e super-admin riescono",
+      "l'utente senza ruolo è rifiutato e il piatto resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "piatti/spec.md §9 punti 10 e 22d; decisioni D14"
+    },
+    {
+     "id": "piatti-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuovo piatto / Il piatto compare nel menù pubblico dopo la ricompilazione.",
+      "campi_in_ordine": [
+       "Nome",
+       "Descrizione",
+       "Traduzione inglese (facoltativa) con badge «Manca» e, aperta, Name e Description",
+       "Prezzo (€) con tastiera decimale",
+       "Categoria (segnaposto «Scegli»)",
+       "Allergeni (14 pulsanti a scelta multipla, testo «Seleziona quelli presenti nel piatto.» e « Selezionati: {n}.»)",
+       "Caratteristiche: Senza glutine, Senza latticini, Vegano, Senza uova",
+       "Disponibilità: «Terminato per il servizio», «Disabilitato»"
+      ],
+      "pulsanti": [
+       "Salva",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica piatto» con il nome come sottotitolo"
+     },
+     "fonte": "piatti/spec.md §6 (Modulo), §5 (Modulo)"
+    },
+    {
+     "id": "piatti-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo piatto» e premi «Salva» a modulo vuoto",
+      "inserisci nel prezzo «9,5», «9,50», «9.50», poi «abc» e «9,555»"
+     ],
+     "atteso": [
+      "nessuna richiesta di salvataggio; messaggi sotto i campi: «Campo obbligatorio.» (nome), «Inserisci un prezzo valido (es. 9,50).», «Scegli una categoria.»; il primo campo non valido ha il focus",
+      "«9,5», «9,50» e «9.50» sono accettati; «abc» e «9,555» danno «Inserisci un prezzo valido (es. 9,50).»"
+     ],
+     "fonte": "piatti/spec.md §6 (Errori del modulo), §9 punto 7"
+    },
+    {
+     "id": "piatti-modulo-inglese",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri un piatto senza traduzione inglese",
+      "apri un piatto con nome o descrizione inglese",
+      "con la Local API leggi il piatto senza inglese con locale=en"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano per nome e descrizione"
+     ],
+     "fonte": "piatti/spec.md §9 punto 8; decisioni D10"
+    },
+    {
+     "id": "piatti-modulo-footer",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "dopo avere scorso il modulo fino in fondo i pulsanti «Salva» e «Annulla» restano agganciati al fondo della finestra, affiancati, alti 44 px; la finestra non supera il 90 % dell'altezza dello schermo",
+     "fonte": "piatti/spec.md §4 (Foglio), §9 punto 12"
+    },
+    {
+     "id": "piatti-tassonomie",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri il modulo e leggi le opzioni di Categoria e Allergeni",
+      "con la Local API (utente manager, overrideAccess false) prova a creare una categoria di piatti e un allergene"
+     ],
+     "atteso": [
+      "le opzioni coincidono con quelle lette dalle collection dish-categories e allergens (con le sole voci esistenti); nessun pulsante per crearne",
+      "le due creazioni sono rifiutate"
+     ],
+     "fonte": "piatti/spec.md §9 punto 9"
+    },
+    {
+     "id": "piatti-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-nuovo» con tutti i campi",
+      "rileggilo con la Local API (utente manager, overrideAccess false)",
+      "modificalo dalla pagina e rileggilo",
+      "admin e super-admin: leggono e scrivono un piatto di prova con la Local API; utente senza ruolo: prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori letti coincidono con quelli inseriti (nome, descrizione it/en, prezzo, categoria, allergeni, flag, soldOut, disabled)",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "piatti/spec.md §9 punto 10"
+    },
+    {
+     "id": "piatti-filtri-ricerca",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "scrivi nella ricerca il nome italiano e poi il nome inglese di un piatto di prova",
+      "apri «Filtri», scegli una categoria e Stato «Disabilitati», applica",
+      "rimuovi un'etichetta; poi «Azzera»",
+      "attiva «Senza allergeni dichiarati»"
+     ],
+     "atteso": [
+      "la ricerca trova per nome italiano e per nome inglese",
+      "sul pulsante «Filtri» il numero dei filtri attivi; sotto la riga le etichette rimovibili con nome accessibile «Rimuovi filtro {etichetta}»; «Azzera» toglie tutto",
+      "l'elenco mostra solo piatti senza allergeni",
+      "la ricerca, i filtri e l'ordine arrivano dalla richiesta (parametri where e sort della Local API), non dal browser"
+     ],
+     "fonte": "piatti/spec.md §6 (Ricerca, Foglio filtri), §9 punti 11 e 18"
+    },
+    {
+     "id": "piatti-ordine-100",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "porta il numero dei piatti a 101 con piatti di prova «verify-ui-bulk-NNN» (e poi eliminali in try/finally)",
+      "apri /app/menu"
+     ],
+     "atteso": [
+      "la richiesta restituisce 100 piatti (limit 100) e in testa compare «Mostrati 100 piatti su 101» con «Restringi l’elenco con la ricerca o i filtri per trovare gli altri.»",
+      "categorie e piatti sono in ordine per nome"
+     ],
+     "fonte": "piatti/spec.md §9 punto 18"
+    },
+    {
+     "id": "piatti-stati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: quattro blocchi Skeleton",
+      "errore di caricamento: solo l'avviso «Impossibile caricare i piatti» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita» / «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia",
+      "nessun piatto: «Nessun piatto nel menù.» e «Nuovo piatto»",
+      "nessun risultato: «Nessun risultato con questi filtri.» e «Azzera filtri»"
+     ],
+     "fonte": "piatti/spec.md §5, §6, §9 punto 13"
+    },
+    {
+     "id": "piatti-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano per righe, interruttori, pulsanti e finestre; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle, Disable, Enable",
+     "fonte": "piatti/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "piatti-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3): la sezione non è raggiungibile dall'URL",
+     "fonte": "piatti/spec.md §9 punto 16"
+    },
+    {
+     "id": "piatti-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri i filtri, il modulo (anche con la traduzione aperta), la finestra di eliminazione, tocca «Terminato» e l'occhio, apri il menu utente; zero error e warning, compresi quelli di Base UI",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "piatti-ricompila",
+     "tipo": "presenza",
+     "rinviato_a": "6.5",
+     "atteso": "pulsante «Ricompila il menù pubblico», conferma «Ricompilare il menù pubblico?», esiti «Ricompilazione avviata» e «Una ricompilazione è già in corso»; un utente senza ruolo non può invocarla",
+     "fonte": "piatti/spec.md §5 (Ricompila), §9 punto 6",
+     "livello": 2,
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+    },
+    {
+     "id": "piatti-disabilitato-ovunque",
+     "tipo": "flusso",
+     "rinviato_a": "6.5",
+     "atteso": "un piatto disabilitato non compare nel menù pubblico né alla carta né dentro un menu fisso (frontend di prova)",
+     "fonte": "piatti/spec.md §9 punto 19",
+     "livello": 2,
+     "stato_prova": "NON PROVABILE fino alla 6.5 e al frontend di prova della 6.9: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+    },
+    {
+     "id": "piatti-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, salvati per il giudizio visivo della chat di design (C10): nessun confronto pixel per pixel, rilievi P e A assegnati da lei",
+     "fonte": "piatti/spec.md §9 punto 23"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome piatti-<stato>-<profilo>-<tema>.png; nello stesso tema del confronto",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "terminato": [
+      "390-terminato-chiaro.png"
+     ],
+     "disabilita": [
+      "390-disabilita-chiaro.png"
+     ],
+     "elimina-libero": [
+      "390-elimina-chiaro.png"
+     ],
+     "elimina-bloccato": [
+      "390-elimina-bloccata-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "filtri": [
+      "390-filtri-chiaro.png"
+     ],
+     "filtri-attivi": [
+      "390-filtri-attivi-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "390-modulo-fondo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-allergeni": [
+      "390-modulo-allergeni-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "piu-di-100": [
+      "390-piu-di-100-piatti-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ],
+     "nessun-risultato": [
+      "390-nessun-risultato-chiaro.png"
+     ]
+    },
+    "non_confrontabili_fino_alla_6.5": [
+     "390-ricompila-chiaro.png",
+     "390-ricompila-avviata-chiaro.png",
+     "390-ricompilazione-in-corso-chiaro.png"
+    ],
+    "nota": "Gli screenshot di riferimento mostrano il pulsante «Ricompila» e la frase sul pulsante negli avvisi: finché la bandiera è spenta il confronto visivo ne tiene conto (rilievo A, non P)."
+   }
+  }
+ ],
+ "livello_3": [
+  "Home «Oggi» su iPhone: la riga «{N} piatti terminati» e il tocco sulla scheda «Menù»",
+  "Pannello di navigazione con le voci accese: voci raggiungibili con il pollice, blocchi «Area App» e utente fissi",
+  "Piatti su iPhone: interruttore «Terminato», occhio e cestino comodi da toccare; foglio dal basso con la tastiera decimale aperta sul prezzo, pulsanti sempre visibili",
+  "Registro attività su Cloud Run: dopo l'eliminazione di un piatto di prova compare la riga delete (la chat di design, col browser di Mirko)"
+ ]
+}

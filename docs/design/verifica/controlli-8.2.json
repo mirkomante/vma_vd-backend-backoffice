@@ -1,12 +1,13 @@
 {
- "versione": 3,
+ "versione": 4,
  "fase": "8.2",
- "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri. Revisione 2026-10-11c: /app/hours tolta dai segnaposto (ora Orari); durate di L1 e L2 riviste sui dati misurati. Revisione 2026-10-12: tolto «Torna al sito» (A27); home con max-w-5xl (A26) controllata da home-larghezza. A24 (2026-10-12): shell-menu-utente include icone e assenza della riga utente.",
+ "nota": "Controlli leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{shell,accesso}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala nel rapporto. Un tipo di controllo è descritto nel README (sezione 6). v2 (2026-10-11, dopo la prima esecuzione): C2-mouse solo sui controlli; aggiunto AMBIENTE; CONSOLE con interazioni; ambito esplicito (solo_su) per login-testi e login-gerarchia; home-testi con titolo e descrizione; sezione 'immagini'; il link verify con token reale non si visita come segnaposto. v3 (2026-10-11): campo 'livello' (livello minimo in cui il controllo gira: 1 = anche in L1; 2 = solo in L2) e sezione 'livelli' con i perimetri. Revisione 2026-10-11c: /app/hours tolta dai segnaposto (ora Orari); durate di L1 e L2 riviste sui dati misurati. Revisione 2026-10-12: tolto «Torna al sito» (A27); home con max-w-5xl (A26) controllata da home-larghezza. A24 (2026-10-12): shell-menu-utente include icone e assenza della riga utente. v4 (2026-10-16, integrazione del Menù, 6.6): la shell ha otto voci del Menù (si accendono una per volta), la scheda «Menù» in home ha la descrizione «Piatti, vini, bevande, menù fissi e altro» e la riga dei piatti terminati, e la voce attiva e le briciole usano il percorso più lungo (docs/design/schermate/integrazione/spec.md). Aggiornati sul posto: home-testi, home-nessuna-riga-di-stato (ora home-righe-di-stato), shell-menu-voci, shell-segnaposto, shell-percorso-voce-attiva, shell-margine-contenuto. I controlli nuovi della riga di stato e della navigazione stanno in controlli-6.6.json. I valori attesi cablati nel lanciatore (scripts/ui-verify/lib/engine.mjs, run.mjs) li aggiorna la chat VC1.",
  "fonti": [
   "docs/design/decisioni-layout-app.md",
   "docs/design/schermate/shell/spec.md",
   "docs/design/schermate/accesso/spec.md",
-  "docs/design/modello-specifica-schermata.md"
+  "docs/design/modello-specifica-schermata.md",
+  "docs/design/schermate/integrazione/spec.md"
  ],
  "ambienti": {
   "locale-dev": {
@@ -616,7 +617,8 @@
     },
     {
      "id": "segnaposto-menu",
-     "percorso": "/app/menu"
+     "percorso": "/app/menu",
+     "nota": "valido fino alla chat I2 della 6.6 (Piatti); poi /app/menu è la schermata Piatti"
     },
     {
      "id": "segnaposto-reservations",
@@ -629,8 +631,8 @@
      "tipo": "testo",
      "percorso": "/app",
      "atteso": {
-      "h1": "Area App",
-      "descrizione": "Scegli una sezione.",
+      "h1": "Oggi",
+      "descrizione": "Situazione di oggi e accesso alle sezioni.",
       "schede_in_ordine": [
        {
         "titolo": "Prenotazioni",
@@ -639,7 +641,7 @@
        },
        {
         "titolo": "Menù",
-        "descrizione": "Piatti, vini, bevande, distillati, menù fissi",
+        "descrizione": "Piatti, vini, bevande, menù fissi e altro",
         "href": "/app/menu"
        },
        {
@@ -649,15 +651,15 @@
        }
       ]
      },
-     "fonte": "shell/spec.md sezione 6, decisioni D2",
-     "nota": "Leggere da ogni scheda titolo, descrizione e href (non solo l'href) e confrontarli con l'atteso, nell'ordine.",
+     "fonte": "integrazione/spec.md §3 e §7, decisioni D2 e A55",
+     "nota": "Dal 2026-10-16 (chat I1 della 6.6) la scheda Menù ha una riga di stato attiva: la home dice «Oggi» e «Situazione di oggi e accesso alle sezioni.»; senza righe attive vale «Area App» / «Scegli una sezione.» (shell/spec.md §6). Leggere da ogni scheda titolo, descrizione e href, non solo l'href. La riga del Menù si prova in controlli-6.6.json (home-riga-menu-testo).",
      "livello": 1
     },
     {
-     "id": "home-nessuna-riga-di-stato",
+     "id": "home-righe-di-stato",
      "tipo": "presenza",
-     "atteso": "le schede hanno solo titolo e descrizione (nessuna riga di stato) nella 8.2",
-     "fonte": "shell/spec.md checklist 7",
+     "atteso": "la scheda Menù ha la riga di stato (testo e stati in controlli-6.6.json: home-riga-menu-testo); la 6.6 NON richiede righe per Prenotazioni e Orari: se ci sono non sono un errore, se non ci sono nemmeno",
+     "fonte": "integrazione/spec.md §3, decisioni D2",
      "livello": 1
     },
     {
@@ -686,7 +688,7 @@
      "gravita": "avviso",
      "fonte": "shell/spec.md sezione 4",
      "livello": 2,
-     "nota": "Si misura su /app (home) e sui segnaposto /app/menu e /app/reservations; /app/hours ha la colonna centrata del modulo e non va misurata qui."
+     "nota": "Si misura su /app (home) e su /app/reservations (segnaposto); /app/menu solo finché è un segnaposto (fino alla chat I2 della 6.6: poi ha la colonna centrata di Piatti); /app/hours ha la colonna centrata del modulo e non va misurata qui."
     },
     {
      "id": "shell-barra-alta",
@@ -737,20 +739,12 @@
        "Prenotazioni"
       ],
       "voci_per_gruppo": {
-       "Menù": [
-        "Piatti"
-       ],
-       "Orari": [
-        "Orari"
-       ],
-       "Prenotazioni": [
-        "Elenco"
-       ]
+       "voci_da": "lib/app/navigation.ts: APP_NAV_GROUPS, solo le voci con enabled: true, nell'ordine della tabella di integrazione/spec.md §2 (Menù: Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali, Messaggio globale; Orari: Orari; Prenotazioni: Elenco, Eccezioni giorno, Impostazioni)"
       },
-      "collegamenti_navigazione": 3
+      "collegamenti_navigazione": "uguale al numero delle voci abilitate"
      },
-     "nota": "Esattamente tre voci abilitate nella 8.2.",
-     "fonte": "shell/spec.md checklist 11, decisioni D12",
+     "nota": "Prima era «esattamente tre voci abilitate». Dalla 6.6 le voci del Menù si accendono una chat alla volta (enabled: true quando la pagina esiste): il controllo legge l'elenco dal codice, non lo copia. Le voci non abilitate non devono esistere nel DOM.",
+     "fonte": "integrazione/spec.md §2, decisioni D1",
      "livello": 2
     },
     {
@@ -811,22 +805,21 @@
      "id": "shell-segnaposto",
      "tipo": "testo",
      "percorsi": [
-      "/app/menu",
       "/app/reservations"
      ],
      "atteso": {
       "descrizione": "Questa sezione sarà disponibile a breve.",
       "h1": "titolo come nella tabella Testi di shell/spec.md"
      },
-     "nota": "Dentro la shell: barra laterale e barra in alto presenti. Dal 2026-10-11 /app/hours è la schermata Orari (8.5), non più un segnaposto: si prova con controlli-8.5.json.",
+     "nota": "Dentro la shell: barra laterale e barra in alto presenti. /app/hours è la schermata Orari (8.5). /app/menu è un segnaposto solo fino alla chat I2 della 6.6: da allora è la schermata Piatti (controlli-6.6.json, schermata piatti) e questo controllo non lo misura più.",
      "fonte": "shell/spec.md checklist 11",
      "livello": 2
     },
     {
      "id": "shell-percorso-voce-attiva",
      "tipo": "testo",
-     "atteso": "per ogni pagina il percorso (breadcrumb) e la voce evidenziata coincidono con la sezione 7 di shell/spec.md; nella home nessuna voce evidenziata",
-     "fonte": "shell/spec.md checklist 6, 1",
+     "atteso": "per ogni pagina esistente il percorso (breadcrumb) e l'unica voce evidenziata coincidono con la tabella di integrazione/spec.md §2 (regola del percorso più lungo); nella home nessuna voce evidenziata. Il dettaglio dei casi del Menù è in controlli-6.6.json, schermata navigazione (nav-voce-attiva, nav-briciole).",
+     "fonte": "integrazione/spec.md §2, shell/spec.md checklist 6 e 1",
      "livello": 2
     },
     {

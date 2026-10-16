@@ -19,6 +19,7 @@ Sostituisce gli screenshot fatti a mano: un agente (una chat pulita di Cursor co
 |---|---|
 | `controlli-8.2.json` | I controlli della 8.2 (accesso, shell) come dati: profili di dispositivo, temi, stati, testi, misure, flussi |
 | `controlli-8.5.json` | I controlli della schermata Orari (8.5): stati, testi, misure, flussi di salvataggio, festività, foglio delle chiusure, uscita |
+| `controlli-6.6.json` | I controlli del backoffice «Menù» (6.6): home, navigazione, Piatti, e le altre schermate man mano. Si lancia con `--controlli controlli-6.6.json`: senza l'opzione il lanciatore prende l'ultimo file in ordine alfabetico, che non è questo |
 | `misura-tocco.md` | L'algoritmo di misura delle aree di tocco (C2) |
 | `prompt-agente-verifica.md` | Il messaggio con cui si apre la chat pulita dell'agente |
 | `policy-test.md` | Quali test fare e quando (livelli L0–L3 e smoke), trigger dei test estesi, tempi, cosa blocca |
