@@ -1,6 +1,6 @@
 # Shell e home — specifica di schermata (`/app`)
 
-**Stato**: chiusa il 2026-10-10. Le scelte della sezione 10 sono state confermate da Mirko lo stesso giorno.
+**Stato**: chiusa il 2026-10-10. Le scelte della sezione 10 sono state confermate da Mirko lo stesso giorno. **Rivista il 2026-10-15** per le voci del Menù, la scheda «Menù» e le briciole: vedi `schermate/integrazione/spec.md`, che prevale dove le due divergono.
 
 **Si implementa in**: `fase-8-shell-app.md` §8.2. Dipende da 8.1 e 8.3, dalla patch di `app-ui.css` (`docs/design/patch-app-ui-css.md`) e dall'installazione dei componenti (`docs/design/installazione-componenti-ui.md`).
 
@@ -35,7 +35,7 @@ La shell è il contenitore comune di tutte le pagine dell'App dopo l'accesso: ba
 
 | Gruppo | Voci | Sezione per `canAccessSection` |
 |---|---|---|
-| Menù | Piatti, Vini, Bevande, Distillati, Menù fissi | `menu` |
+| Menù | Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali, Messaggio globale | `menu` |
 | Orari | Orari | `hours` |
 | Prenotazioni | Elenco, Eccezioni giorno, Impostazioni | `reservations` |
 
@@ -97,13 +97,13 @@ Tutti in italiano.
 | Dove | Testo |
 |---|---|
 | Blocco in cima | Area App · {Super-admin \| Admin \| Manager} (collegamento a `/app`) |
-| Gruppi e voci | Menù: Piatti, Vini, Bevande, Distillati, Menù fissi · Orari: Orari · Prenotazioni: Elenco, Eccezioni giorno, Impostazioni |
+| Gruppi e voci | Menù: Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali, Messaggio globale · Orari: Orari · Prenotazioni: Elenco, Eccezioni giorno, Impostazioni |
 | Barra in alto | Percorso come in sezione 7; nomi accessibili «Apri o chiudi il menu» (pulsante) e «Percorso» (briciola) |
 | Pannello su telefono | Titolo per lo screen reader «Menu»; descrizione «Menu di navigazione dell’Area App.»; chiusura «Chiudi» |
 | Menu utente | Tema · Chiaro · Scuro · Sistema · Vai all'Admin · Esci |
 | Home (senza righe) | Area App / Scegli una sezione. |
 | Home (con righe) | Oggi / Situazione di oggi e accesso alle sezioni. |
-| Schede | Prenotazioni: «Elenco, eccezioni giorno, impostazioni» · Menù: «Piatti, vini, bevande, distillati, menù fissi» · Orari: «Ristorante, B&B, giorni di riposo, chiusure» |
+| Schede | Prenotazioni: «Elenco, eccezioni giorno, impostazioni» · Menù: «Piatti, vini, bevande, menù fissi e altro» · Orari: «Ristorante, B&B, giorni di riposo, chiusure» |
 | Righe di stato (quando attive) | Prenotazioni: «Oggi {N} coperti · prossima alle {HH:mm}» (5.5) · Menù: «{N} piatti non disponibili» (6.6) · Orari: «Oggi: {HH:mm}–{HH:mm} e {HH:mm}–{HH:mm}» (8.5; mai «aperto» finché non esistono le Eccezioni giorno) |
 | Segnaposto di sezione | Titolo: Piatti · Orari · Prenotazioni (gli stessi delle schermate vere). Descrizione: Questa sezione sarà disponibile a breve. |
 | Home senza sezioni | Nessuna sezione disponibile / Il tuo account non ha accesso a nessuna sezione. Se ritieni di dover avere accesso, contatta l’amministratore. |
@@ -160,7 +160,7 @@ Valgono i **controlli comuni C1–C10** del modello di specifica (`modello-speci
 - Voci non ancora abilitate **nascoste** (non portano a un 404).
 - Ordine delle schede della home: Prenotazioni, Menù, Orari.
 
-**Nota sulle schede della home**: le descrizioni («Piatti, vini, bevande, distillati, menù fissi», ...) parlano anche di sottovoci non ancora abilitate; nella 8.2 il testo resta quello definitivo (rilievo non bloccante).
+**Nota sulle schede della home**: le descrizioni parlano anche di sottovoci non ancora abilitate; nella 8.2 il testo resta quello definitivo (rilievo non bloccante). Dal 2026-10-15 la descrizione del Menù è «Piatti, vini, bevande, menù fissi e altro» (`schermate/integrazione/spec.md`).
 
 **Da fare / da verificare in 8.2**
 - **Uscita («Esci»)** da implementare (sezione 7, comportamento 8).

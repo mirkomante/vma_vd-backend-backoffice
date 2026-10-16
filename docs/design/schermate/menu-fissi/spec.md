@@ -164,6 +164,7 @@ Tutti in italiano; `{…}` sono dinamici.
 
 ## 8. Componenti da installare e da comporre
 
+- **Schede come percorsi**: nell'App vera «Menù fissi» e «Categorie» sono due percorsi (`/app/menu/fixed` e `/app/menu/fixed/categories`) con la stessa intestazione e la striscia delle schede fatta di collegamenti (`schermate/integrazione/spec.md`); il prototipo le mostra come stato interno.
 - **Da installare**: `tabs` (già nel prototipo, previsto da Prenotazioni 5.5), e nessun altro oltre a quelli già richiesti dalle altre schermate del Menù (`checkbox`, `collapsible`, `alert-dialog`, `select`, `switch`, `table`).
 - **Componenti di composizione** (`components/app/`, solo con componenti di `components/ui`): scheda con elenco per categoria (condiviso nello scheletro con vini e servizi), riga di menù (tabella e scheda), elenco delle categorie, modulo del menù con le sue sezioni, **elenco ordinabile dei piatti** (riga con frecce, porzione e «Togli»), **vista «Scegli piatti»** (ricerca e caselle raggruppate), avviso di visibilità, modulo della categoria, conferma di eliminazione con il cascade dichiarato, pulsante «Ricompila» condiviso.
 - **Eccezioni alla regola UI** (`ui-check-allow`): nessuna.
