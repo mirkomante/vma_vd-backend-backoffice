@@ -338,3 +338,7 @@ Non cambia i campi né i tipi di `drinks`. **Decisione** (Mirko, 2026-10-14): `v
 ## Nota di chiarimento (2026-10-14, visibilità di menù fisso e categoria)
 
 Non cambia i campi né i tipi. **Decisione** (Mirko, 2026-10-14): la `visibility` del menù fisso e quella della sua categoria (§2) si **incrociano**: nel menù pubblico un menù compare solo quando lo consentono entrambe (`always` consente sempre; `lunch_only` e `dinner_only` solo la rispettiva fascia). Se le due non si incrociano il menù non compare mai. Nell'App scegliendo la categoria la visibilità del menù si precompila da quella della categoria (modificabile) e un avviso segnala quando la categoria restringe il menù o quando le due non si incrociano; l'avviso non blocca il salvataggio.
+
+## Nota di chiarimento (2026-10-17, elenco degli invecchiamenti dei distillati)
+
+Sostituisce l'elenco della nota del 2026-10-14. Non cambia campi né tipi. **Decisione** (Mirko, 2026-10-17, dopo il report a secco dell'import sullo snapshot reale): `aging` una tra «5 anni», «7 anni», «10 anni», «12 anni», «14 anni», «15 anni», «16 anni», «18 anni», «21 anni» e «24 anni». Le età 14, 15, 16 e 21 sono quelle di 6 distillati dello snapshot. Nessun arrotondamento in import. Il grado con suffisso «% vol» («30 % vol») è una variante di scrittura che l'import normalizza in «30%».

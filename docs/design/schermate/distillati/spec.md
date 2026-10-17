@@ -29,7 +29,7 @@ Collection `spirits` (`fase-6` §6.2), con la Local API **con la sessione dell'u
 | Nome | `name` (non localizzato) | Obbligatorio. Il nome del distillato non si traduce |
 | Descrizione | `description` (localizzato) | Italiano facoltativo; inglese facoltativo con ripiego sull'italiano |
 | Traduzione inglese | `description`, locale `en` | Badge «Presente» se non vuota, «Manca» altrimenti |
-| Invecchiamento | `aging` (testo) | Forma canonica «5 anni», «7 anni», «10 anni», «12 anni», «18 anni» o «24 anni». Select; facoltativo |
+| Invecchiamento | `aging` (testo) | Forma canonica «5 anni», «7 anni», «10 anni», «12 anni», «14 anni», «15 anni», «16 anni», «18 anni», «21 anni» o «24 anni». Select; facoltativo |
 | Capacità | `volume` (testo) | **Non si gestisce nell'App**: nessun campo nel modulo né colonna in elenco. Il campo resta nella collection e l'import continua a scriverlo come oggi; si riprende solo se servirà (possibile integrazione futura) |
 | Grado | `abv` (testo) | Forma canonica da «30%» a «45%», a passi di 1 (mezzi punti non previsti). Select; facoltativo. Un valore già salvato fuori elenco (come «43,5%» o «46%») resta visibile e salvabile |
 | Prezzo | `price` (numero) | Obbligatorio; mostrato e scritto con la virgola. **Unico, al bicchiere**: i distillati non hanno il prezzo al calice né quello della bottiglia. L'etichetta del modulo dice «Prezzo al bicchiere (€)» |
@@ -116,7 +116,7 @@ Tutti in italiano; `{…}` sono dinamici.
 | Modulo, titolo | Nuovo distillato («Il distillato compare nel menù pubblico dopo la ricompilazione.») · Modifica distillato («{nome}») |
 | Modulo, sezioni | Dati: Nome, Invecchiamento e Grado (segnaposto «Scegli»; prima voce «Non indicato»; «Invecchiamento e grado si scelgono da un elenco, così i dati restano uniformi.», con in più «Un valore non in elenco resta finché non lo cambi.» se il distillato ne ha uno), Descrizione, «Traduzione inglese (facoltativa)» con «Manca» o «Presente», Description («Facoltativa. Se resta vuota, il menù mostra il testo italiano. Il nome del distillato non si traduce.») · Origine: Tipologia, Paese (segnaposto «Scegli») · Prezzo: «Prezzo al bicchiere (€)» («I distillati si servono solo al bicchiere.») · Disponibilità: «Disabilitato» («Assente a tempo indefinito: il distillato non compare nel menù.») · Salva («Salvataggio…»), Annulla |
 | Errori del modulo | Campo obbligatorio. · Scegli una tipologia. · Scegli un paese. · Inserisci un prezzo valido (es. 9,50). (Invecchiamento e grado sono a scelta e non hanno errori di campo.) |
-| Errori dei formati (server) | Vengono da `lib/` (funzioni `validate` di `aging` e `abv`): «L'invecchiamento deve essere uno tra: 5, 7, 10, 12, 18, 24 anni.», «Il grado deve essere un valore intero da 30% a 45%.» L'App li mostra sotto il campo indicato dal server; non si riscrivono |
+| Errori dei formati (server) | Vengono da `lib/` (funzioni `validate` di `aging` e `abv`): «L'invecchiamento deve essere uno tra: 5, 7, 10, 12, 14, 15, 16, 18, 21, 24 anni.», «Il grado deve essere un valore intero da 30% a 45%.» L'App li mostra sotto il campo indicato dal server; non si riscrivono |
 | Elenco parziale | Mostrati 100 distillati su {totale} / Restringi l’elenco con la ricerca o i filtri, oppure mostra gli altri. / Mostra altri distillati |
 | Errore dell'azione | Operazione non riuscita / Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore. |
 | Errore di caricamento | Impossibile caricare i distillati / Riprova tra qualche istante; se il problema continua, avvisa l’amministratore. / Riprova |
@@ -132,7 +132,7 @@ Quelli di `schermate/vini/spec.md` §7, tranne la cascata dell'origine, l'anno e
 2. **Apertura del modulo** con la matita; il nome non è un collegamento e la scheda non è tappabile (D13).
 3. **Elimina**: il cestino apre la conferma; «Elimina» cancella e mostra l'avviso; l'errore resta nella finestra. Nessun testo suggerisce di disabilitare.
 4. **Traduzione inglese**: chiusa per default, si apre se esiste; il nome non ha traduzione.
-5. **Grado e invecchiamento a scelta** (D15): due elenchi con la voce «Non indicato» per svuotarli. Grado da 30% a 45% a passi di 1; invecchiamento 5, 7, 10, 12, 18 o 24 anni. In elenco il grado compare come «43%», l'invecchiamento come «12 anni». Un valore già salvato fuori elenco (per esempio «43,5%», «46%» o «4 anni» importati) resta tra le opzioni e nella riga, e non impedisce di salvare altro; scegliendo un altro valore non si torna indietro.
+5. **Grado e invecchiamento a scelta** (D15): due elenchi con la voce «Non indicato» per svuotarli. Grado da 30% a 45% a passi di 1; invecchiamento 5, 7, 10, 12, 14, 15, 16, 18, 21 o 24 anni. In elenco il grado compare come «43%», l'invecchiamento come «12 anni». Un valore già salvato fuori elenco (per esempio «43,5%», «46%» o «4 anni» importati) resta tra le opzioni e nella riga, e non impedisce di salvare altro; scegliendo un altro valore non si torna indietro.
 6. **Capacità**: non c'è nel modulo né in elenco. Salvando un distillato il campo `volume` non si tocca (resta quello che c'è).
 7. **Validazione**: nome obbligatorio; prezzo obbligatorio e numerico (virgola o punto, al massimo due decimali); tipologia e paese obbligatori. Con errori: nessun salvataggio, messaggi sotto i campi, primo campo non valido in vista e con il focus. Invecchiamento e grado sono a scelta e non hanno errori di campo.
 8. **Salvataggio**: subito (D9), con `Spinner` e «Salvataggio…»; a buon fine il foglio si chiude e compare l'avviso che ricorda la ricompilazione; in errore l'avviso rosso resta nel foglio.
@@ -160,7 +160,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 6. **Abilita e disabilita**: un tocco cambia lo stato, il distillato passa alla voce giusta del filtro «Stato», compare l'avviso; `disponibilita.json` cambia entro pochi secondi (dopo la 6.4).
 7. **Ricompilazione**: come in Piatti.
 8. **Modulo**: nome, tipologia, paese e prezzo obbligatori; focus sul primo campo non valido; il prezzo accetta «9», «9,5», «9,50» e «9.50» e rifiuta «abc» e tre decimali; l'etichetta del prezzo è «Prezzo al bicchiere (€)»; **non c'è alcun campo per la capacità**.
-9. **Grado e invecchiamento**: il grado offre «Non indicato» e da 30% a 45% a passi di 1; l'invecchiamento «Non indicato», 5, 7, 10, 12, 18 e 24 anni; un valore salvato fuori elenco (grado «43,5%») resta visibile e il distillato si salva senza cambiarlo. *Provato nel prototipo.*
+9. **Grado e invecchiamento**: il grado offre «Non indicato» e da 30% a 45% a passi di 1; l'invecchiamento «Non indicato», 5, 7, 10, 12, 14, 15, 16, 18, 21 e 24 anni; un valore salvato fuori elenco (grado «43,5%») resta visibile e il distillato si salva senza cambiarlo. *Provato nel prototipo.*
 10. **Capacità non gestita**: salvando un distillato da App il valore di `volume` nel database non cambia; l'import continua a scriverlo come oggi.
 11. **Formati dal server**: una richiesta diretta (REST o Admin) con grado «46%» o invecchiamento «4 anni» torna con il messaggio della sezione 6; con un valore canonico passa; **disabilitare un distillato che ha già un valore non canonico non fallisce** (se Payload non lo consente, si decide in Parte A come eccezione).
 12. **Tassonomie a sola scelta**: Tipologia e Paese offrono solo i valori esistenti (i paesi solo con `enabled` vero: Libano non compare); nessun pulsante per crearne; nessuna eliminazione di tassonomie nell'App; un valore salvato fuori elenco resta visibile.
@@ -178,7 +178,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 **Scelte confermate da Mirko il 2026-10-14**
 - **Capacità tolta** dall'App (possibile integrazione futura, se servirà): nessun campo né colonna; `volume` resta nella collection.
 - **Grado a scelta da 30% a 45%.**
-- **Invecchiamento a scelta**: 5, 7, 10, 12, 18 e 24 anni.
+- **Invecchiamento a scelta**: 5, 7, 10, 12, 14, 15, 16, 18, 21 e 24 anni.
 - **Prezzo unico, al bicchiere**: i distillati si servono solo al bicchiere, non in bottiglia.
 - Come i vini: interruttore «Disponibile», matita e cestino (D13, D14); «Mostra altri distillati» (confermato per i vini); validazione dei formati nel server e normalizzazione nell'import (D15).
 
@@ -191,7 +191,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 6. **L'import** continua a scrivere `volume` come oggi (forme «75 cl» e «50 cl» normalizzate) anche se l'App non lo mostra.
 
 **Debiti futuri e punti aperti**
-- **Forme reali di grado e invecchiamento** dei distillati nello snapshot: non verificate (fuori dal repo, `~/vtn-export-2026-10-12`). Il report a secco esteso le elencherà; le liste e la normalizzazione si fissano su quei dati prima dell'import di produzione.
+- **Forme reali di grado e invecchiamento** (verificate il 2026-10-17 con il report a secco sullo snapshot reale): grado «30 % vol» e «45 % vol», varianti di scrittura che l'import normalizza in «30%» e «45%»; invecchiamento 10 anni (4), 12 anni (2) e 14, 15, 16 e 21 anni (6 distillati): elenco esteso (A59 di decisioni-layout-app.md).
 - **Aggiornamento parziale e validazione**: come per i vini, da provare in Parte A.
 - **Capacità**: da reintegrare nel modulo solo se servirà (stessa lista o una propria).
 - **Paginazione completa** oltre «Mostra altri distillati».

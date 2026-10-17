@@ -13,7 +13,7 @@ export const WINE_ABV_ERROR_MESSAGE =
   'Il grado deve andare da 5% a 20% a passi di 0,5 (per esempio 13% o 13,5%).'
 
 export const SPIRIT_AGING_ERROR_MESSAGE =
-  "L'invecchiamento deve essere uno tra: 5, 7, 10, 12, 18, 24 anni."
+  "L'invecchiamento deve essere uno tra: 5, 7, 10, 12, 14, 15, 16, 18, 21, 24 anni."
 
 export const SPIRIT_ABV_ERROR_MESSAGE = 'Il grado deve essere un valore intero da 30% a 45%.'
 
@@ -42,11 +42,15 @@ export const SPIRIT_AGING_CANONICAL = [
   '7 anni',
   '10 anni',
   '12 anni',
+  '14 anni',
+  '15 anni',
+  '16 anni',
   '18 anni',
+  '21 anni',
   '24 anni',
 ] as const
 
-const SPIRIT_AGING_YEARS = new Set([5, 7, 10, 12, 18, 24])
+const SPIRIT_AGING_YEARS = new Set([5, 7, 10, 12, 14, 15, 16, 18, 21, 24])
 
 const WINE_VOLUME_SET = new Set<string>(WINE_VOLUME_CANONICAL)
 const DRINK_VOLUME_SET = new Set<string>(DRINK_VOLUME_CANONICAL)
@@ -228,7 +232,14 @@ export function normalizeDrinkVolumeForImport(raw: unknown): NormalizeResult {
 }
 
 export function prepAbvPercent(raw: string): string | null {
-  let s = raw.trim().replace(/\s+/g, '')
+  let s = raw.trim()
+  if (s.length === 0) {
+    return null
+  }
+  if (/%/i.test(s)) {
+    s = s.replace(/%\s*vol\.?/gi, '%')
+  }
+  s = s.replace(/\s+/g, '')
   if (s.length === 0) {
     return null
   }

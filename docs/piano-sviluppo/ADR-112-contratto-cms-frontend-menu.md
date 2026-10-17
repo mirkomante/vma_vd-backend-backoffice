@@ -101,7 +101,7 @@ Non cambia il contratto (nomi e tipi dei campi invariati: `year`, `volume`, `abv
 
 ## Nota di chiarimento (2026-10-14, distillati)
 
-Non cambia il contratto (nomi e tipi invariati). Per i distillati le stringhe hanno una forma canonica (`ADR-108`, nota di pari data): `abv` «30%»…«45%»; `aging` «5 anni», «7 anni», «10 anni», «12 anni», «18 anni» o «24 anni». `price` è il prezzo del **bicchiere** (non c'è prezzo della bottiglia). `volume` **non è più mantenuto dall'App**: può avere il valore scritto dall'import («75 cl», «50 cl») o essere vuoto, e il frontend non deve contare su di esso per i distillati.
+Non cambia il contratto (nomi e tipi invariati). Per i distillati le stringhe hanno una forma canonica (`ADR-108`, nota di pari data): `abv` «30%»…«45%»; `aging` «5 anni», «7 anni», «10 anni», «12 anni», «14 anni», «15 anni», «16 anni», «18 anni», «21 anni» o «24 anni». `price` è il prezzo del **bicchiere** (non c'è prezzo della bottiglia). `volume` **non è più mantenuto dall'App**: può avere il valore scritto dall'import («75 cl», «50 cl») o essere vuoto, e il frontend non deve contare su di esso per i distillati.
 
 ## Nota di chiarimento (2026-10-14, bevande)
 

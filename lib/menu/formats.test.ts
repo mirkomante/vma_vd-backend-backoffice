@@ -11,6 +11,7 @@ import {
   WINE_YEAR_ERROR_MESSAGE,
   isCanonicalWineYear,
   normalizeSpiritAgingForImport,
+  normalizeDrinkAbvForImport,
   normalizeSpiritAbvForImport,
   normalizeWineAbvForImport,
   normalizeWineVolumeForImport,
@@ -124,6 +125,28 @@ describe('spirit validate vs import', () => {
       SPIRIT_AGING_ERROR_MESSAGE,
     )
     assert.equal(validateSpiritAgingField('5 anni', { operation: 'create' }), true)
+    for (const rejected of ['8 anni', '20 anni', '25 anni'] as const) {
+      assert.equal(validateSpiritAgingField(rejected, { operation: 'create' }), SPIRIT_AGING_ERROR_MESSAGE)
+    }
+  })
+
+  it('import accetta invecchiamenti estesi senza arrotondare', () => {
+    for (const years of ['14', '15', '16', '21'] as const) {
+      const aging = normalizeSpiritAgingForImport(`${years} anni`)
+      assert.equal(aging.ok, true)
+      if (aging.ok) {
+        assert.equal(aging.canonical, `${years} anni`)
+      }
+    }
+    assert.equal(normalizeSpiritAgingForImport('8 anni').ok, false)
+    assert.equal(normalizeSpiritAgingForImport('20 anni').ok, false)
+    const fifteen = normalizeSpiritAgingForImport('15 anni')
+    assert.equal(fifteen.ok, true)
+    if (fifteen.ok) {
+      assert.equal(fifteen.canonical, '15 anni')
+      assert.notEqual(fifteen.canonical, '12 anni')
+      assert.notEqual(fifteen.canonical, '18 anni')
+    }
   })
 
   it('import normalizza aging e abv', () => {
@@ -134,6 +157,30 @@ describe('spirit validate vs import', () => {
     }
     assert.equal(normalizeSpiritAbvForImport('40%').ok, true)
     assert.equal(normalizeSpiritAbvForImport('46%').ok, false)
+  })
+
+  it('import normalizza suffisso % vol; validate abv resta rigido', () => {
+    const volVariants = ['30 % vol', '45% vol', '30 %vol', '30% vol.', '45 % VOL'] as const
+    for (const raw of volVariants) {
+      const spirit = normalizeSpiritAbvForImport(raw)
+      assert.equal(spirit.ok, true)
+      if (spirit.ok) {
+        assert.match(spirit.canonical ?? '', /^(30|45)%$/)
+      }
+      assert.equal(validateSpiritAbvField(raw, { operation: 'create' }), SPIRIT_ABV_ERROR_MESSAGE)
+    }
+    assert.equal(normalizeSpiritAbvForImport('30 vol').ok, false)
+    assert.equal(validateWineAbvField('30 % vol', { operation: 'create' }), WINE_ABV_ERROR_MESSAGE)
+    const wineVol = normalizeWineAbvForImport('12,5 % vol')
+    assert.equal(wineVol.ok, true)
+    if (wineVol.ok) {
+      assert.equal(wineVol.canonical, '12,5%')
+    }
+    const drinkVol = normalizeDrinkAbvForImport('5 % vol')
+    assert.equal(drinkVol.ok, true)
+    if (drinkVol.ok) {
+      assert.equal(drinkVol.canonical, '5%')
+    }
   })
 })
 
