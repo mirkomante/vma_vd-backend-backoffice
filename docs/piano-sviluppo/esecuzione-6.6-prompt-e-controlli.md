@@ -25,9 +25,29 @@ Ogni scheda del §4 comincia con la riga **«Incolla in Cursor»** con la combin
 - **Agente di verifica e revisione (VC, V, R0)**: incolli → Cursor lavora e non fa git → **incolli qui il suo resoconto finale** → tu fai il commit del suo lavoro (messaggio indicato nella scheda) e il push, e scrivi «push fatto» → io controllo e aggiorno lo stato.
 - **Passi tuoi e della chat di design (D, RL, M)**: la scheda dice cosa fai.
 
-### 1.3 Dove si segna lo stato
+### 1.3 Dove si segna lo stato, e chi lo aggiorna
 
-Nella colonna **Stato** della tabella (§2): 🔲 da fare, 🔶 in corso (chat aperta, o fatta ma non ancora controllata), ✅ completato con l'hash del commit che lo contiene. La aggiorna **solo la chat di design**, dopo il tuo «push fatto» e il mio controllo del repo (hash, file cambiati, esiti reali, `ui:check`): un passo è ✅ quando il controllo è passato e il push è nel repo, **non quando Cursor finisce**. Gli altri due posti: il CHANGELOG (storia di ogni chat, scritta da Composer) e la checklist di chiusura di 6.6 in `fase-6-menu-digitale.md` (cosa è stato consegnato, spuntata da Composer). Composer **non** modifica la tabella.
+Lo stato sta in **un solo posto**: la colonna **Stato** della tabella (§2). Valori: 🔲 da fare; 🔶 fatto da Composer, da controllare; ✅ controllato dalla chat di design, con l'hash del commit. Le schede del §4 non hanno una propria riga di stato.
+
+**Come si aggiorna** (due momenti, e li fa Composer con un prompt: non devi modificare il file a mano):
+1. **Alla fine della sua chat** (passi I e F), nello stesso commit finale, Composer segna la **propria riga** 🔶: solo quella, non ✅, non la riga «Ultimo aggiornamento». È già scritto nel Blocco comune (regola 7) e nei prompt F.
+2. **Dopo il tuo «push fatto» e il mio controllo del repo** (hash, file cambiati, esiti reali, `ui:check`) ti do un **prompt di aggiornamento stato**, già compilato, da incollare nella stessa chat di Composer (o in una chat nuova di Composer, per i passi dell'agente di verifica, che non possono modificare questo file). Segna ✅ con l'hash, aggiorna «Ultimo aggiornamento» e «Prossimi passi», fa un commit locale; tu fai il push. Un passo è ✅ solo quando il mio controllo è passato, **non quando Cursor finisce**.
+
+Per i passi D, RL e M l'aggiornamento lo preparo io con lo stesso prompt (o con lo zip, se ci sono altre modifiche).
+
+**Modello del prompt di aggiornamento stato** (lo compilo io; i campi `<…>` sono quelli che cambiano):
+
+```text
+Aggiornamento stato del piano (nessuna implementazione). Modifica solo
+docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md:
+1. Nella tabella del §2, riga del passo <N>: colonna Stato → «✅ <HASH>».
+2. Sotto la tabella, riga «Ultimo aggiornamento»: «<DATA> (commit `<HASH ULTIMO COMMIT>`).
+   Prossimi passi: <PASSI>.»
+Non cambiare nient'altro. Commit locale con messaggio «docs(piano): 6.6 — passo <N> (<SIGLA>) completato,
+aggiornamento dello stato». Niente push. Rispondi con il diff in una riga.
+```
+
+Gli altri due posti restano come sono: il CHANGELOG (storia di ogni chat, scritta da Composer) e la checklist di chiusura di 6.6 in `fase-6-menu-digitale.md` (cosa è stato consegnato, spuntata da Composer).
 
 ### 1.4 Decisioni già confermate
 
@@ -48,7 +68,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 1 | ✅ e9867a5 | Solo il prompt del passo 1 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` | revisione, nessun codice | nessuna contraddizione, o corretta |
 | 2 | ✅ 6a77311 | — | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci | — | tu committi e pushi i file |
 | 3 | ✅ 2db0723 | Solo il prompt del passo 3 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
-| 4 | 🔲 | Blocco comune + prompt del passo 4 | I0a | Composer | Permessi di cancellazione, registro, matrici | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
+| 4 | 🔶 fatto, da controllare | Blocco comune + prompt del passo 4 | I0a | Composer | Permessi di cancellazione, registro, matrici | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
 | 5 | 🔲 | Blocco comune + prompt del passo 5 | I0b | Composer | Formati dei campi e import | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
 | 6 | 🔲 | — (comando nel terminale) | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
 | 7 | 🔲 | Blocco comune + prompt del passo 7 | I1 | Composer | Fondamenta UI e integrazione | L0 + **L1** `shell,home` | L1 verde; tu pushi |
@@ -99,8 +119,10 @@ REGOLE
 1. Leggi per intero, prima di scrivere codice, i documenti elencati nel prompt. Non assumere nulla oltre la
    documentazione: quello che non è scritto, chiedilo. Non modificare i documenti di design
    (docs/design/schermate/**, docs/design/decisioni-layout-app.md, docs/design/verifica/controlli-*.json)
-   e la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md: le possiede la chat di design. Se trovi un conflitto tra specifica e codice, dichiaralo in Parte A e annotalo
-   come deviazione in Parte D.
+   le possiede la chat di design. Nella tabella degli stati di
+   docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md tocchi solo la riga del tuo passo, come dice la
+   Parte D. Se trovi un conflitto tra specifica e codice, dichiaralo in Parte A e annotalo come deviazione in
+   Parte D.
 2. PARTE A, solo proposta, nessun codice. Rispondi con: (a) i file che crei o modifichi, in ordine;
    (b) ogni ambiguità, contraddizione o punto non coperto che hai trovato, con la lettura che scegli: dichiarala
    ora, prima di scrivere, non a posteriori; (c) le verifiche che farai; (d) quello che NON farai.
@@ -126,7 +148,10 @@ REGOLE
    l'import di produzione). Voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased]: per ogni ambiguità
    risolta scrivi Ufficiale (cosa prevedeva il piano), Percepito (la lettura che hai dichiarato in Parte A),
    Osservato (cosa è successo davvero); esiti di test anche negativi o parziali. Deviazioni annotate nel file di
-   fase, sottofase 6.6. Commit locale (git add + git commit, messaggio che nomina la chat); MAI git push.
+   fase, sottofase 6.6. Nella tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md
+   segna la riga del TUO passo con «🔶 fatto, da controllare» (non ✅, nessun'altra riga, non «Ultimo
+   aggiornamento»: li segna la chat di design dopo il controllo). Commit locale (git add + git commit,
+   messaggio che nomina la chat), con questa modifica inclusa; MAI git push.
 8. RISPOSTA FINALE: tabella «Esiti reali» (cosa hai eseguito, comando, OK / FALLITO / NON PROVATO, evidenza),
    poi deviazioni, poi punti aperti. Non dichiarare fatto ciò che non hai provato.
 ```
@@ -136,8 +161,6 @@ REGOLE
 ## 4. Una scheda per ogni passo
 
 ### Passo 1 — R0: revisione della regola UI (chat breve)
-
-**Stato**: ✅ e9867a5
 
 > Già eseguito (✅ `e9867a5`): il prompt resta qui come riferimento.
 
@@ -164,16 +187,12 @@ Non proporre riscritture lunghe: una correzione per riga.
 
 ### Passo 2 — D1: controlli della shell, della home, della navigazione e di Piatti
 
-**Stato**: ✅ 6a77311
-
 > Già consegnato (✅ `6a77311`).
 
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 2»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
 
 ### Passo 3 — VC1: l'agente implementa i controlli di D1
-
-**Stato**: ✅ 2db0723
 
 > **Esito (2026-10-17)**: accettato con debito. Implementati nel lanciatore: navigazione, shell v4, home-testi e home-righe-di-stato (FALLITO atteso fino a I1: 2 controlli × 2 profili), NO-OVERRIDE, RICOMPILA-ASSENTE (parziale). Con solo cablaggio (NON PROVATO): `home-riga-menu-*` e `piatti-*`, che il passo V successivo completa ed esegue (vedi §1.4, punto 5). Rapporto: `docs/design/verifica/esiti/2026-10-17-controlli/rapporto.md`.
 
@@ -230,12 +249,12 @@ docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, di
 AVVISO e NON PROVATO.
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli del Menù nel lanciatore (VC1)`
 
 ### Passo 4 — I0a: Parte 0, permessi di cancellazione e registro (solo backend)
 
-**Stato**: 🔲
+> **Esito (2026-10-17)**: codice controllato nel repo (`23b934f`, `01c50d6`): predicato solo staff per le categorie, `area` con context/API/ruoli, conteggi con `overrideAccess: true` solo nel `beforeDelete`, matrici di `verify-menu-6_2` e `6_3` aggiornate; test unitari 8/8 (comando `node --experimental-strip-types --test lib/app/*.test.ts`); `verify:menu-6_4` OK con il server di sviluppo avviato. **Debito**: la parte standalone di `verify:menu-availability-final-proofs` resta NON PROVATA in locale (manca il bucket GCS): la coprono i passi 27 e 30. Lezione: `verify:menu-6_4` e `final-proofs` richiedono `pnpm dev` con le variabili d'ambiente dell'intestazione dello script.
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -291,11 +310,9 @@ CHIUSURA: spunta in fase-6, 6.6, solo le voci di Parte 0 che hai davvero provato
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 5 — I0b: formati dei campi e import (solo backend)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -352,11 +369,9 @@ le regole di normalizzazione si fissano su quelli prima dell'import di produzion
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 6 — M1: report a secco dell'import sullo snapshot
-
-**Stato**: 🔲
 
 **Chi**: tu, nel terminale. Nessun prompt di Cursor.
 
@@ -370,8 +385,6 @@ le regole di normalizzazione si fissano su quelli prima dell'import di produzion
 **Cosa succede dopo**: io leggo le forme reali e ti dico se le regole di normalizzazione della chat I0b bastano. Se no, ti preparo una piccola chat di correzione da fare **prima** dell'import di produzione (passo 31). Questo passo non blocca il resto: va fatto prima del passo 31.
 
 ### Passo 7 — I1: fondamenta UI e integrazione
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -417,7 +430,10 @@ COSA FARE
    matita e cestino (nomi accessibili come da spec); foglio dei filtri con etichette rimovibili; conferma di
    eliminazione; blocco degli avvisi; stati di caricamento, errore e vuoto; campo localizzato con traduzione
    inglese a scomparsa (D10); funzioni pure (formato del prezzo con la virgola, singolare e plurale, ordine per
-   nome in italiano, data in lettere). Niente anticipazioni di cose usate da una sola schermata.
+   nome in italiano, data in lettere). Niente anticipazioni di cose usate da una sola schermata. Le chiamate alla Local API per cancellare (e per
+   coerenza ogni scrittura dell'App) passano `context: { [ACTIVITY_AREA_CONTEXT_KEY]: 'app' }` (costante di
+   lib/menu/menuContentDeleteLog.ts, creata nel passo 4): mettila in un solo helper condiviso, così un admin che
+   cancella dall'App risulta `area: app` nel registro.
 6. «Ricompila il menù pubblico»: costruisci il componente (pulsante e finestra di conferma, testi di
    docs/design/schermate/piatti/spec.md) dietro una sola costante spenta (per esempio in lib/menu/). La 6.5 fornirà
    l'endpoint e la accenderà. Finché è spenta, il pulsante e la finestra non compaiono in nessuna schermata e gli
@@ -440,11 +456,9 @@ CHIUSURA: Parte D del blocco comune.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 8 — V1: l'agente esegue L2 su shell, home e navigazione
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -484,19 +498,15 @@ quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibil
 «controllo dubbio».
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V1 (shell, home, navigazione)`
 
 ### Passo 9 — RL1: rilievi di V1
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io).
 **Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
 
 ### Passo 10 — F1: correzione dei P di V1 (solo se ci sono)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -527,16 +537,15 @@ REGOLE
 5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
 6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
    cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
-   F1); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+   F1); MAI git push. Nella tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md
+   segna la riga del passo 10 con «🔶 fatto, da controllare» (solo quella riga) nello stesso commit.
 7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 11 — I2: Piatti (prima schermata accesa)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -567,7 +576,8 @@ COSA FARE (la specifica è il contratto; qui solo l'indice)
    con l'elenco dei menù, letto prima con la sessione dell'utente.
 4. Modulo (foglio): nome e descrizione localizzati con traduzione inglese a scomparsa, prezzo, categoria,
    allergeni, flag (glutenFree, dairyFree, vegan, eggFree), disabilitato; validazione e messaggi come da spec.
-5. Azioni del server nel modello di hours/actions.ts, con la sessione dell'utente e overrideAccess: false.
+5. Azioni del server nel modello di hours/actions.ts, con la sessione dell'utente e overrideAccess: false;
+   ogni cancellazione passa il context di area app (helper di I1).
 6. «Ricompila»: usa il componente di I1 dietro la bandiera spenta; non farlo comparire, e negli avvisi di
    salvataggio e di eliminazione ometti la frase che nomina il pulsante (blocco condiviso di I1).
 7. Simulazioni di sviluppo di I1 (APP_MENU_DEV_SIMULATE_*): leggile nel caricamento dell'elenco e nelle azioni del
@@ -585,11 +595,9 @@ CHIUSURA: Parte D del blocco comune; aggiungi la riga «Piatti: fatto» nella so
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 12 — D3: controlli per Vini, Distillati, Bevande
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 12»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
@@ -597,8 +605,6 @@ CHIUSURA: Parte D del blocco comune; aggiungi la riga «Piatti: fatto» nella so
 Si fa in parallelo con la chat del passo 11 e deve essere pronto prima del passo 15.
 
 ### Passo 13 — V2: l'agente esegue L2 su Piatti (primo elenco, primo modulo, primo foglio)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -638,12 +644,10 @@ quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibil
 «controllo dubbio».
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V2 (Piatti)`
 
 ### Passo 14 — RL2/F2: rilievi di V2 e correzione dei P (solo se ci sono)
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io).
 **Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
@@ -679,16 +683,15 @@ REGOLE
 5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
 6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
    cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
-   F2); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+   F2); MAI git push. Nella tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md
+   segna la riga del passo 14 con «🔶 fatto, da controllare» (solo quella riga) nello stesso commit.
 7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 15 — VC3: l'agente implementa i controlli di Vini, Distillati, Bevande
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -730,12 +733,10 @@ components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispo
 sempre OK, FALLITO, AVVISO e NON PROVATO.
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Vini, Distillati, Bevande nel lanciatore (VC3)`
 
 ### Passo 16 — I3: Vini, Distillati, Bevande
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -776,11 +777,9 @@ prova e poi eliminali (dichiaralo nella risposta); mai dati di prova in produzio
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 17 — D5: controlli per Servizi e Menù fissi
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 17»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
@@ -788,8 +787,6 @@ prova e poi eliminali (dichiaralo nella risposta); mai dati di prova in produzio
 Si fa in parallelo con la chat del passo 16 e deve essere pronto prima del passo 18.
 
 ### Passo 18 — VC4: l'agente implementa i controlli di Servizi e Menù fissi
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -831,12 +828,10 @@ components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispo
 sempre OK, FALLITO, AVVISO e NON PROVATO.
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Servizi e Menù fissi nel lanciatore (VC4)`
 
 ### Passo 19 — I4: Servizi e Menù fissi con Categorie
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -882,11 +877,9 @@ apre la scheda giusta e le briciole sono corrette.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 20 — V4: l'agente esegue L2 mirato sui tipi nuovi
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -924,12 +917,10 @@ quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibil
 «controllo dubbio».
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V4 (Menù fissi, Servizi)`
 
 ### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io).
 **Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
@@ -963,23 +954,20 @@ REGOLE
 5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
 6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
    cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
-   F4); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+   F4); MAI git push. Nella tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md
+   segna la riga del passo 21 con «🔶 fatto, da controllare» (solo quella riga) nello stesso commit.
 7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 22 — D6: controlli per Giorni speciali e Messaggio globale
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 22»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
 
 ### Passo 23 — VC5: l'agente implementa i controlli di Giorni speciali e Messaggio globale
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -1021,12 +1009,10 @@ components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispo
 sempre OK, FALLITO, AVVISO e NON PROVATO.
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Giorni speciali e Messaggio globale nel lanciatore (VC5)`
 
 ### Passo 24 — I5: Giorni speciali e Messaggio globale
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -1070,18 +1056,14 @@ in memoria (dichiaralo). La lettura sul bucket vero NON si prova qui: va nei NON
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 25 — D7: controlli di chiusura (L2 completo e L3)
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 25»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
 
 ### Passo 26 — I6: chiusura della sottofase (solo verifica, documentazione e correzioni minime)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
@@ -1102,7 +1084,11 @@ COSA FARE
    scrivile «NON PROVATO (rinviato alla 6.5)», non FALLITO.
 2. Esegui tutti i verify:* della 6.1–6.4 e quelli nuovi di I0a e I0b; L0 completo; L1 su tutte le schermate del
    Menù (--schermata piatti,vini,distillati,bevande,servizi,menu-fissi,giorni-speciali,messaggio-globale più la
-   shell e la home).
+   shell e la home). Prerequisiti di ambiente: verify:menu-6_4 richiede pnpm dev avviato con le variabili
+   d'ambiente dell'intestazione dello script (oltre al database di sviluppo); verify:menu-availability-final-proofs
+   ha una parte dev (:3000, con le variabili del suo file) eseguibile, e una parte standalone (:3002) che in
+   locale resta NON PROVATA perché manca MENU_AVAILABILITY_GCS_BUCKET (l'avvio production non usa IN_MEMORY): non
+   insistere, la coprono i controlli sul file di disponibilità in produzione (passi 27 e 30).
 3. Correggi solo difetti piccoli e chiari (testi, attributi); per il resto riportali, non risolverli.
 4. CHANGELOG di sottofase 6.6: un solo riepilogo con Ufficiale / Percepito / Osservato per tutte le ambiguità
    delle chat precedenti (riprendile dalle voci già scritte); debiti: i NON PROVATO (compresi quelli rinviati alla 6.5) con il livello in cui
@@ -1116,11 +1102,9 @@ VERIFICHE: quelle del punto 2. Risposta finale: la tabella completa delle checkl
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 27 — M2: deploy in produzione e smoke
-
-**Stato**: 🔲
 
 **Chi**: tu. Nessun prompt di Cursor.
 
@@ -1132,8 +1116,6 @@ VERIFICHE: quelle del punto 2. Risposta finale: la tabella completa delle checkl
 3. Scrivimi «deploy fatto» con l'hash del commit e incollami l'esito dello smoke.
 
 ### Passo 28 — V6: l'agente esegue L2 completo (tutte le schermate, WebKit, online senza credenziali)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -1174,12 +1156,10 @@ quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibil
 «controllo dubbio».
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V6 (Menù completo)`
 
 ### Passo 29 — RL6/F6: rilievi di V6 e correzione dei P (solo se ci sono)
-
-**Stato**: 🔲
 
 **Chi**: la chat di design (io).
 **Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
@@ -1213,16 +1193,15 @@ REGOLE
 5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
 6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
    cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
-   F6); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+   F6); MAI git push. Nella tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md
+   segna la riga del passo 29 con «🔶 fatto, da controllare» (solo quella riga) nello stesso commit.
 7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 30 — M3/D9: L3, sessione reale su Cloud Run e giro su iPhone
-
-**Stato**: 🔲
 
 **Chi**: tu e la chat di design. Nessun prompt di Cursor.
 
@@ -1244,8 +1223,6 @@ REGOLE
 8. Un'eliminazione di una voce di prova con la conferma (testo leggibile, pulsanti raggiungibili).
 
 ### Passo 31 — I7: import di produzione 6.8 (sessione con passaggi esterni)
-
-**Stato**: 🔲
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto (che sostituisce la regola 6 «mai produzione» del Blocco comune).
 
@@ -1280,12 +1257,10 @@ conteggi coincidono. CHANGELOG con gli esiti reali (anche parziali). Commit loca
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 In più: **prima di dare il «vai» a ogni comando che tocca la produzione, incollami il comando e aspetta il mio ok**; il backup di Cloud SQL lo fai tu e mi scrivi «backup fatto».
 
 ### Passo 32 — Dopo la 6.6: 6.9 e 6.5
-
-**Stato**: 🔲
 
 Non c'è un prompt in questo documento: la 6.9 (scaffold del frontend) e la 6.5 (rebuild) hanno le loro sottofasi in `fase-6-menu-digitale.md`, e li preparo quando la 6.6 è chiusa (passo 31 ✅). La 6.5 accende la bandiera del pulsante «Ricompila il menù pubblico» e prova ciò che qui è NON PROVATO «rinviato alla 6.5»: vedi §7.
 

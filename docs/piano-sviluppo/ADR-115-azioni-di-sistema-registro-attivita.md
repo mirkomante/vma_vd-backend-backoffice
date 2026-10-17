@@ -63,3 +63,8 @@ Non modifica la decisione. Ogni cancellazione di `dishes`, `wines`, `spirits`, `
 - Migrazione applicata: `migrations/20261013_110424_activity_log_6_4.ts` (primo consumatore; su Cloud SQL prod **prima** del push che contiene il codice 6.4).
 - `logSystemAction` in `lib/activityLog/logSystemAction.ts`.
 - Reset Scheduler: `detail` tipo `availability-reset: ok; boundary=<ISO>` o `availability-reset: baseline; boundary=<ISO>` (primo tick senza stato precedente: solo baseline, nessun azzeramento `soldOut`).
+
+## Nota di chiarimento (2026-10-17, cancellazioni senza utente e area della riga)
+
+Non cambia la decisione né lo schema. Precisa due punti della nota del 2026-10-14. (1) La riga `delete` si scrive **solo se la cancellazione ha un utente** (`req.user`): le cancellazioni senza utente, come la pulizia di uno script con `overrideAccess: true`, non lasciano riga (evita voci spurie dagli script di prova e di svuotamento). (2) `area` si risolve in quest'ordine: la chiave `activityArea` del `context` della Local API (`'app'` o `'admin'`, costante `ACTIVITY_AREA_CONTEXT_KEY` in `lib/menu/menuContentDeleteLog.ts`); altrimenti `admin` se la richiesta arriva dall'API REST o GraphQL (il pannello Admin); altrimenti dai ruoli dell'utente. Le azioni del server dell'App passano sempre `context: { activityArea: 'app' }`, così un admin che cancella dall'App risulta `app`. Il campo `detail` ha il formato `nome={testo}; riferimenti={n}`; per i giorni speciali `nome=AAAA-MM-GG ambito={day|lunch|dinner}; riferimenti=0`.
+
