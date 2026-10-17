@@ -1,11 +1,11 @@
 # Esito verifica — locale-prod — 2026-10-17
-Commit: 3a27e4add3b9 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 10 min 5 s
+Commit: 34675680cec8 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 6 min 17 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 449 · FALLITO: 1 · AVVISO: 8 · NON PROVATO: 96 · Controlli distinti nel JSON corrente: 28
+OK: 376 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 98 · Controlli distinti nel JSON corrente: 28
 
 ## Pacchetto: accesso
-Righe: 56 · OK: 56 · FALLITO: 0
+Righe: 60 · OK: 60 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
@@ -17,10 +17,10 @@ Righe: 58 · OK: 58 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 217 · OK: 193 · FALLITO: 1
+Righe: 121 · OK: 112 · FALLITO: 0
 
 ### FALLITO (menu)
-- **C2** | piatti/elimina-libero | telefono-390/scuro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina-libero
+- (nessuno)
 
 ## Pacchetto: orari
 Righe: 110 · OK: 107 · FALLITO: 0
@@ -29,7 +29,7 @@ Righe: 110 · OK: 107 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: completo
-Righe: 113 · OK: 35 · FALLITO: 0
+Righe: 125 · OK: 39 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -78,29 +78,22 @@ Righe: 113 · OK: 35 · FALLITO: 0
 - **piatti-terminato**: OK in 1/1 combinazioni
 - **piatti-testi**: OK in 1/1 combinazioni
 - **RICOMPILA-ASSENTE**: OK in 1/1 combinazioni
-- **AMBIENTE**: OK in 35/36 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C1**: OK in 96/101 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2**: OK in 63/67 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2-mouse**: OK in 40/51 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C3**: OK in 96/101 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C9**: OK in 35/36 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **AMBIENTE**: OK in 39/40 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C1**: OK in 66/69 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2**: OK in 64/67 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2-mouse**: OK in 18/19 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C3**: OK in 66/69 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C9**: OK in 39/40 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-colonne**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-larghezza**: OK in 4/5 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-righe-di-stato**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-testi**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
-- **C2** | piatti/elimina-libero | telefono-390/scuro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina-libero
+- (nessuno)
 
 ### AVVISO
-- **C2-mouse** | piatti/modulo-allergeni | notebook-1280/chiaro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: modulo-allergeni
-- **C2-mouse** | piatti/modulo-allergeni | notebook-1280/scuro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: modulo-allergeni
-- **C2-mouse** | piatti/nuovo | notebook-1280/chiaro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: nuovo
-- **C2-mouse** | piatti/nuovo | notebook-1280/scuro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: nuovo
-- **C2-mouse** | piatti/nuovo-errori | notebook-1280/chiaro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: nuovo-errori
-- **C2-mouse** | piatti/nuovo-errori | notebook-1280/scuro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: nuovo-errori
-- **C2-mouse** | piatti/errore-azione | notebook-1280/chiaro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: errore-azione
-- **C2-mouse** | piatti/errore-azione | notebook-1280/scuro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: errore-azione
+- (nessuno)
 
 ### NON PROVATO
 - **AMBIENTE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
@@ -184,18 +177,20 @@ Righe: 113 · OK: 35 · FALLITO: 0
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **C1** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
 - **C2** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
 - **C3** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
-- **C1** | piatti/vuoto | notebook-1280/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
-- **C3** | piatti/vuoto | notebook-1280/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
-- **C2-mouse** | piatti/vuoto | notebook-1280/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `altezza mouse` | evidenza: vuoto
 - **C1** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
 - **C2** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
 - **C3** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
-- **C1** | piatti/vuoto | notebook-1280/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
-- **C3** | piatti/vuoto | notebook-1280/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
-- **C2-mouse** | piatti/vuoto | notebook-1280/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `altezza mouse` | evidenza: vuoto
 - **NO-OVERRIDE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
@@ -204,12 +199,12 @@ Righe: 113 · OK: 35 · FALLITO: 0
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | NON PROVATO (35/36) |
-| C1 | NON PROVATO (96/101) |
-| C2 | FALLITO (63/67) |
-| C2-mouse | AVVISO (40/51) |
-| C3 | NON PROVATO (96/101) |
-| C9 | NON PROVATO (35/36) |
+| AMBIENTE | NON PROVATO (39/40) |
+| C1 | NON PROVATO (66/69) |
+| C2 | NON PROVATO (64/67) |
+| C2-mouse | NON PROVATO (18/19) |
+| C3 | NON PROVATO (66/69) |
+| C9 | NON PROVATO (39/40) |
 | NO-OVERRIDE | NON PROVATO (0/1) |
 | RICOMPILA-ASSENTE | OK (1/1) |
 | piatti-azioni-pagina | OK (2/2) |
@@ -317,27 +312,20 @@ Righe: 113 · OK: 35 · FALLITO: 0
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| C2-mouse | piatti/modulo-allergeni | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | modulo-allergeni |
-| C2-mouse | piatti/modulo-allergeni | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | modulo-allergeni |
-| C2-mouse | piatti/nuovo | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo |
-| C2-mouse | piatti/nuovo | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo |
-| C2-mouse | piatti/nuovo-errori | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo-errori |
-| C2-mouse | piatti/nuovo-errori | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo-errori |
-| C2 | piatti/elimina-libero | telefono-390/scuro | FALLITO | Indietro 274x42; Elimina 274x42 | nessun elemento sotto 44 px | elimina-libero |
-| C2-mouse | piatti/errore-azione | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | errore-azione |
-| C2-mouse | piatti/errore-azione | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | errore-azione |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | C1 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
 | C2 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
 | C3 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
-| C1 | piatti/vuoto | notebook-1280/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
-| C3 | piatti/vuoto | notebook-1280/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
-| C2-mouse | piatti/vuoto | notebook-1280/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | altezza mouse | vuoto |
 | C1 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
 | C2 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
 | C3 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
-| C1 | piatti/vuoto | notebook-1280/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
-| C3 | piatti/vuoto | notebook-1280/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
-| C2-mouse | piatti/vuoto | notebook-1280/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | altezza mouse | vuoto |
 | NO-OVERRIDE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
