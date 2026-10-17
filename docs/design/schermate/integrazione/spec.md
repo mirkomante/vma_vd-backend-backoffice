@@ -72,7 +72,7 @@ Una scheda per ogni sezione consentita (D2), nell'ordine Prenotazioni, Menù, Or
 - Stati (D2): **dati** → la riga con il testo; **zero** → «Nessun piatto terminato»; **caricamento** → `Skeleton` alla stessa altezza della riga; **errore di lettura** → la riga non compare e la scheda resta navigabile.
 - La riga compare solo per chi vede la sezione Menù (`canAccessSection(user, 'menu')`), come la scheda.
 - La scheda collega a `/app/menu` (Piatti), come oggi.
-- **Titolo della home** (precisazione del 2026-10-16): «Oggi» e «Situazione di oggi e accesso alle sezioni.» **appena almeno una scheda ha una riga di stato attiva**, cioè dalla chat I1 della 6.6 per chi vede il Menù; «Area App» e «Scegli una sezione.» se nessuna riga è attiva. Le righe di Prenotazioni e Orari si accendono con le loro sottofasi e non sono richieste dalla 6.6.
+- **Titolo della home** (precisazione del 2026-10-16, rivista il 2026-10-17): «Oggi» e «Situazione di oggi e accesso alle sezioni.» quando **almeno una scheda ha una riga di stato prevista per l'utente** (dalla chat I1 della 6.6: la scheda Menù, per chi vede la sezione Menù), a prescindere dall'esito della lettura: con la lettura in errore la riga non compare ma il titolo resta «Oggi», così il titolo non aspetta il dato e non salta; «Area App» e «Scegli una sezione.» se nessuna riga è prevista. Le righe di Prenotazioni e Orari si accendono con le loro sottofasi e non sono richieste dalla 6.6.
 
 ## 4. Titoli di pagina
 
@@ -154,7 +154,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 3. **Regola del percorso più lungo** per voce attiva e briciole, con le sotto-pagine in una costante.
 4. **Nessuna cache** sul conteggio della riga: una piccola richiesta a ogni apertura di `/app`.
 5. **Home senza il pulsante «Ricompila»**: nessuna scorciatoia in home.
-6. **Titolo della home «Oggi»** appena una riga di stato è attiva (non solo quando lo sono tutte e tre).
+6. **Titolo della home «Oggi»** appena una riga di stato è prevista per l'utente (non solo quando lo sono tutte e tre), indipendentemente dall'esito della lettura.
 7. **Conteggio con i disabilitati esclusi** anche se `soldOut` è vero.
 8. **Avvisi senza la frase sul pulsante** finché la bandiera di «Ricompila» è spenta (sezione 5).
 
