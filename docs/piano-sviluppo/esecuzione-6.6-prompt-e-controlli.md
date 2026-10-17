@@ -76,7 +76,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 9 | ✅ 3c3b777 (nessun P) | — | RL1 | Design | Leggo il rapporto: rilievi P e A | — | nessun P aperto |
 | 10 | — non necessario (nessun P) | Solo il prompt del passo 10, se ci sono P | F1 | Composer | Correzione dei P di V1, solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |
 | 11 | ✅ f4ffb96 | Blocco comune + prompt del passo 11 | I2 | Composer | **Piatti** | L0 + **L1** `piatti` | L1 verde; tu pushi |
-| 12 | 🔲 | — | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
+| 12 | ✅ 6507cde | — | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
 | 13 | 🔶 incompleto: da rifare dopo F2 (V2 bis) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
 | 14 | 🔲 F2 da lanciare (P1–P6 assegnati) | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
 | 15 | 🔲 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-17 (commit `71858b4`). **Prossimi passi**: 12 (D3) e 13 (V2), in parallelo.
+**Ultimo aggiornamento**: 2026-10-17 (commit `6507cde`). **Prossimi passi**: 14 (F2), poi 14b (V2 bis).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -600,6 +600,8 @@ CHIUSURA: Parte D del blocco comune; aggiungi la riga «Piatti: fatto» nella so
 **Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
 
 ### Passo 12 — D3: controlli per Vini, Distillati, Bevande
+
+> **Consegnato (2026-10-17)**: in `docs/design/verifica/controlli-6.6.json` ci sono le schermate `vini` (31 controlli), `distillati` (26) e `bevande` (26), ricavate dalla §9 e dalle sezioni 4–7 delle tre specifiche, con lo stesso scheletro di Piatti e i controlli specifici (vini: anno e NV, cascata e filtri dell'origine, opzioni filtrate nella query, valore fuori filtro, coerenza geografica; distillati: capacità non gestita; bevande: paese facoltativo). I controlli sul pulsante «Ricompila» e lo stato «vuoto» sono NON PROVATI; `*-accesso` è NON PROVABILE (coperto da `verify-roles-8_3`). Li implementa nel lanciatore il passo 15 (VC3).
 
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 12»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
