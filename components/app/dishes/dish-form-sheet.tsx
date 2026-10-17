@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { LocalizedTranslationCollapsible } from '@/components/app/menu/localized-translation-collapsible'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -31,8 +31,8 @@ import type { DishFormValues } from '@/lib/app/dishes/types'
 import {
   PIATTI_ACTION_ERROR_DESCRIPTION,
   PIATTI_ACTION_ERROR_TITLE,
+  PIATTI_FORM_ALLERGENS,
   PIATTI_FORM_ALLERGENS_HINT,
-  PIATTI_FORM_ALLERGENS_SELECTED_PREFIX,
   PIATTI_FORM_CANCEL,
   PIATTI_FORM_CATEGORY,
   PIATTI_FORM_CATEGORY_PLACEHOLDER,
@@ -97,6 +97,11 @@ export function DishFormSheet({
   )
 
   const soldOutDescription = formatSoldOutSwitchDescription(now, serviceHours)
+
+  const categorySelectItems = useMemo(
+    () => Object.fromEntries(categories.map((cat) => [String(cat.id), cat.name])),
+    [categories],
+  )
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -164,57 +169,61 @@ export function DishFormSheet({
               </Field>
             </LocalizedTranslationCollapsible>
 
-            <Field>
-              <FieldLabel htmlFor={DISH_FIELD_DOM_IDS.price}>{PIATTI_FORM_PRICE}</FieldLabel>
-              <Input
-                id={DISH_FIELD_DOM_IDS.price}
-                inputMode="decimal"
-                value={values.priceInput}
-                aria-invalid={Boolean(fieldErrors.price)}
-                onChange={(e) => setValues((v) => ({ ...v, priceInput: e.target.value }))}
-              />
-              <FieldError>{fieldErrors.price}</FieldError>
-            </Field>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor={DISH_FIELD_DOM_IDS.price}>{PIATTI_FORM_PRICE}</FieldLabel>
+                <Input
+                  id={DISH_FIELD_DOM_IDS.price}
+                  inputMode="decimal"
+                  value={values.priceInput}
+                  aria-invalid={Boolean(fieldErrors.price)}
+                  onChange={(e) => setValues((v) => ({ ...v, priceInput: e.target.value }))}
+                />
+                <FieldError>{fieldErrors.price}</FieldError>
+              </Field>
 
-            <Field>
-              <FieldLabel htmlFor={DISH_FIELD_DOM_IDS.categoryId}>{PIATTI_FORM_CATEGORY}</FieldLabel>
-              <Select
-                value={values.categoryId || undefined}
-                onValueChange={(value) => setValues((v) => ({ ...v, categoryId: value ?? '' }))}
-              >
-                <SelectTrigger
-                  id={DISH_FIELD_DOM_IDS.categoryId}
-                  aria-invalid={Boolean(fieldErrors.categoryId)}
+              <Field>
+                <FieldLabel htmlFor={DISH_FIELD_DOM_IDS.categoryId}>{PIATTI_FORM_CATEGORY}</FieldLabel>
+                <Select
+                  items={categorySelectItems}
+                  value={values.categoryId || undefined}
+                  onValueChange={(value) => setValues((v) => ({ ...v, categoryId: value ?? '' }))}
                 >
-                  <SelectValue placeholder={PIATTI_FORM_CATEGORY_PLACEHOLDER} />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FieldError>{fieldErrors.categoryId}</FieldError>
-            </Field>
+                  <SelectTrigger
+                    id={DISH_FIELD_DOM_IDS.categoryId}
+                    className="w-full"
+                    aria-invalid={Boolean(fieldErrors.categoryId)}
+                  >
+                    <SelectValue placeholder={PIATTI_FORM_CATEGORY_PLACEHOLDER} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={String(cat.id)}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FieldError>{fieldErrors.categoryId}</FieldError>
+              </Field>
+            </div>
 
             <Field>
-              <FieldLabel>{PIATTI_FORM_ALLERGENS_HINT}</FieldLabel>
+              <FieldLabel>{PIATTI_FORM_ALLERGENS}</FieldLabel>
               <p className="text-sm text-muted-foreground">
-                {PIATTI_FORM_ALLERGENS_SELECTED_PREFIX}
-                {values.allergenIds.length}.
+                {PIATTI_FORM_ALLERGENS_HINT} Selezionati: {values.allergenIds.length}.
               </p>
               <ToggleGroup
                 multiple
+                variant="outline"
                 value={values.allergenIds}
                 onValueChange={(next) =>
                   setValues((v) => ({ ...v, allergenIds: [...(next as string[])] }))
                 }
-                className="flex flex-wrap justify-start gap-2"
+                className="flex w-full flex-wrap justify-start gap-2"
               >
                 {allergens.map((a) => (
-                  <ToggleGroupItem key={a.id} value={a.id} className="text-xs">
+                  <ToggleGroupItem key={a.id} value={String(a.id)}>
                     {a.name}
                   </ToggleGroupItem>
                 ))}
@@ -297,16 +306,6 @@ export function DishFormSheet({
         <SheetFooter className="flex-row gap-2">
           <Button
             type="button"
-            variant="outline"
-            size="lg"
-            className="flex-1"
-            disabled={saving}
-            onClick={() => onOpenChange(false)}
-          >
-            {PIATTI_FORM_CANCEL}
-          </Button>
-          <Button
-            type="button"
             size="lg"
             className="flex-1"
             disabled={saving}
@@ -314,6 +313,16 @@ export function DishFormSheet({
           >
             {saving ? <Spinner className="size-4" aria-hidden /> : null}
             {saving ? PIATTI_FORM_SAVE_PENDING : PIATTI_FORM_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="flex-1"
+            disabled={saving}
+            onClick={() => onOpenChange(false)}
+          >
+            {PIATTI_FORM_CANCEL}
           </Button>
         </SheetFooter>
       </SheetContent>

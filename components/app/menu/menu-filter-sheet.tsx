@@ -39,13 +39,13 @@ export function MenuFilterSheet({
           <SheetTitle>{title}</SheetTitle>
           {description ? <p className="text-sm text-muted-foreground">{description}</p> : null}
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-4">{children}</div>
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-4">{children}</div>
         <SheetFooter className="flex-row gap-2">
-          <Button type="button" variant="outline" size="lg" className="flex-1" onClick={onReset}>
-            Azzera
-          </Button>
           <Button type="button" size="lg" className="flex-1" onClick={onApply}>
             Applica
+          </Button>
+          <Button type="button" variant="outline" size="lg" className="flex-1" onClick={onReset}>
+            Azzera
           </Button>
         </SheetFooter>
       </SheetContent>

@@ -25,7 +25,7 @@ export function LocalizedTranslationCollapsible({
 }: LocalizedTranslationCollapsibleProps) {
   return (
     <Collapsible open={open} onOpenChange={onOpenChange}>
-      <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-left text-sm">
+      <CollapsibleTrigger className="flex min-h-11 w-full items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-left text-sm">
         <span>Traduzione inglese (facoltativa)</span>
         <span className="flex items-center gap-2">
           <Badge variant="outline">{hasEnglish ? 'Presente' : 'Manca'}</Badge>

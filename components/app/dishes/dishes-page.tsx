@@ -1,6 +1,6 @@
 'use client'
 
-import { Filter } from 'lucide-react'
+import { Plus, Search, SlidersHorizontal } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import {
@@ -360,14 +360,33 @@ export function DishesPage({ context }: DishesPageProps) {
 
   const soldOutToastExtra = formatSoldOutToastExpiry(now, context.serviceHours)
 
+  const filterCategoryItems = useMemo(
+    () => ({
+      all: PIATTI_FILTERS_ALL_CATEGORIES,
+      ...Object.fromEntries(context.categories.map((c) => [String(c.id), c.name])),
+    }),
+    [context.categories],
+  )
+
+  const filterStatusItems = useMemo(
+    () => ({
+      all: PIATTI_FILTERS_ALL_STATES,
+      available: PIATTI_FILTER_STATE_AVAILABLE,
+      soldOut: PIATTI_FILTER_STATE_SOLD_OUT,
+      disabled: PIATTI_FILTER_STATE_DISABLED,
+    }),
+    [],
+  )
+
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 pb-8">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 pb-8">
       <MenuPageHeader
         title={PIATTI_PAGE_TITLE}
         description={PIATTI_PAGE_DESCRIPTION}
         showRebuild={false}
         primaryAction={
           <Button type="button" size="lg" className="w-full md:w-auto" onClick={openNewForm}>
+            <Plus data-icon="inline-start" aria-hidden />
             {PIATTI_NEW_BUTTON}
           </Button>
         }
@@ -423,14 +442,20 @@ export function DishesPage({ context }: DishesPageProps) {
 
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
-          <Input
-            placeholder={PIATTI_SEARCH_PLACEHOLDER}
-            value={query.search}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="flex-1"
-          />
+          <div className="relative min-w-0 flex-1">
+            <Search
+              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+            <Input
+              placeholder={PIATTI_SEARCH_PLACEHOLDER}
+              value={query.search}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-9"
+            />
+          </div>
           <Button type="button" variant="outline" onClick={() => setFiltersOpen(true)}>
-            <Filter className="size-4" aria-hidden />
+            <SlidersHorizontal className="size-4" aria-hidden />
             {PIATTI_FILTERS_BUTTON}
             {activeFilterCount > 0 ? (
               <Badge variant="default" className="ml-1">{activeFilterCount}</Badge>
@@ -511,11 +536,12 @@ export function DishesPage({ context }: DishesPageProps) {
         <Field>
           <FieldLabel>Categoria</FieldLabel>
           <Select
+            items={filterCategoryItems}
             value={draftQuery.categoryId || 'all'}
             onValueChange={(v) =>
               setDraftQuery((q) => ({
                 ...q,
-                categoryId: v === 'all' || v == null ? '' : v,
+                categoryId: v === 'all' || v == null ? '' : String(v),
               }))
             }
           >
@@ -525,7 +551,7 @@ export function DishesPage({ context }: DishesPageProps) {
             <SelectContent>
               <SelectItem value="all">{PIATTI_FILTERS_ALL_CATEGORIES}</SelectItem>
               {context.categories.map((c) => (
-                <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -533,6 +559,7 @@ export function DishesPage({ context }: DishesPageProps) {
         <Field>
           <FieldLabel>Stato</FieldLabel>
           <Select
+            items={filterStatusItems}
             value={draftQuery.status}
             onValueChange={(v) =>
               setDraftQuery((q) => ({ ...q, status: v as DishListStatusFilter }))

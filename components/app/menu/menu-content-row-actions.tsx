@@ -31,15 +31,17 @@ export function MenuContentRowActions({
 }: MenuContentRowActionsProps) {
   return (
     <div className="flex shrink-0 items-center gap-0">
-      {showToggleLabel ? (
-        <span className="mr-1 text-xs text-muted-foreground">{toggleLabel}</span>
-      ) : null}
-      <Switch
-        checked={toggleChecked}
-        disabled={toggleDisabled}
-        onCheckedChange={onToggleChange}
-        aria-label={`${toggleLabel}: ${itemName}`}
-      />
+      <div className="flex flex-col items-center gap-0.5">
+        <Switch
+          checked={toggleChecked}
+          disabled={toggleDisabled}
+          onCheckedChange={onToggleChange}
+          aria-label={`${toggleLabel}: ${itemName}`}
+        />
+        {showToggleLabel ? (
+          <span className="text-xs text-muted-foreground">{toggleLabel}</span>
+        ) : null}
+      </div>
       <Button
         type="button"
         variant="ghost"

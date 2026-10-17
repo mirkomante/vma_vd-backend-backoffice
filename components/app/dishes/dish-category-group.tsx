@@ -10,6 +10,7 @@ import {
   PIATTI_COLUMN_STATUS,
 } from '@/lib/menu/dishes/copy'
 import type { DishCategoryGroup, DishListRow } from '@/lib/menu/dishes/groupByCategory'
+import { pluralizeIt } from '@/lib/menu/display/pluralizeIt'
 import {
   Table,
   TableBody,
@@ -42,7 +43,12 @@ export function DishCategoryGroupBlock({
 }: DishCategoryGroupBlockProps) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="text-base font-semibold">{group.heading}</h2>
+      <h2 className="text-base">
+        <span className="font-semibold">{group.categoryName}</span>
+        <span className="ml-1.5 text-sm font-normal text-muted-foreground">
+          {pluralizeIt(group.dishes.length, 'piatto', 'piatti')}
+        </span>
+      </h2>
       <div className="hidden md:block">
         <Table className="table-fixed">
           <TableHeader>

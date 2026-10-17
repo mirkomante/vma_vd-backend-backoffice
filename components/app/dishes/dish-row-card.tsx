@@ -47,22 +47,20 @@ export function DishRowCard({
       className={disabledRow ? 'opacity-50' : undefined}
       aria-label={`${dish.name}, ${formatMenuPriceEuro(dish.price)}, ${statusLabel}`}
     >
-      <CardContent className="flex items-start justify-between gap-2 p-3">
+      <CardContent className="flex items-center justify-between gap-2 p-3">
         <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 items-baseline justify-between gap-2">
-            <p className="truncate font-medium">{dish.name}</p>
-            <p className="shrink-0 text-sm text-muted-foreground">
-              {formatMenuPriceEuro(dish.price)}
-            </p>
+          <p className="truncate font-medium">{dish.name}</p>
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+            <p className="text-sm text-muted-foreground">{formatMenuPriceEuro(dish.price)}</p>
+            {status !== 'available' ? (
+              <>
+                <Badge variant={status === 'disabled' ? 'secondary' : 'default'}>
+                  {status === 'soldOut' ? PIATTI_STATUS_SOLD_OUT : PIATTI_STATUS_DISABLED}
+                </Badge>
+                {expiry ? <span className="text-xs text-muted-foreground">{expiry}</span> : null}
+              </>
+            ) : null}
           </div>
-          {status !== 'available' ? (
-            <div className="mt-1 flex flex-col gap-0.5">
-              <Badge variant={status === 'disabled' ? 'secondary' : 'default'}>
-                {status === 'soldOut' ? PIATTI_STATUS_SOLD_OUT : PIATTI_STATUS_DISABLED}
-              </Badge>
-              {expiry ? <span className="text-xs text-muted-foreground">{expiry}</span> : null}
-            </div>
-          ) : null}
         </div>
         <MenuContentRowActions
           itemName={dish.name}

@@ -50,6 +50,7 @@ export const PIATTI_FORM_TRANSLATION_HINT = 'Facoltativa. Se resta vuota, il men
 export const PIATTI_FORM_PRICE = 'Prezzo (€)'
 export const PIATTI_FORM_CATEGORY = 'Categoria'
 export const PIATTI_FORM_CATEGORY_PLACEHOLDER = 'Scegli'
+export const PIATTI_FORM_ALLERGENS = 'Allergeni'
 export const PIATTI_FORM_ALLERGENS_HINT = 'Seleziona quelli presenti nel piatto.'
 export const PIATTI_FORM_ALLERGENS_SELECTED_PREFIX = ' Selezionati: '
 export const PIATTI_FORM_GLUTEN_FREE = 'Senza glutine'
