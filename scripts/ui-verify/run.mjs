@@ -50,8 +50,10 @@ import {
   checkAccPaddingScheda,
   checkAccCentratura,
   checkHomeTesti,
-  checkHomeNessunaRigaStato,
+  checkHomeRigheDiStato,
   checkHomeColonne,
+  buildPercorsoAttesoMap,
+  isSegnapostoMain,
   checkHomeLarghezza,
   checkShellBarraAlta,
   checkShellMargineContenuto,
@@ -76,9 +78,17 @@ import {
   runOrariConsole,
   runOrariCampiDentroSchedaDevBrowsers,
 } from './lib/run-orari.mjs'
+import {
+  runMenuChecks,
+  runMenuComuniChecks,
+  runMenuDevSimulations,
+  runMenuConsole,
+  buildShellHomeExpected,
+} from './lib/run-menu.mjs'
+import { loadNavExpectations } from './lib/lib-readers.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
-const DATA = '2026-10-12'
+const DATA = '2026-10-17'
 
 /** @type {import('./lib/perimeter.mjs').ReturnType<typeof createRunContext>} */
 let runCtx
@@ -100,6 +110,21 @@ const SHOT_TEMI = ['chiaro', 'scuro']
 
 let testUser = { email: null }
 let testPassword = null
+/** @type {ReturnType<typeof loadNavExpectations> | null} */
+let navExpectations = null
+
+function menuScreensInScope() {
+  return (
+    runCtx.screenIncluded('home') ||
+    runCtx.screenIncluded('navigazione') ||
+    runCtx.screenIncluded('piatti')
+  )
+}
+
+function ensureNavExpectations() {
+  if (!navExpectations) navExpectations = loadNavExpectations()
+  return navExpectations
+}
 
 function gitCommit() {
   const r = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' })
@@ -508,6 +533,10 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
     report.addNonProvato('shell-admin-link', 'NON PROVABILE con utente solo App (adminRole none)')
   }
 
+  if (menuScreensInScope() || controlliBasename.includes('6.6')) {
+    runMenuComuniChecks(report, runCtx, addRow, { ambiente: 'locale-prod' })
+  }
+
   const accessScreens = CONTROLLI.schermate.filter((s) => s.fuori_dalla_shell && runCtx.screenIncluded(s.id))
   const profiliAll = runCtx.profiliAccess()
   const temiAll = runCtx.temiKeys()
@@ -606,6 +635,30 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
     await runOrariChecks(orariCtx)
   }
 
+  if (menuScreensInScope()) {
+    report.replacePacchetto('menu')
+    report.pacchettoDefault = 'menu'
+    const nav = ensureNavExpectations()
+    await runMenuChecks({
+      browser,
+      baseUrl,
+      report,
+      runCtx,
+      CONTROLLI,
+      newPage,
+      loginApp,
+      testUser,
+      testPassword,
+      addRow,
+      progressStep,
+      resultToEsito,
+      screenshot,
+      SHOT_PROFILES,
+      SHOT_TEMI,
+      navJson: nav,
+    })
+  }
+
   const shell = CONTROLLI.schermate.find((s) => s.id === 'shell')
   if (runCtx.screenIncluded('shell')) {
     report.replacePacchetto('shell')
@@ -616,6 +669,12 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
     report.meta.browsers = `Chromium ${browserVersion}`
     return
   }
+
+  const percorsoMap = buildPercorsoAttesoMap(ensureNavExpectations())
+  const shellHomeExpected = buildShellHomeExpected(CONTROLLI, navExpectations)
+  const segnapostoPercorsi = new Set(
+    shell.controlli?.find((c) => c.id === 'shell-segnaposto')?.percorsi ?? ['/app/reservations'],
+  )
 
   for (const g of shell.guardia) {
     if (!runCtx.shouldRun(g.id)) continue
@@ -676,10 +735,12 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
         addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
 
         if (stato.id === 'home' && temaKey === 'chiaro') {
-          r = await checkHomeTesti(page)
+          r = await checkHomeTesti(page, shellHomeExpected)
           addRow(report, { id: 'home-testi', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
-          r = await checkHomeNessunaRigaStato(page)
-          addRow(report, { id: 'home-nessuna-riga-di-stato', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
+          if (runCtx.shouldRun('home-righe-di-stato')) {
+            r = await checkHomeRigheDiStato(page)
+            addRow(report, { id: 'home-righe-di-stato', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
+          }
           r = await checkHomeColonne(page, profiloKey)
           addRow(report, { id: 'home-colonne', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }
@@ -701,7 +762,7 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
           addRow(report, { id: 'shell-passaggio-768', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }
         if (profiloKey === 'notebook-1280' && stato.id === 'home' && temaKey === 'chiaro') {
-          r = await checkShellMenuVoci(page)
+          r = await checkShellMenuVoci(page, ensureNavExpectations())
           addRow(report, { id: 'shell-menu-voci', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
           r = await checkShellBloccoInCima(page)
           addRow(report, { id: 'shell-blocco-in-cima', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
@@ -759,21 +820,28 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
             evidenza: stato.percorso,
           })
         }
-        r = await checkShellPercorsoVoceAttiva(page, stato.percorso, { report })
+        r = await checkShellPercorsoVoceAttiva(page, stato.percorso, { report, percorsoMap })
         addRow(report, { id: 'shell-percorso-voce-attiva', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
 
         r = await checkShellNomiAccessibili(page)
         addRow(report, { id: 'shell-nomi-accessibili', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
 
-        if (stato.id !== 'home' && temaKey === 'chiaro' && profiloKey === 'telefono-390') {
+        if (
+          stato.id !== 'home' &&
+          temaKey === 'chiaro' &&
+          profiloKey === 'telefono-390' &&
+          runCtx.shouldRun('shell-segnaposto') &&
+          segnapostoPercorsi.has(stato.percorso)
+        ) {
           const h1 = await page.locator('h1').innerText()
           const desc = await page.locator('main p').first().innerText()
           const expH1 = SEGNAPOSTO_H1[stato.percorso]
+          const isPlaceholder = await isSegnapostoMain(page)
           addRow(report, {
             id: 'shell-segnaposto',
             schermata: sch,
             profiloTema: pt,
-            esito: h1 === expH1 && desc.includes('Questa sezione sarà disponibile a breve.') ? 'OK' : 'FALLITO',
+            esito: isPlaceholder && h1 === expH1 ? 'OK' : 'FALLITO',
             misurato: `${h1} / ${desc.slice(0, 40)}`,
             atteso: `${expH1} + descrizione segnaposto`,
             evidenza: stato.percorso,
@@ -1140,6 +1208,24 @@ async function main() {
           CONTROLLI = saved.c
           controlliBasename = saved.b
           runCtx = createRunContext(CONTROLLI, saved.cli)
+        }
+
+        if (menuScreensInScope()) {
+          report.replacePacchetto('menu')
+          report.pacchettoDefault = 'menu'
+          await runMenuDevSimulations({ report, runCtx, addRow })
+          await runMenuConsole({
+            browser: devBrowser,
+            baseUrl: devBaseUrl(),
+            report,
+            runCtx,
+            newPage,
+            loginApp,
+            testUser,
+            testPassword,
+            addRow,
+            progressStep,
+          })
         }
 
         if (runCtx.screenIncluded('orari') || devL2Combined) {

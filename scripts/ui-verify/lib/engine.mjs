@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.2.1'
+export const LAUNCHER_VERSION = '3.3.0'
 
 let shellPercorsoPiattiDiagnosticDone = false
 
@@ -26,11 +26,32 @@ const ENGLISH_A11Y = [
   'Displays the mobile sidebar',
 ]
 
-const PERCORSO_ATTESO = {
+const PERCORSO_ATTESO_FALLBACK = {
   '/app': { breadcrumb: ['Area App'], active: null },
   '/app/menu': { breadcrumb: ['Menù', 'Piatti'], active: 'Piatti' },
   '/app/hours': { breadcrumb: ['Orari'], active: 'Orari' },
   '/app/reservations': { breadcrumb: ['Prenotazioni', 'Elenco'], active: 'Elenco' },
+}
+
+export function breadcrumbLabelsFromLib(parts) {
+  return parts.map((p) => (p.type === 'link' ? p.label : p.label))
+}
+
+export function buildPercorsoAttesoMap(navJson) {
+  const map = { ...PERCORSO_ATTESO_FALLBACK }
+  if (!navJson?.breadcrumbCases) return map
+  for (const { path, parts } of navJson.breadcrumbCases) {
+    map[path] = {
+      breadcrumb: breadcrumbLabelsFromLib(parts),
+      active: navJson.activeNavByPath?.[path] ?? null,
+    }
+  }
+  return map
+}
+
+export async function isSegnapostoMain(page) {
+  const desc = await page.locator('main p').first().innerText().catch(() => '')
+  return desc.includes('Questa sezione sarà disponibile a breve.')
 }
 
 export function withinTolerance(value, expected, tol = 0) {
@@ -519,7 +540,7 @@ export async function checkAccCentratura(page) {
   }
 }
 
-export async function checkHomeTesti(page) {
+export async function checkHomeTesti(page, expected) {
   const data = await page.evaluate(() => {
     const h1 = document.querySelector('h1')?.textContent?.trim()
     const desc = document.querySelector('main p')?.textContent?.trim()
@@ -530,33 +551,47 @@ export async function checkHomeTesti(page) {
     }))
     return { h1, desc, cards }
   })
-  const attesoOrder = [
-    { titolo: 'Prenotazioni', desc: 'Elenco, eccezioni giorno, impostazioni', href: '/app/reservations' },
-    { titolo: 'Menù', desc: 'Piatti, vini, bevande, distillati, menù fissi', href: '/app/menu' },
-    { titolo: 'Orari', desc: 'Ristorante, B&B, giorni di riposo, chiusure', href: '/app/hours' },
-  ]
+  const attesoOrder = (expected.schede ?? expected.schede_in_ordine ?? []).map((s) => ({
+    titolo: s.titolo,
+    desc: s.descrizione ?? s.desc,
+    href: s.href,
+  }))
   const ok =
-    data.h1 === 'Area App' &&
-    data.desc === 'Scegli una sezione.' &&
+    data.h1 === expected.h1 &&
+    data.desc === expected.descrizione &&
     JSON.stringify(data.cards) === JSON.stringify(attesoOrder)
-  return { ok, misurato: JSON.stringify(data), atteso: JSON.stringify(attesoOrder) }
+  return {
+    ok,
+    misurato: JSON.stringify(data),
+    atteso: JSON.stringify({ h1: expected.h1, desc: expected.descrizione, cards: attesoOrder }),
+  }
 }
 
-export async function checkHomeNessunaRigaStato(page) {
-  const bad = await page.evaluate(() => {
-    const issues = []
-    document.querySelectorAll('main a[href^="/app/"]').forEach((a) => {
-      const content = a.querySelector('[data-slot=card-content]')
-      if (!content) return
-      const lines = content.querySelectorAll(':scope > div > .text-sm, :scope > div > .text-xs')
-      if (lines.length > 2) issues.push(`card ${a.getAttribute('href')}: ${lines.length} righe testo`)
-    })
-    return issues
+/** controlli-8.2 v4: la scheda Menù deve avere la riga di stato (dettaglio in controlli-6.6). */
+export async function checkHomeRigheDiStato(page) {
+  const menuCard = await page.evaluate(() => {
+    const a = document.querySelector('main a[href="/app/menu"]')
+    if (!a) return { found: false, hasRow: false, text: '' }
+    const content = a.querySelector('[data-slot=card-content]')
+    const status =
+      content?.querySelector('[data-menu-home-status]') ??
+      content?.querySelector('[data-slot=card-content] .text-sm.font-medium + .text-xs + *')
+    const extraLines = content
+      ? [...content.querySelectorAll(':scope > div > *')].filter(
+          (el) => el.classList?.contains('text-sm') || el.classList?.contains('text-xs'),
+        ).length
+      : 0
+    const text = (status?.textContent ?? '').replace(/\s+/g, ' ').trim()
+    const hasRow = Boolean(text) || extraLines > 2
+    return { found: true, hasRow, text }
   })
+  if (!menuCard.found) {
+    return { ok: false, misurato: 'scheda Menù assente', atteso: 'riga di stato sulla scheda Menù' }
+  }
   return {
-    ok: bad.length === 0,
-    misurato: bad.length ? bad.join('; ') : 'solo titolo+descrizione',
-    atteso: 'nessuna riga di stato',
+    ok: menuCard.hasRow,
+    misurato: menuCard.hasRow ? `riga: ${menuCard.text.slice(0, 80)}` : 'nessuna riga sulla scheda Menù',
+    atteso: 'la scheda Menù ha la riga di stato',
   }
 }
 
@@ -692,27 +727,37 @@ export async function checkShellPassaggio768(page, profiloKey) {
   return { ok, misurato: `sidebar ${sw}px`, atteso: 'barra fissa ~256px a 768' }
 }
 
-export async function checkShellMenuVoci(page) {
+export async function checkShellMenuVoci(page, navExpectations) {
   const data = await page.evaluate(() => {
     const groups = [...document.querySelectorAll('[data-sidebar="group-label"]')].map((g) => g.textContent?.trim())
     const itemsByGroup = {}
     document.querySelectorAll('[data-sidebar="group"]').forEach((g) => {
       const label = g.querySelector('[data-sidebar="group-label"]')?.textContent?.trim()
-      const items = [...g.querySelectorAll('[data-sidebar="menu-button"] span')].map((s) => s.textContent?.trim()).filter(Boolean)
+      const items = [...g.querySelectorAll('[data-sidebar="menu-button"] span')]
+        .map((s) => s.textContent?.trim())
+        .filter(Boolean)
       if (label) itemsByGroup[label] = items
     })
     const navLinks = document.querySelectorAll('[data-sidebar=menu-button][href], a[data-sidebar=menu-button]').length
     return { groups, itemsByGroup, navLinks }
   })
-  const atteso = {
-    groups: ['Menù', 'Orari', 'Prenotazioni'],
-    items: { Menù: ['Piatti'], Orari: ['Orari'], Prenotazioni: ['Elenco'] },
+  const attesoGroups = navExpectations?.navGroups?.map((g) => g.label) ?? ['Menù', 'Orari', 'Prenotazioni']
+  const attesoItems = {}
+  for (const g of navExpectations?.navGroups ?? []) {
+    attesoItems[g.label] = g.items.map((i) => i.label)
   }
+  const enabledCount =
+    navExpectations?.navGroups?.reduce((n, g) => n + g.items.length, 0) ??
+    Object.values(attesoItems).flat().length
   const ok =
-    JSON.stringify(data.groups) === JSON.stringify(atteso.groups) &&
-    JSON.stringify(data.itemsByGroup) === JSON.stringify(atteso.items) &&
-    data.navLinks >= 3
-  return { ok, misurato: JSON.stringify(data), atteso: JSON.stringify(atteso) }
+    JSON.stringify(data.groups) === JSON.stringify(attesoGroups) &&
+    JSON.stringify(data.itemsByGroup) === JSON.stringify(attesoItems) &&
+    data.navLinks === enabledCount
+  return {
+    ok,
+    misurato: JSON.stringify(data),
+    atteso: JSON.stringify({ groups: attesoGroups, items: attesoItems, navLinks: enabledCount }),
+  }
 }
 
 export async function checkShellBloccoInCima(page) {
@@ -981,8 +1026,9 @@ async function emitShellPercorsoPiattiDiagnostic(page, report) {
   )
 }
 
-export async function checkShellPercorsoVoceAttiva(page, path, { report } = {}) {
-  const atteso = PERCORSO_ATTESO[path]
+export async function checkShellPercorsoVoceAttiva(page, path, { report, percorsoMap } = {}) {
+  const map = percorsoMap ?? PERCORSO_ATTESO_FALLBACK
+  const atteso = map[path]
   if (!atteso) return { ok: false, misurato: `path ${path} sconosciuto`, atteso: '—' }
   const w = page.viewportSize()?.width ?? 1280
   const openedMobile = w < 768

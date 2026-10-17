@@ -10,6 +10,22 @@ export function allControlIds(controlli, ambiente, opts = {}) {
 
   if (ambiente === 'locale-dev') {
     const ids = []
+    const menuScreenIds = ['home', 'navigazione', 'piatti']
+    const menuInScope = schermate && menuScreenIds.some((id) => schermate.has(id))
+    if (menuInScope) {
+      const piatti = controlli.schermate?.find((s) => s.id === 'piatti')
+      for (const c of piatti?.controlli ?? []) {
+        if (!levelOk(c.id)) continue
+        if (c.ambienti?.includes('locale-dev')) ids.push(c.id)
+      }
+      for (const c of controlli.comuni ?? []) {
+        if (c.id === 'CONSOLE' && schermate?.has('piatti') && levelOk('CONSOLE')) ids.push('CONSOLE')
+      }
+      if (livello != null && livello >= 2 && levelOk('webkit-giro-essenziale')) {
+        ids.push('webkit-giro-essenziale')
+      }
+      return [...new Set(ids)].sort()
+    }
     const orariScreen = controlli.schermate?.find((s) => s.id === 'orari')
     const orariInScope = !schermate || schermate.has('orari')
     if (orariScreen && orariInScope) {

@@ -3,7 +3,7 @@ import { join } from 'node:path'
 
 import { allControlIds } from './controlli-index.mjs'
 
-const PACCHETTO_ORDER = ['accesso', 'shell', 'orari', 'online', 'completo']
+const PACCHETTO_ORDER = ['accesso', 'shell', 'menu', 'orari', 'online', 'completo']
 
 export function initReport({
   ambiente,
@@ -230,6 +230,17 @@ function inferPacchettoFromRow(row) {
   const id = row.id ?? ''
   const sch = row.schermata ?? ''
   if (id.startsWith('orari-') || sch.startsWith('orari/')) return 'orari'
+  if (
+    id.startsWith('home-riga-') ||
+    id.startsWith('nav-') ||
+    id.startsWith('piatti-') ||
+    sch.startsWith('home') ||
+    sch.startsWith('navigazione') ||
+    sch.startsWith('piatti')
+  ) {
+    return 'menu'
+  }
+  if (id === 'NO-OVERRIDE' || id.startsWith('RICOMPILA-')) return 'menu'
   if (id.startsWith('on')) return 'online'
   if (
     sch.includes('login') ||
