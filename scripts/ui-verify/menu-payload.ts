@@ -117,16 +117,30 @@ async function main() {
     const name = args[2]
     const user = email ? await findUserByEmail(payload, email) : null
     if (!user || !name) throw new Error('read-dish-en: email e name richiesti')
-    const found = await payload.find({
+    const foundIt = await payload.find({
       collection: DISHES_SLUG,
       where: { name: { equals: name } },
+      limit: 1,
+      depth: 0,
+      locale: 'it',
+      overrideAccess: false,
+      user,
+    })
+    const docIt = foundIt.docs[0]
+    if (!docIt) {
+      console.log(JSON.stringify({ name: null, description: null }))
+      return
+    }
+    const foundEn = await payload.find({
+      collection: DISHES_SLUG,
+      where: { id: { equals: docIt.id } },
       limit: 1,
       depth: 0,
       locale: 'en',
       overrideAccess: false,
       user,
     })
-    const doc = found.docs[0]
+    const doc = foundEn.docs[0]
     console.log(
       JSON.stringify({
         name: doc?.name ?? null,

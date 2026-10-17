@@ -5,7 +5,8 @@ const ROOT = join(import.meta.dirname, '../../..')
 const CONTROLLI_DIR = join(ROOT, 'docs/design/verifica')
 
 const DEFAULT_TIMEOUT_MS = {
-  'locale-prod': 12 * 60 * 1000,
+  // L2 Piatti + home/navigazione supera spesso 15 min (confronto visivo e stati pesanti).
+  'locale-prod': 25 * 60 * 1000,
   'locale-dev': 10 * 60 * 1000,
   online: 3 * 60 * 1000,
 }

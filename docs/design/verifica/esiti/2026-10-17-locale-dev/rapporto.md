@@ -1,14 +1,14 @@
 # Esito verifica — locale-dev — 2026-10-17
-Commit: 3076b1ca4de1 · Lanciatore: 3.4.1 (L2) · Browser: Chromium 140.0.7339.186; WebKit 26.0 · Controlli: controlli-6.6.json v1 · Durata: 51 s
+Commit: c7b24ba0fae8 · Lanciatore: 3.4.1 (L2) · Browser: Chromium 140.0.7339.186; WebKit 26.0 · Controlli: controlli-6.6.json v1 · Durata: 50 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 8 · FALLITO: 1 · AVVISO: 0 · NON PROVATO: 3 · Controlli distinti nel JSON corrente: 6
+OK: 9 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 3 · Controlli distinti nel JSON corrente: 6
 
 ## Pacchetto: menu
-Righe: 12 · OK: 8 · FALLITO: 1
+Righe: 12 · OK: 9 · FALLITO: 0
 
 ### FALLITO (menu)
-- **piatti-stati-ui** | piatti | telefono-390/chiaro | misurato `vuoto: DB con piatti (count>0), stato vuoto non provato` | atteso `skeleton, errore caricamento, vuoto se possibile` | evidenza: localhost:3200
+- (nessuno)
 
 ## Esiti compatti (esecuzione corrente)
 
@@ -16,10 +16,11 @@ Righe: 12 · OK: 8 · FALLITO: 1
 - **CONSOLE**: OK in 4/4 combinazioni
 - **home-riga-menu-stati**: OK in 1/1 combinazioni
 - **piatti-console**: OK in 2/2 combinazioni
+- **piatti-stati-ui**: OK in 1/1 combinazioni
 - **webkit-giro-essenziale**: OK in 1/1 combinazioni
 
 ### FALLITO (tutte le righe, dettaglio)
-- **piatti-stati-ui** | piatti | telefono-390/chiaro | misurato `vuoto: DB con piatti (count>0), stato vuoto non provato` | atteso `skeleton, errore caricamento, vuoto se possibile` | evidenza: localhost:3200
+- (nessuno)
 
 ### AVVISO
 - (nessuno)
@@ -43,7 +44,6 @@ Righe: 12 · OK: 8 · FALLITO: 1
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
 |---|---|---|---|---|---|---|
-| piatti-stati-ui | piatti | telefono-390/chiaro | FALLITO | vuoto: DB con piatti (count>0), stato vuoto non provato | skeleton, errore caricamento, vuoto se possibile | localhost:3200 |
 | piatti-elimina-permessi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-elimina-registro | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-persistenza | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |

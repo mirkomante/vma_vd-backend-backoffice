@@ -359,13 +359,12 @@ export async function runPiattiFlowControls(ctx) {
           const dishCard = [...document.querySelectorAll('main [data-slot=card]')].find((c) =>
             c.getAttribute('aria-label')?.includes(','),
           )
+          const nameEl = dishCard?.querySelector('p.truncate.font-medium')
           return {
             tableVisible,
             card: Boolean(card),
             colW: col ? Math.round(col.getBoundingClientRect().width) : 0,
-            nameW: dishCard
-              ? Math.round(dishCard.querySelector('.truncate')?.getBoundingClientRect().width ?? 0)
-              : 0,
+            nameW: nameEl ? Math.round(nameEl.getBoundingClientRect().width) : 0,
           }
         })
         let esito = 'OK'
@@ -628,21 +627,33 @@ export async function runPiattiFlowControls(ctx) {
           .click()
         await page.waitForTimeout(900)
         const dlg = await page.locator('[role=alertdialog]').innerText().catch(() => '')
-        if (!dlg.includes(errTitle)) failures.push(`titolo mancante (letto: ${dlg.slice(0, 80)}…)`)
-        if (!dlg.includes(errDesc.slice(0, 40))) failures.push('descrizione errore mancante')
+        const blockTitle = `Non si può eliminare verify-ui-corsa`
+        const isBlock = dlg.includes(blockTitle)
+        const isDbRace = dlg.includes(errTitle)
+        if (!isBlock && !isDbRace) {
+          failures.push(`dialogo inatteso (letto: ${dlg.slice(0, 120).replace(/\s+/g, ' ')}…)`)
+        }
+        if (isDbRace && !dlg.includes(errDesc.slice(0, 40))) {
+          failures.push('descrizione «Operazione non riuscita» mancante')
+        }
+        if (isBlock && !dlg.includes('verify-ui-menu-corsa')) {
+          failures.push('blocco senza elenco menù aggiornato (verify-ui-menu-corsa)')
+        }
         const still = menuFindDish(testUser.email, 'verify-ui-corsa')
         if (!still.found) failures.push('piatto non più in API')
         await pctx.close()
       } finally {
         menuDeleteVerifyPrefix()
       }
+      const misuratoConc =
+        failures.length === 0
+          ? 'finestra blocco o «Operazione non riuscita»; piatto verify-ui-corsa ancora in API'
+          : failures.join(' | ')
       add(
         'piatti-elimina-concorrenza',
         failures.length ? 'FALLITO' : 'OK',
-        failures.length
-          ? failures.join(' | ')
-          : `finestra «${errTitle}»; piatto verify-ui-corsa ancora presente in API`,
-        `«${errTitle}» + testo errore; piatto non eliminato; nessun registro delete`,
+        misuratoConc,
+        '«Non si può eliminare {nome}» con menù aggiornati oppure «Operazione non riuscita»; piatto resta',
         '/app/menu',
       )
     }
@@ -806,17 +817,23 @@ export async function runPiattiFlowControls(ctx) {
       await loginApp(page, baseUrl, testUser.email, testPassword)
       await gotoPiatti(page)
       await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
-      await page.getByRole('combobox', { name: copyConst('PIATTI_FORM_CATEGORY') ?? 'Categoria' }).click()
-      await page.getByRole('option').first().waitFor({ timeout: 8000 })
-      const catOpts = await page.getByRole('option').allTextContents()
+      const catField = copyConst('PIATTI_FORM_CATEGORY') ?? 'Categoria'
+      await page.getByRole('combobox', { name: catField }).click()
+      const listbox = page.getByRole('listbox')
+      await listbox.waitFor({ state: 'visible', timeout: 12000 })
+      await listbox.getByRole('option').first().waitFor({ timeout: 12000 })
+      const catOpts = (await listbox.getByRole('option').allTextContents()).map((t) => t.trim()).filter(Boolean)
       const apiCatNames = tax.categories.map((c) => c.name)
       const missingCats = apiCatNames.filter((n) => !catOpts.some((o) => o.includes(n)))
+      const idLike = catOpts.filter((o) => /^\d+$/.test(o))
+      if (idLike.length) failures.push(`categorie con identificativo al posto del nome: ${idLike.join(', ')}`)
       if (missingCats.length) {
         failures.push(`categorie UI mancanti: ${missingCats.join(', ')} (opzioni=[${catOpts.join(' | ')}]; API=[${apiCatNames.join(', ')}])`)
       }
-      await page.locator('[data-slot=sheet-content]').click({ position: { x: 12, y: 12 }, force: true })
+      await page.keyboard.press('Escape')
       await page.waitForTimeout(200)
-      await page.locator('[data-slot=sheet-content]').evaluate((el) => {
+      const formSheet = page.locator('[data-slot=sheet-content]').first()
+      await formSheet.evaluate((el) => {
         el.scrollTop = el.scrollHeight
       })
       const allergenLabels = await page.evaluate(() =>
@@ -824,13 +841,43 @@ export async function runPiattiFlowControls(ctx) {
           .map((b) => b.textContent?.trim())
           .filter((t) => t && t.length > 1),
       )
+      await page.getByRole('button', { name: copyConst('PIATTI_FORM_CANCEL') ?? 'Annulla' }).click()
+      await formSheet.waitFor({ state: 'hidden', timeout: 8000 })
+      const allCatsLabel = copyConst('PIATTI_FILTERS_ALL_CATEGORIES') ?? 'Tutte le categorie'
+      const allStatesLabel = copyConst('PIATTI_FILTERS_ALL_STATES') ?? 'Tutti'
+      const filtriBtn = page.locator('main button').filter({ hasText: copyConst('PIATTI_FILTERS_BUTTON') ?? 'Filtri' })
+      await filtriBtn.click()
+      const filterSheet = page.locator('[data-slot=sheet-content]').last()
+      await filterSheet.waitFor({ state: 'visible' })
+      const filterCombos = filterSheet.getByRole('combobox')
+      const catFilterText = (await filterCombos.nth(0).innerText()).trim()
+      const stateFilterText = (await filterCombos.nth(1).innerText()).trim()
+      if (!catFilterText.includes(allCatsLabel)) {
+        failures.push(`filtro categoria: atteso «${allCatsLabel}», letto «${catFilterText}»`)
+      }
+      if (!stateFilterText.includes(allStatesLabel)) {
+        failures.push(`filtro stato: atteso «${allStatesLabel}», letto «${stateFilterText}»`)
+      }
+      await filterCombos.nth(0).click()
+      const filterListbox = page.getByRole('listbox')
+      await filterListbox.waitFor({ state: 'visible', timeout: 8000 })
+      const filterCatOpts = (await filterListbox.getByRole('option').allTextContents()).map((t) => t.trim())
+      if (!filterCatOpts.some((o) => o.includes(allCatsLabel))) {
+        failures.push(`opzioni filtro categoria senza «${allCatsLabel}»: [${filterCatOpts.join(' | ')}]`)
+      }
+      const filterIdLike = filterCatOpts.filter((o) => o !== allCatsLabel && /^\d+$/.test(o))
+      if (filterIdLike.length) failures.push(`filtro categorie con id: ${filterIdLike.join(', ')}`)
+      await page.keyboard.press('Escape')
+      await page.keyboard.press('Escape')
       const apiAllergens = tax.allergens?.map((a) => a.name) ?? []
       const missingAllergens = apiAllergens.filter((n) => !allergenLabels.some((l) => l?.includes(n)))
       if (apiAllergens.length && missingAllergens.length) {
         failures.push(`allergeni UI mancanti: ${missingAllergens.join(', ')}`)
       }
       const misurato = [
-        `categorie UI (${catOpts.length}): ${catOpts.slice(0, 8).join(' | ')}${catOpts.length > 8 ? '…' : ''}`,
+        `modulo categorie (${catOpts.length}): ${catOpts.slice(0, 8).join(' | ')}${catOpts.length > 8 ? '…' : ''}`,
+        `filtro categorie (${filterCatOpts.length}): ${filterCatOpts.slice(0, 6).join(' | ')}`,
+        `filtro UI categoria/stato: «${catFilterText}» / «${stateFilterText}»`,
         `categorie API (${apiCatNames.length}): ${apiCatNames.slice(0, 8).join(', ')}`,
         `crea categoria: ok=${catDenied.ok} motivo=${catDenied.reason ?? '—'}`,
         `crea allergene: ok=${allDenied.ok} motivo=${allDenied.reason ?? '—'}`,
@@ -912,10 +959,14 @@ export async function runPiattiFlowControls(ctx) {
       let misurato = '—'
       try {
         menuDeleteVerifyPrefix()
-        const bulk = Array.from({ length: 101 }, (_, i) => ({
-          name: `verify-ui-bulk-${String(i + 1).padStart(3, '0')}`,
-        }))
-        menuCreateDishes(testUser.email, bulk)
+        const { count: dishCountBefore } = menuCountDishes()
+        const toCreate = Math.max(0, 101 - dishCountBefore)
+        if (toCreate > 0) {
+          const bulk = Array.from({ length: toCreate }, (_, i) => ({
+            name: `verify-ui-bulk-${String(i + 1).padStart(3, '0')}`,
+          }))
+          menuCreateDishes(testUser.email, bulk)
+        }
         const { ctx: pctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoPiatti(page)
@@ -923,7 +974,8 @@ export async function runPiattiFlowControls(ctx) {
         const rowCount = await page.locator('main table tbody tr').count()
         const hasBanner = body.includes(attesoBanner)
         const hasSotto = body.includes(attesoSotto)
-        misurato = `righe tabella=${rowCount}; banner100/101=${hasBanner}; sottoBanner=${hasSotto}; estratto=${body.includes('100 piatti') ? body.split('\n').find((l) => l.includes('100 piatti'))?.trim() : 'assente'}`
+        const { count: dishCountAfter } = menuCountDishes()
+        misurato = `totale API=${dishCountAfter} (prima=${dishCountBefore}, creati=${toCreate}); righe tabella=${rowCount}; banner100/101=${hasBanner}; sottoBanner=${hasSotto}; estratto=${body.includes('100 piatti') ? body.split('\n').find((l) => l.includes('100 piatti'))?.trim() : 'assente'}`
         if (!hasBanner) failures.push(`banner: atteso «${attesoBanner}»`)
         if (!hasSotto) failures.push(`sotto-banner: atteso testo con «Restringi l'elenco»`)
         if (rowCount !== 100) failures.push(`righe visibili=${rowCount}; atteso 100`)
@@ -1147,20 +1199,13 @@ export async function runPiattiStatiUi(ctx) {
     await waitForPortFree(SIM_PORT)
   }
 
-  const { count } = menuCountDishes()
-  if (count === 0) {
-    /* vuoto testato solo se DB vuoto */
-  } else {
-    failures.push('vuoto: DB con piatti (count>0), stato vuoto non provato')
-  }
-
   addRow(report, {
     id: 'piatti-stati-ui',
     schermata: 'piatti',
     profiloTema: 'telefono-390/chiaro',
     esito: failures.length ? 'FALLITO' : 'OK',
-    misurato: failures.join(' | ') || 'simulazioni ok',
-    atteso: 'skeleton, errore caricamento, vuoto se possibile',
+    misurato: failures.join(' | ') || 'simulazioni caricamento ed errore caricamento ok',
+    atteso: 'skeleton caricamento; avviso errore caricamento (stato vuoto in piatti-stato-vuoto)',
     evidenza: `localhost:${SIM_PORT}`,
   })
 }

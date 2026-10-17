@@ -2,19 +2,19 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-17",
-    "commit": "3076b1ca4de1",
+    "commit": "c7b24ba0fae8",
     "launcherVersion": "3.4.1",
     "launcherHeader": "3.4.1 (L2)",
     "browsers": "Chromium 140.0.7339.186; WebKit 26.0",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L2",
     "controlliVersion": 1,
-    "durataMs": 50637,
+    "durataMs": 49896,
     "invalidRun": false
   },
   "counts": {
-    "OK": 8,
-    "FALLITO": 1,
+    "OK": 9,
+    "FALLITO": 0,
     "AVVISO": 0,
     "NON PROVATO": 3
   },
@@ -24,9 +24,9 @@
       "id": "piatti-stati-ui",
       "schermata": "piatti",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "vuoto: DB con piatti (count>0), stato vuoto non provato",
-      "atteso": "skeleton, errore caricamento, vuoto se possibile",
+      "esito": "OK",
+      "misurato": "simulazioni caricamento ed errore caricamento ok",
+      "atteso": "skeleton caricamento; avviso errore caricamento (stato vuoto in piatti-stato-vuoto)",
       "evidenza": "localhost:3200",
       "pacchetto": "menu"
     },
