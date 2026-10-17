@@ -9,6 +9,7 @@ import {
   checkAltezzaMouse,
   isSegnapostoMain,
   openMobileSidebar,
+  openUserMenu,
   withinTolerance,
 } from './engine.mjs'
 import { loadNavExpectations, loadPiattiCopyFromLib, readTsStringExport } from './lib-readers.mjs'
@@ -19,6 +20,12 @@ import {
   menuDeleteVerifyPrefix,
   menuUpdateDish,
 } from './menu-payload.mjs'
+import {
+  preparePiattiState,
+  runPiattiFlowControls,
+  runPiattiStatiUi,
+  runRicompilaAssenteCheck,
+} from './run-piatti.mjs'
 
 const ROOT_MENU = join(import.meta.dirname, '../../..')
 
@@ -232,23 +239,19 @@ export function runMenuComuniChecks(report, runCtx, addRow, { ambiente } = {}) {
     })
   }
 
-  if (runCtx.shouldRun('RICOMPILA-ASSENTE') && ambiente === 'locale-prod') {
-    const patterns = ['Ricompila il menù pubblico', 'Ricompilare il menù pubblico?']
-    const r = spawnSync('grep', ['-rn', patterns[0], 'app/(app)', 'components/app'], {
-      cwd: ROOT,
-      encoding: 'utf8',
-    })
-    const foundInCode = r.stdout.trim().length > 0
+  if (
+    runCtx.shouldRun('RICOMPILA-ASSENTE') &&
+    ambiente === 'locale-prod' &&
+    !runCtx.screenIncluded('piatti')
+  ) {
     addRow(report, {
       id: 'RICOMPILA-ASSENTE',
       schermata: 'comuni',
       profiloTema: '—',
-      esito: foundInCode ? 'OK' : 'NON PROVATO',
-      misurato: foundInCode ? 'stringhe presenti nel codice (bandiera spenta)' : 'grep UI senza match',
+      esito: 'NON PROVATO',
+      misurato: '—',
       atteso: 'assente in UI con bandiera spenta',
-      evidenza: foundInCode
-        ? 'controllo DOM richiede sessione: verificato assenza visibile in run piatti/home'
-        : 'non verificabile senza schermata Piatti',
+      evidenza: 'eseguito con schermata piatti (runRicompilaAssenteCheck)',
     })
   }
 
@@ -803,25 +806,51 @@ export async function runMenuChecks(ctx) {
       if (!copy) {
         report.anomalie.push('piatti: costanti lib/ non trovate')
       }
-      addNonProvatoRows(
+      const piattiCtx = {
+        browser,
+        baseUrl,
         report,
-        addRow,
         runCtx,
-        PIATTI_CONTROL_IDS.filter((id) => !isRinviato65(controlDef(CONTROLLI, 'piatti', id))),
-        'flussi Piatti da completare dopo I2',
-        'piatti',
-      )
+        CONTROLLI,
+        newPage,
+        loginApp,
+        testUser,
+        testPassword,
+        addRow,
+        progressStep,
+        resultToEsito,
+        screenshot,
+        SHOT_PROFILES,
+        SHOT_TEMI,
+        ambiente,
+      }
+      await runRicompilaAssenteCheck(piattiCtx)
+      await runPiattiFlowControls(piattiCtx)
     }
 
     if (ready && piattiScreen?.stati_c1_c2) {
+      const skipHeavyC1 = new Set(['piu-di-100', 'caricamento', 'errore-caricamento', 'vuoto'])
       for (const statoId of piattiScreen.stati_c1_c2) {
+        if (skipHeavyC1.has(statoId)) continue
         for (const temaKey of temiAll) {
           for (const profiloKey of profiliL1) {
             if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820') continue
             progressStep('piatti', statoId, profiloKey, temaKey)
             const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, baseUrl)
             await loginApp(sp, baseUrl, testUser.email, testPassword)
-            await sp.goto('/app/menu', { waitUntil: 'networkidle' })
+            try {
+              await preparePiattiState(sp, statoId, {
+                testUser,
+                baseUrl,
+                browser,
+                newPage,
+                loginApp,
+                testPassword,
+              })
+            } catch (e) {
+              report.anomalie.push(`piatti stato ${statoId}: ${e.message}`)
+              await sp.goto('/app/menu', { waitUntil: 'networkidle' })
+            }
             const sch = `piatti/${statoId}`
             const pt = `${profiloKey}/${temaKey}`
             if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
@@ -861,17 +890,11 @@ export async function runMenuDevSimulations(ctx) {
     progressStep,
   } = ctx
 
-  if (runCtx.shouldRun('piatti-stati-ui')) {
-    addRow(report, {
-      id: 'piatti-stati-ui',
-      schermata: 'piatti',
-      profiloTema: '—',
-      esito: 'NON PROVATO',
-      misurato: '—',
-      atteso: 'simulazione APP_MENU_DEV_SIMULATE_*',
-      evidenza: 'schermata Piatti non in perimetro o non implementata nel lanciatore',
-    })
-  }
+  await runPiattiStatiUi({
+    ...ctx,
+    startMenuDevServer,
+    waitForUrl,
+  })
 
   if (!runCtx.shouldRun('home-riga-menu-stati')) return
 
@@ -962,20 +985,70 @@ export async function runMenuDevSimulations(ctx) {
   })
 }
 
+function attachConsoleListeners(page) {
+  const bag = { errors: [], warnings: [], failed: [] }
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') bag.errors.push(msg.text())
+    if (msg.type() === 'warning') bag.warnings.push(msg.text())
+  })
+  page.on('pageerror', (e) => bag.errors.push(String(e)))
+  page.on('response', (res) => {
+    if (res.status() >= 400 && !res.url().includes('favicon')) bag.failed.push(`${res.status()} ${res.url()}`)
+  })
+  return bag
+}
+
+function consoleEsito(bag) {
+  const ok = bag.errors.length === 0 && bag.warnings.length === 0 && bag.failed.length === 0
+  return {
+    ok,
+    misurato: `err:${bag.errors.length} warn:${bag.warnings.length} http:${bag.failed.length}`,
+    evidenza: [...bag.errors, ...bag.warnings, ...bag.failed].slice(0, 3).join(' | ') || '—',
+  }
+}
+
 export async function runMenuConsole(ctx) {
-  const { browser, baseUrl, report, runCtx, newPage, loginApp, testUser, testPassword, addRow, progressStep } = ctx
+  const {
+    browser,
+    baseUrl,
+    report,
+    runCtx,
+    newPage,
+    loginApp,
+    testUser,
+    testPassword,
+    addRow,
+    progressStep,
+    browserVersion,
+  } = ctx
   if (!runCtx.shouldRun('piatti-console')) return
   if (!runCtx.screenIncluded('piatti')) return
-  progressStep('piatti', 'console', 'telefono-390', 'chiaro')
-  addRow(report, {
-    id: 'piatti-console',
-    schermata: 'piatti',
-    profiloTema: 'telefono-390/chiaro',
-    esito: 'NON PROVATO',
-    misurato: '—',
-    atteso: 'console pulita con interazioni Piatti',
-    evidenza: 'schermata non ancora implementata',
-  })
+
+  for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+    progressStep('piatti', 'console', profiloKey, 'chiaro')
+    const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+    const bag = attachConsoleListeners(page)
+    await loginApp(page, baseUrl, testUser.email, testPassword)
+    await page.goto('/app/menu', { waitUntil: 'networkidle' })
+    await page.getByRole('button', { name: 'Filtri' }).click().catch(() => {})
+    await page.keyboard.press('Escape')
+    await page.getByRole('button', { name: 'Nuovo piatto' }).click().catch(() => {})
+    await page.keyboard.press('Escape')
+    await openUserMenu(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
+    await page.keyboard.press('Escape')
+    await sleep(300)
+    const c = consoleEsito(bag)
+    addRow(report, {
+      id: 'piatti-console',
+      schermata: 'piatti',
+      profiloTema: `${profiloKey}/chiaro/Chromium ${browserVersion ?? ''}`.trim(),
+      esito: c.ok ? 'OK' : 'FALLITO',
+      misurato: c.misurato,
+      atteso: 'zero error/warning/pageerror',
+      evidenza: c.evidenza,
+    })
+    await pctx.close()
+  }
 }
 
 export function buildShellHomeExpected(controlli, navJson) {

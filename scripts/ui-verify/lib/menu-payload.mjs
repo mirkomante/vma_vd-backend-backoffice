@@ -37,3 +37,55 @@ export function menuCreateDishes(managerEmail, specs) {
 export function menuUpdateDish(managerEmail, name, patch) {
   return menuPayloadRun('update-dish', [managerEmail, name, JSON.stringify(patch)])
 }
+
+export function menuCountDishes() {
+  return menuPayloadRun('count-dishes')
+}
+
+export function menuFindDish(managerEmail, name) {
+  return menuPayloadRun('find-dish', [managerEmail, name])
+}
+
+export function menuReadDishEn(managerEmail, name) {
+  return menuPayloadRun('read-dish-en', [managerEmail, name])
+}
+
+export function menuListTaxonomies(managerEmail) {
+  return menuPayloadRun('list-taxonomies', [managerEmail])
+}
+
+export function menuTryCreateTaxonomy(managerEmail, kind) {
+  return menuPayloadRun('try-create-taxonomy', [managerEmail, kind])
+}
+
+export function menuTryCreateDish(email) {
+  return menuPayloadRun('try-create-dish', [email])
+}
+
+export function menuTryDeleteDish(email, name) {
+  return menuPayloadRun('try-delete-dish', [email, name])
+}
+
+export function menuFindDeleteLog(managerEmail, dishId, dishName) {
+  return menuPayloadRun('find-delete-log', [managerEmail, String(dishId), dishName ?? ''])
+}
+
+export function menuCreateFixedMenuFixture(managerEmail, spec) {
+  return menuPayloadRun('create-fixed-menu-fixture', [managerEmail, JSON.stringify(spec)])
+}
+
+export function menuAddDishToFixedMenu(managerEmail, menuName, dishName) {
+  return menuPayloadRun('add-dish-to-fixed-menu', [managerEmail, menuName, dishName])
+}
+
+export function menuFindStaffUser(role) {
+  return menuPayloadRun('find-staff-user', [role])
+}
+
+export function menuEnsureNoroleUser() {
+  return menuPayloadRun('ensure-norole-user')
+}
+
+export function menuDeleteUserEmail(email) {
+  return menuPayloadRun('delete-user-email', [email])
+}
