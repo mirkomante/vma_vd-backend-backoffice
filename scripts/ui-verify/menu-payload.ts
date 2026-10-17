@@ -15,6 +15,11 @@ const dash = argv.indexOf('--')
 const args = dash >= 0 ? argv.slice(dash + 1) : argv.filter((a) => !a.includes('menu-payload'))
 const action = args[0]
 
+if (!action) {
+  console.error('menu-payload: azione mancante (argv)', process.argv.join(' '))
+  process.exit(1)
+}
+
 function isAccessDenied(error: unknown): boolean {
   return error instanceof APIError && error.status === 403
 }
@@ -71,6 +76,44 @@ async function main() {
     return
   }
 
+  if (action === 'update-dish') {
+    const email = args[1]
+    const name = args[2]
+    const json = args[3]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name || !json) throw new Error('update-dish: email, name e json richiesti')
+    const patch = JSON.parse(json) as { soldOut?: boolean; disabled?: boolean }
+    const found = await payload.find({
+      collection: 'dishes',
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const doc = found.docs[0]
+    if (!doc) {
+      console.log(JSON.stringify({ ok: false, reason: 'not_found' }))
+      return
+    }
+    try {
+      await payload.update({
+        collection: 'dishes',
+        id: doc.id,
+        data: patch,
+        overrideAccess: false,
+        user,
+      })
+      console.log(JSON.stringify({ ok: true, id: doc.id }))
+    } catch (e) {
+      if (isAccessDenied(e)) {
+        console.log(JSON.stringify({ ok: false, reason: 'access_denied' }))
+        return
+      }
+      throw e
+    }
+    return
+  }
+
   if (action === 'create-dishes') {
     const email = args[1]
     const json = args[2]
@@ -124,7 +167,9 @@ async function main() {
   throw new Error(`menu-payload: azione sconosciuta ${action ?? '(vuota)'}`)
 }
 
-main().catch((e) => {
-  console.error(e)
+try {
+  await main()
+} catch (err) {
+  console.error(err instanceof Error ? err.message : err)
   process.exit(1)
-})
+}

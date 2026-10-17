@@ -4,7 +4,8 @@ import { spawnSync } from 'node:child_process'
 const ROOT = join(import.meta.dirname, '../../..')
 
 function parseStdout(stdout) {
-  const line = stdout.trim().split('\n').find((l) => l.startsWith('{'))
+  const lines = stdout.trim().split('\n')
+  const line = [...lines].reverse().find((l) => l.startsWith('{') || l.startsWith('['))
   if (!line) throw new Error(`Output JSON mancante: ${stdout.slice(0, 160)}`)
   return JSON.parse(line)
 }
@@ -31,4 +32,8 @@ export function menuCountSoldOut(managerEmail) {
 
 export function menuCreateDishes(managerEmail, specs) {
   return menuPayloadRun('create-dishes', [managerEmail, JSON.stringify(specs)])
+}
+
+export function menuUpdateDish(managerEmail, name, patch) {
+  return menuPayloadRun('update-dish', [managerEmail, name, JSON.stringify(patch)])
 }

@@ -1,29 +1,29 @@
 # Esito verifica — locale-prod — 2026-10-17
-Commit: cf1f5acb80c1 · Lanciatore: 3.3.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 19 s
+Commit: dadc3898ded2 · Lanciatore: 3.3.0 (L2) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 1 min 32 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 80 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 28 · Controlli distinti nel JSON corrente: 18
+OK: 445 · FALLITO: 1 · AVVISO: 0 · NON PROVATO: 42 · Controlli distinti nel JSON corrente: 22
 
 ## Pacchetto: accesso
-Righe: 6 · OK: 6 · FALLITO: 0
+Righe: 18 · OK: 18 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
 
 ## Pacchetto: shell
-Righe: 58 · OK: 58 · FALLITO: 0
+Righe: 401 · OK: 398 · FALLITO: 1
 
 ### FALLITO (shell)
-- (nessuno)
+- **shell-menu-voci** | shell/home | notebook-1280/chiaro | misurato `{"groups":["Menù","Orari","Prenotazioni"],"itemsByGroup":{"Menù":["Piatti"],"Orari":["Orari"],"Prenotazioni":["Elenco"]},"navLinks":4}` | atteso `{"groups":["Menù","Orari","Prenotazioni"],"items":{"Menù":["Piatti"],"Orari":["Orari"],"Prenotazioni":["Elenco"]},"navLinks":3}` | evidenza: /app
 
 ## Pacchetto: menu
-Righe: 16 · OK: 10 · FALLITO: 0
+Righe: 23 · OK: 17 · FALLITO: 0
 
 ### FALLITO (menu)
 - (nessuno)
 
 ## Pacchetto: completo
-Righe: 28 · OK: 6 · FALLITO: 0
+Righe: 46 · OK: 12 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -31,25 +31,43 @@ Righe: 28 · OK: 6 · FALLITO: 0
 ## Esiti compatti (esecuzione corrente)
 
 ### OK (raggruppati)
+- **C3-cambio-sistema**: OK in 6/6 combinazioni
+- **g1**: OK in 1/1 combinazioni
+- **g2**: OK in 3/3 combinazioni
+- **home-riga-menu-altezza**: OK in 2/2 combinazioni
+- **home-riga-menu-casi**: OK in 1/1 combinazioni
+- **home-riga-menu-testo**: OK in 4/4 combinazioni
 - **nav-briciole**: OK in 2/2 combinazioni
 - **nav-casi-unit**: OK in 1/1 combinazioni
 - **nav-icone**: OK in 2/2 combinazioni
 - **nav-titoli-pagina**: OK in 1/1 combinazioni
 - **nav-voce-attiva**: OK in 2/2 combinazioni
 - **nav-voci-menu**: OK in 2/2 combinazioni
-- **AMBIENTE**: OK in 6/7 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C1**: OK in 12/13 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2**: OK in 18/19 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2-mouse**: OK in 6/7 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C3**: OK in 12/13 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C9**: OK in 6/7 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-colonne**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-larghezza**: OK in 4/5 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-righe-di-stato**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-testi**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **shell-barra-alta**: OK in 36/36 combinazioni
+- **shell-blocco-in-cima**: OK in 1/1 combinazioni
+- **shell-blocco-utente**: OK in 1/1 combinazioni
+- **shell-margine-contenuto**: OK in 36/36 combinazioni
+- **shell-nomi-accessibili**: OK in 60/60 combinazioni
+- **shell-passaggio-768**: OK in 8/8 combinazioni
+- **shell-percorso-voce-attiva**: OK in 60/60 combinazioni
+- **shell-segnaposto**: OK in 1/1 combinazioni
+- **shell-sticky**: OK in 8/8 combinazioni
+- **shell-tema-scelta**: OK in 1/1 combinazioni
+- **shell-uscita**: OK in 1/1 combinazioni
+- **AMBIENTE**: OK in 12/13 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C1**: OK in 24/25 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2**: OK in 60/61 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2-mouse**: OK in 12/13 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C3**: OK in 60/61 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C9**: OK in 12/13 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-colonne**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-larghezza**: OK in 8/9 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-righe-di-stato**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-testi**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **shell-menu-utente**: OK in 2/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
-- (nessuno)
+- **shell-menu-voci** | shell/home | notebook-1280/chiaro | misurato `{"groups":["Menù","Orari","Prenotazioni"],"itemsByGroup":{"Menù":["Piatti"],"Orari":["Orari"],"Prenotazioni":["Elenco"]},"navLinks":4}` | atteso `{"groups":["Menù","Orari","Prenotazioni"],"items":{"Menù":["Piatti"],"Orari":["Orari"],"Prenotazioni":["Elenco"]},"navLinks":3}` | evidenza: /app
 
 ### AVVISO
 - (nessuno)
@@ -77,32 +95,50 @@ Righe: 28 · OK: 6 · FALLITO: 0
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **shell-menu-utente** | shell/home (icone Admin) | telefono-390/chiaro | misurato `voce «Vai all'Admin» assente con utente manager` | atteso `due icone svg (pannello + freccia esterna) se presente` | evidenza: A24; utente di prova senza canAccessAdminPanel
+- **shell-menu-utente** | shell/home (icone Admin) | notebook-1280/chiaro | misurato `voce «Vai all'Admin» assente con utente manager` | atteso `due icone svg (pannello + freccia esterna) se presente` | evidenza: A24; utente di prova senza canAccessAdminPanel
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **nav-pannello-telefono** | navigazione | telefono-390/chiaro | misurato `—` | atteso `altezza pannello con 8 voci Menù` | evidenza: voci non ancora tutte accese
+- **C3-no-lampo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **NO-OVERRIDE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **RICOMPILA-ASSENTE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **home-riga-menu-altezza** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **home-riga-menu-casi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **RICOMPILA-PRESENTE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **home-riga-menu-stati** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **home-riga-menu-testo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | NON PROVATO (6/7) |
-| C1 | NON PROVATO (12/13) |
-| C2 | NON PROVATO (18/19) |
-| C2-mouse | NON PROVATO (6/7) |
-| C3 | NON PROVATO (12/13) |
-| C9 | NON PROVATO (6/7) |
+| AMBIENTE | NON PROVATO (12/13) |
+| C1 | NON PROVATO (24/25) |
+| C2 | NON PROVATO (60/61) |
+| C2-mouse | NON PROVATO (12/13) |
+| C3 | NON PROVATO (60/61) |
+| C3-cambio-sistema | OK (6/6) |
+| C3-no-lampo | NON PROVATO (0/1) |
+| C9 | NON PROVATO (12/13) |
 | NO-OVERRIDE | NON PROVATO (0/1) |
 | RICOMPILA-ASSENTE | NON PROVATO (0/1) |
-| home-riga-menu-altezza | NON PROVATO (0/1) |
-| home-riga-menu-casi | NON PROVATO (0/1) |
+| RICOMPILA-PRESENTE | NON PROVATO (0/1) |
+| home-riga-menu-altezza | OK (2/2) |
+| home-riga-menu-casi | OK (1/1) |
 | home-riga-menu-stati | NON PROVATO (0/1) |
-| home-riga-menu-testo | NON PROVATO (0/1) |
+| home-riga-menu-testo | OK (4/4) |
 | nav-briciole | OK (2/2) |
 | nav-casi-unit | OK (1/1) |
 | nav-icone | OK (2/2) |
+| nav-pannello-telefono | NON PROVATO (0/1) |
 | nav-titoli-pagina | OK (1/1) |
 | nav-voce-attiva | OK (2/2) |
 | nav-voci-menu | OK (2/2) |
@@ -132,22 +168,36 @@ Righe: 28 · OK: 6 · FALLITO: 0
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| shell-menu-utente | shell/home (icone Admin) | telefono-390/chiaro | NON PROVATO | voce «Vai all'Admin» assente con utente manager | due icone svg (pannello + freccia esterna) se presente | A24; utente di prova senza canAccessAdminPanel |
+| shell-menu-voci | shell/home | notebook-1280/chiaro | FALLITO | {"groups":["Menù","Orari","Prenotazioni"],"itemsByGroup":{"Menù":["Piatti"],"Orari":["Orari"],"Prenotazioni":["Elenco"]},"navLinks":4} | {"groups":["Menù","Orari","Prenotazioni"],"items":{"Menù":["Piatti"],"Orari":["Orari"],"Prenotazioni":["Elenco"]},"navLinks":3} | /app |
+| shell-menu-utente | shell/home (icone Admin) | notebook-1280/chiaro | NON PROVATO | voce «Vai all'Admin» assente con utente manager | due icone svg (pannello + freccia esterna) se presente | A24; utente di prova senza canAccessAdminPanel |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| nav-pannello-telefono | navigazione | telefono-390/chiaro | NON PROVATO | — | altezza pannello con 8 voci Menù | voci non ancora tutte accese |
+| C3-no-lampo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | NO-OVERRIDE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | RICOMPILA-ASSENTE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| home-riga-menu-altezza | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| home-riga-menu-casi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| RICOMPILA-PRESENTE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | home-riga-menu-stati | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| home-riga-menu-testo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
 - verify-link-valido: facoltativo: token reale monouso non ottenuto
 - shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
+- C3-no-lampo: controllo non eseguito dal lanciatore in questa esecuzione
 - NO-OVERRIDE: controllo non eseguito dal lanciatore in questa esecuzione
 - RICOMPILA-ASSENTE: controllo non eseguito dal lanciatore in questa esecuzione
-- home-riga-menu-altezza: controllo non eseguito dal lanciatore in questa esecuzione
-- home-riga-menu-casi: controllo non eseguito dal lanciatore in questa esecuzione
+- RICOMPILA-PRESENTE: controllo non eseguito dal lanciatore in questa esecuzione
 - home-riga-menu-stati: controllo non eseguito dal lanciatore in questa esecuzione
-- home-riga-menu-testo: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
 - (nessuna)

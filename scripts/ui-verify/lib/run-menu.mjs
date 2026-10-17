@@ -1,6 +1,6 @@
-import { existsSync } from 'node:fs'
+import { existsSync, unlinkSync } from 'node:fs'
 import { join } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 
 import {
   checkScrollOrizzontale,
@@ -12,6 +12,15 @@ import {
   withinTolerance,
 } from './engine.mjs'
 import { loadNavExpectations, loadPiattiCopyFromLib, readTsStringExport } from './lib-readers.mjs'
+import { SIM_PORT, isPortFree, waitForPortFree } from './ensure-ports.mjs'
+import {
+  menuCountSoldOut,
+  menuCreateDishes,
+  menuDeleteVerifyPrefix,
+  menuUpdateDish,
+} from './menu-payload.mjs'
+
+const ROOT_MENU = join(import.meta.dirname, '../../..')
 
 const ROOT = join(import.meta.dirname, '../../..')
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
@@ -103,6 +112,84 @@ async function isPiattiScreenReady(page) {
   const h1 = (await page.locator('h1').innerText().catch(() => '')).trim()
   if (h1 !== 'Piatti') return false
   return !(await isSegnapostoMain(page))
+}
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms))
+}
+
+async function waitForUrl(baseUrl, ms = 120000) {
+  const start = Date.now()
+  while (Date.now() - start < ms) {
+    try {
+      const res = await fetch(baseUrl, { redirect: 'manual' })
+      if (res.status < 500) return
+    } catch {
+      /* retry */
+    }
+    await sleep(600)
+  }
+  throw new Error(`Server non raggiungibile: ${baseUrl}`)
+}
+
+function startMenuDevServer(port, extraEnv) {
+  try {
+    unlinkSync(join(ROOT_MENU, '.next/dev/lock'))
+  } catch {
+    /* nessun lock */
+  }
+  const child = spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
+    cwd: ROOT_MENU,
+    env: { ...process.env, ...extraEnv },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+  child.stderr?.on('data', (chunk) => {
+    const t = String(chunk)
+    if (t.includes('Error') || t.includes('ready')) {
+      process.stderr.write(`[sim-menu:${port}] ${t.slice(0, 120)}\n`)
+    }
+  })
+  return child
+}
+
+/** Allineato a lib/app/home/menuSoldOutStatus.ts */
+function formatMenuSoldOutStatusLine(count) {
+  if (count <= 0) return 'Nessun piatto terminato'
+  if (count === 1) return '1 piatto terminato'
+  return `${count} piatti terminati`
+}
+
+async function readMenuCardStatus(page) {
+  return page.evaluate(() => {
+    const link = document.querySelector('main a[href="/app/menu"]')
+    if (!link) return { found: false }
+    const card = link.querySelector('[data-slot=card]') ?? link
+    const flex = link.querySelector('[data-slot=card-content] .min-w-0.flex-1')
+    const title = flex?.querySelector('.text-sm.font-medium')?.textContent?.trim() ?? ''
+    const statusP = flex?.querySelector('p.min-h-4.text-xs')
+    const skeleton = flex?.querySelector('[data-slot=skeleton], .animate-pulse')
+    const skeletonWrap = flex?.querySelector('div[aria-hidden]')
+    const text = (statusP?.textContent ?? '').replace(/\s+/g, ' ').trim()
+    const hasSkeleton = Boolean(skeleton || skeletonWrap?.querySelector('[data-slot=skeleton]'))
+    return {
+      found: true,
+      title,
+      text,
+      hasSkeleton,
+      cardHeight: Math.round(card.getBoundingClientRect().height),
+      skeletonBusy: skeletonWrap?.getAttribute('aria-busy') === 'true' || hasSkeleton,
+    }
+  })
+}
+
+async function waitForMenuStatusLine(page, timeoutMs = 20000) {
+  const start = Date.now()
+  while (Date.now() - start < timeoutMs) {
+    const s = await readMenuCardStatus(page)
+    if (s.found && s.text && !s.hasSkeleton) return s
+    await sleep(200)
+  }
+  return readMenuCardStatus(page)
 }
 
 function addNonProvatoRows(report, addRow, runCtx, ids, motivo, schermata = '—') {
@@ -371,7 +458,177 @@ function runNavCasiUnit(report, addRow, runCtx) {
   })
 }
 
-async function runNavPannelloTelefono(browser, baseUrl, navJson, loginApp, testUser, testPassword, newPage, addRow, runCtx) {
+async function runHomeRigaMenuTesto(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx) {
+  const id = 'home-riga-menu-testo'
+  if (!runCtx.shouldRun(id)) return
+  const ctrl = controlDef(CONTROLLI_FROM_CTX, 'home', id)
+  const profili = ctrl?.profili ?? ['telefono-390', 'notebook-1280']
+  const temi = ctrl?.temi ?? ['chiaro', 'scuro']
+  for (const profiloKey of profili) {
+    for (const temaKey of temi) {
+      const { ctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await page.goto('/app', { waitUntil: 'networkidle' })
+      const { count } = menuCountSoldOut(testUser.email)
+      const attesoLine = formatMenuSoldOutStatusLine(count)
+      const card = await waitForMenuStatusLine(page)
+      const ok =
+        card.found &&
+        card.title === 'Menù' &&
+        card.text === attesoLine
+      addRow(report, {
+        id,
+        schermata: 'home/iniziale',
+        profiloTema: `${profiloKey}/${temaKey}`,
+        esito: ok ? 'OK' : 'FALLITO',
+        misurato: card.found
+          ? `scheda=${card.title}; riga=${card.text}; count API=${count}`
+          : 'scheda Menù assente',
+        atteso: `Menù; «${attesoLine}» (N=${count})`,
+        evidenza: '/app',
+      })
+      await ctx.close()
+    }
+  }
+}
+
+let CONTROLLI_FROM_CTX = null
+
+async function runHomeRigaMenuCasi(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx) {
+  const id = 'home-riga-menu-casi'
+  if (!runCtx.shouldRun(id)) return
+  const failures = []
+  try {
+    menuDeleteVerifyPrefix()
+    const n0 = menuCountSoldOut(testUser.email).count
+    menuCreateDishes(testUser.email, [
+      { name: 'verify-ui-p1', soldOut: true },
+      { name: 'verify-ui-p2', soldOut: true },
+      { name: 'verify-ui-p3', soldOut: true },
+      { name: 'verify-ui-p4', soldOut: true, disabled: true },
+      { name: 'verify-ui-p5', soldOut: false, disabled: true },
+    ])
+    const { ctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+    await loginApp(page, baseUrl, testUser.email, testPassword)
+
+    const checkLine = async (expectedCount, label) => {
+      await page.goto('/app', { waitUntil: 'networkidle' })
+      const card = await waitForMenuStatusLine(page)
+      const atteso = formatMenuSoldOutStatusLine(expectedCount)
+      if (card.text !== atteso) failures.push(`${label}: «${card.text}» atteso «${atteso}»`)
+    }
+
+    await checkLine(n0 + 3, 'dopo creazione')
+    menuUpdateDish(testUser.email, 'verify-ui-p1', { soldOut: false })
+    await checkLine(n0 + 2, 'dopo p1 non terminato')
+    menuUpdateDish(testUser.email, 'verify-ui-p2', { disabled: true })
+    menuUpdateDish(testUser.email, 'verify-ui-p3', { disabled: true })
+    await checkLine(n0, 'dopo p2/p3 disabilitati')
+
+    menuDeleteVerifyPrefix()
+    menuCreateDishes(testUser.email, [{ name: 'verify-ui-sing', soldOut: true }])
+    const countForSing = menuCountSoldOut(testUser.email).count
+    await page.goto('/app', { waitUntil: 'networkidle' })
+    const sing = await waitForMenuStatusLine(page)
+    if (countForSing === 1) {
+      if (sing.text !== '1 piatto terminato') failures.push(`singolare: «${sing.text}»`)
+    } else {
+      failures.push(`singolare: N=${countForSing} (serve N=1 isolato)`)
+    }
+    menuUpdateDish(testUser.email, 'verify-ui-sing', { soldOut: false })
+    await page.goto('/app', { waitUntil: 'networkidle' })
+    const zeroCard = await waitForMenuStatusLine(page)
+    const countZero = menuCountSoldOut(testUser.email).count
+    if (countZero === 0 && zeroCard.text !== 'Nessun piatto terminato') {
+      failures.push(`zero: «${zeroCard.text}» con N=0`)
+    }
+
+    await ctx.close()
+  } finally {
+    menuDeleteVerifyPrefix()
+  }
+  addRow(report, {
+    id,
+    schermata: 'home',
+    profiloTema: 'telefono-390/chiaro',
+    esito: failures.length ? 'FALLITO' : 'OK',
+    misurato: failures.join(' | ') || 'casi ok',
+    atteso: 'conteggio e singolare/plurale come da specifica',
+    evidenza: '/app',
+  })
+}
+
+async function runHomeRigaMenuAltezza(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx, ambiente) {
+  const id = 'home-riga-menu-altezza'
+  if (!runCtx.shouldRun(id)) return
+  const ctrl = controlDef(CONTROLLI_FROM_CTX, 'home', id)
+  const profili = ctrl?.profili ?? ['telefono-390', 'notebook-1280']
+  const tol = ctrl?.tolleranza_px ?? 2
+
+  const measureOnBase = async (profiloKey, simBaseUrl) => {
+    const { ctx, page } = await newPage(browser, profiloKey, 'chiaro', simBaseUrl)
+    await loginApp(page, simBaseUrl, testUser.email, testPassword)
+    await page.goto('/app', { waitUntil: 'domcontentloaded' })
+    let skeletonH = 0
+    for (let i = 0; i < 40; i++) {
+      const s = await readMenuCardStatus(page)
+      if (s.found && s.hasSkeleton) {
+        skeletonH = s.cardHeight
+        break
+      }
+      await sleep(100)
+    }
+    const ready = await waitForMenuStatusLine(page)
+    const readyH = ready.cardHeight
+    await ctx.close()
+    return { skeletonH, readyH }
+  }
+
+  for (const profiloKey of profili) {
+    let skeletonH = 0
+    let readyH = 0
+    let evidenza = baseUrl
+
+    const { ctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+    await loginApp(page, baseUrl, testUser.email, testPassword)
+    await page.goto('/app', { waitUntil: 'networkidle' })
+    const ready = await waitForMenuStatusLine(page)
+    readyH = ready.cardHeight
+    await ctx.close()
+
+    if (await isPortFree(SIM_PORT)) {
+      await waitForPortFree(SIM_PORT)
+      const child = startMenuDevServer(SIM_PORT, { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' })
+      try {
+        const simUrl = `http://localhost:${SIM_PORT}`
+        await waitForUrl(simUrl)
+        const m = await measureOnBase(profiloKey, simUrl)
+        skeletonH = m.skeletonH
+        if (!skeletonH && m.readyH) skeletonH = m.readyH
+        evidenza = `${baseUrl}; skeleton da ${simUrl}`
+      } finally {
+        child.kill('SIGTERM')
+        await waitForPortFree(SIM_PORT)
+      }
+    }
+
+    const ok =
+      skeletonH > 0 &&
+      readyH > 0 &&
+      withinTolerance(skeletonH, readyH, tol)
+    addRow(report, {
+      id,
+      schermata: 'home/caricamento',
+      profiloTema: `${profiloKey}/chiaro`,
+      esito: ok ? 'OK' : skeletonH ? 'FALLITO' : 'NON PROVATO',
+      misurato: `skeleton=${skeletonH}px; con riga=${readyH}px`,
+      atteso: `altezza scheda uguale (±${tol}px)`,
+      evidenza: ambiente === 'locale-prod' ? evidenza : baseUrl,
+    })
+  }
+}
+
+async function runNavPannelloTelefono(browser, baseUrl, navJson, loginApp, testUser, testPassword, newPage, addRow, report, runCtx) {
   const id = 'nav-pannello-telefono'
   if (!runCtx.shouldRun(id)) return
   if (!allMenuVoicesEnabled(navJson)) {
@@ -426,11 +683,15 @@ export async function runMenuChecks(ctx) {
     SHOT_PROFILES,
     SHOT_TEMI,
     navJson,
+    ambiente = 'locale-prod',
   } = ctx
 
+  CONTROLLI_FROM_CTX = CONTROLLI
   const nav = navJson ?? loadNavExpectations()
   const temiAll = runCtx.temiKeys().filter((t) => ['chiaro', 'scuro'].includes(t))
   const profiliL1 = runCtx.profiliAccess().filter((p) => ['telefono-390', 'notebook-1280'].includes(p))
+
+  report.replacePacchetto?.('menu')
 
   if (runCtx.screenIncluded('home')) {
     const homeIds = [
@@ -457,20 +718,14 @@ export async function runMenuChecks(ctx) {
         })
       }
     } else {
-      addNonProvatoRows(
-        report,
-        addRow,
-        runCtx,
-        homeIds,
-        'implementazione flussi home post-I1: VC1 registra id',
-        'home',
-      )
+      await runHomeRigaMenuTesto(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx)
+      await runHomeRigaMenuCasi(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx)
+      await runHomeRigaMenuAltezza(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx, ambiente)
     }
     await pctx.close()
   }
 
   if (runCtx.screenIncluded('navigazione')) {
-    report.replacePacchetto?.('menu')
     for (const profiloKey of profiliL1) {
       progressStep('navigazione', 'menu-fisso-notebook', profiloKey, 'chiaro')
       const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
@@ -493,6 +748,7 @@ export async function runMenuChecks(ctx) {
       testPassword,
       newPage,
       addRow,
+      report,
       runCtx,
     )
   }
@@ -593,20 +849,117 @@ export async function runMenuChecks(ctx) {
 }
 
 export async function runMenuDevSimulations(ctx) {
-  const { report, runCtx, addRow } = ctx
-  const ids = ['home-riga-menu-stati', 'piatti-stati-ui']
-  for (const id of ids) {
-    if (!runCtx.shouldRun(id)) continue
+  const {
+    report,
+    runCtx,
+    addRow,
+    browser,
+    newPage,
+    loginApp,
+    testUser,
+    testPassword,
+    progressStep,
+  } = ctx
+
+  if (runCtx.shouldRun('piatti-stati-ui')) {
     addRow(report, {
-      id,
-      schermata: id.startsWith('home') ? 'home' : 'piatti',
+      id: 'piatti-stati-ui',
+      schermata: 'piatti',
       profiloTema: '—',
       esito: 'NON PROVATO',
       misurato: '—',
       atteso: 'simulazione APP_MENU_DEV_SIMULATE_*',
-      evidenza: 'server dev porta 3200 (locale-dev); su locale-prod non eseguito',
+      evidenza: 'schermata Piatti non in perimetro o non implementata nel lanciatore',
     })
   }
+
+  if (!runCtx.shouldRun('home-riga-menu-stati')) return
+
+  if (!(await isPortFree(SIM_PORT))) {
+    addRow(report, {
+      id: 'home-riga-menu-stati',
+      schermata: 'home',
+      profiloTema: 'telefono-390/chiaro',
+      esito: 'NON PROVATO',
+      misurato: '—',
+      atteso: 'Skeleton in attesa; errore senza riga',
+      evidenza: `porta ${SIM_PORT} occupata`,
+    })
+    return
+  }
+
+  progressStep('home', 'caricamento', 'telefono-390', 'chiaro')
+  const failures = []
+
+  await waitForPortFree(SIM_PORT)
+  const delayChild = startMenuDevServer(SIM_PORT, { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' })
+  try {
+    const simUrl = `http://localhost:${SIM_PORT}`
+    await waitForUrl(simUrl)
+    const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', simUrl)
+    await loginApp(page, simUrl, testUser.email, testPassword)
+    await page.goto('/app', { waitUntil: 'commit' })
+    let during = await readMenuCardStatus(page)
+    for (let i = 0; i < 50 && !during.hasSkeleton && !during.skeletonBusy; i++) {
+      await sleep(100)
+      during = await readMenuCardStatus(page)
+    }
+    const otherCards = await page.evaluate(() => {
+      const links = [...document.querySelectorAll('main a[href^="/app/"]')]
+      return links.filter((a) => a.getAttribute('href') !== '/app/menu').length
+    })
+    if (!during.hasSkeleton && !during.skeletonBusy) {
+      failures.push('caricamento: Skeleton non osservato prima della riga')
+    }
+    if (otherCards < 2) {
+      failures.push(`caricamento: altre schede visibili=${otherCards}`)
+    }
+    await waitForMenuStatusLine(page, 15000)
+    await pctx.close()
+  } catch (e) {
+    failures.push(`caricamento: ${e.message}`)
+  } finally {
+    delayChild.kill('SIGTERM')
+    await waitForPortFree(SIM_PORT)
+  }
+
+  await waitForPortFree(SIM_PORT)
+  const errChild = startMenuDevServer(SIM_PORT, { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' })
+  try {
+    const simUrl = `http://localhost:${SIM_PORT}`
+    await waitForUrl(simUrl)
+    const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', simUrl)
+    const bag = { errors: [] }
+    page.on('pageerror', (e) => bag.errors.push(String(e)))
+    await loginApp(page, simUrl, testUser.email, testPassword)
+    await page.goto('/app', { waitUntil: 'networkidle' })
+    const card = await readMenuCardStatus(page)
+    const hrefOk = await page.evaluate(() => {
+      const a = document.querySelector('main a[href="/app/menu"]')
+      return a?.getAttribute('href') === '/app/menu'
+    })
+    const alertCount = await page.locator('main [role=alert]').count()
+    if (card.text) failures.push(`errore: riga presente «${card.text}»`)
+    if (!hrefOk) failures.push('errore: collegamento /app/menu assente')
+    if (alertCount > 0) failures.push(`errore: avvisi=${alertCount}`)
+    if (bag.errors.length) failures.push(`pageerror: ${bag.errors.length}`)
+    await pctx.close()
+  } catch (e) {
+    failures.push(`errore: ${e.message}`)
+  } finally {
+    errChild.kill('SIGTERM')
+    await waitForPortFree(SIM_PORT)
+  }
+
+  addRow(report, {
+    id: 'home-riga-menu-stati',
+    schermata: 'home',
+    profiloTema: 'telefono-390/chiaro',
+    esito: failures.length ? 'FALLITO' : 'OK',
+    misurato: failures.join(' | ') || 'stati simulati ok',
+    atteso: 'Skeleton in attesa; con errore nessuna riga e link ok',
+    evidenza: `localhost:${SIM_PORT}`,
+  })
 }
 
 export async function runMenuConsole(ctx) {

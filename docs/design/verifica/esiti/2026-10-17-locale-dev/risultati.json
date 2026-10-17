@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "ambiente": "locale-dev",
+    "data": "2026-10-17",
+    "commit": "dadc3898ded2",
+    "launcherVersion": "3.3.0",
+    "launcherHeader": "3.3.0 (L2)",
+    "browsers": "Chromium 140.0.7339.186; WebKit 26.0",
+    "controlliBasename": "controlli-6.6.json",
+    "livelloEseguito": "L2",
+    "controlliVersion": 1,
+    "durataMs": 22469,
+    "invalidRun": false
+  },
+  "counts": {
+    "OK": 4,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 5
+  },
+  "distinctControls": 5,
+  "rows": [
+    {
+      "id": "piatti-stati-ui",
+      "schermata": "piatti",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "simulazione APP_MENU_DEV_SIMULATE_*",
+      "evidenza": "schermata Piatti non in perimetro o non implementata nel lanciatore",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-stati",
+      "schermata": "home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "stati simulati ok",
+      "atteso": "Skeleton in attesa; con errore nessuna riga e link ok",
+      "evidenza": "localhost:3200",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "webkit-giro-essenziale",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro/WebKit 26.0",
+      "esito": "OK",
+      "misurato": "login→/app OK (http://localhost:3000/app)",
+      "atteso": "login, home, menu, menu utente (locale-dev)",
+      "evidenza": "26.0",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-elimina-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-elimina-registro",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "nonProvato": [
+    {
+      "id": "piatti-console",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-elimina-permessi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-elimina-registro",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-persistenza",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "anomalie": [],
+  "screenshotHashes": []
+}

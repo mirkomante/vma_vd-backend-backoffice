@@ -306,7 +306,7 @@ async function runConsoleClean(baseUrl, report, browserVersion) {
   const profiles = runCtx.profiliConsole()
   const accessPaths = [
     ...new Set(visitableAccessStates().map((s) => s.path)),
-  ].filter((p) => !p.includes('<token'))
+  ].filter((p) => p && p.startsWith('/') && !p.includes('<token'))
 
   const shellPaths = runCtx.screenIncluded('shell')
     ? ['/app', '/app/menu', '/app/hours', '/app/reservations']
@@ -656,6 +656,7 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
       SHOT_PROFILES,
       SHOT_TEMI,
       navJson: nav,
+      ambiente: 'locale-prod',
     })
   }
 
@@ -1213,7 +1214,17 @@ async function main() {
         if (menuScreensInScope()) {
           report.replacePacchetto('menu')
           report.pacchettoDefault = 'menu'
-          await runMenuDevSimulations({ report, runCtx, addRow })
+          await runMenuDevSimulations({
+            report,
+            runCtx,
+            addRow,
+            browser: devBrowser,
+            newPage,
+            loginApp,
+            testUser,
+            testPassword,
+            progressStep,
+          })
           await runMenuConsole({
             browser: devBrowser,
             baseUrl: devBaseUrl(),
