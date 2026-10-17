@@ -15,6 +15,7 @@ import {
 import { loadNavExpectations, loadPiattiCopyFromLib, readTsStringExport } from './lib-readers.mjs'
 import { SIM_PORT, isPortFree, waitForPortFree } from './ensure-ports.mjs'
 import {
+  menuCountDishes,
   menuCountSoldOut,
   menuCreateDishes,
   menuDeleteVerifyPrefix,
@@ -59,6 +60,9 @@ const NAV_FLOW_CASES = [
   { path: '/app/reservations', voce_attiva: 'Elenco' },
   { path: '/app/reservations/day-exceptions', voce_attiva: 'Eccezioni giorno' },
 ]
+
+const HEAVY_PIATTI_C1_STATES = new Set(['piu-di-100', 'caricamento', 'errore-caricamento', 'vuoto'])
+const HEAVY_PIATTI_STATE_TIMEOUT_MS = 4 * 60 * 1000
 
 const PIATTI_CONTROL_IDS = [
   'piatti-testi',
@@ -829,49 +833,127 @@ export async function runMenuChecks(ctx) {
     }
 
     if (ready && piattiScreen?.stati_c1_c2) {
-      const skipHeavyC1 = new Set(['piu-di-100', 'caricamento', 'errore-caricamento', 'vuoto'])
-      for (const statoId of piattiScreen.stati_c1_c2) {
-        if (skipHeavyC1.has(statoId)) continue
+      const lightStates = piattiScreen.stati_c1_c2.filter((id) => !HEAVY_PIATTI_C1_STATES.has(id))
+      const heavyStates = [...new Set([...piattiScreen.stati_c1_c2.filter((id) => HEAVY_PIATTI_C1_STATES.has(id)), 'piu-di-100'])]
+
+      async function runPiattiC1C2Matrix(statoId, { heavy = false } = {}) {
         for (const temaKey of temiAll) {
           for (const profiloKey of profiliL1) {
             if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820') continue
             progressStep('piatti', statoId, profiloKey, temaKey)
-            const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, baseUrl)
-            await loginApp(sp, baseUrl, testUser.email, testPassword)
-            try {
-              await preparePiattiState(sp, statoId, {
-                testUser,
-                baseUrl,
-                browser,
-                newPage,
-                loginApp,
-                testPassword,
-              })
-            } catch (e) {
-              report.anomalie.push(`piatti stato ${statoId}: ${e.message}`)
-              await sp.goto('/app/menu', { waitUntil: 'networkidle' })
-            }
             const sch = `piatti/${statoId}`
             const pt = `${profiloKey}/${temaKey}`
-            if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
-              const r = await checkScrollOrizzontale(sp)
-              addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: statoId })
+            const addNonProvato = (motivo) => {
+              for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
+                if (!runCtx.shouldRun(id)) continue
+                if (id === 'C1' && !C1_PROFILES.has(profiloKey)) continue
+                if (id === 'C2' && !C2_PROFILES.has(profiloKey)) continue
+                if (id === 'C2-mouse' && profiloKey !== 'notebook-1280') continue
+                addRow(report, {
+                  id,
+                  schermata: sch,
+                  profiloTema: pt,
+                  esito: 'NON PROVATO',
+                  misurato: motivo,
+                  atteso: id === 'C1' ? 'scroll orizzontale' : id === 'C2' ? 'tocco ≥44px' : id === 'C3' ? 'classe tema' : 'altezza mouse',
+                  evidenza: statoId,
+                })
+              }
             }
-            if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
-              const r = await checkToccoMinimo(sp)
-              addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: statoId })
+
+            const runOne = async () => {
+              let simChild = null
+              let pageBase = baseUrl
+              try {
+                if (statoId === 'caricamento' || statoId === 'errore-caricamento') {
+                  await waitForPortFree(SIM_PORT)
+                  const env =
+                    statoId === 'caricamento'
+                      ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
+                      : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
+                  simChild = startMenuDevServer(SIM_PORT, env)
+                  pageBase = `http://localhost:${SIM_PORT}`
+                  await waitForUrl(pageBase)
+                }
+                if (statoId === 'vuoto') {
+                  const { count } = menuCountDishes()
+                  if (count > 0) {
+                    addNonProvato(`stato vuoto: DB con ${count} piatti`)
+                    return
+                  }
+                }
+                const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
+                await loginApp(sp, pageBase, testUser.email, testPassword)
+                try {
+                  if (statoId === 'caricamento') {
+                    await sp.goto('/app/menu', { waitUntil: 'commit' })
+                    await sleep(600)
+                  } else if (statoId === 'errore-caricamento') {
+                    await sp.goto('/app/menu', { waitUntil: 'networkidle' })
+                  } else {
+                    await preparePiattiState(sp, statoId, {
+                      testUser,
+                      baseUrl: pageBase,
+                      browser,
+                      newPage,
+                      loginApp,
+                      testPassword,
+                    })
+                  }
+                } catch (e) {
+                  report.anomalie.push(`piatti stato ${statoId}: ${e.message}`)
+                  await sp.goto('/app/menu', { waitUntil: 'networkidle' }).catch(() => {})
+                }
+                if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
+                  const r = await checkScrollOrizzontale(sp)
+                  addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
+                  const r = await checkToccoMinimo(sp)
+                  addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                if (runCtx.shouldRun('C3')) {
+                  const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
+                  addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
+                  const r = await checkAltezzaMouse(sp)
+                  addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                await sctx.close()
+              } finally {
+                if (simChild) {
+                  simChild.kill('SIGTERM')
+                  await waitForPortFree(SIM_PORT)
+                }
+                menuDeleteVerifyPrefix()
+              }
             }
-            if (runCtx.shouldRun('C3')) {
-              const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
-              addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), ...r, evidenza: statoId })
+
+            if (heavy) {
+              try {
+                await Promise.race([
+                  runOne(),
+                  sleep(HEAVY_PIATTI_STATE_TIMEOUT_MS).then(() => {
+                    throw new Error(`timeout ${HEAVY_PIATTI_STATE_TIMEOUT_MS / 1000}s per stato ${statoId}`)
+                  }),
+                ])
+              } catch (e) {
+                addNonProvato(e.message)
+                report.anomalie.push(`piatti C1/C2 pesante ${statoId} ${profiloKey}/${temaKey}: ${e.message}`)
+              }
+            } else {
+              await runOne()
             }
-            if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
-              const r = await checkAltezzaMouse(sp)
-              addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), ...r, evidenza: statoId })
-            }
-            await sctx.close()
           }
         }
+      }
+
+      for (const statoId of lightStates) {
+        await runPiattiC1C2Matrix(statoId)
+      }
+      for (const statoId of heavyStates) {
+        await runPiattiC1C2Matrix(statoId, { heavy: true })
       }
     }
   }

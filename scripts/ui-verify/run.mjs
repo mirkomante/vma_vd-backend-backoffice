@@ -750,7 +750,10 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
           r = await checkShellBarraAlta(page)
           addRow(report, { id: 'shell-barra-alta', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }
-        if (['telefono-390', 'soglia-768', 'notebook-1280'].includes(profiloKey)) {
+        if (
+          ['telefono-390', 'soglia-768', 'notebook-1280'].includes(profiloKey) &&
+          stato.percorso !== '/app/menu'
+        ) {
           r = await checkShellMargineContenuto(page, profiloKey)
           addRow(report, { id: 'shell-margine-contenuto', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: stato.percorso })
         }

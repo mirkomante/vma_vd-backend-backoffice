@@ -2,14 +2,14 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-17",
-    "commit": "1a422dab7629",
-    "launcherVersion": "3.4.0",
-    "launcherHeader": "3.4.0 (L2)",
+    "commit": "3076b1ca4de1",
+    "launcherVersion": "3.4.1",
+    "launcherHeader": "3.4.1 (L2)",
     "browsers": "Chromium 140.0.7339.186; WebKit 26.0",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L2",
     "controlliVersion": 1,
-    "durataMs": 52715,
+    "durataMs": 50637,
     "invalidRun": false
   },
   "counts": {

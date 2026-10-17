@@ -1,6 +1,67 @@
+import { unlinkSync } from 'node:fs'
+import { join } from 'node:path'
+import { spawn } from 'node:child_process'
+
 import { readTsStringExport } from './lib-readers.mjs'
 import { withinTolerance, openUserMenu } from './engine.mjs'
 import { SIM_PORT, isPortFree, waitForPortFree } from './ensure-ports.mjs'
+
+const ROOT_PIATTI = join(import.meta.dirname, '../../..')
+
+const PIATTI_CONFRONTO_STATI = [
+  'elenco',
+  'terminato',
+  'disabilita',
+  'elimina-libero',
+  'elimina-bloccato',
+  'eliminato',
+  'filtri',
+  'filtri-attivi',
+  'modulo',
+  'modulo-allergeni',
+  'modulo-inglese-aperto',
+  'nuovo',
+  'nuovo-errori',
+  'errore-azione',
+  'piu-di-100',
+  'caricamento',
+  'errore-caricamento',
+  'vuoto',
+  'nessun-risultato',
+]
+
+const PIATTI_SIM_STATES = {
+  caricamento: { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' },
+  'errore-caricamento': { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' },
+  'errore-azione': { APP_MENU_DEV_SIMULATE_SAVE_ERROR: '1' },
+}
+
+function startMenuDevServerLocal(port, extraEnv) {
+  try {
+    unlinkSync(join(ROOT_PIATTI, '.next/dev/lock'))
+  } catch {
+    /* nessun lock */
+  }
+  return spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
+    cwd: ROOT_PIATTI,
+    env: { ...process.env, ...extraEnv },
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+}
+
+async function waitForUrlLocal(baseUrl, ms = 120000) {
+  const start = Date.now()
+  while (Date.now() - start < ms) {
+    try {
+      const res = await fetch(baseUrl, { redirect: 'manual' })
+      if (res.status < 500) return
+    } catch {
+      /* retry */
+    }
+    await sleep(600)
+  }
+  throw new Error(`Server non raggiungibile: ${baseUrl}`)
+}
 import {
   menuAddDishToFixedMenu,
   menuCountDishes,
@@ -23,28 +84,6 @@ const REBUILD_PHRASES = [
   'Ricompilare il menù pubblico?',
   'serve «Ricompila il menù pubblico»',
 ]
-
-const PIATTI_SHOT_STATES = new Set([
-  'elenco',
-  'terminato',
-  'disabilita',
-  'elimina-libero',
-  'elimina-bloccato',
-  'eliminato',
-  'filtri',
-  'filtri-attivi',
-  'modulo',
-  'modulo-allergeni',
-  'modulo-inglese-aperto',
-  'nuovo',
-  'nuovo-errori',
-  'errore-azione',
-  'piu-di-100',
-  'caricamento',
-  'errore-caricamento',
-  'vuoto',
-  'nessun-risultato',
-])
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
@@ -336,6 +375,9 @@ export async function runPiattiFlowControls(ctx) {
           misurato = `col=${m.colW}px; table=${m.tableVisible}`
         } else if (m.tableVisible) {
           esito = 'FALLITO'
+        } else if (m.nameW && m.nameW < 100) {
+          esito = 'FALLITO'
+          misurato = `nameW=${m.nameW}px (soglia minima 100); colW=${m.colW}px`
         } else if (m.nameW && (m.nameW < 127 || m.nameW > 147)) {
           esito = 'AVVISO'
         }
@@ -355,22 +397,33 @@ export async function runPiattiFlowControls(ctx) {
           )
           const r = btn?.getBoundingClientRect()
           const header = document.querySelector('main h1')?.parentElement
+          const col = document.querySelector('main .mx-auto')
+          const colW = col ? Math.round(col.getBoundingClientRect().width) : Math.round(window.innerWidth - 32)
           return {
             h: r ? Math.round(r.height) : 0,
             w: r ? Math.round(r.width) : 0,
+            colW,
             inline: header && btn ? header.getBoundingClientRect().top === btn.getBoundingClientRect().top : false,
-            mainW: document.querySelector('main')?.getBoundingClientRect().width ?? 0,
           }
         })
+        const attesoW = profiloKey === 'telefono-390' ? 358 : null
         const ok =
           profiloKey === 'telefono-390'
-            ? m.h >= 44 && m.w >= m.mainW - 48
+            ? m.h >= 44 && m.w >= m.colW - 2
             : m.inline && m.h >= 28
+        const misurato =
+          profiloKey === 'telefono-390'
+            ? `larghezza=${m.w}px, colonna=${m.colW}px, altezza=${m.h}px`
+            : JSON.stringify(m)
+        const atteso =
+          profiloKey === 'telefono-390'
+            ? `larghezza colonna ${attesoW}px (±2), altezza ≥44px`
+            : 'pulsante in riga col titolo, altezza ≥28px'
         add(
           'piatti-azioni-pagina',
           ok ? 'OK' : 'FALLITO',
-          JSON.stringify(m),
-          profiloKey === 'telefono-390' ? 'pulsante full-width ≥44px' : 'pulsante in riga col titolo',
+          misurato,
+          atteso,
           '/app/menu',
           'piatti/elenco',
           `${profiloKey}/chiaro`,
@@ -425,7 +478,7 @@ export async function runPiattiFlowControls(ctx) {
         const dish = menuFindDish(testUser.email, 'verify-ui-terminato')
         if (!dish.dish?.soldOut) failures.push('soldOut API falso')
         await page.getByRole('button', { name: copyConst('PIATTI_FILTERS_BUTTON') ?? 'Filtri' }).click()
-        await page.getByRole('combobox', { name: 'Stato' }).click()
+        await page.locator('[data-slot=sheet-content]').getByRole('combobox').nth(1).click()
         await page.getByRole('option', { name: copyConst('PIATTI_FILTER_STATE_SOLD_OUT') ?? 'Terminati' }).click()
         await page.getByRole('button', { name: copyConst('PIATTI_FILTERS_APPLY') ?? 'Applica' }).click()
         await page.waitForTimeout(500)
@@ -441,7 +494,13 @@ export async function runPiattiFlowControls(ctx) {
       } finally {
         menuDeleteVerifyPrefix()
       }
-      add('piatti-terminato', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'flusso ok', 'terminato e filtro', '/app/menu')
+      add(
+        'piatti-terminato',
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? failures.join(' | ') : 'interruttore, avvisi, soldOut API, filtro Terminati nel foglio Filtri, ripristino',
+        'flusso §9 punto 5 (terminato + filtro Stato Terminati)',
+        '/app/menu',
+      )
     })
 
     if (runCtx.shouldRun('piatti-disabilita')) {
@@ -546,7 +605,46 @@ export async function runPiattiFlowControls(ctx) {
     }
 
     if (runCtx.shouldRun('piatti-elimina-concorrenza')) {
-      add('piatti-elimina-concorrenza', 'NON PROVATO', '—', 'race menu fisso', 'non implementato in questa passata V2')
+      const failures = []
+      const errTitle = copyConst('PIATTI_ACTION_ERROR_TITLE') ?? 'Operazione non riuscita'
+      const errDesc =
+        copyConst('PIATTI_ACTION_ERROR_DESCRIPTION') ??
+        'Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.'
+      try {
+        menuDeleteVerifyPrefix()
+        menuCreateDishes(testUser.email, [{ name: 'verify-ui-corsa' }])
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoPiatti(page)
+        await clickRowAction(page, 'verify-ui-corsa', 'delete')
+        menuCreateFixedMenuFixture(testUser.email, {
+          dishName: 'verify-ui-corsa',
+          categoryName: 'verify-ui-cat-corsa',
+          menuNames: ['verify-ui-menu-corsa'],
+        })
+        await page
+          .getByRole('alertdialog')
+          .getByRole('button', { name: copyConst('PIATTI_DELETE_CONFIRM') ?? 'Elimina' })
+          .click()
+        await page.waitForTimeout(900)
+        const dlg = await page.locator('[role=alertdialog]').innerText().catch(() => '')
+        if (!dlg.includes(errTitle)) failures.push(`titolo mancante (letto: ${dlg.slice(0, 80)}…)`)
+        if (!dlg.includes(errDesc.slice(0, 40))) failures.push('descrizione errore mancante')
+        const still = menuFindDish(testUser.email, 'verify-ui-corsa')
+        if (!still.found) failures.push('piatto non più in API')
+        await pctx.close()
+      } finally {
+        menuDeleteVerifyPrefix()
+      }
+      add(
+        'piatti-elimina-concorrenza',
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length
+          ? failures.join(' | ')
+          : `finestra «${errTitle}»; piatto verify-ui-corsa ancora presente in API`,
+        `«${errTitle}» + testo errore; piatto non eliminato; nessun registro delete`,
+        '/app/menu',
+      )
     }
 
     if (runCtx.shouldRun('piatti-elimina-permessi')) {
@@ -637,22 +735,39 @@ export async function runPiattiFlowControls(ctx) {
 
     if (runCtx.shouldRun('piatti-modulo-inglese')) {
       const failures = []
+      const badgeMissing = copyConst('PIATTI_BADGE_MISSING') ?? 'Manca'
+      const badgePresent = copyConst('PIATTI_BADGE_PRESENT') ?? 'Presente'
       menuDeleteVerifyPrefix()
-      menuCreateDishes(testUser.email, [{ name: 'verify-ui-noen' }])
+      menuCreateDishes(testUser.email, [{ name: 'verify-ui-noen', description: 'Desc IT' }])
       menuCreateDishes(testUser.email, [{ name: 'verify-ui-yesen', nameEn: 'Plate', descriptionEn: 'Desc' }])
       const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
       await loginApp(page, baseUrl, testUser.email, testPassword)
       await gotoPiatti(page)
       await clickRowAction(page, 'verify-ui-noen', 'edit')
       let sheet = await page.locator('[data-slot=sheet-content]').innerText()
-      if (!sheet.includes(copyConst('PIATTI_BADGE_MISSING') ?? 'Manca')) failures.push('badge Manca')
+      if (!sheet.includes(badgeMissing)) failures.push(`badge: atteso «${badgeMissing}» nel foglio`)
       await page.keyboard.press('Escape')
       await clickRowAction(page, 'verify-ui-yesen', 'edit')
       sheet = await page.locator('[data-slot=sheet-content]').innerText()
-      if (!sheet.includes(copyConst('PIATTI_BADGE_PRESENT') ?? 'Presente')) failures.push('badge Presente')
+      if (!sheet.includes(badgePresent)) failures.push(`badge: atteso «${badgePresent}» nel foglio`)
       const en = menuReadDishEn(testUser.email, 'verify-ui-noen')
-      if (en.name !== 'verify-ui-noen') failures.push('fallback en name')
-      add('piatti-modulo-inglese', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'ok', 'traduzione', '/app/menu')
+      const attesoEn = { name: 'verify-ui-noen', description: 'Desc IT' }
+      if (en.name !== attesoEn.name || en.description !== attesoEn.description) {
+        failures.push(
+          `locale=en: name=${JSON.stringify(en.name)} desc=${JSON.stringify(en.description)}; atteso name=${JSON.stringify(attesoEn.name)} desc=${JSON.stringify(attesoEn.description)}`,
+        )
+      }
+      const misurato =
+        failures.length > 0
+          ? failures.join(' | ')
+          : `badge Manca/Presente ok; locale=en name=${JSON.stringify(en.name)} desc=${JSON.stringify(en.description)}`
+      add(
+        'piatti-modulo-inglese',
+        failures.length ? 'FALLITO' : 'OK',
+        misurato,
+        'Manca/Presente; con inglese vuoto locale=en ricade su italiano per nome e descrizione',
+        '/app/menu',
+      )
       await pctx.close()
       menuDeleteVerifyPrefix()
     }
@@ -680,21 +795,63 @@ export async function runPiattiFlowControls(ctx) {
 
     if (runCtx.shouldRun('piatti-tassonomie')) {
       const failures = []
-      const tax = menuListTaxonomies(testUser.email)
+      let tax = { categories: [], allergens: [] }
+      try {
+      tax = menuListTaxonomies(testUser.email)
       const catDenied = menuTryCreateTaxonomy(testUser.email, 'category')
       const allDenied = menuTryCreateTaxonomy(testUser.email, 'allergen')
-      if (catDenied.ok || allDenied.ok) failures.push('creazione taxonomy consentita')
+      if (catDenied.ok) failures.push(`creazione categoria: atteso rifiuto, ottenuto ok=${catDenied.ok}`)
+      if (allDenied.ok) failures.push(`creazione allergene: atteso rifiuto, ottenuto ok=${allDenied.ok}`)
       const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
       await loginApp(page, baseUrl, testUser.email, testPassword)
       await gotoPiatti(page)
       await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
       await page.getByRole('combobox', { name: copyConst('PIATTI_FORM_CATEGORY') ?? 'Categoria' }).click()
-      const opts = await page.getByRole('option').allTextContents()
-      if (tax.categories.length && !tax.categories.every((c) => opts.some((o) => o.includes(c.name)))) {
-        failures.push('categorie UI')
+      await page.getByRole('option').first().waitFor({ timeout: 8000 })
+      const catOpts = await page.getByRole('option').allTextContents()
+      const apiCatNames = tax.categories.map((c) => c.name)
+      const missingCats = apiCatNames.filter((n) => !catOpts.some((o) => o.includes(n)))
+      if (missingCats.length) {
+        failures.push(`categorie UI mancanti: ${missingCats.join(', ')} (opzioni=[${catOpts.join(' | ')}]; API=[${apiCatNames.join(', ')}])`)
       }
-      add('piatti-tassonomie', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || `cat=${tax.categories.length}`, 'tassonomie read-only', '/app/menu')
+      await page.locator('[data-slot=sheet-content]').click({ position: { x: 12, y: 12 }, force: true })
+      await page.waitForTimeout(200)
+      await page.locator('[data-slot=sheet-content]').evaluate((el) => {
+        el.scrollTop = el.scrollHeight
+      })
+      const allergenLabels = await page.evaluate(() =>
+        [...document.querySelectorAll('[data-slot=sheet-content] button[type=button]')]
+          .map((b) => b.textContent?.trim())
+          .filter((t) => t && t.length > 1),
+      )
+      const apiAllergens = tax.allergens?.map((a) => a.name) ?? []
+      const missingAllergens = apiAllergens.filter((n) => !allergenLabels.some((l) => l?.includes(n)))
+      if (apiAllergens.length && missingAllergens.length) {
+        failures.push(`allergeni UI mancanti: ${missingAllergens.join(', ')}`)
+      }
+      const misurato = [
+        `categorie UI (${catOpts.length}): ${catOpts.slice(0, 8).join(' | ')}${catOpts.length > 8 ? '…' : ''}`,
+        `categorie API (${apiCatNames.length}): ${apiCatNames.slice(0, 8).join(', ')}`,
+        `crea categoria: ok=${catDenied.ok} motivo=${catDenied.reason ?? '—'}`,
+        `crea allergene: ok=${allDenied.ok} motivo=${allDenied.reason ?? '—'}`,
+      ].join('; ')
+      add(
+        'piatti-tassonomie',
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? `${misurato}; ${failures.join(' | ')}` : misurato,
+        'opzioni = collection; creazioni category/allergen rifiutate (overrideAccess false)',
+        '/app/menu',
+      )
       await pctx.close()
+      } catch (e) {
+        add(
+          'piatti-tassonomie',
+          'FALLITO',
+          `eccezione lanciatore: ${e.message}`,
+          'opzioni = collection; creazioni rifiutate',
+          '/app/menu',
+        )
+      }
     }
 
     if (runCtx.shouldRun('piatti-persistenza')) {
@@ -750,6 +907,9 @@ export async function runPiattiFlowControls(ctx) {
 
     if (runCtx.shouldRun('piatti-ordine-100')) {
       const failures = []
+      const attesoBanner = 'Mostrati 100 piatti su 101'
+      const attesoSotto = 'Restringi l’elenco con la ricerca o i filtri per trovare gli altri.'
+      let misurato = '—'
       try {
         menuDeleteVerifyPrefix()
         const bulk = Array.from({ length: 101 }, (_, i) => ({
@@ -760,12 +920,26 @@ export async function runPiattiFlowControls(ctx) {
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoPiatti(page)
         const body = await page.locator('main').innerText()
-        if (!body.includes('Mostrati 100 piatti su 101')) failures.push('banner 100/101')
+        const rowCount = await page.locator('main table tbody tr').count()
+        const hasBanner = body.includes(attesoBanner)
+        const hasSotto = body.includes(attesoSotto)
+        misurato = `righe tabella=${rowCount}; banner100/101=${hasBanner}; sottoBanner=${hasSotto}; estratto=${body.includes('100 piatti') ? body.split('\n').find((l) => l.includes('100 piatti'))?.trim() : 'assente'}`
+        if (!hasBanner) failures.push(`banner: atteso «${attesoBanner}»`)
+        if (!hasSotto) failures.push(`sotto-banner: atteso testo con «Restringi l'elenco»`)
+        if (rowCount !== 100) failures.push(`righe visibili=${rowCount}; atteso 100`)
         await pctx.close()
       } finally {
         menuDeleteVerifyPrefix()
       }
-      add('piatti-ordine-100', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'ok', 'limit 100', '/app/menu', 'piatti/piu-di-100', 'notebook-1280/chiaro')
+      add(
+        'piatti-ordine-100',
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? `${misurato}; ${failures.join(' | ')}` : misurato,
+        `${attesoBanner}; ${attesoSotto}; 100 righe in tabella`,
+        '/app/menu',
+        'piatti/piu-di-100',
+        'notebook-1280/chiaro',
+      )
     }
 
     if (runCtx.shouldRun('piatti-nomi-accessibili')) {
@@ -792,43 +966,90 @@ export async function runPiattiFlowControls(ctx) {
     }
 
     if (runCtx.shouldRun('piatti-confronto-visivo')) {
-      const subset = [
-        'elenco',
-        'terminato',
-        'modulo',
-        'nuovo',
-        'filtri',
-        'elimina-libero',
-        'caricamento',
-        'vuoto',
-        'nessun-risultato',
-      ]
+      const expectedShots = PIATTI_CONFRONTO_STATI.length * SHOT_PROFILES.length * SHOT_TEMI.length
       let shotCount = 0
-      for (const statoId of subset) {
+      const skipped = []
+      for (const statoId of PIATTI_CONFRONTO_STATI) {
         for (const profiloKey of SHOT_PROFILES) {
           for (const temaKey of SHOT_TEMI) {
-            if (statoId === 'piu-di-100' && profiloKey !== 'notebook-1280') continue
+            let simChild = null
             try {
-              const { ctx: pctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
-              await loginApp(page, baseUrl, testUser.email, testPassword)
-              await preparePiattiState(page, statoId, { ...ctx, page, browser, newPage, loginApp, testPassword })
+              let pageBase = baseUrl
+              const simEnv = PIATTI_SIM_STATES[statoId]
+              if (simEnv) {
+                await waitForPortFree(SIM_PORT)
+                simChild = startMenuDevServerLocal(SIM_PORT, simEnv)
+                pageBase = `http://localhost:${SIM_PORT}`
+                await waitForUrlLocal(pageBase)
+              } else if (statoId === 'vuoto') {
+                const { count } = menuCountDishes()
+                if (count > 0) {
+                  skipped.push(`${statoId}/${profiloKey}/${temaKey}: DB con ${count} piatti`)
+                  continue
+                }
+              }
+              const { ctx: pctx, page } = await newPage(browser, profiloKey, temaKey, pageBase)
+              await loginApp(page, pageBase, testUser.email, testPassword)
+              if (simEnv && statoId === 'caricamento') {
+                await page.goto('/app/menu', { waitUntil: 'commit' })
+                await sleep(800)
+              } else if (simEnv && statoId === 'errore-caricamento') {
+                await page.goto('/app/menu', { waitUntil: 'networkidle' })
+              } else if (simEnv && statoId === 'errore-azione') {
+                await gotoPiatti(page)
+                await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
+                await page.locator('#dish-field-name').fill('verify-ui-err-shot')
+                await page.locator('#dish-field-price').fill('9,00')
+                await page.getByRole('combobox', { name: copyConst('PIATTI_FORM_CATEGORY') ?? 'Categoria' }).click()
+                await page.getByRole('option').nth(1).click()
+                await page.getByRole('button', { name: copyConst('PIATTI_FORM_SAVE') ?? 'Salva' }).click()
+                await page.waitForTimeout(600)
+              } else {
+                await preparePiattiState(page, statoId, {
+                  ...ctx,
+                  page,
+                  browser,
+                  newPage,
+                  loginApp,
+                  testPassword,
+                  baseUrl: pageBase,
+                })
+              }
               if (screenshot) {
                 await screenshot(page, report, `piatti-${statoId}-${profiloKey}-${temaKey}`, temaKey)
                 shotCount += 1
               }
               await pctx.close()
+            } catch (e) {
+              skipped.push(`${statoId}/${profiloKey}/${temaKey}: ${e.message}`)
             } finally {
+              if (simChild) {
+                simChild.kill('SIGTERM')
+                await waitForPortFree(SIM_PORT)
+              }
               menuDeleteVerifyPrefix()
             }
           }
         }
       }
+      const esito = shotCount === expectedShots ? 'OK' : shotCount > 0 ? 'AVVISO' : 'FALLITO'
       add(
         'piatti-confronto-visivo',
-        shotCount >= 8 ? 'OK' : 'AVVISO',
-        `${shotCount} screenshot (subset ${subset.length} stati; matrice completa JSON in debito tempo)`,
-        'screenshot per giudizio C10',
+        esito,
+        `screenshot=${shotCount}/${expectedShots}${skipped.length ? `; saltati: ${skipped.slice(0, 5).join('; ')}${skipped.length > 5 ? ` (+${skipped.length - 5})` : ''}` : ''}`,
+        `${PIATTI_CONFRONTO_STATI.length} stati × ${SHOT_PROFILES.length} profili × ${SHOT_TEMI.length} temi (sezione immagini JSON)`,
         'img/',
+      )
+    }
+
+    if (runCtx.shouldRun('piatti-stato-vuoto')) {
+      const { count } = menuCountDishes()
+      add(
+        'piatti-stato-vuoto',
+        'NON PROVATO',
+        count > 0 ? `database con ${count} piatti (il lanciatore non svuota il DB)` : 'database vuoto ma stato non preparato in questo giro',
+        '«Nessun piatto nel menù.» con pulsante Nuovo piatto',
+        'stato_prova JSON: giudizio nel confronto visivo',
       )
     }
 
