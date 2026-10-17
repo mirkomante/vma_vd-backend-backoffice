@@ -141,10 +141,7 @@ function makeMenuFormatFieldValidate(
     if (isBlank(value)) {
       return true
     }
-    const s = asTrimmedString(value)
-    if (s === null) {
-      return true
-    }
+    const s = typeof value === 'string' ? value : String(value)
     if (isCanonical(s)) {
       return true
     }
@@ -152,11 +149,12 @@ function makeMenuFormatFieldValidate(
   }
 }
 
+/** Forma canonica esatta (validate server): nessun trim né normalizzazione. */
 export function isCanonicalWineYear(value: string, currentYear = new Date().getFullYear()): boolean {
-  if (/^nv$/i.test(value.trim())) {
+  if (value === 'NV') {
     return true
   }
-  if (!/^\d{4}$/.test(value.trim())) {
+  if (!/^\d{4}$/.test(value)) {
     return false
   }
   const year = Number.parseInt(value, 10)
@@ -314,66 +312,38 @@ export const validateWineYearField = makeMenuFormatFieldValidate(
   WINE_YEAR_ERROR_MESSAGE,
 )
 
-function isCanonicalWineVolumeString(v: string): boolean {
-  if (WINE_VOLUME_SET.has(v)) {
-    return true
-  }
-  const prepped = prepVolumeCl(v)
-  return prepped !== null && WINE_VOLUME_SET.has(prepped)
-}
-
 export const validateWineVolumeField = makeMenuFormatFieldValidate(
   'volume',
-  isCanonicalWineVolumeString,
+  (v) => WINE_VOLUME_SET.has(v),
   WINE_VOLUME_ERROR_MESSAGE,
 )
 
 export const validateWineAbvField = makeMenuFormatFieldValidate(
   'abv',
-  (v) => {
-    const p = prepAbvPercent(v)
-    return p !== null && WINE_ABV_SET.has(p)
-  },
+  (v) => WINE_ABV_SET.has(v),
   WINE_ABV_ERROR_MESSAGE,
 )
 
 export const validateSpiritAbvField = makeMenuFormatFieldValidate(
   'abv',
-  (v) => {
-    const p = prepAbvPercent(v)
-    return p !== null && SPIRIT_ABV_SET.has(p)
-  },
+  (v) => SPIRIT_ABV_SET.has(v),
   SPIRIT_ABV_ERROR_MESSAGE,
 )
 
 export const validateSpiritAgingField = makeMenuFormatFieldValidate(
   'aging',
-  (v) => {
-    const p = prepSpiritAging(v)
-    return p !== null && SPIRIT_AGING_SET.has(p)
-  },
+  (v) => SPIRIT_AGING_SET.has(v),
   SPIRIT_AGING_ERROR_MESSAGE,
 )
 
-function isCanonicalDrinkVolumeString(v: string): boolean {
-  if (DRINK_VOLUME_SET.has(v)) {
-    return true
-  }
-  const prepped = prepVolumeCl(v)
-  return prepped !== null && DRINK_VOLUME_SET.has(prepped)
-}
-
 export const validateDrinkVolumeField = makeMenuFormatFieldValidate(
   'volume',
-  isCanonicalDrinkVolumeString,
+  (v) => DRINK_VOLUME_SET.has(v),
   DRINK_VOLUME_ERROR_MESSAGE,
 )
 
 export const validateDrinkAbvField = makeMenuFormatFieldValidate(
   'abv',
-  (v) => {
-    const p = prepAbvPercent(v)
-    return p !== null && DRINK_ABV_SET.has(p)
-  },
+  (v) => DRINK_ABV_SET.has(v),
   DRINK_ABV_ERROR_MESSAGE,
 )

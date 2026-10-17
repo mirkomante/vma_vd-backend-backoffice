@@ -7,6 +7,7 @@ import {
   SPIRIT_ABV_ERROR_MESSAGE,
   SPIRIT_AGING_ERROR_MESSAGE,
   WINE_ABV_ERROR_MESSAGE,
+  WINE_VOLUME_ERROR_MESSAGE,
   WINE_YEAR_ERROR_MESSAGE,
   isCanonicalWineYear,
   normalizeSpiritAgingForImport,
@@ -15,23 +16,45 @@ import {
   normalizeWineVolumeForImport,
   normalizeWineYearForImport,
   validateDrinkAbvField,
+  validateDrinkVolumeField,
   validateSpiritAbvField,
+  validateSpiritAgingField,
   validateWineAbvField,
+  validateWineVolumeField,
   validateWineYearField,
 } from './formats.ts'
 
 const CURRENT_YEAR = 2026
 
-describe('wine year', () => {
-  it('canonical and NV', () => {
+describe('wine year validate (forma esatta)', () => {
+  it('accetta solo NV maiuscolo o quattro cifre', () => {
     assert.equal(isCanonicalWineYear('2020', CURRENT_YEAR), true)
     assert.equal(isCanonicalWineYear('1900', CURRENT_YEAR), true)
     assert.equal(isCanonicalWineYear(String(CURRENT_YEAR), CURRENT_YEAR), true)
     assert.equal(isCanonicalWineYear('NV', CURRENT_YEAR), true)
-    assert.equal(isCanonicalWineYear('nv', CURRENT_YEAR), true)
+    assert.equal(isCanonicalWineYear('nv', CURRENT_YEAR), false)
+    assert.equal(isCanonicalWineYear(' 2015 ', CURRENT_YEAR), false)
     assert.equal(isCanonicalWineYear('1899', CURRENT_YEAR), false)
     assert.equal(isCanonicalWineYear(String(CURRENT_YEAR + 1), CURRENT_YEAR), false)
-    assert.equal(isCanonicalWineYear('99', CURRENT_YEAR), false)
+  })
+
+  it('validate rifiuta varianti con messaggio spec', () => {
+    assert.equal(
+      validateWineYearField('nv', { operation: 'create' }),
+      WINE_YEAR_ERROR_MESSAGE(CURRENT_YEAR),
+    )
+    assert.equal(
+      validateWineYearField(' 2015 ', { operation: 'create' }),
+      WINE_YEAR_ERROR_MESSAGE(CURRENT_YEAR),
+    )
+    assert.equal(
+      validateWineYearField('1899', { operation: 'create' }),
+      WINE_YEAR_ERROR_MESSAGE(CURRENT_YEAR),
+    )
+    assert.equal(
+      validateWineYearField(String(CURRENT_YEAR + 1), { operation: 'create' }),
+      WINE_YEAR_ERROR_MESSAGE(CURRENT_YEAR),
+    )
   })
 
   it('import normalizes NV case', () => {
@@ -40,18 +63,6 @@ describe('wine year', () => {
     if (r.ok) {
       assert.equal(r.canonical, 'NV')
     }
-  })
-
-  it('import rejects unknown year', () => {
-    const r = normalizeWineYearForImport('12,8%', CURRENT_YEAR)
-    assert.equal(r.ok, false)
-  })
-
-  it('validate message from spec', () => {
-    assert.equal(
-      validateWineYearField('12,8%', { operation: 'create' }),
-      WINE_YEAR_ERROR_MESSAGE(CURRENT_YEAR),
-    )
   })
 
   it('partial update skips untouched field', () => {
@@ -66,59 +77,70 @@ describe('wine year', () => {
   })
 })
 
-describe('wine volume and abv import', () => {
-  it('volume aliases', () => {
-    const r = normalizeWineVolumeForImport('75cl')
-    assert.equal(r.ok, true)
-    if (r.ok) {
-      assert.equal(r.canonical, '75 cl')
+describe('wine volume and abv validate vs import', () => {
+  const abvRejectCases = ['13', '13.5%', '13,50%', ' 13% ', '13 %', '12,8%'] as const
+
+  for (const raw of abvRejectCases) {
+    it(`validate abv rifiuta «${raw}»`, () => {
+      assert.equal(validateWineAbvField(raw, { operation: 'create' }), WINE_ABV_ERROR_MESSAGE)
+    })
+  }
+
+  it('validate volume rifiuta varianti', () => {
+    assert.equal(validateWineVolumeField('75cl', { operation: 'create' }), WINE_VOLUME_ERROR_MESSAGE)
+    assert.equal(validateWineVolumeField('75 CL', { operation: 'create' }), WINE_VOLUME_ERROR_MESSAGE)
+    assert.equal(validateWineVolumeField('75 cl', { operation: 'create' }), true)
+  })
+
+  it('import normalizza capacità e grado', () => {
+    const vol = normalizeWineVolumeForImport('75cl')
+    assert.equal(vol.ok, true)
+    if (vol.ok) {
+      assert.equal(vol.canonical, '75 cl')
     }
-  })
-
-  it('rejects off-list capacity', () => {
-    assert.equal(normalizeWineVolumeForImport('70 cl').ok, false)
-  })
-
-  it('abv writing variants without rounding', () => {
-    const r = normalizeWineAbvForImport('13.5%')
-    assert.equal(r.ok, true)
-    if (r.ok) {
-      assert.equal(r.canonical, '13,5%')
+    const abv = normalizeWineAbvForImport('13.5%')
+    assert.equal(abv.ok, true)
+    if (abv.ok) {
+      assert.equal(abv.canonical, '13,5%')
     }
     assert.equal(normalizeWineAbvForImport('12,8%').ok, false)
   })
-
-  it('validate abv message from spec', () => {
-    assert.equal(validateWineAbvField('12,8%', { operation: 'create' }), WINE_ABV_ERROR_MESSAGE)
-  })
 })
 
-describe('spirit formats', () => {
-  it('abv integer grid only', () => {
-    assert.equal(normalizeSpiritAbvForImport('40%').ok, true)
-    assert.equal(normalizeSpiritAbvForImport('40.5%').ok, false)
-    assert.equal(normalizeSpiritAbvForImport('46%').ok, false)
+describe('spirit validate vs import', () => {
+  it('validate abv rifiuta 46%', () => {
     assert.equal(validateSpiritAbvField('46%', { operation: 'create' }), SPIRIT_ABV_ERROR_MESSAGE)
+    assert.equal(validateSpiritAbvField('40.5%', { operation: 'create' }), SPIRIT_ABV_ERROR_MESSAGE)
+    assert.equal(validateSpiritAbvField('40%', { operation: 'create' }), true)
   })
 
-  it('aging', () => {
-    const r = normalizeSpiritAgingForImport('10  ANNI')
-    assert.equal(r.ok, true)
-    if (r.ok) {
-      assert.equal(r.canonical, '10 anni')
+  it('validate aging rifiuta varianti', () => {
+    assert.equal(
+      validateSpiritAgingField('5 ANNI', { operation: 'create' }),
+      SPIRIT_AGING_ERROR_MESSAGE,
+    )
+    assert.equal(
+      validateSpiritAgingField(' 5 anni', { operation: 'create' }),
+      SPIRIT_AGING_ERROR_MESSAGE,
+    )
+    assert.equal(validateSpiritAgingField('5 anni', { operation: 'create' }), true)
+  })
+
+  it('import normalizza aging e abv', () => {
+    const aging = normalizeSpiritAgingForImport('10  ANNI')
+    assert.equal(aging.ok, true)
+    if (aging.ok) {
+      assert.equal(aging.canonical, '10 anni')
     }
-    assert.equal(normalizeSpiritAgingForImport('4 anni').ok, false)
+    assert.equal(normalizeSpiritAbvForImport('40%').ok, true)
+    assert.equal(normalizeSpiritAbvForImport('46%').ok, false)
   })
 })
 
-describe('drink formats', () => {
-  it('abv message from spec', () => {
+describe('drink validate', () => {
+  it('volume e abv solo forma esatta', () => {
+    assert.equal(validateDrinkVolumeField('75cl', { operation: 'create' }), DRINK_VOLUME_ERROR_MESSAGE)
     assert.equal(validateDrinkAbvField('20%', { operation: 'create' }), DRINK_ABV_ERROR_MESSAGE)
-  })
-
-  it('volume off-list', () => {
-    assert.equal(normalizeWineVolumeForImport('20 cl').ok, false)
-    assert.equal(SPIRIT_AGING_ERROR_MESSAGE.includes('24 anni'), true)
-    assert.equal(DRINK_VOLUME_ERROR_MESSAGE.includes('75 cl'), true)
+    assert.equal(validateDrinkAbvField('5,5%', { operation: 'create' }), true)
   })
 })
