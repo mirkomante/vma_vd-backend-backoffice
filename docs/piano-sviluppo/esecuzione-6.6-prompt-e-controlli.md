@@ -21,42 +21,46 @@
 
 ## 2. Tabella unica: l'ordine completo
 
+**Dove si segna lo stato.** Nella colonna **Stato** di questa tabella: 🔲 da fare, 🔶 in corso (chat aperta, o fatta ma non ancora controllata), ✅ completato con l'hash del commit del repo che lo contiene. La aggiorna **solo la chat di design**, dopo il tuo «push fatto» e il mio controllo del repo (hash, file cambiati, esiti reali, `ui:check`); il passo diventa ✅ quando il controllo è passato e il push è nel repo, non quando Cursor finisce. Gli altri due posti restano come sono: il CHANGELOG (storia di ogni chat, scritta da Composer) e la checklist di chiusura di 6.6 in `fase-6-menu-digitale.md` (cosa è stato consegnato, spuntata da Composer). Composer **non** modifica questa tabella.
+
+**Ultimo aggiornamento**: 2026-10-16 (commit `6a77311`). **Prossimi passi**: 1 (R0) e 3 (VC1), indipendenti tra loro; poi 4 (I0a).
+
 Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'agente di verifica implementa i controlli nel lanciatore (chat pulita, prima della chat I); **V** l'agente esegue L2 (chat pulita); **D** controlli scritti dalla chat di design; **RL** rilievi P e A della chat di design dopo un V; **F** correzione dei P (Composer); **M** passo tuo. Una chat di implementazione segue sempre il «Blocco comune».
 
-| # | Sigla | Chi | Cosa | Controlli | Si passa al successivo quando |
-|---|---|---|---|---|---|
-| 1 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` (§4.0) | revisione, nessun codice | nessuna contraddizione, o corretta |
-| 2 | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci (§7) | — | tu committi e pushi i file |
-| 3 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 (§5, VC) | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
-| 4 | I0a | Composer | Permessi di cancellazione, registro, matrici (§4.1) | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
-| 5 | I0b | Composer | Formati dei campi e import (§4.2) | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
-| 6 | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
-| 7 | I1 | Composer | Fondamenta UI e integrazione (§4.3) | L0 + **L1** `shell,home` | L1 verde; tu pushi |
-| 8 | V1 | Agente di verifica | **L2** su shell, home, navigazione (§5, V1) | **L2** | rapporto scritto; tu committi |
-| 9 | RL1 | Design | Leggo il rapporto: rilievi P e A (§7) | — | nessun P aperto |
-| 10 | F1 | Composer | Correzione dei P di V1 (§6), solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |
-| 11 | I2 | Composer | **Piatti** (§4.4) | L0 + **L1** `piatti` | L1 verde; tu pushi |
-| 12 | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
-| 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home (§5, V2) | **L2** | rapporto scritto |
-| 14 | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
-| 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande (§5, VC) | lint e typecheck | tu committi e pushi |
-| 16 | I3 | Composer | **Vini, Distillati, Bevande** (§4.5) | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
-| 17 | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
-| 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi (§5, VC) | lint e typecheck | tu committi e pushi |
-| 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie (§4.6) | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade (§5, V4) | **L2** mirato | rapporto scritto |
-| 21 | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
-| 22 | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
-| 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale (§5, VC) | lint e typecheck | tu committi e pushi |
-| 24 | I5 | Composer | **Giorni speciali e Messaggio globale** (§4.7) | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
-| 25 | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
-| 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase (§4.8) | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
-| 27 | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
-| 28 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali (§5, V6) | **L2** | rapporto scritto |
-| 29 | RL6/F6 | Design, Composer | Rilievi di V6 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
-| 30 | M3/D9 | Tu, Design | **L3**: sessione reale su Cloud Run (io col tuo browser) e giro su iPhone vero (tu), sezione 8 | **L3** | esito scritto; rilievi P chiusi |
-| 31 | I7 | Tu e Composer | **Import di produzione 6.8** (§4.9): report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
-| 32 | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
+| # | Stato | Sigla | Chi | Cosa | Controlli | Si passa al successivo quando |
+|---|---|---|---|---|---|---|
+| 1 | 🔲 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` (§4.0) | revisione, nessun codice | nessuna contraddizione, o corretta |
+| 2 | ✅ 6a77311 | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci (§7) | — | tu committi e pushi i file |
+| 3 | 🔲 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 (§5, VC) | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
+| 4 | 🔲 | I0a | Composer | Permessi di cancellazione, registro, matrici (§4.1) | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
+| 5 | 🔲 | I0b | Composer | Formati dei campi e import (§4.2) | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
+| 6 | 🔲 | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
+| 7 | 🔲 | I1 | Composer | Fondamenta UI e integrazione (§4.3) | L0 + **L1** `shell,home` | L1 verde; tu pushi |
+| 8 | 🔲 | V1 | Agente di verifica | **L2** su shell, home, navigazione (§5, V1) | **L2** | rapporto scritto; tu committi |
+| 9 | 🔲 | RL1 | Design | Leggo il rapporto: rilievi P e A (§7) | — | nessun P aperto |
+| 10 | 🔲 | F1 | Composer | Correzione dei P di V1 (§6), solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |
+| 11 | 🔲 | I2 | Composer | **Piatti** (§4.4) | L0 + **L1** `piatti` | L1 verde; tu pushi |
+| 12 | 🔲 | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
+| 13 | 🔲 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home (§5, V2) | **L2** | rapporto scritto |
+| 14 | 🔲 | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
+| 15 | 🔲 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande (§5, VC) | lint e typecheck | tu committi e pushi |
+| 16 | 🔲 | I3 | Composer | **Vini, Distillati, Bevande** (§4.5) | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
+| 17 | 🔲 | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
+| 18 | 🔲 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi (§5, VC) | lint e typecheck | tu committi e pushi |
+| 19 | 🔲 | I4 | Composer | **Servizi e Menù fissi** con Categorie (§4.6) | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
+| 20 | 🔲 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade (§5, V4) | **L2** mirato | rapporto scritto |
+| 21 | 🔲 | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
+| 22 | 🔲 | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
+| 23 | 🔲 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale (§5, VC) | lint e typecheck | tu committi e pushi |
+| 24 | 🔲 | I5 | Composer | **Giorni speciali e Messaggio globale** (§4.7) | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
+| 25 | 🔲 | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
+| 26 | 🔲 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase (§4.8) | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
+| 27 | 🔲 | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
+| 28 | 🔲 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali (§5, V6) | **L2** | rapporto scritto |
+| 29 | 🔲 | RL6/F6 | Design, Composer | Rilievi di V6 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
+| 30 | 🔲 | M3/D9 | Tu, Design | **L3**: sessione reale su Cloud Run (io col tuo browser) e giro su iPhone vero (tu), sezione 8 | **L3** | esito scritto; rilievi P chiusi |
+| 31 | 🔲 | I7 | Tu e Composer | **Import di produzione 6.8** (§4.9): report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
+| 32 | 🔲 | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke, `pnpm ui:verify online`) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat I0a e I0b non hanno L1).
 
@@ -74,8 +78,8 @@ quello che il prompt dice. Le regole di .cursor/rules si caricano da sole.
 REGOLE
 1. Leggi per intero, prima di scrivere codice, i documenti elencati nel prompt. Non assumere nulla oltre la
    documentazione: quello che non è scritto, chiedilo. Non modificare i documenti di design
-   (docs/design/schermate/**, docs/design/decisioni-layout-app.md, docs/design/verifica/controlli-*.json):
-   le possiede la chat di design. Se trovi un conflitto tra specifica e codice, dichiaralo in Parte A e annotalo
+   (docs/design/schermate/**, docs/design/decisioni-layout-app.md, docs/design/verifica/controlli-*.json)
+   e la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md: le possiede la chat di design. Se trovi un conflitto tra specifica e codice, dichiaralo in Parte A e annotalo
    come deviazione in Parte D.
 2. PARTE A, solo proposta, nessun codice. Rispondi con: (a) i file che crei o modifichi, in ordine;
    (b) ogni ambiguità, contraddizione o punto non coperto che hai trovato, con la lettura che scegli: dichiarala
