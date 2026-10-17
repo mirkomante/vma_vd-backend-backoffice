@@ -14,6 +14,7 @@ type MenuContentRowActionsProps = {
   visibilityAction?: 'disable' | 'enable'
   onVisibilityAction?: () => void
   toggleDisabled?: boolean
+  showToggleLabel?: boolean
 }
 
 export function MenuContentRowActions({
@@ -26,9 +27,13 @@ export function MenuContentRowActions({
   visibilityAction,
   onVisibilityAction,
   toggleDisabled = false,
+  showToggleLabel = false,
 }: MenuContentRowActionsProps) {
   return (
     <div className="flex shrink-0 items-center gap-0">
+      {showToggleLabel ? (
+        <span className="mr-1 text-xs text-muted-foreground">{toggleLabel}</span>
+      ) : null}
       <Switch
         checked={toggleChecked}
         disabled={toggleDisabled}

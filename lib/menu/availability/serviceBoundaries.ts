@@ -22,7 +22,7 @@ const romePartsFormatter = new Intl.DateTimeFormat('en-GB', {
   hourCycle: 'h23',
 })
 
-function romeCalendarDateFromInstant(instant: Date): string {
+export function romeCalendarDateFromInstant(instant: Date): string {
   return romeDateFormatter.format(instant)
 }
 
@@ -156,6 +156,33 @@ export function listServiceStartBoundariesBetween(
 
   boundaries.sort((a, b) => a.instant.getTime() - b.instant.getTime())
   return boundaries
+}
+
+const DEFAULT_NEXT_BOUNDARY_LOOKAHEAD_DAYS = 3
+
+/**
+ * Prossimo confine di **inizio** servizio (`startTime`) strettamente dopo `after`.
+ * Stessa regola di `listServiceStartBoundariesBetween` usata dal reset 6.4.
+ */
+export function nextServiceStartBoundaryAfter(
+  after: Date,
+  services: ServiceHoursRow[],
+  options?: { maxLookaheadDays?: number },
+): ServiceBoundaryKey | null {
+  const maxLookaheadDays = options?.maxLookaheadDays ?? DEFAULT_NEXT_BOUNDARY_LOOKAHEAD_DAYS
+  const endInclusive = new Date(after.getTime() + maxLookaheadDays * 86_400_000)
+  const boundaries = listServiceStartBoundariesBetween(after, endInclusive, services)
+  return boundaries[0] ?? null
+}
+
+/** Primo confine che il reset applicherebbe tra `after` (escluso) e `now` (incluso), se esiste. */
+export function firstResetBoundaryBetween(
+  after: Date,
+  now: Date,
+  services: ServiceHoursRow[],
+): ServiceBoundaryKey | null {
+  const boundaries = listServiceStartBoundariesBetween(after, now, services)
+  return boundaries[0] ?? null
 }
 
 export function maxBoundaryAtOrBefore(now: Date, services: ServiceHoursRow[]): ServiceBoundaryKey | null {

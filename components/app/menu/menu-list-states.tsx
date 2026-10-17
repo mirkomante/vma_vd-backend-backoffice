@@ -10,7 +10,7 @@ type MenuListLoadingStateProps = {
   skeletonCount?: number
 }
 
-export function MenuListLoadingState({ skeletonCount = 3 }: MenuListLoadingStateProps) {
+export function MenuListLoadingState({ skeletonCount = 4 }: MenuListLoadingStateProps) {
   return (
     <div className="flex flex-col gap-3" aria-busy="true" aria-live="polite">
       {Array.from({ length: skeletonCount }, (_, index) => (

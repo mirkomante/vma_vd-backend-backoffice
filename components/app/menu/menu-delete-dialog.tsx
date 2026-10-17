@@ -23,6 +23,7 @@ type MenuDeleteDialogProps = {
   cancelLabel?: string
   destructive?: boolean
   pending?: boolean
+  hideCancel?: boolean
   onConfirm: () => void | Promise<void>
 }
 
@@ -35,6 +36,7 @@ export function MenuDeleteDialog({
   cancelLabel = 'Indietro',
   destructive = true,
   pending = false,
+  hideCancel = false,
   onConfirm,
 }: MenuDeleteDialogProps) {
   return (
@@ -45,7 +47,9 @@ export function MenuDeleteDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
+          {hideCancel ? null : (
+            <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
+          )}
           <Button
             type="button"
             variant={destructive ? 'destructive' : 'default'}

@@ -386,7 +386,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.6 — Backoffice «Menù» nell'App
 
-**Stato**: 🔶 in corso (Parte 0 I0a ✅; I0b ✅; I1 fondamenta UI ✅ da controllare — 2026-10-17)
+**Stato**: 🔶 in corso (Parte 0 I0a ✅; I0b ✅; I1 fondamenta UI ✅ da controllare; **Piatti (I2)** 🔶 fatto, da controllare — 2026-10-17)
 
 **Dipende da**: Fase 8 (8.2 shell e navigazione, 8.3 guardia di accesso; `arco-30`), 6.2 (`arco-15`) e 6.4 (i cambi di stato riscrivono il file).
 
