@@ -18,12 +18,11 @@ import {
   WINE_TYPES_SLUG,
   WINES_SLUG,
 } from '@/lib/menu/constants'
-import { menuContentAccess, menuContentAdminMeta } from '@/lib/menu/contentCollection'
+import { fixedMenuCategoryAccess, menuContentAccess, menuContentAdminMeta } from '@/lib/menu/contentCollection'
+import { menuContentCollectionHooks } from '@/lib/menu/menuContentCollectionHooks'
 import { menuVisibilityField } from '@/lib/menu/visibilityField'
 import { validateFixedMenuDishesField } from '@/lib/menu/validateFixedMenuDishes'
 import { validateWineGeography } from '@/lib/menu/validateWineGeography'
-
-import { menuAvailabilityCollectionHooks } from '@/lib/menu/availability/menuAvailabilityHooks'
 
 import { SpecialDays } from './specialDays'
 
@@ -33,7 +32,7 @@ const disabledField = {
   label: 'Disabilitato',
   defaultValue: false,
   admin: {
-    description: 'Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).',
+    description: 'Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).',
   },
 }
 
@@ -44,7 +43,7 @@ export const Dishes: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
-  hooks: menuAvailabilityCollectionHooks,
+  hooks: menuContentCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -124,7 +123,7 @@ export const Wines: CollectionConfig = {
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
   hooks: {
-    ...menuAvailabilityCollectionHooks,
+    ...menuContentCollectionHooks,
     beforeValidate: [
       async ({ data, originalDoc, req }) => {
         if (!data) {
@@ -222,7 +221,7 @@ export const Spirits: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
-  hooks: menuAvailabilityCollectionHooks,
+  hooks: menuContentCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -282,7 +281,7 @@ export const Drinks: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta('Include le birre (tipologia «Birre»).'),
   access: menuContentAccess,
-  hooks: menuAvailabilityCollectionHooks,
+  hooks: menuContentCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -344,7 +343,7 @@ export const MenuServices: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta('Coperto, diritto di dolce, diritto di tappo'),
   access: menuContentAccess,
-  hooks: menuAvailabilityCollectionHooks,
+  hooks: menuContentCollectionHooks,
   fields: [
     {
       name: 'name',
@@ -369,7 +368,7 @@ export const FixedMenuCategories: CollectionConfig = {
   versions: false,
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
-  access: menuContentAccess,
+  access: fixedMenuCategoryAccess,
   fields: [
     {
       name: 'name',
@@ -390,7 +389,7 @@ export const FixedMenus: CollectionConfig = {
   defaultSort: 'name',
   admin: menuContentAdminMeta(),
   access: menuContentAccess,
-  hooks: menuAvailabilityCollectionHooks,
+  hooks: menuContentCollectionHooks,
   fields: [
     {
       name: 'name',

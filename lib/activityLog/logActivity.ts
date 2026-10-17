@@ -8,12 +8,13 @@ import {
 } from './constants'
 
 export type ActivityLogWriteData = {
-  user: number
+  user?: number
   eventType: ActivityLogEventType
   area?: ActivityLogArea
   method?: ActivityLogMethod
   collection?: string
   documentId?: string
+  detail?: string
 }
 
 /**

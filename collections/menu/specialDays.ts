@@ -5,6 +5,7 @@ import { hideFromAdminRoleManager } from '@/lib/auth/adminPanelVisibility'
 
 import { FIXED_MENUS_SLUG, MENU_ADMIN_GROUP, SPECIAL_DAYS_SLUG } from '@/lib/menu/constants'
 import { menuContentAccess } from '@/lib/menu/contentCollection'
+import { menuContentDeleteLogHooks } from '@/lib/menu/menuContentDeleteLog'
 import {
   SPECIAL_DAY_DATE_INVALID_MESSAGE,
   parseAndNormalizeSpecialDayDate,
@@ -29,6 +30,7 @@ export const SpecialDays: CollectionConfig = {
   },
   access: menuContentAccess,
   hooks: {
+    ...menuContentDeleteLogHooks,
     beforeValidate: [
       async ({ data, originalDoc, req }) => {
         if (!data) {
@@ -89,7 +91,7 @@ export const SpecialDays: CollectionConfig = {
           label: 'Menu fissi',
           admin: {
             description:
-              'Prima di cancellare un menu fisso usato da un giorno speciale, disabilitalo.',
+              'Un menu fisso eliminato sparisce da qui (cascade); la conferma nell’App lo anticipa.',
           },
         },
         {
@@ -109,7 +111,7 @@ export const SpecialDays: CollectionConfig = {
       label: 'Disabilitato',
       defaultValue: false,
       admin: {
-        description: 'Assenza a tempo indefinito; il manager non elimina: usa questo flag.',
+        description: 'Assenza a tempo indefinito (alternativa all’eliminazione definitiva).',
       },
     },
   ],

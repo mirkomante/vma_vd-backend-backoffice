@@ -18,6 +18,7 @@ import {
   FIXED_MENU_CATEGORIES_SLUG,
   FIXED_MENUS_SLUG,
   MENU_CONTENT_SLUGS,
+  MENU_GENERAL_SLUG,
   MENU_SERVICES_SLUG,
   REGIONS_SLUG,
   SPIRIT_TYPES_SLUG,
@@ -25,6 +26,11 @@ import {
   WINE_TYPES_SLUG,
   WINES_SLUG,
 } from '@/lib/menu/constants'
+import { ACTIVITY_LOG_SLUG } from '@/lib/activityLog/constants'
+import {
+  ACTIVITY_AREA_CONTEXT_KEY,
+  formatMenuContentDeleteDetail,
+} from '@/lib/menu/menuContentDeleteLog'
 import type { User } from '@/payload-types'
 
 import { assertDevDatabaseFromEnv } from './import-menu-vtn-backend/databaseUrl'
@@ -233,6 +239,46 @@ function localeForContentSlug(slug: CollectionSlug): boolean {
   return slug !== WINES_SLUG && slug !== SPIRITS_SLUG
 }
 
+function deleteAllowedForMenuContentSlug(slug: MenuContentSlug, roleLabel: string): boolean {
+  const staffRoles = new Set(['admin', 'super-admin'])
+  const managerRoles = new Set(['managerApp', 'managerCmsConApp'])
+  if (slug === FIXED_MENU_CATEGORIES_SLUG) {
+    return staffRoles.has(roleLabel)
+  }
+  if (staffRoles.has(roleLabel) || managerRoles.has(roleLabel)) {
+    return true
+  }
+  return false
+}
+
+async function findLatestDeleteActivityLog(
+  payload: PayloadInstance,
+  documentId: number | string,
+  collection: string,
+) {
+  const found = await payload.find({
+    collection: ACTIVITY_LOG_SLUG,
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    sort: '-createdAt',
+    where: {
+      and: [
+        { eventType: { equals: 'delete' } },
+        { collection: { equals: collection } },
+        { documentId: { equals: String(documentId) } },
+      ],
+    },
+  })
+  return found.docs[0] as
+    | {
+        detail?: string | null
+        area?: string | null
+        user?: number | User | null
+      }
+    | undefined
+}
+
 async function expectCollectionDelete(
   payload: PayloadInstance,
   slug: CollectionSlug,
@@ -240,6 +286,7 @@ async function expectCollectionDelete(
   user: User | undefined,
   allow: boolean,
   roleLabel: string,
+  options?: { context?: Record<string, unknown> },
 ): Promise<void> {
   try {
     await payload.delete({
@@ -248,6 +295,7 @@ async function expectCollectionDelete(
       overrideAccess: false,
       depth: 0,
       ...(user ? { user } : {}),
+      ...(options?.context ? { context: options.context } : {}),
     })
     if (!allow) {
       throw new Error(`${roleLabel} delete ${slug}: atteso 403, ottenuto OK`)
@@ -778,50 +826,128 @@ async function main(): Promise<void> {
       }
     }
 
-    const deleteDenyRoles: Array<{ label: string; user: User | undefined }> = [
+    const deleteRoles: Array<{ label: string; user: User | undefined }> = [
       { label: 'anonimo', user: undefined },
       { label: 'noRole', user: noRole },
       { label: 'managerApp', user: managerApp },
       { label: 'managerCmsSenzaApp', user: managerCmsOnly },
       { label: 'managerCmsConApp', user: managerBoth },
+      { label: 'admin', user: adminUser },
+      { label: 'super-admin', user: superAdmin },
     ]
 
     console.log('--- Cancellazione per ruolo (7 profili × 7 collection) ---')
     for (const slug of MENU_CONTENT_SLUGS) {
-      const denyId = await createProbeDoc(payload, slug, fixtureIds, 'DelDeny', {}, createdDocIds)
-      for (const role of deleteDenyRoles) {
-        await expectCollectionDelete(payload, slug, denyId, role.user, false, role.label)
-        await assertDocExists(payload, slug, denyId)
+      for (const role of deleteRoles) {
+        const probeId = await createProbeDoc(payload, slug, fixtureIds, `Del-${role.label}`, {}, createdDocIds)
+        const allow = deleteAllowedForMenuContentSlug(slug, role.label)
+        await expectCollectionDelete(payload, slug, probeId, role.user, allow, role.label)
+        if (allow) {
+          createdDocIds.splice(
+            createdDocIds.findIndex((e) => e.collection === slug && e.id === probeId),
+            1,
+          )
+        } else {
+          await assertDocExists(payload, slug, probeId)
+          await payload.delete({ collection: slug, id: probeId, overrideAccess: true, depth: 0 })
+          createdDocIds.splice(
+            createdDocIds.findIndex((e) => e.collection === slug && e.id === probeId),
+            1,
+          )
+        }
       }
-      console.log(`OK: ${slug} delete negata per profili non staff; documento deny ancora presente`)
+      console.log(`OK: ${slug} delete per tutti i profili`)
+    }
 
-      const adminDelId = await createProbeDoc(payload, slug, fixtureIds, 'DelAdmin', {}, createdDocIds)
-      await expectCollectionDelete(payload, slug, adminDelId, adminUser, true, 'admin')
-      createdDocIds.splice(
-        createdDocIds.findIndex((e) => e.collection === slug && e.id === adminDelId),
-        1,
-      )
+    console.log('--- Cancellazione tassonomie (solo staff Admin; invariato) ---')
+    const taxonomyDelProbe = await payload.create({
+      collection: DISH_CATEGORIES_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      locale: 'it',
+      data: { name: `TaxDel ${TEST_RUN_ID}` },
+    })
+    createdDocIds.push({ collection: DISH_CATEGORIES_SLUG, id: taxonomyDelProbe.id })
+    await expectCollectionDelete(
+      payload,
+      DISH_CATEGORIES_SLUG,
+      taxonomyDelProbe.id,
+      managerApp,
+      false,
+      'managerApp',
+    )
+    await assertDocExists(payload, DISH_CATEGORIES_SLUG, taxonomyDelProbe.id)
+    await expectCollectionDelete(
+      payload,
+      DISH_CATEGORIES_SLUG,
+      taxonomyDelProbe.id,
+      adminUser,
+      true,
+      'admin',
+    )
+    createdDocIds.splice(
+      createdDocIds.findIndex((e) => e.collection === DISH_CATEGORIES_SLUG && e.id === taxonomyDelProbe.id),
+      1,
+    )
+    console.log(`OK: ${DISH_CATEGORIES_SLUG} delete manager negata, admin consentita`)
+    console.log(`OK: Global ${MENU_GENERAL_SLUG} senza operazione delete (solo read/update)`)
 
-      const superDelId = await createProbeDoc(
-        payload,
-        slug,
-        fixtureIds,
-        'DelSuper',
-        {},
-        createdDocIds,
-      )
-      await expectCollectionDelete(payload, slug, superDelId, superAdmin, true, 'super-admin')
-      createdDocIds.splice(
-        createdDocIds.findIndex((e) => e.collection === slug && e.id === superDelId),
-        1,
-      )
-
-      await payload.delete({ collection: slug, id: denyId, overrideAccess: true, depth: 0 })
-      createdDocIds.splice(
-        createdDocIds.findIndex((e) => e.collection === slug && e.id === denyId),
-        1,
+    console.log('--- Registro attività su cancellazione ---')
+    const logProbeName = `LogDel ${TEST_RUN_ID}`
+    const logProbeId = await createProbeDoc(
+      payload,
+      DRINKS_SLUG,
+      fixtureIds,
+      'LogDel',
+      { name: logProbeName },
+      createdDocIds,
+    )
+    await expectCollectionDelete(payload, DRINKS_SLUG, logProbeId, adminUser, true, 'admin', {
+      context: { [ACTIVITY_AREA_CONTEXT_KEY]: 'app' },
+    })
+    createdDocIds.splice(
+      createdDocIds.findIndex((e) => e.collection === DRINKS_SLUG && e.id === logProbeId),
+      1,
+    )
+    const logRowContext = await findLatestDeleteActivityLog(payload, logProbeId, DRINKS_SLUG)
+    if (!logRowContext) {
+      throw new Error('activity-log delete (context app): riga assente')
+    }
+    const expectedDetailContext = formatMenuContentDeleteDetail(logProbeName, 0)
+    if (logRowContext.detail !== expectedDetailContext) {
+      throw new Error(
+        `activity-log detail: atteso "${expectedDetailContext}", ottenuto "${logRowContext.detail ?? ''}"`,
       )
     }
+    if (logRowContext.area !== 'app') {
+      throw new Error(`activity-log area con context app: atteso app, ottenuto ${logRowContext.area ?? '—'}`)
+    }
+    console.log('OK: activity-log delete con context activityArea=app')
+
+    const logProbeNameFallback = `LogDelFb ${TEST_RUN_ID}`
+    const logProbeFallbackId = await createProbeDoc(
+      payload,
+      SPIRITS_SLUG,
+      fixtureIds,
+      'LogDelFb',
+      { name: logProbeNameFallback },
+      createdDocIds,
+    )
+    await expectCollectionDelete(payload, SPIRITS_SLUG, logProbeFallbackId, adminUser, true, 'admin')
+    createdDocIds.splice(
+      createdDocIds.findIndex((e) => e.collection === SPIRITS_SLUG && e.id === logProbeFallbackId),
+      1,
+    )
+    const logRowFallback = await findLatestDeleteActivityLog(payload, logProbeFallbackId, SPIRITS_SLUG)
+    if (!logRowFallback) {
+      throw new Error('activity-log delete (fallback ruoli): riga assente')
+    }
+    if (logRowFallback.area !== 'admin') {
+      throw new Error(
+        `activity-log area fallback staff: atteso admin, ottenuto ${logRowFallback.area ?? '—'}`,
+      )
+    }
+    console.log('OK: activity-log delete senza context (area admin da ruolo)')
 
     console.log('--- Scrittura: create consentita (manager CMS+App, admin, super-admin) ---')
     for (const role of [
@@ -1310,7 +1436,6 @@ async function main(): Promise<void> {
     console.log('OK: fixed-menus locale name/description')
 
     console.log('--- Cancellazione admin con riferimenti ---')
-    let dishDeleteOutcome = 'non eseguito'
     try {
       await payload.delete({
         collection: DISHES_SLUG,
@@ -1319,12 +1444,17 @@ async function main(): Promise<void> {
         depth: 0,
         user: adminUser,
       })
-      dishDeleteOutcome = 'cancellato (nessun blocco)'
+      throw new Error('delete piatto referenziato in menu fisso: atteso rifiuto, ottenuto OK')
     } catch (error) {
-      dishDeleteOutcome =
-        error instanceof Error ? `${error.constructor.name}: ${error.message}` : String(error)
+      if (error instanceof Error && error.message.includes('atteso rifiuto')) {
+        throw error
+      }
+      console.log(
+        `OK: delete piatto referenziato in menu fisso rifiutato (${
+          error instanceof Error ? error.constructor.name : typeof error
+        })`,
+      )
     }
-    console.log(`OSSERVATO: delete piatto referenziato in menu fisso → ${dishDeleteOutcome}`)
 
     let categoryDeleteOutcome = 'non eseguito'
     try {

@@ -50,7 +50,15 @@ export function canWriteMenuContentRequest(req: PayloadRequest): boolean {
   return true
 }
 
-/** Cancellazione fisica: solo staff Admin; il manager usa `disabled` (ADR-113, fase 6.2). */
+/**
+ * Cancellazione fisica dei contenuti menù (escluse le categorie dei menu fissi):
+ * staff Admin o manager App attivo (ADR-113 emendamento 2026-10-14, fase 6.6 Parte 0).
+ */
 export function canDeleteMenuContentRequest(req: PayloadRequest): boolean {
+  return isStaffAdminRequest(req) || isActiveAppManagerRequest(req)
+}
+
+/** Cancellazione categorie menu fisso: solo staff Admin (il manager disabilita). */
+export function canDeleteFixedMenuCategoryRequest(req: PayloadRequest): boolean {
   return isStaffAdminRequest(req)
 }

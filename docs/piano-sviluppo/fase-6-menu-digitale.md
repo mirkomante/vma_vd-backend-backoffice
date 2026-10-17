@@ -386,7 +386,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.6 — Backoffice «Menù» nell'App
 
-**Stato**: 🔲 da fare
+**Stato**: 🔶 in corso (Parte 0 chat I0a: permessi delete, registro, matrici verify — 2026-10-17)
 
 **Dipende da**: Fase 8 (8.2 shell e navigazione, 8.3 guardia di accesso; `arco-30`), 6.2 (`arco-15`) e 6.4 (i cambi di stato riscrivono il file).
 
@@ -421,8 +421,11 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 - Messaggi di errore in italiano; target di tocco adatti al telefono; conferma del salvataggio.
 - **Fuori perimetro**: la validazione allergeni/flag (`ADR-108` §10), il frontend pubblico, la traccia e l'avviso in Admin di `po-13`.
 
+**Deviazioni (sottofase 6.6)**:
+- **Registro senza utente** (I0a, 2026-10-17): **Ufficiale** — ADR-115 nota 2026-10-14: ogni cancellazione lascia una riga con `user`. **Percepito** — le cancellazioni di cleanup negli script (`overrideAccess: true` senza sessione) non devono inquinare il registro. **Osservato** — `menuContentDeleteAfterDelete` non scrive se `req.user` è assente; le prove con utente autenticato coprono il caso operativo.
+
 **Checklist di chiusura sottofase**:
-- [ ] Parte 0: permessi di cancellazione applicati; matrici `verify-menu-6_2` e `verify-menu-6_3` aggiornate; riga di registro per ogni cancellazione; le categorie dei menù fissi non sono cancellabili dal manager.
+- [x] Parte 0: permessi di cancellazione applicati; matrici `verify-menu-6_2` e `verify-menu-6_3` aggiornate; riga di registro per ogni cancellazione (con utente); le categorie dei menù fissi non sono cancellabili dal manager.
 - [ ] Prova per ruolo: il manager crea, modifica, disabilita ed elimina le sette collection; non elimina le categorie dei menù fissi né le tassonomie e non le crea; l'admin pure; un utente senza ruolo è rifiutato.
 - [ ] «Terminato» e «disabilita» da telefono: il file di disponibilità cambia entro pochi secondi; «terminato» scade all'apertura indicata.
 - [ ] Un piatto in un menù fisso non si elimina (messaggio con l'elenco dei menù); un servizio e un menù fisso eliminati spariscono dai collegamenti (cascade).

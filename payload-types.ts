@@ -181,7 +181,7 @@ export interface ActivityLog {
    */
   method?: ('sso' | 'local') | null;
   /**
-   * Sintesi azione di sistema (es. availability-reset: ok). Nessun dato personale.
+   * Sintesi azione di sistema (es. availability-reset: ok) o cancellazione contenuto menù (nome e riferimenti). Nessun dato personale.
    */
   detail?: string | null;
   /**
@@ -384,7 +384,7 @@ export interface Dish {
    */
   soldOut?: boolean | null;
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -413,7 +413,7 @@ export interface Wine {
   appellation?: (number | null) | Appellation;
   type: number | WineType;
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -434,7 +434,7 @@ export interface Spirit {
   country: number | Country;
   type: number | SpiritType;
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -457,7 +457,7 @@ export interface Drink {
   volume?: string | null;
   allergens?: (number | Allergen)[] | null;
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -474,7 +474,7 @@ export interface MenuService {
   name: string;
   price: number;
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -492,7 +492,7 @@ export interface FixedMenuCategory {
    */
   visibility: 'always' | 'lunch_only' | 'dinner_only';
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -528,7 +528,7 @@ export interface FixedMenu {
     | null;
   services?: (number | MenuService)[] | null;
   /**
-   * Assenza a tempo indefinito dalla carta (il manager non elimina: usa questo flag).
+   * Assenza a tempo indefinito dalla carta (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;
@@ -552,7 +552,7 @@ export interface SpecialDay {
   scope: 'day' | 'lunch' | 'dinner';
   content: {
     /**
-     * Prima di cancellare un menu fisso usato da un giorno speciale, disabilitalo.
+     * Un menu fisso eliminato sparisce da qui (cascade); la conferma nell’App lo anticipa.
      */
     fixedMenus: (number | FixedMenu)[];
     /**
@@ -561,7 +561,7 @@ export interface SpecialDay {
     message?: string | null;
   };
   /**
-   * Assenza a tempo indefinito; il manager non elimina: usa questo flag.
+   * Assenza a tempo indefinito (alternativa all’eliminazione definitiva).
    */
   disabled?: boolean | null;
   updatedAt: string;

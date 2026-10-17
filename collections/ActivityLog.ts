@@ -67,8 +67,10 @@ export const ActivityLog: CollectionConfig = {
       name: 'detail',
       type: 'text',
       admin: {
-        description: 'Sintesi azione di sistema (es. availability-reset: ok). Nessun dato personale.',
-        condition: (_, siblingData) => siblingData?.eventType === 'systemAction',
+        description:
+          'Sintesi azione di sistema (es. availability-reset: ok) o cancellazione contenuto menù (nome e riferimenti). Nessun dato personale.',
+        condition: (_, siblingData) =>
+          siblingData?.eventType === 'systemAction' || siblingData?.eventType === 'delete',
       },
     },
     {

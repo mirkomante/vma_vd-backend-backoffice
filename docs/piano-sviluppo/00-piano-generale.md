@@ -106,7 +106,7 @@ Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non i
 3. Giorni Speciali — ✅ (2026-10-12)
 4. Disponibilità, reset ai confini di servizio e `disponibilita.json` — ✅ (2026-10-13, produzione)
 5. Rebuild manuale del menù (Cloud Build) — 🔲 da fare
-6. Backoffice «Menù» nell'App — 🔲 da fare
+6. Backoffice «Menù» nell'App — 🔶 in corso (Parte 0 I0a ✅; schermate App da fare)
 7. Frontend pubblico del menù — ➖ fuori perimetro (confermato il 2026-10-03)
 8. Import dei dati elementari dal vecchio backend — 🔶 in corso (dev verificato)
 9. Scaffold del frontend del menù (banco di prova dei punti di contatto) — 🔲 da fare

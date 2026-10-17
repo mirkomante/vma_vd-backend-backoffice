@@ -13,8 +13,14 @@ import {
   DISHES_SLUG,
   FIXED_MENU_CATEGORIES_SLUG,
   FIXED_MENUS_SLUG,
+  MENU_SERVICES_SLUG,
   SPECIAL_DAYS_SLUG,
 } from '@/lib/menu/constants'
+import { ACTIVITY_LOG_SLUG } from '@/lib/activityLog/constants'
+import {
+  ACTIVITY_AREA_CONTEXT_KEY,
+  formatMenuContentDeleteDetail,
+} from '@/lib/menu/menuContentDeleteLog'
 import { todayRomeAsSpecialDayDate } from '@/lib/menu/specialDayDate'
 import { SPECIAL_DAY_OVERLAP_MESSAGE } from '@/lib/menu/validateSpecialDayOverlap'
 import type { User } from '@/payload-types'
@@ -80,6 +86,28 @@ async function restFetchAnon(path: string, method: string, body?: Record<string,
     },
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   })
+}
+
+async function findLatestDeleteActivityLog(
+  payload: PayloadInstance,
+  documentId: number | string,
+  collection: string,
+) {
+  const found = await payload.find({
+    collection: ACTIVITY_LOG_SLUG,
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    sort: '-createdAt',
+    where: {
+      and: [
+        { eventType: { equals: 'delete' } },
+        { collection: { equals: collection } },
+        { documentId: { equals: String(documentId) } },
+      ],
+    },
+  })
+  return found.docs[0] as { detail?: string | null; area?: string | null } | undefined
 }
 
 function expectAnonRestWriteStatus(label: string, res: Response): void {
@@ -463,40 +491,44 @@ async function main(): Promise<void> {
       }
     }
 
-    const deleteProbeAdmin = await payload.create({
+    const managerDeleteDay = await payload.create({
       collection: SPECIAL_DAYS_SLUG,
       overrideAccess: true,
       depth: 0,
       locale: 'it',
-      data: minimalSpecialDayData(fixtureIds, { date: '2030-03-01' }) as never,
+      data: minimalSpecialDayData(fixtureIds, { date: '2030-03-01', scope: 'lunch' }) as never,
     })
-    createdSpecialDayIds.push(deleteProbeAdmin.id)
+    createdSpecialDayIds.push(managerDeleteDay.id)
 
-    const deleteProbeSuper = await payload.create({
+    await payload.delete({
+      collection: SPECIAL_DAYS_SLUG,
+      id: managerDeleteDay.id,
+      overrideAccess: false,
+      depth: 0,
+      user: managerApp,
+      context: { [ACTIVITY_AREA_CONTEXT_KEY]: 'app' },
+    })
+    createdSpecialDayIds.splice(createdSpecialDayIds.indexOf(managerDeleteDay.id), 1)
+    const expectedSpecialDetail = formatMenuContentDeleteDetail('2030-03-01 ambito=lunch', 0)
+    const specialLog = await findLatestDeleteActivityLog(payload, managerDeleteDay.id, SPECIAL_DAYS_SLUG)
+    if (!specialLog || specialLog.detail !== expectedSpecialDetail) {
+      throw new Error(
+        `activity-log special-days delete: atteso "${expectedSpecialDetail}", ottenuto "${specialLog?.detail ?? '—'}"`,
+      )
+    }
+    if (specialLog.area !== 'app') {
+      throw new Error(`activity-log special-days area: atteso app, ottenuto ${specialLog.area ?? '—'}`)
+    }
+    console.log('OK: managerApp delete special-days con registro (context app)')
+
+    const deleteProbeAdmin = await payload.create({
       collection: SPECIAL_DAYS_SLUG,
       overrideAccess: true,
       depth: 0,
       locale: 'it',
       data: minimalSpecialDayData(fixtureIds, { date: '2030-03-02' }) as never,
     })
-    createdSpecialDayIds.push(deleteProbeSuper.id)
-
-    try {
-      await payload.delete({
-        collection: SPECIAL_DAYS_SLUG,
-        id: probeSpecialDay.id,
-        overrideAccess: false,
-        depth: 0,
-        user: managerApp,
-      })
-      throw new Error('managerApp delete: atteso 403')
-    } catch (error) {
-      if (!isAccessDenied(error)) {
-        throw error
-      }
-      await assertDocExistsAfterDeny(payload, probeSpecialDay.id)
-      console.log('OK: managerApp delete negata; documento probe ancora presente')
-    }
+    createdSpecialDayIds.push(deleteProbeAdmin.id)
 
     await payload.delete({
       collection: SPECIAL_DAYS_SLUG,
@@ -508,6 +540,15 @@ async function main(): Promise<void> {
     createdSpecialDayIds.splice(createdSpecialDayIds.indexOf(deleteProbeAdmin.id), 1)
     console.log('OK: admin delete special-days')
 
+    const deleteProbeSuper = await payload.create({
+      collection: SPECIAL_DAYS_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      locale: 'it',
+      data: minimalSpecialDayData(fixtureIds, { date: '2030-03-03' }) as never,
+    })
+    createdSpecialDayIds.push(deleteProbeSuper.id)
+
     await payload.delete({
       collection: SPECIAL_DAYS_SLUG,
       id: deleteProbeSuper.id,
@@ -517,6 +558,90 @@ async function main(): Promise<void> {
     })
     createdSpecialDayIds.splice(createdSpecialDayIds.indexOf(deleteProbeSuper.id), 1)
     console.log('OK: super-admin delete special-days')
+
+    console.log('--- Cancellazione fixed-menu-categories (manager negato) ---')
+    const categoryDelProbe = await payload.create({
+      collection: FIXED_MENU_CATEGORIES_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      locale: 'it',
+      data: { name: `CatDel ${TEST_RUN_ID}`, visibility: 'always' },
+    })
+    trackCreated(createdDocIds, FIXED_MENU_CATEGORIES_SLUG, categoryDelProbe.id)
+    try {
+      await payload.delete({
+        collection: FIXED_MENU_CATEGORIES_SLUG,
+        id: categoryDelProbe.id,
+        overrideAccess: false,
+        depth: 0,
+        user: managerApp,
+      })
+      throw new Error('managerApp delete fixed-menu-categories: atteso 403')
+    } catch (error) {
+      if (!isAccessDenied(error)) {
+        throw error
+      }
+      console.log('OK: managerApp delete fixed-menu-categories negata (403)')
+    }
+
+    console.log('--- Cancellazione servizio con cascade su menu fisso ---')
+    const serviceCascade = await payload.create({
+      collection: MENU_SERVICES_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      locale: 'it',
+      data: { name: `SvcCascade ${TEST_RUN_ID}`, price: 2 },
+    })
+    trackCreated(createdDocIds, MENU_SERVICES_SLUG, serviceCascade.id)
+
+    const menuWithService = await payload.create({
+      collection: FIXED_MENUS_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      locale: 'it',
+      data: {
+        name: `MenuSvc ${TEST_RUN_ID}`,
+        price: 25,
+        category: asNumericId(fixtureIds.fixedCategoryId),
+        visibility: 'always',
+        dishes: [{ dish: asNumericId(fixtureIds.dishId) }],
+        services: [asNumericId(serviceCascade.id)],
+      },
+    })
+    trackCreated(createdDocIds, FIXED_MENUS_SLUG, menuWithService.id)
+
+    await payload.delete({
+      collection: MENU_SERVICES_SLUG,
+      id: serviceCascade.id,
+      overrideAccess: false,
+      depth: 0,
+      user: managerApp,
+    })
+    createdDocIds.splice(
+      createdDocIds.findIndex((r) => r.collection === MENU_SERVICES_SLUG && r.id === serviceCascade.id),
+      1,
+    )
+
+    const menuAfterServiceDelete = await payload.findByID({
+      collection: FIXED_MENUS_SLUG,
+      id: menuWithService.id,
+      depth: 2,
+      overrideAccess: true,
+      locale: 'it',
+    })
+    const servicesAfter = menuAfterServiceDelete.services
+    const servicesLen = Array.isArray(servicesAfter) ? servicesAfter.length : -1
+    if (servicesLen !== 0) {
+      throw new Error(`cascade servizio: attesi 0 servizi sul menu fisso, ottenuto ${servicesLen}`)
+    }
+    const svcLog = await findLatestDeleteActivityLog(payload, serviceCascade.id, MENU_SERVICES_SLUG)
+    const expectedSvcDetail = formatMenuContentDeleteDetail(`SvcCascade ${TEST_RUN_ID}`, 1)
+    if (!svcLog || svcLog.detail !== expectedSvcDetail) {
+      throw new Error(
+        `activity-log menu-services delete: atteso "${expectedSvcDetail}", ottenuto "${svcLog?.detail ?? '—'}"`,
+      )
+    }
+    console.log('OK: delete servizio cascade su menu fisso e registro riferimenti=1')
 
     console.log('--- Date ---')
     const d1 = await payload.create({
@@ -831,9 +956,10 @@ async function main(): Promise<void> {
     })
     const menusAfter = (afterDelete.content as { fixedMenus?: unknown[] })?.fixedMenus
     const menuCount = Array.isArray(menusAfter) ? menusAfter.length : -1
-    console.log(
-      `OSSERVATO: dopo delete admin del menu fisso, special-day content.fixedMenus length=${menuCount} (atteso 0 se cascade sulla rel)`,
-    )
+    if (menuCount !== 0) {
+      throw new Error(`cascade menu fisso su special-day: atteso 0, ottenuto ${menuCount}`)
+    }
+    console.log('OK: delete menu fisso cascade su giorno speciale (content.fixedMenus vuoto)')
 
     console.log('--- Cancellazione allergene referenziato (punto aperto) ---')
     const allergenProbe = await payload.create({
