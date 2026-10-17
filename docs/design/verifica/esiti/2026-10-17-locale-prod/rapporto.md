@@ -1,39 +1,35 @@
 # Esito verifica — locale-prod — 2026-10-17
-Commit: c7b24ba0fae8 · Lanciatore: 3.4.1 (L2) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-8.2.json v4 · Durata: 2 min 25 s
+Commit: 3a27e4add3b9 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 10 min 5 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 668 · FALLITO: 11 · AVVISO: 9 · NON PROVATO: 92 · Controlli distinti nel JSON corrente: 29
+OK: 449 · FALLITO: 1 · AVVISO: 8 · NON PROVATO: 96 · Controlli distinti nel JSON corrente: 28
 
 ## Pacchetto: accesso
-Righe: 50 · OK: 50 · FALLITO: 0
+Righe: 56 · OK: 56 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
 
 ## Pacchetto: shell
-Righe: 389 · OK: 387 · FALLITO: 0
+Righe: 58 · OK: 58 · FALLITO: 0
 
 ### FALLITO (shell)
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 245 · OK: 202 · FALLITO: 11
+Righe: 217 · OK: 193 · FALLITO: 1
 
 ### FALLITO (menu)
-- **C2** | piatti/errore-azione | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: errore-azione
-- **C2** | piatti/errore-azione | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: errore-azione
-- **C2** | piatti/modulo-allergeni | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: modulo-allergeni
-- **C2** | piatti/modulo-allergeni | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: modulo-allergeni
-- **C2** | piatti/nuovo | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo
-- **C2** | piatti/nuovo | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo
-- **C2** | piatti/nuovo-errori | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo-errori
-- **C2** | piatti/nuovo-errori | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo-errori
-- **piatti-azioni-pagina** | piatti/elenco | telefono-390/chiaro | misurato `larghezza=326px, colonna=358px, altezza=44px` | atteso `larghezza colonna 358px (±2), altezza ≥44px` | evidenza: /app/menu
-- **piatti-colonna-elenco** | piatti/elenco | telefono-390/chiaro | misurato `nameW=20px (soglia minima 100); colW=358px` | atteso `layout colonna/schede` | evidenza: /app/menu
-- **piatti-tassonomie** | piatti | telefono-390/chiaro | misurato `modulo categorie (6): Dolci | Involtini | Primi | Specialità carne | Specialità pesce | Specialità vegeteriane; filtro categorie (7): Tutte le categorie | Dolci | Involtini | Primi | Specialità carne | Specialità pesce; filtro UI categoria/stato: «all» / «all»; categorie API (6): Specialità vegeteriane, Specialità pesce, Specialità carne, Primi, Involtini, Dolci; crea categoria: ok=false motivo=ac` | atteso `opzioni = collection; creazioni category/allergen rifiutate (overrideAccess false)` | evidenza: /app/menu
+- **C2** | piatti/elimina-libero | telefono-390/scuro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina-libero
+
+## Pacchetto: orari
+Righe: 110 · OK: 107 · FALLITO: 0
+
+### FALLITO (orari)
+- (nessuno)
 
 ## Pacchetto: completo
-Righe: 96 · OK: 29 · FALLITO: 0
+Righe: 113 · OK: 35 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -42,20 +38,31 @@ Righe: 96 · OK: 29 · FALLITO: 0
 
 ### OK (raggruppati)
 - **C3-cambio-sistema**: OK in 21/21 combinazioni
-- **g1**: OK in 1/1 combinazioni
-- **g2**: OK in 3/3 combinazioni
-- **home-riga-menu-altezza**: OK in 2/2 combinazioni
-- **home-riga-menu-casi**: OK in 1/1 combinazioni
-- **home-riga-menu-testo**: OK in 4/4 combinazioni
-- **nav-briciole**: OK in 2/2 combinazioni
-- **nav-casi-unit**: OK in 1/1 combinazioni
-- **nav-icone**: OK in 2/2 combinazioni
-- **nav-titoli-pagina**: OK in 1/1 combinazioni
-- **nav-voce-attiva**: OK in 2/2 combinazioni
-- **nav-voci-menu**: OK in 2/2 combinazioni
+- **orari-annulla**: OK in 1/1 combinazioni
+- **orari-barra-misure**: OK in 2/2 combinazioni
+- **orari-campi-dentro-scheda**: OK in 4/4 combinazioni
+- **orari-campi-ora**: OK in 1/1 combinazioni
+- **orari-chiusure-foglio**: OK in 2/2 combinazioni
+- **orari-colonna**: OK in 2/2 combinazioni
+- **orari-dati**: OK in 1/1 combinazioni
+- **orari-errore-validazione**: OK in 2/2 combinazioni
+- **orari-festivita**: OK in 1/1 combinazioni
+- **orari-giorni-riposo**: OK in 1/1 combinazioni
+- **orari-giorno-selezionato**: OK in 2/2 combinazioni
+- **orari-intestazione-anno**: OK in 2/2 combinazioni
+- **orari-modificato-barra**: OK in 2/2 combinazioni
+- **orari-nomi-accessibili**: OK in 1/1 combinazioni
+- **orari-non-configurato**: OK in 1/1 combinazioni
+- **orari-permessi**: OK in 1/1 combinazioni
+- **orari-salvataggio-in-corso**: OK in 1/1 combinazioni
+- **orari-salvataggio-ok**: OK in 1/1 combinazioni
+- **orari-stato-iniziale**: OK in 1/1 combinazioni
+- **orari-testi**: OK in 1/1 combinazioni
+- **orari-validazione-server**: OK in 1/1 combinazioni
+- **piatti-azioni-pagina**: OK in 2/2 combinazioni
+- **piatti-colonna-elenco**: OK in 2/2 combinazioni
 - **piatti-disabilita**: OK in 1/1 combinazioni
 - **piatti-elimina-bloccato**: OK in 1/1 combinazioni
-- **piatti-elimina-concorrenza**: OK in 1/1 combinazioni
 - **piatti-elimina-libero**: OK in 1/1 combinazioni
 - **piatti-elimina-permessi**: OK in 1/1 combinazioni
 - **piatti-elimina-registro**: OK in 1/1 combinazioni
@@ -65,53 +72,27 @@ Righe: 96 · OK: 29 · FALLITO: 0
 - **piatti-modulo-inglese**: OK in 1/1 combinazioni
 - **piatti-modulo-validazione**: OK in 1/1 combinazioni
 - **piatti-nomi-accessibili**: OK in 1/1 combinazioni
-- **piatti-ordine-100**: OK in 1/1 combinazioni
 - **piatti-persistenza**: OK in 1/1 combinazioni
 - **piatti-righe-azioni**: OK in 1/1 combinazioni
+- **piatti-tassonomie**: OK in 1/1 combinazioni
 - **piatti-terminato**: OK in 1/1 combinazioni
 - **piatti-testi**: OK in 1/1 combinazioni
 - **RICOMPILA-ASSENTE**: OK in 1/1 combinazioni
-- **shell-barra-alta**: OK in 36/36 combinazioni
-- **shell-blocco-in-cima**: OK in 1/1 combinazioni
-- **shell-blocco-utente**: OK in 1/1 combinazioni
-- **shell-margine-contenuto**: OK in 24/24 combinazioni
-- **shell-menu-voci**: OK in 1/1 combinazioni
-- **shell-nomi-accessibili**: OK in 60/60 combinazioni
-- **shell-passaggio-768**: OK in 8/8 combinazioni
-- **shell-percorso-voce-attiva**: OK in 60/60 combinazioni
-- **shell-segnaposto**: OK in 1/1 combinazioni
-- **shell-sticky**: OK in 8/8 combinazioni
-- **shell-tema-scelta**: OK in 1/1 combinazioni
-- **shell-uscita**: OK in 1/1 combinazioni
-- **AMBIENTE**: OK in 29/30 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C1**: OK in 84/89 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2**: OK in 82/93 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2-mouse**: OK in 34/45 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C3**: OK in 120/125 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C9**: OK in 29/30 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-colonne**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-larghezza**: OK in 8/9 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-righe-di-stato**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **home-testi**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **piatti-colonna-elenco**: OK in 1/2 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **piatti-azioni-pagina**: OK in 1/2 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **shell-menu-utente**: OK in 2/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **AMBIENTE**: OK in 35/36 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C1**: OK in 96/101 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2**: OK in 63/67 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2-mouse**: OK in 40/51 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C3**: OK in 96/101 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C9**: OK in 35/36 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-colonne**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-larghezza**: OK in 4/5 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-righe-di-stato**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **home-testi**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
-- **C2** | piatti/errore-azione | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: errore-azione
-- **C2** | piatti/errore-azione | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: errore-azione
-- **C2** | piatti/modulo-allergeni | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: modulo-allergeni
-- **C2** | piatti/modulo-allergeni | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: modulo-allergeni
-- **C2** | piatti/nuovo | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo
-- **C2** | piatti/nuovo | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo
-- **C2** | piatti/nuovo-errori | telefono-390/chiaro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo-errori
-- **C2** | piatti/nuovo-errori | telefono-390/scuro | misurato `Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16` | atteso `nessun elemento sotto 44 px` | evidenza: nuovo-errori
-- **piatti-azioni-pagina** | piatti/elenco | telefono-390/chiaro | misurato `larghezza=326px, colonna=358px, altezza=44px` | atteso `larghezza colonna 358px (±2), altezza ≥44px` | evidenza: /app/menu
-- **piatti-colonna-elenco** | piatti/elenco | telefono-390/chiaro | misurato `nameW=20px (soglia minima 100); colW=358px` | atteso `layout colonna/schede` | evidenza: /app/menu
-- **piatti-tassonomie** | piatti | telefono-390/chiaro | misurato `modulo categorie (6): Dolci | Involtini | Primi | Specialità carne | Specialità pesce | Specialità vegeteriane; filtro categorie (7): Tutte le categorie | Dolci | Involtini | Primi | Specialità carne | Specialità pesce; filtro UI categoria/stato: «all» / «all»; categorie API (6): Specialità vegeteriane, Specialità pesce, Specialità carne, Primi, Involtini, Dolci; crea categoria: ok=false motivo=ac` | atteso `opzioni = collection; creazioni category/allergen rifiutate (overrideAccess false)` | evidenza: /app/menu
+- **C2** | piatti/elimina-libero | telefono-390/scuro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina-libero
 
 ### AVVISO
-- **piatti-confronto-visivo** | piatti | telefono-390/chiaro | misurato `screenshot=72/76; saltati: vuoto/telefono-390/chiaro: DB con 44 piatti; vuoto/telefono-390/scuro: DB con 44 piatti; vuoto/notebook-1280/chiaro: DB con 44 piatti; vuoto/notebook-1280/scuro: DB con 44 piatti` | atteso `19 stati × 2 profili × 2 temi (sezione immagini JSON)` | evidenza: img/
 - **C2-mouse** | piatti/modulo-allergeni | notebook-1280/chiaro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: modulo-allergeni
 - **C2-mouse** | piatti/modulo-allergeni | notebook-1280/scuro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: modulo-allergeni
 - **C2-mouse** | piatti/nuovo | notebook-1280/chiaro | misurato `fuori intervallo: 64 px` | atteso `altezze in [28, 48] px (no collegamenti di testo)` | evidenza: nuovo
@@ -187,11 +168,22 @@ Righe: 96 · OK: 29 · FALLITO: 0
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **nav-pannello-telefono** | navigazione | telefono-390/chiaro | misurato `—` | atteso `altezza pannello con 8 voci Menù` | evidenza: voci non ancora tutte accese
-- **piatti-accesso** | piatti | telefono-390/chiaro | misurato `—` | atteso `stesso esito di /app/hours per utente senza ruolo` | evidenza: impossibile creare utente senza ruoli (validazione Users); controllo dubbio se la guardia è solo canAccessAppArea
-- **piatti-stato-vuoto** | piatti | telefono-390/chiaro | misurato `database con 44 piatti (il lanciatore non svuota il DB)` | atteso `«Nessun piatto nel menù.» con pulsante Nuovo piatto` | evidenza: stato_prova JSON: giudizio nel confronto visivo
-- **piatti-ricompila** | piatti | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
-- **piatti-disabilitato-ovunque** | piatti | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **orari-errore-server** | — | — | misurato `—` | atteso `—` | evidenza: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- **orari-errore-caricamento** | — | — | misurato `—` | atteso `—` | evidenza: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- **orari-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **C1** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
 - **C2** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
 - **C3** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
@@ -204,50 +196,42 @@ Righe: 96 · OK: 29 · FALLITO: 0
 - **C1** | piatti/vuoto | notebook-1280/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
 - **C3** | piatti/vuoto | notebook-1280/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
 - **C2-mouse** | piatti/vuoto | notebook-1280/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `altezza mouse` | evidenza: vuoto
-- **C3-no-lampo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **NO-OVERRIDE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **RICOMPILA-PRESENTE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **home-riga-menu-stati** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
-- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **shell-menu-utente** | shell/home (icone Admin) | telefono-390/chiaro | misurato `voce «Vai all'Admin» assente con utente manager` | atteso `due icone svg (pannello + freccia esterna) se presente` | evidenza: A24; utente di prova senza canAccessAdminPanel
-- **shell-menu-utente** | shell/home (icone Admin) | notebook-1280/chiaro | misurato `voce «Vai all'Admin» assente con utente manager` | atteso `due icone svg (pannello + freccia esterna) se presente` | evidenza: A24; utente di prova senza canAccessAdminPanel
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | NON PROVATO (29/30) |
-| C1 | NON PROVATO (84/89) |
-| C2 | FALLITO (82/93) |
-| C2-mouse | AVVISO (34/45) |
-| C3 | NON PROVATO (120/125) |
-| C3-cambio-sistema | OK (21/21) |
-| C3-no-lampo | NON PROVATO (0/1) |
-| C9 | NON PROVATO (29/30) |
-| g1 | OK (1/1) |
-| g2 | OK (3/3) |
-| home-colonne | NON PROVATO (5/6) |
-| home-larghezza | NON PROVATO (8/9) |
-| home-righe-di-stato | NON PROVATO (5/6) |
-| home-testi | NON PROVATO (5/6) |
-| shell-admin-link | NON PROVATO (0/27) |
-| shell-barra-alta | OK (36/36) |
-| shell-blocco-in-cima | OK (1/1) |
-| shell-blocco-utente | OK (1/1) |
-| shell-margine-contenuto | OK (24/24) |
-| shell-menu-utente | NON PROVATO (2/4) |
-| shell-menu-voci | OK (1/1) |
-| shell-nomi-accessibili | OK (60/60) |
-| shell-passaggio-768 | OK (8/8) |
-| shell-percorso-voce-attiva | OK (60/60) |
-| shell-segnaposto | OK (1/1) |
-| shell-sticky | OK (8/8) |
-| shell-tema-scelta | OK (1/1) |
-| shell-uscita | OK (1/1) |
-| verify-link-valido | NON PROVATO (0/30) |
+| AMBIENTE | NON PROVATO (35/36) |
+| C1 | NON PROVATO (96/101) |
+| C2 | FALLITO (63/67) |
+| C2-mouse | AVVISO (40/51) |
+| C3 | NON PROVATO (96/101) |
+| C9 | NON PROVATO (35/36) |
+| NO-OVERRIDE | NON PROVATO (0/1) |
+| RICOMPILA-ASSENTE | OK (1/1) |
+| piatti-azioni-pagina | OK (2/2) |
+| piatti-colonna-elenco | OK (2/2) |
+| piatti-console | NON PROVATO (0/1) |
+| piatti-disabilita | OK (1/1) |
+| piatti-elimina-bloccato | OK (1/1) |
+| piatti-elimina-libero | OK (1/1) |
+| piatti-elimina-permessi | OK (1/1) |
+| piatti-elimina-registro | OK (1/1) |
+| piatti-filtri-ricerca | OK (1/1) |
+| piatti-modulo-campi | OK (2/2) |
+| piatti-modulo-footer | OK (1/1) |
+| piatti-modulo-inglese | OK (1/1) |
+| piatti-modulo-validazione | OK (1/1) |
+| piatti-nomi-accessibili | OK (1/1) |
+| piatti-persistenza | OK (1/1) |
+| piatti-righe-azioni | OK (1/1) |
+| piatti-stati-ui | NON PROVATO (0/1) |
+| piatti-tassonomie | OK (1/1) |
+| piatti-terminato | OK (1/1) |
+| piatti-testi | OK (1/1) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -317,30 +301,30 @@ Righe: 96 · OK: 29 · FALLITO: 0
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| nav-pannello-telefono | navigazione | telefono-390/chiaro | NON PROVATO | — | altezza pannello con 8 voci Menù | voci non ancora tutte accese |
-| piatti-colonna-elenco | piatti/elenco | telefono-390/chiaro | FALLITO | nameW=20px (soglia minima 100); colW=358px | layout colonna/schede | /app/menu |
-| piatti-azioni-pagina | piatti/elenco | telefono-390/chiaro | FALLITO | larghezza=326px, colonna=358px, altezza=44px | larghezza colonna 358px (±2), altezza ≥44px | /app/menu |
-| piatti-tassonomie | piatti | telefono-390/chiaro | FALLITO | modulo categorie (6): Dolci \| Involtini \| Primi \| Specialità carne \| Specialità pesce \| Specialità vegeteriane; filtro categorie (7): Tutte le categorie \| Dolci \| Involtini \| Primi \| Specialità carne \| Specialità pesce; filtro UI categoria/stato: «all» / «all»; categorie API (6): Specialità vegeteriane, Specialità pesce, Specialità carne, Primi, Involtini, Dolci; crea categoria: ok=false motivo=access_denied; crea allergene: ok=false motivo=access_denied; filtro categoria: atteso «Tutte le categorie», letto «all» \| filtro stato: atteso «Tutti», letto «all» | opzioni = collection; creazioni category/allergen rifiutate (overrideAccess false) | /app/menu |
-| piatti-accesso | piatti | telefono-390/chiaro | NON PROVATO | — | stesso esito di /app/hours per utente senza ruolo | impossibile creare utente senza ruoli (validazione Users); controllo dubbio se la guardia è solo canAccessAppArea |
-| piatti-confronto-visivo | piatti | telefono-390/chiaro | AVVISO | screenshot=72/76; saltati: vuoto/telefono-390/chiaro: DB con 44 piatti; vuoto/telefono-390/scuro: DB con 44 piatti; vuoto/notebook-1280/chiaro: DB con 44 piatti; vuoto/notebook-1280/scuro: DB con 44 piatti | 19 stati × 2 profili × 2 temi (sezione immagini JSON) | img/ |
-| piatti-stato-vuoto | piatti | telefono-390/chiaro | NON PROVATO | database con 44 piatti (il lanciatore non svuota il DB) | «Nessun piatto nel menù.» con pulsante Nuovo piatto | stato_prova JSON: giudizio nel confronto visivo |
-| piatti-ricompila | piatti | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
-| piatti-disabilitato-ovunque | piatti | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
-| C2 | piatti/modulo-allergeni | telefono-390/chiaro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | modulo-allergeni |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| orari-errore-server | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
+| orari-errore-caricamento | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
+| orari-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | C2-mouse | piatti/modulo-allergeni | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | modulo-allergeni |
-| C2 | piatti/modulo-allergeni | telefono-390/scuro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | modulo-allergeni |
 | C2-mouse | piatti/modulo-allergeni | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | modulo-allergeni |
-| C2 | piatti/nuovo | telefono-390/chiaro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | nuovo |
 | C2-mouse | piatti/nuovo | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo |
-| C2 | piatti/nuovo | telefono-390/scuro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | nuovo |
 | C2-mouse | piatti/nuovo | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo |
-| C2 | piatti/nuovo-errori | telefono-390/chiaro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | nuovo-errori |
 | C2-mouse | piatti/nuovo-errori | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo-errori |
-| C2 | piatti/nuovo-errori | telefono-390/scuro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | nuovo-errori |
 | C2-mouse | piatti/nuovo-errori | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | nuovo-errori |
-| C2 | piatti/errore-azione | telefono-390/chiaro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | errore-azione |
+| C2 | piatti/elimina-libero | telefono-390/scuro | FALLITO | Indietro 274x42; Elimina 274x42 | nessun elemento sotto 44 px | elimina-libero |
 | C2-mouse | piatti/errore-azione | notebook-1280/chiaro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | errore-azione |
-| C2 | piatti/errore-azione | telefono-390/scuro | FALLITO | Traduzione inglese (facoltat 358x38; base-ui-_r_91_ 16x16; base-ui-_r_94_ 16x16; base-ui-_r_97_ 16x16 | nessun elemento sotto 44 px | errore-azione |
 | C2-mouse | piatti/errore-azione | notebook-1280/scuro | AVVISO | fuori intervallo: 64 px | altezze in [28, 48] px (no collegamenti di testo) | errore-azione |
 | C1 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
 | C2 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
@@ -354,22 +338,16 @@ Righe: 96 · OK: 29 · FALLITO: 0
 | C1 | piatti/vuoto | notebook-1280/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
 | C3 | piatti/vuoto | notebook-1280/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
 | C2-mouse | piatti/vuoto | notebook-1280/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | altezza mouse | vuoto |
-| C3-no-lampo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | NO-OVERRIDE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| RICOMPILA-PRESENTE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| home-riga-menu-stati | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
-| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| shell-menu-utente | shell/home (icone Admin) | telefono-390/chiaro | NON PROVATO | voce «Vai all'Admin» assente con utente manager | due icone svg (pannello + freccia esterna) se presente | A24; utente di prova senza canAccessAdminPanel |
-| shell-menu-utente | shell/home (icone Admin) | notebook-1280/chiaro | NON PROVATO | voce «Vai all'Admin» assente con utente manager | due icone svg (pannello + freccia esterna) se presente | A24; utente di prova senza canAccessAdminPanel |
 
 ## Non provato (e perché)
 - verify-link-valido: facoltativo: token reale monouso non ottenuto
 - shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
+- NO-OVERRIDE: controllo non eseguito dal lanciatore in questa esecuzione
+- piatti-console: controllo non eseguito dal lanciatore in questa esecuzione
+- piatti-stati-ui: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
-- shell-menu trigger telefono-390: mountEvents=0 remounts=0 postHydration=0 (observe 2800ms, hydration 1200ms)
-- shell-percorso-voce-attiva diagnostica (Piatti @1280px): attributi={"data-slot":"sidebar-menu-button","data-sidebar":"menu-button","data-size":"default","data-active":"","class":"peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 pointer-coarse:h-11 text-sm","href":"/app/menu"}; outerHTML=<a data-slot="sidebar-menu-button" data-sidebar="menu-button" data-size="default" data-active="" class="peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 [&amp;&gt;span:last-child]:truncate hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 pointer-coarse:h-11 text-sm" href="/app/menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-utensils-crossed lucide-fork-knife-crossed" aria-hidden="true"><path d="m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8"></path><path d="M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7"></path><path d="m2.1 21.8 6.4-6.3"></path><path d="m19 5-7 7"></path></svg><span>Piatti</span></a>
-- WebKit 26.0 su http://localhost:3100 (diagnosi login prod): URL finale=http://localhost:3100/app/login; payload-token: presente secure=true httpOnly=true sameSite=Lax; Set-Cookie login: (nessun Set-Cookie catturato sulla risposta login)
+- (nessuna)
