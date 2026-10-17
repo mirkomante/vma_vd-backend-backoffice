@@ -1,13 +1,16 @@
 {
  "versione": 1,
  "fase": "6.6",
- "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti}/spec.md (le altre schermate si aggiungono una alla volta) e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
+ "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande}/spec.md (le altre schermate si aggiungono una alla volta) e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
  "fonti": [
   "docs/design/schermate/integrazione/spec.md",
   "docs/design/schermate/piatti/spec.md",
   "docs/design/decisioni-layout-app.md",
   "docs/design/modello-specifica-schermata.md",
-  "docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md"
+  "docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md",
+  "docs/design/schermate/vini/spec.md",
+  "docs/design/schermate/distillati/spec.md",
+  "docs/design/schermate/bevande/spec.md"
  ],
  "ambienti": {
   "locale-dev": {
@@ -193,9 +196,9 @@
    "min_px": 28,
    "max_px": 48,
    "gravita": "avviso",
-   "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto.",
+   "nota": "Con il mouse le altezze dei controlli restano compatte (decisioni §3, Orari). Fuori intervallo = avviso, non fallimento. I collegamenti di testo sono esclusi: la prima esecuzione ne ha segnalati 52 a circa 22 px, che è il comportamento voluto. Dal 2026-10-17 (dopo V2) il campo multiriga «textarea» è escluso: la sua altezza (circa 64 px) è quella di un'area di testo e non un difetto.",
    "fonte": "decisioni D6",
-   "elementi": "button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
+   "elementi": "button, input:not([type=hidden]), select, [role=combobox], [role=tab], [role=menuitem] e i collegamenti con l'aspetto di un pulsante (per esempio «Accedi con Google»)",
    "escludi": "i collegamenti di testo (a senza aspetto di pulsante, come «Password dimenticata?») e gli elementi nascosti",
    "livello": 1
   },
@@ -903,7 +906,7 @@
      "tolleranza_px": 2,
      "atteso": {
       "notebook-1280": "colonna larga 976 px (mai più di 1024), si vede la tabella e non le schede; tabella a cinque colonne",
-      "telefono-390": "si vedono le schede e non la tabella; nome della scheda largo circa 137 px su 358 (avviso se fuori di 10 px)"
+      "telefono-390": "si vedono le schede e non la tabella; nome della scheda circa 137 px su 358 (avviso se fuori di 10 px; FALLITO se sotto 100 px, perché i nomi diventano illeggibili)"
      },
      "fonte": "piatti/spec.md §4, §9 punto 3"
     },
@@ -920,11 +923,12 @@
      ],
      "tolleranza_px": 2,
      "atteso": {
-      "telefono-390": "«Nuovo piatto» a tutta larghezza della colonna, alto almeno 44 px",
+      "telefono-390": "«Nuovo piatto» largo quanto la colonna del contenuto (a 390 px: 358 px, cioè la larghezza della finestra meno 2 × 16 px di margine della shell; NON la larghezza dell'elemento main), alto almeno 44 px",
       "notebook-1280": "«Nuovo piatto» a destra del titolo, in riga"
      },
      "rinviato": "la coppia con «Ricompila il menù pubblico» (sopra o a sinistra) è NON PROVATO, rinviato alla 6.5",
-     "fonte": "piatti/spec.md §4, §9 punto 4"
+     "fonte": "piatti/spec.md §4, §9 punto 4",
+     "nota": "Il riferimento della larghezza è la colonna del contenuto, non l'elemento main (che include il margine). Corretto il 2026-10-17 dopo V2."
     },
     {
      "id": "piatti-righe-azioni",
@@ -1277,10 +1281,24 @@
       "caricamento: quattro blocchi Skeleton",
       "errore di caricamento: solo l'avviso «Impossibile caricare i piatti» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
       "errore dell'azione: avviso rosso «Operazione non riuscita» / «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia",
-      "nessun piatto: «Nessun piatto nel menù.» e «Nuovo piatto»",
       "nessun risultato: «Nessun risultato con questi filtri.» e «Azzera filtri»"
      ],
      "fonte": "piatti/spec.md §5, §6, §9 punto 13"
+    },
+    {
+     "id": "piatti-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "con nessun record: «Nessun piatto nel menù.» e il pulsante «Nuovo piatto»",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con lo screenshot di riferimento 390-vuoto-chiaro.png",
+     "fonte": "docs/design/schermate/piatti/spec.md §5, §6 (Vuoti)",
+     "nota": "Aggiunto il 2026-10-17 dopo V2: nel controllo -stati-ui lo stato vuoto non si può provare con il database di sviluppo popolato."
     },
     {
      "id": "piatti-nomi-accessibili",
@@ -1302,7 +1320,8 @@
      "da": "/app/menu",
      "con_sessione": "utente senza ruolo",
      "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3): la sezione non è raggiungibile dall'URL",
-     "fonte": "piatti/spec.md §9 punto 16"
+     "fonte": "piatti/spec.md §9 punto 16",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
     },
     {
      "id": "piatti-console",
@@ -1433,12 +1452,2131 @@
     ],
     "nota": "Gli screenshot di riferimento mostrano il pulsante «Ricompila» e la frase sul pulsante negli avvisi: finché la bandiera è spenta il confronto visivo ne tiene conto (rilievo A, non P)."
    }
+  },
+  {
+   "id": "vini",
+   "percorso": "/app/menu/wines",
+   "auth": "manager di prova",
+   "nota": "I controlli sul pulsante «Ricompila» sono NON PROVATI con l'evidenza «rinviato alla 6.5» (bandiera spenta). Le stringhe attese sono quelle della sezione 6 di docs/design/schermate/vini/spec.md, carattere per carattere (apostrofi tipografici compresi); quelle delle costanti di lib/ si leggono dal codice. Gli avvisi di salvataggio e di eliminazione hanno solo il titolo finché la bandiera è spenta.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "gruppi per tipologia, righe disabilitate attenuate"
+    },
+    {
+     "id": "disponibilita",
+     "come": "interruttore «Disponibile» su un vino"
+    },
+    {
+     "id": "filtri",
+     "come": "pulsante «Filtri»"
+    },
+    {
+     "id": "filtri-attivi",
+     "come": "filtri applicati"
+    },
+    {
+     "id": "filtri-origine",
+     "come": "Italia › Friuli Venezia Giulia › Collio nei filtri"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su un vino"
+    },
+    {
+     "id": "modulo-origine",
+     "come": "origine compilata"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta"
+    },
+    {
+     "id": "origine-senza-regioni",
+     "come": "paese senza regioni (Giappone)"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuovo vino»"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "errore-geografia",
+     "come": "regione non del paese rifiutata dal server"
+    },
+    {
+     "id": "errore-anno",
+     "come": "anno non valido"
+    },
+    {
+     "id": "errore-azione",
+     "come": "azione con errore del server simulato"
+    },
+    {
+     "id": "elimina",
+     "come": "cestino su un vino"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "piu-di-100-vini",
+     "come": "101 vini di prova"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessun vino"
+    },
+    {
+     "id": "nessun-risultato",
+     "come": "ricerca senza risultati"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "filtri",
+    "filtri-attivi",
+    "filtri-origine",
+    "modulo",
+    "modulo-origine",
+    "modulo-inglese-aperto",
+    "origine-senza-regioni",
+    "nuovo",
+    "nuovo-errori",
+    "errore-geografia",
+    "errore-anno",
+    "elimina",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento",
+    "vuoto",
+    "nessun-risultato"
+   ],
+   "controlli": [
+    {
+     "id": "vini-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Vini",
+      "descrizione": "La carta dei vini del ristorante.",
+      "pulsante_principale": "Nuovo vino",
+      "ricerca_segnaposto": "Cerca un vino o una cantina",
+      "pulsante_filtri": "Filtri",
+      "gruppo": "{Tipologia} {1 vino | N vini}",
+      "colonne_tabella": [
+       "Nome",
+       "Origine",
+       "Prezzo",
+       "Disponibile"
+      ],
+      "riga": "sotto il nome «{cantina} · {anno}» (le parti vuote non compaiono); origine «{paese} · {regione}» (solo il paese se manca la regione); prezzo «28,00 €» e, sotto, «calice 7,00 €» se c'è",
+      "badge_disabilitato": "Disabilitato"
+     },
+     "nota": "Le stringhe fisse si leggono da lib/ (testo_da) quando sono costanti; le altre sono quelle della sezione 6 della specifica, carattere per carattere.",
+     "fonte": "docs/design/schermate/vini/spec.md §6, §9 punti 5 e 20"
+    },
+    {
+     "id": "vini-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px (mai più di 1024); si vede la tabella e non le schede",
+      "telefono-390": "si vedono le schede e non la tabella; nome della scheda circa 172 px su 358 (avviso se fuori di 10 px; FALLITO se sotto 130 px, perché i nomi diventano illeggibili)",
+      "soglia-767": "schede, non la tabella",
+      "soglia-768": "tabella, non le schede"
+     },
+     "fonte": "docs/design/schermate/vini/spec.md §4, §9 punto 3"
+    },
+    {
+     "id": "vini-colonne-fisse",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "notebook-1280": "le colonne Origine, Prezzo, Disponibile e azioni hanno lo stesso bordo sinistro in tutti i gruppi; larghezze: Origine 14 rem (224 px), Prezzo 7 rem (112 px), Disponibile 7 rem (112 px), azioni 6 rem (96 px)"
+     },
+     "fonte": "docs/design/schermate/vini/spec.md §4, §9 punto 4"
+    },
+    {
+     "id": "vini-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuovo vino» a tutta larghezza della colonna, alto almeno 44 px",
+      "notebook-1280": "«Nuovo vino» a destra del titolo, in riga"
+     },
+     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
+     "fonte": "docs/design/schermate/vini/spec.md §4, §9 punto 7"
+    },
+    {
+     "id": "vini-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "interruttore": "nome accessibile «Disponibile: {nome}», etichetta visibile «Disponibile» su telefono; resta attivo anche sulle righe disabilitate",
+      "matita": "«Modifica {nome}»",
+      "cestino": "«Elimina {nome}»",
+      "aree_di_tocco": "44 px con tocco simulato per interruttore, matita e cestino",
+      "assenti": "collegamento sul nome, scheda tappabile, menu «⋯», testo visibile nei pulsanti icona",
+      "riga_disabilitata": "attenuata, badge «Disabilitato»"
+     },
+     "fonte": "docs/design/schermate/vini/spec.md §6 (Stato, Azioni di riga), §9 punto 5; decisioni D13"
+    },
+    {
+     "id": "vini-disponibilita",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-vini» abilitato",
+      "tocca l'interruttore «Disponibile» della sua riga",
+      "applica il filtro Stato «Disabilitati»",
+      "tocca di nuovo l'interruttore sulla riga disabilitata"
+     ],
+     "atteso": [
+      "avviso «Vino disabilitato» con «Il menù pubblico si aggiorna entro pochi minuti.»; la riga si attenua e compare il badge «Disabilitato»; disabled vero letto con la Local API",
+      "la riga compare nel filtro «Disabilitati»",
+      "con il secondo tocco avviso «Vino abilitato», riga normale, disabled falso"
+     ],
+     "nota": "Il cambio del file di disponibilità non è leggibile dal lanciatore (storage in memoria del server di sviluppo): lo coprono verify:menu-6_4 e il controllo sul file in produzione (passi 27 e 30).",
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 1, §9 punto 6"
+    },
+    {
+     "id": "vini-elimina",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-vini-elimina»",
+      "tocca il cestino della sua riga",
+      "tocca «Indietro»",
+      "tocca di nuovo il cestino e poi «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare verify-ui-vini-elimina?» con «Non si può annullare.» e due pulsanti «Indietro» ed «Elimina»; «Indietro» chiude senza cambiare nulla",
+      "dopo «Elimina»: la riga sparisce, avviso «Vino eliminato» (con la bandiera spenta, solo il titolo), il record non esiste più per la Local API"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §6 (Elimina), §7 punto 3, §9 punto 14"
+    },
+    {
+     "id": "vini-elimina-registro-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione leggi il registro attività con la Local API (lettura di controllo del lanciatore, solo sviluppo)",
+      "manager: elimina dalla pagina; admin e super-admin: eliminano con la Local API passando il documento utente; utente senza ruolo: prova a eliminare con la Local API (overrideAccess false)"
+     ],
+     "atteso": [
+      "esiste una riga con eventType delete, area app, collection wines, documentId dell'eliminato, user il manager di prova, e nel detail «nome=…; riferimenti=0»",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato e il record resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/vini/spec.md §9 punto 14; ADR-115"
+    },
+    {
+     "id": "vini-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuovo vino / Il vino compare nel menù pubblico dopo la ricompilazione.",
+      "campi_in_ordine": [
+       "Dati: Nome, Cantina, Anno (con la casella «Senza annata (NV)»), Capacità e Grado (segnaposto «Scegli», prima voce «Non indicata» e «Non indicato»; testo «Capacità e grado si scelgono da un elenco, così i dati restano uniformi.»), Descrizione, «Traduzione inglese (facoltativa)» con badge «Manca» o «Presente», Description («Facoltativa. Se resta vuota, il menù mostra il testo italiano. Il nome del vino non si traduce.»)",
+       "Origine: Tipologia, Paese (segnaposto «Scegli»), Regione, Denominazione, Classificazione («Le classificazioni mostrate seguono il paese scelto.»)",
+       "Prezzi: Prezzo (€), Al calice (€) («Il prezzo al calice è facoltativo.»)",
+       "Disponibilità: «Disabilitato» («Assente a tempo indefinito: il vino non compare nel menù.»)"
+      ],
+      "pulsanti": [
+       "Salva",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica vino» con il nome come sottotitolo"
+     },
+     "fonte": "docs/design/schermate/vini/spec.md §6 (Modulo)"
+    },
+    {
+     "id": "vini-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo vino» e premi «Salva» a modulo vuoto",
+      "inserisci nel prezzo «28», «28,5», «28,50», «28.50», poi «abc» e una forma con tre decimali",
+      "compila il prezzo al calice con «abc»: errore «Inserisci un prezzo valido (es. 7,00).»; vuoto è accettato"
+     ],
+     "atteso": [
+      "nessuna richiesta di salvataggio; messaggi sotto i campi: «Campo obbligatorio.» (nome), «Scegli una tipologia.», «Scegli un paese.», «Inserisci un prezzo valido (es. 28,50).»; il primo campo non valido ha il focus",
+      "le quattro forme del prezzo sono accettate; «abc» e la forma con tre decimali danno «Inserisci un prezzo valido (es. 28,50).»",
+      "il prezzo al calice vuoto è accettato; con un valore non valido: «Inserisci un prezzo valido (es. 7,00).»"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §6 (Errori del modulo), §9 punto 8"
+    },
+    {
+     "id": "vini-modulo-inglese",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri un vino senza traduzione inglese",
+      "apri un vino con descrizione inglese",
+      "con la Local API leggi il vino senza inglese con locale=en"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §9 punto 13; decisioni D10"
+    },
+    {
+     "id": "vini-modulo-footer",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "scorrendo il modulo fino in fondo, «Salva» e «Annulla» restano agganciati al fondo della finestra, affiancati, alti 44 px; la finestra non supera il 90 % dell'altezza dello schermo",
+     "fonte": "docs/design/schermate/vini/spec.md §4 (Foglio), §7"
+    },
+    {
+     "id": "vini-formati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo vino» e leggi le opzioni di Capacità e Grado",
+      "apri un vino con grado «12,8%» (impostato via SQL, solo sviluppo) e salvalo senza cambiarlo"
+     ],
+     "atteso": [
+      "la capacità offre «Non indicata», 25, 33, 37,5, 50, 75 e 150 cl; il grado «Non indicato» e da 5% a 20% a passi di 0,5",
+      "il grado fuori elenco «12,8%» resta visibile nel campo e il vino si salva senza cambiarlo; scegliendo un altro valore non si torna indietro"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 5b/9, §9 (campi a scelta)"
+    },
+    {
+     "id": "vini-formati-server",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "con la Local API (utente manager, overrideAccess false) e, se pnpm dev è avviato, via REST: crea un vino con anno «99», poi con capacità «70 cl», poi con grado «12,8%»",
+      "stessa richiesta con valori canonici (anno «2022», «75 cl», «13%»)",
+      "imposta con SQL un grado non canonico su un vino di prova e fai solo `update({ data: { disabled: true } })` come manager"
+     ],
+     "atteso": [
+      "le tre richieste con valori non canonici sono rifiutate con i messaggi della specifica (anno con l'anno corrente)",
+      "con i valori canonici passano",
+      "disabilitare il vino con grado non canonico non fallisce"
+     ],
+     "nota": "Le stringhe dei messaggi si leggono da lib/menu/formats.ts (testo_da). La preparazione del valore non canonico (SQL) si fa solo sul database di sviluppo.",
+     "fonte": "docs/design/schermate/vini/spec.md §6 (Errori dei formati), §9 punto 8; ADR-108"
+    },
+    {
+     "id": "vini-modulo-anno",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo vino»; nel campo Anno prova a scrivere «12a»",
+      "compila anno «1899», poi l'anno successivo a quello corrente, poi «12»; premi «Salva»",
+      "compila 1900, 2022 e l'anno corrente",
+      "spunta «Senza annata (NV)»; poi toglila"
+     ],
+     "atteso": [
+      "il campo accetta solo cifre, al massimo quattro",
+      "1899, l'anno successivo e «12» danno sotto il campo «Inserisci un anno di quattro cifre tra 1900 e {anno corrente}.» e il campo ha il focus; 1900, 2022 e l'anno corrente sono accettati",
+      "con la casella il campo si svuota e si disabilita e si salva «NV» (lettura con la Local API); togliendola il campo torna disponibile"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 5b, §9 punto 8b"
+    },
+    {
+     "id": "vini-origine-cascata",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "scegli Italia",
+      "scegli Friuli Venezia Giulia",
+      "cambia il paese in Francia, poi in Giappone",
+      "scegli un paese diverso da Italia e Francia con classificazioni (se esiste) e guarda la classificazione"
+     ],
+     "atteso": [
+      "compaiono le regioni abilitate dell'Italia",
+      "compaiono le denominazioni Carso e Collio",
+      "cambiando il paese si svuotano regione e denominazione (e la classificazione se non appartiene al nuovo paese); cambiando la regione si svuota la denominazione",
+      "con Giappone Regione e Classificazione sono disabilitate con «Nessuna regione per questo paese» e «Nessuna classificazione per questo paese»; senza paese «Scegli prima il paese»; la prima voce dei campi facoltativi è «Nessuna regione», «Nessuna denominazione», «Nessuna classificazione»",
+      "con un paese diverso da Italia e Francia la classificazione non offre le sigle italiane o francesi"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 5, §9 punto 9"
+    },
+    {
+     "id": "vini-origine-opzioni-query",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri il modulo e leggi le opzioni di Paese, Regione, Denominazione e Classificazione",
+      "osserva le richieste di caricamento delle opzioni (azioni del server o funzioni di lib/)"
+     ],
+     "atteso": [
+      "un paese con enabled falso («Libano») non compare nel menu; una regione non abilitata («Sicilia») non compare",
+      "le richieste di regioni, denominazioni e classificazioni portano la condizione sul paese o sulla regione scelti e su enabled (controllo sulla richiesta, non sul DOM: se la richiesta non è osservabile, controllo sul codice della funzione di caricamento in lib/)"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §9 punto 10"
+    },
+    {
+     "id": "vini-origine-fuori-filtro",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea un vino di prova con un paese; disabilita quel paese con la Local API (poi ripristinalo in try/finally)",
+      "apri il vino dal modulo"
+     ],
+     "atteso": "il modulo mostra comunque il paese salvato; cambiarlo lo toglie dalla scelta",
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 6, §9 punto 11"
+    },
+    {
+     "id": "vini-coerenza-geografica",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "ambienti": [
+      "locale-dev"
+     ],
+     "passi": [
+      "apri il modulo di un vino di prova e scegli un paese e una regione validi",
+      "prima di «Salva» cambia con la Local API la regione perché non appartenga più al paese (o simula l'errore del server indicato sul campo region)",
+      "premi «Salva»"
+     ],
+     "atteso": [
+      "il server rifiuta con il messaggio di lib/ (validateWineGeography): «La regione selezionata non appartiene al paese indicato.»; il messaggio sta sotto Regione, il campo ha il focus e le altre modifiche restano nel modulo",
+      "una richiesta diretta con regione non del paese torna con lo stesso messaggio"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 8, §9 punto 12"
+    },
+    {
+     "id": "vini-filtri-origine",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Filtri»: Regione è disabilitata senza paese",
+      "scegli Italia › Friuli Venezia Giulia › Collio e applica",
+      "togli l'etichetta del paese"
+     ],
+     "atteso": [
+      "Regione è disabilitata senza paese e con un paese senza regioni (segnaposto «Scegli prima il paese» o «Nessuna regione per questo paese»)",
+      "l'elenco mostra solo i vini con quell'origine; la richiesta porta le condizioni su country, region e appellation (controllo sulla richiesta)",
+      "togliere l'etichetta del paese toglie anche regione e denominazione; togliere la regione toglie la denominazione"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 10, §9 punto 17b"
+    },
+    {
+     "id": "vini-tassonomie",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri il modulo e leggi le opzioni di Tipologia, Paese, Regione, Denominazione e Classificazione",
+      "con la Local API (utente manager, overrideAccess false) prova a creare e a cancellare una voce di tipologie, paesi, regioni, denominazioni e classificazioni"
+     ],
+     "atteso": [
+      "le opzioni coincidono con quelle lette dalle collection (i paesi solo con enabled vero: «Libano» non compare)",
+      "nessun pulsante per crearne; le creazioni e le cancellazioni sono rifiutate",
+      "un valore salvato fuori elenco (per esempio un paese poi disabilitato) resta visibile nel modulo"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §9 punto 15"
+    },
+    {
+     "id": "vini-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-vini-nuovo» con tutti i campi",
+      "rileggilo con la Local API (utente manager, overrideAccess false)",
+      "modificalo dalla pagina e rileggilo",
+      "admin e super-admin leggono e scrivono un record di prova con la Local API; utente senza ruolo prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori letti coincidono con quelli inseriti (nome, cantina, anno, capacità, grado, descrizione it/en, tipologia, paese, regione, denominazione, classificazione, prezzi, disabled)",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §9 punto 16"
+    },
+    {
+     "id": "vini-filtri-ricerca",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "scrivi nella ricerca il nome (o la cantina) di un vino di prova",
+      "apri «Filtri», scegli tipologia e paese, Stato «Disabilitati», applica",
+      "rimuovi un'etichetta; poi «Azzera»"
+     ],
+     "atteso": [
+      "la ricerca trova per nome e per cantina",
+      "sul pulsante «Filtri» il numero dei filtri attivi; sotto la riga le etichette rimovibili con nome accessibile «Rimuovi filtro {etichetta}»; «Azzera» toglie tutto",
+      "ricerca, filtri e ordine arrivano dalla richiesta (parametri where e sort della Local API), non dal browser; i gruppi senza righe non compaiono"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §6 (Ricerca, Foglio filtri), §9 punti 11 e 17"
+    },
+    {
+     "id": "vini-ordine-100",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "porta il numero dei record a 101 con «verify-ui-vini-bulk-NNN» (poi eliminali in try/finally)",
+      "apri la pagina",
+      "premi «{c['parz'][2]}»"
+     ],
+     "atteso": [
+      "la richiesta restituisce 100 record e in testa compare «Mostrati 100 vini su 101» con «Restringi l’elenco con la ricerca o i filtri, oppure mostra gli altri.» e il pulsante «Mostra altri vini»",
+      "il pulsante carica il centounesimo e l'avviso sparisce quando sono tutti caricati; mai troncare in silenzio",
+      "tipologie e record sono in ordine per nome, senza distinzione di maiuscole e con le regole dell'italiano"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §7, §9 punti 17"
+    },
+    {
+     "id": "vini-stati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: quattro blocchi Skeleton",
+      "errore di caricamento: solo l'avviso «Impossibile caricare i vini» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita» / «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia",
+      "nessun risultato: «Nessun risultato con questi filtri.» e «Azzera filtri»"
+     ],
+     "fonte": "docs/design/schermate/vini/spec.md §5, §6, §9"
+    },
+    {
+     "id": "vini-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "con nessun record: «Nessun vino in carta.» e il pulsante «Nuovo vino»",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con lo screenshot di riferimento 390-vuoto-chiaro.png",
+     "fonte": "docs/design/schermate/vini/spec.md §5, §6 (Vuoti)",
+     "nota": "Aggiunto il 2026-10-17 dopo V2: nel controllo -stati-ui lo stato vuoto non si può provare con il database di sviluppo popolato."
+    },
+    {
+     "id": "vini-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano per righe, interruttori, pulsanti e finestre; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle",
+     "fonte": "docs/design/schermate/vini/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "vini-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/wines",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3): la sezione non è raggiungibile dall'URL",
+     "fonte": "docs/design/schermate/vini/spec.md §9 (accesso)",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "vini-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri i filtri, il modulo (anche con la traduzione aperta, con un paese senza regioni), la finestra di eliminazione, tocca l'interruttore, apri il menu utente; zero error e warning, compresi quelli di Base UI",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "vini-ricompila",
+     "tipo": "presenza",
+     "rinviato_a": "6.5",
+     "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
+     "fonte": "docs/design/schermate/vini/spec.md §5 e §9 punto 7",
+     "livello": 2,
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+    },
+    {
+     "id": "vini-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, salvati per il giudizio visivo della chat di design (C10): nessun confronto pixel per pixel, rilievi P e A assegnati da lei",
+     "fonte": "docs/design/schermate/vini/spec.md §9 (confronto visivo)"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome vini-<stato>-<profilo>-<tema>.png; nello stesso tema del confronto",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "disponibilita": [
+      "390-disponibilita-chiaro.png"
+     ],
+     "filtri": [
+      "390-filtri-chiaro.png"
+     ],
+     "filtri-attivi": [
+      "390-filtri-attivi-chiaro.png"
+     ],
+     "filtri-origine": [
+      "390-filtri-origine-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "390-modulo-fondo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-origine": [
+      "390-modulo-origine-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "origine-senza-regioni": [
+      "390-origine-senza-regioni-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "errore-geografia": [
+      "390-errore-geografia-chiaro.png"
+     ],
+     "errore-anno": [
+      "390-errore-anno-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "elimina": [
+      "390-elimina-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "piu-di-100-vini": [
+      "390-piu-di-100-vini-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ],
+     "nessun-risultato": [
+      "390-nessun-risultato-chiaro.png"
+     ]
+    }
+   }
+  },
+  {
+   "id": "distillati",
+   "percorso": "/app/menu/spirits",
+   "auth": "manager di prova",
+   "nota": "I controlli sul pulsante «Ricompila» sono NON PROVATI con l'evidenza «rinviato alla 6.5» (bandiera spenta). Le stringhe attese sono quelle della sezione 6 di docs/design/schermate/distillati/spec.md, carattere per carattere (apostrofi tipografici compresi); quelle delle costanti di lib/ si leggono dal codice. Gli avvisi di salvataggio e di eliminazione hanno solo il titolo finché la bandiera è spenta.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "gruppi per tipologia"
+    },
+    {
+     "id": "disponibilita",
+     "come": "interruttore «Disponibile»"
+    },
+    {
+     "id": "filtri",
+     "come": "pulsante «Filtri»"
+    },
+    {
+     "id": "filtri-attivi",
+     "come": "filtri applicati"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su un distillato"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuovo distillato»"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "errore-azione",
+     "come": "errore del server simulato"
+    },
+    {
+     "id": "elimina",
+     "come": "cestino"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "piu-di-100-distillati",
+     "come": "101 distillati di prova"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessun distillato"
+    },
+    {
+     "id": "nessun-risultato",
+     "come": "ricerca senza risultati"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "filtri",
+    "filtri-attivi",
+    "modulo",
+    "modulo-inglese-aperto",
+    "nuovo",
+    "nuovo-errori",
+    "elimina",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento",
+    "vuoto",
+    "nessun-risultato"
+   ],
+   "controlli": [
+    {
+     "id": "distillati-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Distillati",
+      "descrizione": "I distillati del ristorante.",
+      "pulsante_principale": "Nuovo distillato",
+      "ricerca_segnaposto": "Cerca un distillato",
+      "pulsante_filtri": "Filtri",
+      "gruppo": "{Tipologia} {1 distillato | N distillati}",
+      "colonne_tabella": [
+       "Nome",
+       "Paese",
+       "Prezzo",
+       "Disponibile"
+      ],
+      "riga": "sotto il nome «{invecchiamento} · {grado}» (le parti vuote non compaiono); prezzo «9,00 €»; su telefono «{prezzo} · {paese}»",
+      "badge_disabilitato": "Disabilitato"
+     },
+     "nota": "Le stringhe fisse si leggono da lib/ (testo_da) quando sono costanti; le altre sono quelle della sezione 6 della specifica, carattere per carattere.",
+     "fonte": "docs/design/schermate/distillati/spec.md §6, §9 punti 5 e 20"
+    },
+    {
+     "id": "distillati-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px (mai più di 1024); si vede la tabella e non le schede",
+      "telefono-390": "si vedono le schede e non la tabella; nome della scheda circa 172 px su 358 (avviso se fuori di 10 px; FALLITO se sotto 130 px, perché i nomi diventano illeggibili)",
+      "soglia-767": "schede, non la tabella",
+      "soglia-768": "tabella, non le schede"
+     },
+     "fonte": "docs/design/schermate/distillati/spec.md §4, §9 punto 3"
+    },
+    {
+     "id": "distillati-colonne-fisse",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "notebook-1280": "le colonne Paese, Prezzo, Disponibile e azioni hanno lo stesso bordo sinistro in tutti i gruppi"
+     },
+     "fonte": "docs/design/schermate/distillati/spec.md §4, §9 punto 4"
+    },
+    {
+     "id": "distillati-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuovo distillato» a tutta larghezza della colonna, alto almeno 44 px",
+      "notebook-1280": "«Nuovo distillato» a destra del titolo, in riga"
+     },
+     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
+     "fonte": "docs/design/schermate/distillati/spec.md §4, §9 punto 7"
+    },
+    {
+     "id": "distillati-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "interruttore": "nome accessibile «Disponibile: {nome}», etichetta visibile «Disponibile» su telefono; resta attivo anche sulle righe disabilitate",
+      "matita": "«Modifica {nome}»",
+      "cestino": "«Elimina {nome}»",
+      "aree_di_tocco": "44 px con tocco simulato per interruttore, matita e cestino",
+      "assenti": "collegamento sul nome, scheda tappabile, menu «⋯», testo visibile nei pulsanti icona",
+      "riga_disabilitata": "attenuata, badge «Disabilitato»"
+     },
+     "fonte": "docs/design/schermate/distillati/spec.md §6 (Stato, Azioni di riga), §9 punto 5; decisioni D13"
+    },
+    {
+     "id": "distillati-disponibilita",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-distillati» abilitato",
+      "tocca l'interruttore «Disponibile» della sua riga",
+      "applica il filtro Stato «Disabilitati»",
+      "tocca di nuovo l'interruttore sulla riga disabilitata"
+     ],
+     "atteso": [
+      "avviso «Distillato disabilitato» con «Il menù pubblico si aggiorna entro pochi minuti.»; la riga si attenua e compare il badge «Disabilitato»; disabled vero letto con la Local API",
+      "la riga compare nel filtro «Disabilitati»",
+      "con il secondo tocco avviso «Distillato abilitato», riga normale, disabled falso"
+     ],
+     "nota": "Il cambio del file di disponibilità non è leggibile dal lanciatore (storage in memoria del server di sviluppo): lo coprono verify:menu-6_4 e il controllo sul file in produzione (passi 27 e 30).",
+     "fonte": "docs/design/schermate/distillati/spec.md §7 punto 1, §9 punto 6"
+    },
+    {
+     "id": "distillati-elimina",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-distillati-elimina»",
+      "tocca il cestino della sua riga",
+      "tocca «Indietro»",
+      "tocca di nuovo il cestino e poi «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare verify-ui-distillati-elimina?» con «Non si può annullare.» e due pulsanti «Indietro» ed «Elimina»; «Indietro» chiude senza cambiare nulla",
+      "dopo «Elimina»: la riga sparisce, avviso «Distillato eliminato» (con la bandiera spenta, solo il titolo), il record non esiste più per la Local API"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §6 (Elimina), §7 punto 3, §9 punto 14"
+    },
+    {
+     "id": "distillati-elimina-registro-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione leggi il registro attività con la Local API (lettura di controllo del lanciatore, solo sviluppo)",
+      "manager: elimina dalla pagina; admin e super-admin: eliminano con la Local API passando il documento utente; utente senza ruolo: prova a eliminare con la Local API (overrideAccess false)"
+     ],
+     "atteso": [
+      "esiste una riga con eventType delete, area app, collection spirits, documentId dell'eliminato, user il manager di prova, e nel detail «nome=…; riferimenti=0»",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato e il record resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/distillati/spec.md §9 punto 14; ADR-115"
+    },
+    {
+     "id": "distillati-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuovo distillato / Il distillato compare nel menù pubblico dopo la ricompilazione.",
+      "campi_in_ordine": [
+       "Dati: Nome, Invecchiamento e Grado (segnaposto «Scegli», prima voce «Non indicato»; testo «Invecchiamento e grado si scelgono da un elenco, così i dati restano uniformi.»), Descrizione, «Traduzione inglese (facoltativa)» con badge «Manca» o «Presente», Description («Facoltativa. Se resta vuota, il menù mostra il testo italiano. Il nome del distillato non si traduce.»)",
+       "Origine: Tipologia, Paese (segnaposto «Scegli»)",
+       "Prezzo: «Prezzo al bicchiere (€)» («I distillati si servono solo al bicchiere.»)",
+       "Disponibilità: «Disabilitato» («Assente a tempo indefinito: il distillato non compare nel menù.»)"
+      ],
+      "pulsanti": [
+       "Salva",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica distillato» con il nome come sottotitolo"
+     },
+     "fonte": "docs/design/schermate/distillati/spec.md §6 (Modulo)"
+    },
+    {
+     "id": "distillati-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo distillato» e premi «Salva» a modulo vuoto",
+      "inserisci nel prezzo «9», «9,5», «9,50», «9.50», poi «abc» e una forma con tre decimali",
+      "controlla l'etichetta del prezzo e che non ci sia alcun campo per la capacità"
+     ],
+     "atteso": [
+      "nessuna richiesta di salvataggio; messaggi sotto i campi: «Campo obbligatorio.» (nome), «Scegli una tipologia.», «Scegli un paese.», «Inserisci un prezzo valido (es. 9,50).»; il primo campo non valido ha il focus",
+      "le quattro forme del prezzo sono accettate; «abc» e la forma con tre decimali danno «Inserisci un prezzo valido (es. 9,50).»",
+      "l'etichetta del prezzo è «Prezzo al bicchiere (€)»; non c'è alcun campo per la capacità"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §6 (Errori del modulo), §9 punto 8"
+    },
+    {
+     "id": "distillati-modulo-inglese",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri un distillato senza traduzione inglese",
+      "apri un distillato con descrizione inglese",
+      "con la Local API leggi il distillato senza inglese con locale=en"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §9 punto 13; decisioni D10"
+    },
+    {
+     "id": "distillati-modulo-footer",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "scorrendo il modulo fino in fondo, «Salva» e «Annulla» restano agganciati al fondo della finestra, affiancati, alti 44 px; la finestra non supera il 90 % dell'altezza dello schermo",
+     "fonte": "docs/design/schermate/distillati/spec.md §4 (Foglio), §7"
+    },
+    {
+     "id": "distillati-formati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo distillato» e leggi le opzioni di Invecchiamento e Grado",
+      "apri un distillato con grado «43,5%» (impostato via SQL, solo sviluppo) e salvalo senza cambiarlo"
+     ],
+     "atteso": [
+      "il grado offre «Non indicato» e da 30% a 45% a passi di 1; l'invecchiamento «Non indicato», 5, 7, 10, 12, 14, 15, 16, 18, 21 e 24 anni",
+      "il grado fuori elenco «43,5%» resta visibile e il distillato si salva senza cambiarlo; in elenco il grado compare come «43%» e l'invecchiamento come «12 anni»"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §7 punto 5b/9, §9 (campi a scelta)"
+    },
+    {
+     "id": "distillati-formati-server",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "con la Local API (utente manager, overrideAccess false) e, se pnpm dev è avviato, via REST: crea un distillato con grado «46%», poi con invecchiamento «4 anni»",
+      "stessa richiesta con valori canonici («45%», «12 anni»)",
+      "imposta con SQL un grado non canonico su un distillato di prova e fai solo `update({ data: { disabled: true } })` come manager"
+     ],
+     "atteso": [
+      "le due richieste non canoniche sono rifiutate con i messaggi della specifica",
+      "con i valori canonici passano",
+      "disabilitare il distillato con grado non canonico non fallisce"
+     ],
+     "nota": "Le stringhe dei messaggi si leggono da lib/menu/formats.ts (testo_da). La preparazione del valore non canonico (SQL) si fa solo sul database di sviluppo.",
+     "fonte": "docs/design/schermate/distillati/spec.md §6 (Errori dei formati), §9 punto 11; ADR-108"
+    },
+    {
+     "id": "distillati-capacita-non-gestita",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea con la Local API un distillato di prova con volume «75 cl»",
+      "dalla pagina apri e salva il distillato cambiando solo il prezzo",
+      "rileggi il record con la Local API"
+     ],
+     "atteso": [
+      "nel modulo non c'è alcun campo per la capacità",
+      "il valore di volume nel database è rimasto «75 cl»; l'import continua a scriverlo come oggi"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §9 punti 8 e 10; ADR-108 (nota del 2026-10-14)"
+    },
+    {
+     "id": "distillati-tassonomie",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri il modulo e leggi le opzioni di Tipologia e Paese",
+      "con la Local API (utente manager, overrideAccess false) prova a creare e a cancellare una voce di tipologie e paesi"
+     ],
+     "atteso": [
+      "le opzioni coincidono con quelle lette dalle collection (i paesi solo con enabled vero: «Libano» non compare)",
+      "nessun pulsante per crearne; le creazioni e le cancellazioni sono rifiutate",
+      "un valore salvato fuori elenco (per esempio un paese poi disabilitato) resta visibile nel modulo"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §9 punto 12"
+    },
+    {
+     "id": "distillati-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-distillati-nuovo» con tutti i campi",
+      "rileggilo con la Local API (utente manager, overrideAccess false)",
+      "modificalo dalla pagina e rileggilo",
+      "admin e super-admin leggono e scrivono un record di prova con la Local API; utente senza ruolo prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori letti coincidono con quelli inseriti (nome, descrizione it/en, invecchiamento, grado, tipologia, paese, prezzo, disabled)",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §9 punto 15"
+    },
+    {
+     "id": "distillati-filtri-ricerca",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "scrivi nella ricerca il nome di un distillato di prova",
+      "apri «Filtri», scegli tipologia e paese, Stato «Disabilitati», applica",
+      "rimuovi un'etichetta; poi «Azzera»"
+     ],
+     "atteso": [
+      "la ricerca trova per nome",
+      "sul pulsante «Filtri» il numero dei filtri attivi; sotto la riga le etichette rimovibili con nome accessibile «Rimuovi filtro {etichetta}»; «Azzera» toglie tutto",
+      "ricerca, filtri e ordine arrivano dalla richiesta (parametri where e sort della Local API), non dal browser; i gruppi senza righe non compaiono"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §6 (Ricerca, Foglio filtri), §9 punti 16"
+    },
+    {
+     "id": "distillati-ordine-100",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "porta il numero dei record a 101 con «verify-ui-distillati-bulk-NNN» (poi eliminali in try/finally)",
+      "apri la pagina",
+      "premi «{c['parz'][2]}»"
+     ],
+     "atteso": [
+      "la richiesta restituisce 100 record e in testa compare «Mostrati 100 distillati su 101» con «Restringi l’elenco con la ricerca o i filtri, oppure mostra gli altri.» e il pulsante «Mostra altri distillati»",
+      "il pulsante carica il centounesimo e l'avviso sparisce quando sono tutti caricati; mai troncare in silenzio",
+      "tipologie e record sono in ordine per nome, senza distinzione di maiuscole e con le regole dell'italiano"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §7, §9 punti 16"
+    },
+    {
+     "id": "distillati-stati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: quattro blocchi Skeleton",
+      "errore di caricamento: solo l'avviso «Impossibile caricare i distillati» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita» / «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia",
+      "nessun risultato: «Nessun risultato con questi filtri.» e «Azzera filtri»"
+     ],
+     "fonte": "docs/design/schermate/distillati/spec.md §5, §6, §9"
+    },
+    {
+     "id": "distillati-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "con nessun record: «Nessun distillato in carta.» e il pulsante «Nuovo distillato»",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con lo screenshot di riferimento 390-vuoto-chiaro.png",
+     "fonte": "docs/design/schermate/distillati/spec.md §5, §6 (Vuoti)",
+     "nota": "Aggiunto il 2026-10-17 dopo V2: nel controllo -stati-ui lo stato vuoto non si può provare con il database di sviluppo popolato."
+    },
+    {
+     "id": "distillati-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano per righe, interruttori, pulsanti e finestre; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle",
+     "fonte": "docs/design/schermate/distillati/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "distillati-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/spirits",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3): la sezione non è raggiungibile dall'URL",
+     "fonte": "docs/design/schermate/distillati/spec.md §9 (accesso)",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "distillati-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri i filtri, il modulo (anche con la traduzione aperta), la finestra di eliminazione, tocca l'interruttore, apri il menu utente; zero error e warning, compresi quelli di Base UI",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "distillati-ricompila",
+     "tipo": "presenza",
+     "rinviato_a": "6.5",
+     "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
+     "fonte": "docs/design/schermate/distillati/spec.md §5 e §9 punto 7",
+     "livello": 2,
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+    },
+    {
+     "id": "distillati-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, salvati per il giudizio visivo della chat di design (C10): nessun confronto pixel per pixel, rilievi P e A assegnati da lei",
+     "fonte": "docs/design/schermate/distillati/spec.md §9 (confronto visivo)"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome distillati-<stato>-<profilo>-<tema>.png; nello stesso tema del confronto",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "disponibilita": [
+      "390-disponibilita-chiaro.png"
+     ],
+     "filtri": [
+      "390-filtri-chiaro.png"
+     ],
+     "filtri-attivi": [
+      "390-filtri-attivi-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "390-modulo-fondo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "elimina": [
+      "390-elimina-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "piu-di-100-distillati": [
+      "390-piu-di-100-distillati-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ],
+     "nessun-risultato": [
+      "390-nessun-risultato-chiaro.png"
+     ]
+    }
+   }
+  },
+  {
+   "id": "bevande",
+   "percorso": "/app/menu/drinks",
+   "auth": "manager di prova",
+   "nota": "I controlli sul pulsante «Ricompila» sono NON PROVATI con l'evidenza «rinviato alla 6.5» (bandiera spenta). Le stringhe attese sono quelle della sezione 6 di docs/design/schermate/bevande/spec.md, carattere per carattere (apostrofi tipografici compresi); quelle delle costanti di lib/ si leggono dal codice. Gli avvisi di salvataggio e di eliminazione hanno solo il titolo finché la bandiera è spenta.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "gruppi per tipologia"
+    },
+    {
+     "id": "disponibilita",
+     "come": "interruttore «Disponibile»"
+    },
+    {
+     "id": "filtri",
+     "come": "pulsante «Filtri»"
+    },
+    {
+     "id": "filtri-attivi",
+     "come": "filtri applicati"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su una bevanda"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta (Name e Description)"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuova bevanda»"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "errore-azione",
+     "come": "errore del server simulato"
+    },
+    {
+     "id": "elimina",
+     "come": "cestino"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "piu-di-100-bevande",
+     "come": "101 bevande di prova"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessuna bevanda"
+    },
+    {
+     "id": "nessun-risultato",
+     "come": "ricerca senza risultati"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "filtri",
+    "filtri-attivi",
+    "modulo",
+    "modulo-inglese-aperto",
+    "nuovo",
+    "nuovo-errori",
+    "elimina",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento",
+    "vuoto",
+    "nessun-risultato"
+   ],
+   "controlli": [
+    {
+     "id": "bevande-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Bevande",
+      "descrizione": "Le bevande del ristorante, birre comprese.",
+      "pulsante_principale": "Nuova bevanda",
+      "ricerca_segnaposto": "Cerca una bevanda",
+      "pulsante_filtri": "Filtri",
+      "gruppo": "{Tipologia} {1 bevanda | N bevande}",
+      "colonne_tabella": [
+       "Nome",
+       "Paese",
+       "Prezzo",
+       "Disponibile"
+      ],
+      "riga": "sotto il nome «{capacità} · {grado}» (le parti vuote non compaiono); prezzo «4,50 €»; su telefono «{prezzo} · {paese}», senza il paese se manca",
+      "badge_disabilitato": "Disabilitata"
+     },
+     "nota": "Le stringhe fisse si leggono da lib/ (testo_da) quando sono costanti; le altre sono quelle della sezione 6 della specifica, carattere per carattere.",
+     "fonte": "docs/design/schermate/bevande/spec.md §6, §9 punti 5 e 20"
+    },
+    {
+     "id": "bevande-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px (mai più di 1024); si vede la tabella e non le schede",
+      "telefono-390": "si vedono le schede e non la tabella; nome della scheda circa 172 px su 358 (avviso se fuori di 10 px; FALLITO se sotto 130 px, perché i nomi diventano illeggibili)",
+      "soglia-767": "schede, non la tabella",
+      "soglia-768": "tabella, non le schede"
+     },
+     "fonte": "docs/design/schermate/bevande/spec.md §4, §9 punto 3"
+    },
+    {
+     "id": "bevande-colonne-fisse",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "notebook-1280": "le colonne Paese (vuota se manca), Prezzo, Disponibile e azioni hanno lo stesso bordo sinistro in tutti i gruppi"
+     },
+     "fonte": "docs/design/schermate/bevande/spec.md §4, §9 punto 4"
+    },
+    {
+     "id": "bevande-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuova bevanda» a tutta larghezza della colonna, alto almeno 44 px",
+      "notebook-1280": "«Nuova bevanda» a destra del titolo, in riga"
+     },
+     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
+     "fonte": "docs/design/schermate/bevande/spec.md §4, §9 punto 7"
+    },
+    {
+     "id": "bevande-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "interruttore": "nome accessibile «Disponibile: {nome}», etichetta visibile «Disponibile» su telefono; resta attivo anche sulle righe disabilitate",
+      "matita": "«Modifica {nome}»",
+      "cestino": "«Elimina {nome}»",
+      "aree_di_tocco": "44 px con tocco simulato per interruttore, matita e cestino",
+      "assenti": "collegamento sul nome, scheda tappabile, menu «⋯», testo visibile nei pulsanti icona",
+      "riga_disabilitata": "attenuata, badge «Disabilitata»"
+     },
+     "fonte": "docs/design/schermate/bevande/spec.md §6 (Stato, Azioni di riga), §9 punto 5; decisioni D13"
+    },
+    {
+     "id": "bevande-disponibilita",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-bevande» abilitato",
+      "tocca l'interruttore «Disponibile» della sua riga",
+      "applica il filtro Stato «Disabilitate»",
+      "tocca di nuovo l'interruttore sulla riga disabilitata"
+     ],
+     "atteso": [
+      "avviso «Bevanda disabilitata» con «Il menù pubblico si aggiorna entro pochi minuti.»; la riga si attenua e compare il badge «Disabilitata»; disabled vero letto con la Local API",
+      "la riga compare nel filtro «Disabilitate»",
+      "con il secondo tocco avviso «Bevanda abilitata», riga normale, disabled falso"
+     ],
+     "nota": "Il cambio del file di disponibilità non è leggibile dal lanciatore (storage in memoria del server di sviluppo): lo coprono verify:menu-6_4 e il controllo sul file in produzione (passi 27 e 30).",
+     "fonte": "docs/design/schermate/bevande/spec.md §7 punto 1, §9 punto 6"
+    },
+    {
+     "id": "bevande-elimina",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-bevande-elimina»",
+      "tocca il cestino della sua riga",
+      "tocca «Indietro»",
+      "tocca di nuovo il cestino e poi «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare verify-ui-bevande-elimina?» con «Non si può annullare.» e due pulsanti «Indietro» ed «Elimina»; «Indietro» chiude senza cambiare nulla",
+      "dopo «Elimina»: la riga sparisce, avviso «Bevanda eliminata» (con la bandiera spenta, solo il titolo), il record non esiste più per la Local API"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §6 (Elimina), §7 punto 3, §9 punto 14"
+    },
+    {
+     "id": "bevande-elimina-registro-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione leggi il registro attività con la Local API (lettura di controllo del lanciatore, solo sviluppo)",
+      "manager: elimina dalla pagina; admin e super-admin: eliminano con la Local API passando il documento utente; utente senza ruolo: prova a eliminare con la Local API (overrideAccess false)"
+     ],
+     "atteso": [
+      "esiste una riga con eventType delete, area app, collection drinks, documentId dell'eliminato, user il manager di prova, e nel detail «nome=…; riferimenti=0»",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato e il record resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/bevande/spec.md §9 punto 14; ADR-115"
+    },
+    {
+     "id": "bevande-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuova bevanda / La bevanda compare nel menù pubblico dopo la ricompilazione.",
+      "campi_in_ordine": [
+       "Dati: Nome, Capacità e Grado (segnaposto «Scegli», prima voce «Non indicata» e «Non indicato»; testo «Capacità e grado si scelgono da un elenco, così i dati restano uniformi. Il grado è vuoto per le analcoliche.»), Descrizione, «Traduzione inglese (facoltativa)» con badge «Manca» o «Presente», Name (segnaposto: il nome italiano) e Description (testo «Facoltativa. Se resta vuota, il menù mostra il testo italiano.»)",
+       "Tipologia e paese: Tipologia (segnaposto «Scegli»), Paese (segnaposto «Facoltativo», prima voce «Nessun paese»)",
+       "Prezzo: Prezzo (€)",
+       "Disponibilità: «Disabilitata» («Assente a tempo indefinito: la bevanda non compare nel menù.»)"
+      ],
+      "pulsanti": [
+       "Salva",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica bevanda» con il nome come sottotitolo"
+     },
+     "fonte": "docs/design/schermate/bevande/spec.md §6 (Modulo)"
+    },
+    {
+     "id": "bevande-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuova bevanda» e premi «Salva» a modulo vuoto",
+      "inserisci nel prezzo «4», «4,5», «4,50», «4.50», poi «abc» e una forma con tre decimali",
+      "controlla che nel modulo non ci siano campi degli allergeni"
+     ],
+     "atteso": [
+      "nessuna richiesta di salvataggio; messaggi sotto i campi: «Campo obbligatorio.» (nome), «Scegli una tipologia.», «Inserisci un prezzo valido (es. 4,50).» (capacità, grado e paese sono facoltativi e non hanno errori di campo: un modulo vuoto dà tre errori); il primo campo non valido ha il focus",
+      "le quattro forme del prezzo sono accettate; «abc» e la forma con tre decimali danno «Inserisci un prezzo valido (es. 4,50).»",
+      "non ci sono i campi degli allergeni"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §6 (Errori del modulo), §9 punto 8"
+    },
+    {
+     "id": "bevande-modulo-inglese",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri un bevanda senza traduzione inglese",
+      "apri un bevanda con descrizione inglese o nome inglese",
+      "con la Local API leggi il bevanda senza inglese con locale=en"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano per nome e descrizione"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §9 punto 14; decisioni D10"
+    },
+    {
+     "id": "bevande-modulo-footer",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "scorrendo il modulo fino in fondo, «Salva» e «Annulla» restano agganciati al fondo della finestra, affiancati, alti 44 px; la finestra non supera il 90 % dell'altezza dello schermo",
+     "fonte": "docs/design/schermate/bevande/spec.md §4 (Foglio), §7"
+    },
+    {
+     "id": "bevande-formati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuova bevanda» e leggi le opzioni di Capacità e Grado",
+      "apri una bevanda con capacità «20 cl» (impostata via SQL, solo sviluppo) e salvala senza cambiarla; scegli poi un grado"
+     ],
+     "atteso": [
+      "la capacità offre «Non indicata», 25, 33, 50 e 75 cl; il grado «Non indicato» e da 3% a 12% a passi di 0,5 (19 valori più la voce vuota)",
+      "la capacità fuori elenco «20 cl» resta visibile e la bevanda si salva senza cambiarla; scegliendo un grado si salva per esempio «5,5%»"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §7 punto 5b/9, §9 (campi a scelta)"
+    },
+    {
+     "id": "bevande-formati-server",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "con la Local API (utente manager, overrideAccess false) e, se pnpm dev è avviato, via REST: crea una bevanda con capacità «20 cl», poi con grado «4,9%»",
+      "stessa richiesta con valori canonici («33 cl», «5,5%»)",
+      "imposta con SQL una capacità non canonica su una bevanda di prova e fai solo `update({ data: { disabled: true } })` come manager"
+     ],
+     "atteso": [
+      "le due richieste non canoniche sono rifiutate con i messaggi della specifica",
+      "con i valori canonici passano",
+      "disabilitare la bevanda con capacità non canonica non fallisce"
+     ],
+     "nota": "Le stringhe dei messaggi si leggono da lib/menu/formats.ts (testo_da). La preparazione del valore non canonico (SQL) si fa solo sul database di sviluppo.",
+     "fonte": "docs/design/schermate/bevande/spec.md §6 (Errori dei formati), §9 punto 12; ADR-108"
+    },
+    {
+     "id": "bevande-paese-facoltativo",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri una bevanda con un paese e scegli «Nessun paese»",
+      "salva",
+      "guarda l'elenco"
+     ],
+     "atteso": [
+      "«Nessun paese» svuota il campo e la bevanda si salva",
+      "in elenco la cella del paese è vuota (e su telefono «{prezzo}» senza il paese)"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §9 punto 11"
+    },
+    {
+     "id": "bevande-tassonomie",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri il modulo e leggi le opzioni di Tipologia e Paese",
+      "con la Local API (utente manager, overrideAccess false) prova a creare e a cancellare una voce di tipologie e paesi"
+     ],
+     "atteso": [
+      "le opzioni coincidono con quelle lette dalle collection (i paesi solo con enabled vero: «Libano» non compare)",
+      "nessun pulsante per crearne; le creazioni e le cancellazioni sono rifiutate",
+      "un valore salvato fuori elenco (per esempio un paese poi disabilitato) resta visibile nel modulo"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §9 punto 13"
+    },
+    {
+     "id": "bevande-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-bevande-nuovo» con tutti i campi",
+      "rileggilo con la Local API (utente manager, overrideAccess false)",
+      "modificalo dalla pagina e rileggilo",
+      "admin e super-admin leggono e scrivono un record di prova con la Local API; utente senza ruolo prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori letti coincidono con quelli inseriti (nome e descrizione it/en, capacità, grado, tipologia, paese facoltativo, prezzo, disabled)",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §9 punto 16"
+    },
+    {
+     "id": "bevande-filtri-ricerca",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "scrivi nella ricerca il nome di un bevanda di prova",
+      "apri «Filtri», scegli tipologia e paese, Stato «Disabilitate», applica",
+      "rimuovi un'etichetta; poi «Azzera»"
+     ],
+     "atteso": [
+      "la ricerca trova per nome",
+      "sul pulsante «Filtri» il numero dei filtri attivi; sotto la riga le etichette rimovibili con nome accessibile «Rimuovi filtro {etichetta}»; «Azzera» toglie tutto",
+      "ricerca, filtri e ordine arrivano dalla richiesta (parametri where e sort della Local API), non dal browser; i gruppi senza righe non compaiono"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §6 (Ricerca, Foglio filtri), §9 punti 17"
+    },
+    {
+     "id": "bevande-ordine-100",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "porta il numero dei record a 101 con «verify-ui-bevande-bulk-NNN» (poi eliminali in try/finally)",
+      "apri la pagina",
+      "premi «{c['parz'][2]}»"
+     ],
+     "atteso": [
+      "la richiesta restituisce 100 record e in testa compare «Mostrate 100 bevande su 101» con «Restringi l’elenco con la ricerca o i filtri, oppure mostra le altre.» e il pulsante «Mostra altre bevande»",
+      "il pulsante carica il centounesimo e l'avviso sparisce quando sono tutti caricati; mai troncare in silenzio",
+      "tipologie e record sono in ordine per nome, senza distinzione di maiuscole e con le regole dell'italiano"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §7, §9 punti 17"
+    },
+    {
+     "id": "bevande-stati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: quattro blocchi Skeleton",
+      "errore di caricamento: solo l'avviso «Impossibile caricare le bevande» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita» / «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia",
+      "nessun risultato: «Nessun risultato con questi filtri.» e «Azzera filtri»"
+     ],
+     "fonte": "docs/design/schermate/bevande/spec.md §5, §6, §9"
+    },
+    {
+     "id": "bevande-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "con nessun record: «Nessuna bevanda in carta.» e il pulsante «Nuova bevanda»",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con lo screenshot di riferimento 390-vuoto-chiaro.png",
+     "fonte": "docs/design/schermate/bevande/spec.md §5, §6 (Vuoti)",
+     "nota": "Aggiunto il 2026-10-17 dopo V2: nel controllo -stati-ui lo stato vuoto non si può provare con il database di sviluppo popolato."
+    },
+    {
+     "id": "bevande-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano per righe, interruttori, pulsanti e finestre; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle",
+     "fonte": "docs/design/schermate/bevande/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "bevande-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/drinks",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3): la sezione non è raggiungibile dall'URL",
+     "fonte": "docs/design/schermate/bevande/spec.md §9 (accesso)",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "bevande-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri i filtri, il modulo (anche con la traduzione aperta), la finestra di eliminazione, tocca l'interruttore, apri il menu utente; zero error e warning, compresi quelli di Base UI",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "bevande-ricompila",
+     "tipo": "presenza",
+     "rinviato_a": "6.5",
+     "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
+     "fonte": "docs/design/schermate/bevande/spec.md §5 e §9 punto 7",
+     "livello": 2,
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+    },
+    {
+     "id": "bevande-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, salvati per il giudizio visivo della chat di design (C10): nessun confronto pixel per pixel, rilievi P e A assegnati da lei",
+     "fonte": "docs/design/schermate/bevande/spec.md §9 (confronto visivo)"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome bevande-<stato>-<profilo>-<tema>.png; nello stesso tema del confronto",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "disponibilita": [
+      "390-disponibilita-chiaro.png"
+     ],
+     "filtri": [
+      "390-filtri-chiaro.png"
+     ],
+     "filtri-attivi": [
+      "390-filtri-attivi-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "390-modulo-fondo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "elimina": [
+      "390-elimina-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "piu-di-100-bevande": [
+      "390-piu-di-100-bevande-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ],
+     "nessun-risultato": [
+      "390-nessun-risultato-chiaro.png"
+     ]
+    }
+   }
   }
  ],
  "livello_3": [
   "Home «Oggi» su iPhone: la riga «{N} piatti terminati» e il tocco sulla scheda «Menù»",
   "Pannello di navigazione con le voci accese: voci raggiungibili con il pollice, blocchi «Area App» e utente fissi",
   "Piatti su iPhone: interruttore «Terminato», occhio e cestino comodi da toccare; foglio dal basso con la tastiera decimale aperta sul prezzo, pulsanti sempre visibili",
-  "Registro attività su Cloud Run: dopo l'eliminazione di un piatto di prova compare la riga delete (la chat di design, col browser di Mirko)"
+  "Registro attività su Cloud Run: dopo l'eliminazione di un piatto di prova compare la riga delete (la chat di design, col browser di Mirko)",
+  "Vini su iPhone: i menu a tendina di Capacità e Grado, l'anno con la tastiera numerica e la casella NV, la cascata dell'origine (Paese, Regione, Denominazione) e i filtri per origine",
+  "Distillati e Bevande su iPhone: i menu a tendina di Invecchiamento, Grado e Capacità con «Non indicato», il paese facoltativo delle bevande",
+  "Elenchi con tabella: a 768 px e oltre la tabella a colonne fisse, a telefono le schede con l'interruttore «Disponibile» comodo da toccare"
  ]
 }
