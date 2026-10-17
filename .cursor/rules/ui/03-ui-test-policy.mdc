@@ -50,4 +50,6 @@ Una modifica solo a documenti non attiva nulla oltre L0. Una modifica solo al ba
 
 ## Transizione (finché il lanciatore non ha i flag)
 
+**Superata** (verificato il 2026-10-16 in `scripts/ui-verify/lib/cli.mjs`): il lanciatore supporta `--livello`, `--schermata`, `--profili`, `--temi` e `--controlli`, quindi L1 è mirato e si fa a fine di ogni passaggio che tocca una schermata. Il testo che segue vale solo se un giorno i flag mancassero.
+
 Controlla se `scripts/ui-verify/run.mjs` supporta `--livello`, `--schermata` e `--controlli`. Se **non** li supporta, L1 = `pnpm ui:verify locale-prod` completo (circa 5 minuti) **a fine sottofase**, non a ogni passaggio, e lo dichiari nel CHANGELOG.

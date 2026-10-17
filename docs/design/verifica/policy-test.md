@@ -97,7 +97,7 @@ Se, nonostante questo, un controllo non è implementato quando l'implementazione
 
 1. ~~Chiudere la prima esecuzione corretta~~ Fatto (quarta esecuzione, 2026-10-11: un solo FALLITO, instabile).
 2. ~~Scrivere la regola operativa e aggiornare `01` e `03`~~ Fatto: `ui/03-ui-test-policy.mdc`, passi 5 e 6 e chiusura di un passo in `01`, paragrafo di rinvio in `core/03`. Controlli v3 con il campo `livello`.
-3. **Da fare (Cursor)**: i flag del lanciatore `--livello`, `--schermata`, `--profili`, `--temi`, `--controlli`, la riga di avanzamento e il tempo massimo per ambiente. Finché mancano vale la clausola di transizione della regola.
+3. ~~I flag del lanciatore `--livello`, `--schermata`, `--profili`, `--temi`, `--controlli`, la riga di avanzamento e il tempo massimo per ambiente~~ Fatto (verificato il 2026-10-16 in `scripts/ui-verify/lib/cli.mjs` e `run.mjs`): la clausola di transizione della regola non si applica più.
 4. Dopo le prime due schermate nuove (Orari e il primo elenco): ricalibrare i tempi, rivedere i trigger e segnare lo stato «validata».
 
 ## 10. Punti aperti

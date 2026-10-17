@@ -23,13 +23,13 @@
 
 **Dove si segna lo stato.** Nella colonna **Stato** di questa tabella: 🔲 da fare, 🔶 in corso (chat aperta, o fatta ma non ancora controllata), ✅ completato con l'hash del commit del repo che lo contiene. La aggiorna **solo la chat di design**, dopo il tuo «push fatto» e il mio controllo del repo (hash, file cambiati, esiti reali, `ui:check`); il passo diventa ✅ quando il controllo è passato e il push è nel repo, non quando Cursor finisce. Gli altri due posti restano come sono: il CHANGELOG (storia di ogni chat, scritta da Composer) e la checklist di chiusura di 6.6 in `fase-6-menu-digitale.md` (cosa è stato consegnato, spuntata da Composer). Composer **non** modifica questa tabella.
 
-**Ultimo aggiornamento**: 2026-10-16 (commit `6a77311`). **Prossimi passi**: 1 (R0) e 3 (VC1), indipendenti tra loro; poi 4 (I0a).
+**Ultimo aggiornamento**: 2026-10-16 (commit `e986495`). **Prossimi passi**: 3 (VC1), poi 4 (I0a); il passo 1 diventa ✅ dopo il push delle correzioni alle regole UI.
 
 Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'agente di verifica implementa i controlli nel lanciatore (chat pulita, prima della chat I); **V** l'agente esegue L2 (chat pulita); **D** controlli scritti dalla chat di design; **RL** rilievi P e A della chat di design dopo un V; **F** correzione dei P (Composer); **M** passo tuo. Una chat di implementazione segue sempre il «Blocco comune».
 
 | # | Stato | Sigla | Chi | Cosa | Controlli | Si passa al successivo quando |
 |---|---|---|---|---|---|---|
-| 1 | 🔲 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` (§4.0) | revisione, nessun codice | nessuna contraddizione, o corretta |
+| 1 | 🔶 R0 eseguita, correzioni in pacchetto | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` (§4.0) | revisione, nessun codice | nessuna contraddizione, o corretta |
 | 2 | ✅ 6a77311 | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci (§7) | — | tu committi e pushi i file |
 | 3 | 🔲 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 (§5, VC) | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
 | 4 | 🔲 | I0a | Composer | Permessi di cancellazione, registro, matrici (§4.1) | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
