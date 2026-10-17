@@ -71,7 +71,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 4 | ✅ 23b934f | Blocco comune + prompt del passo 4 | I0a | Composer | Permessi di cancellazione, registro, matrici | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
 | 5 | ✅ 91526bd | Blocco comune + prompt del passo 5 | I0b | Composer | Formati dei campi e import | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
 | 6 | ✅ 91526bd (report a secco fatto da Composer) | — (comando nel terminale) | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
-| 7 | 🔲 | Blocco comune + prompt del passo 7 | I1 | Composer | Fondamenta UI e integrazione | L0 + **L1** `shell,home` | L1 verde; tu pushi |
+| 7 | 🔶 fatto, da controllare | Blocco comune + prompt del passo 7 | I1 | Composer | Fondamenta UI e integrazione | L0 + **L1** `shell,home` | L1 verde; tu pushi |
 | 8 | 🔲 | Solo il prompt del passo 8 | V1 | Agente di verifica | **L2** su shell, home, navigazione | **L2** | rapporto scritto; tu committi |
 | 9 | 🔲 | — | RL1 | Design | Leggo il rapporto: rilievi P e A | — | nessun P aperto |
 | 10 | 🔲 | Solo il prompt del passo 10, se ci sono P | F1 | Composer | Correzione dei P di V1, solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |

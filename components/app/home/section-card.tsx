@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
 
@@ -9,9 +10,10 @@ import type { HomeSectionCardDef } from '@/lib/app/navigation'
 
 type SectionCardProps = {
   card: HomeSectionCardDef
+  statusSlot?: ReactNode
 }
 
-export function SectionCard({ card }: SectionCardProps) {
+export function SectionCard({ card, statusSlot }: SectionCardProps) {
   return (
     // ui-check-allow: scheda di sezione intera tappabile (shell spec §8)
     <Link
@@ -26,6 +28,7 @@ export function SectionCard({ card }: SectionCardProps) {
           <div className="min-w-0 flex-1">
             <div className="text-sm font-medium">{card.title}</div>
             <div className="text-xs text-muted-foreground">{card.description}</div>
+            {statusSlot}
           </div>
           <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
         </CardContent>

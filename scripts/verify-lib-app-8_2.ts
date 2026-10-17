@@ -1,13 +1,20 @@
 /**
  * Verifica logica shell 8.2 (navigazione e home). Eseguire: pnpm payload run scripts/verify-lib-app-8_2.ts
  */
+import { APP_NAV_GROUPS } from '@/lib/app/navigation'
 import { getVisibleHomeSectionCards, getVisibleNavigation } from '@/lib/app/navigationForUser'
 
 const manager = { adminRole: 'none' as const, appRole: 'manager' as const, active: true }
 
+const expectedNavLabels = APP_NAV_GROUPS.flatMap((group) =>
+  group.items.filter((item) => item.enabled).map((item) => item.label),
+).join(',')
+
 const navLabels = getVisibleNavigation(manager).flatMap((g) => g.items.map((i) => i.label))
-if (navLabels.join(',') !== 'Piatti,Orari,Elenco') {
-  throw new Error(`navigazione 8.2 attesa Piatti,Orari,Elenco — ottenuto: ${navLabels.join(',')}`)
+if (navLabels.join(',') !== expectedNavLabels) {
+  throw new Error(
+    `navigazione attesa ${expectedNavLabels} — ottenuto: ${navLabels.join(',')}`,
+  )
 }
 
 const homeTitles = getVisibleHomeSectionCards({

@@ -13,6 +13,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { AppNavIcon } from '@/components/app/app-nav-icon'
+import { findActiveNavItemInNavigation } from '@/lib/app/navRouteMatch'
 import type { VisibleAppNavGroup } from '@/lib/app/navigationForUser'
 
 type AppSidebarNavProps = {
@@ -22,6 +23,7 @@ type AppSidebarNavProps = {
 export function AppSidebarNav({ groups }: AppSidebarNavProps) {
   const pathname = usePathname()
   const { isMobile, setOpenMobile } = useSidebar()
+  const activeItem = findActiveNavItemInNavigation(pathname, groups)
 
   return (
     <>
@@ -31,8 +33,7 @@ export function AppSidebarNav({ groups }: AppSidebarNavProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {group.items.map((item) => {
-                const isActive =
-                  pathname === item.href || pathname.startsWith(`${item.href}/`)
+                const isActive = activeItem?.id === item.id
                 return (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton

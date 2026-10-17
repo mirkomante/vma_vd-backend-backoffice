@@ -8,6 +8,9 @@ export type AppNavItemId =
   | 'menu-drinks'
   | 'menu-spirits'
   | 'menu-fixed'
+  | 'menu-services'
+  | 'menu-special-days'
+  | 'menu-message'
   | 'hours'
   | 'reservations-list'
   | 'reservations-day-exceptions'
@@ -66,7 +69,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         href: '/app/menu/spirits',
         section: 'menu',
         enabled: false,
-        iconKey: 'beer',
+        iconKey: 'martini',
       },
       {
         id: 'menu-fixed',
@@ -74,7 +77,31 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         href: '/app/menu/fixed',
         section: 'menu',
         enabled: false,
-        iconKey: 'list',
+        iconKey: 'book-open',
+      },
+      {
+        id: 'menu-services',
+        label: 'Servizi',
+        href: '/app/menu/services',
+        section: 'menu',
+        enabled: false,
+        iconKey: 'concierge-bell',
+      },
+      {
+        id: 'menu-special-days',
+        label: 'Giorni speciali',
+        href: '/app/menu/special-days',
+        section: 'menu',
+        enabled: false,
+        iconKey: 'calendar-heart',
+      },
+      {
+        id: 'menu-message',
+        label: 'Messaggio globale',
+        href: '/app/menu/message',
+        section: 'menu',
+        enabled: false,
+        iconKey: 'megaphone',
       },
     ],
   },
@@ -146,7 +173,7 @@ export const HOME_SECTION_CARDS: readonly HomeSectionCardDef[] = [
   {
     section: 'menu',
     title: 'Menù',
-    description: 'Piatti, vini, bevande, distillati, menù fissi',
+    description: 'Piatti, vini, bevande, menù fissi e altro',
     href: '/app/menu',
     iconKey: 'utensils-crossed',
   },

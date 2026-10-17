@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { buildAppBreadcrumb } from './breadcrumb.ts'
+import { buildAppBreadcrumb } from './navRouteMatch.ts'
 import type { VisibleAppNavGroup } from './navigationForUser.ts'
 
 const mockNav: VisibleAppNavGroup[] = [
@@ -17,6 +17,22 @@ const mockNav: VisibleAppNavGroup[] = [
         section: 'menu',
         enabled: true,
         iconKey: 'utensils-crossed',
+      },
+      {
+        id: 'menu-wines',
+        label: 'Vini',
+        href: '/app/menu/wines',
+        section: 'menu',
+        enabled: true,
+        iconKey: 'wine',
+      },
+      {
+        id: 'menu-fixed',
+        label: 'Menù fissi',
+        href: '/app/menu/fixed',
+        section: 'menu',
+        enabled: true,
+        iconKey: 'book-open',
       },
     ],
   },
@@ -48,6 +64,14 @@ const mockNav: VisibleAppNavGroup[] = [
         enabled: true,
         iconKey: 'calendar-days',
       },
+      {
+        id: 'reservations-day-exceptions',
+        label: 'Eccezioni giorno',
+        href: '/app/reservations/day-exceptions',
+        section: 'reservations',
+        enabled: true,
+        iconKey: 'calendar-days',
+      },
     ],
   },
 ]
@@ -68,10 +92,33 @@ describe('buildAppBreadcrumb', () => {
     ])
   })
 
-  it('elenco prenotazioni', () => {
+  it('vini', () => {
+    assert.deepEqual(buildAppBreadcrumb('/app/menu/wines', mockNav), [
+      { type: 'link', label: 'Menù', href: '/app/menu' },
+      { type: 'page', label: 'Vini' },
+    ])
+  })
+
+  it('menù fissi e categorie', () => {
+    assert.deepEqual(buildAppBreadcrumb('/app/menu/fixed', mockNav), [
+      { type: 'link', label: 'Menù', href: '/app/menu' },
+      { type: 'page', label: 'Menù fissi' },
+    ])
+    assert.deepEqual(buildAppBreadcrumb('/app/menu/fixed/categories', mockNav), [
+      { type: 'link', label: 'Menù', href: '/app/menu' },
+      { type: 'link', label: 'Menù fissi', href: '/app/menu/fixed' },
+      { type: 'page', label: 'Categorie' },
+    ])
+  })
+
+  it('elenco prenotazioni ed eccezioni giorno', () => {
     assert.deepEqual(buildAppBreadcrumb('/app/reservations', mockNav), [
       { type: 'link', label: 'Prenotazioni', href: '/app/reservations' },
       { type: 'page', label: 'Elenco' },
+    ])
+    assert.deepEqual(buildAppBreadcrumb('/app/reservations/day-exceptions', mockNav), [
+      { type: 'link', label: 'Prenotazioni', href: '/app/reservations' },
+      { type: 'page', label: 'Eccezioni giorno' },
     ])
   })
 })
