@@ -35,6 +35,7 @@ Nella colonna **Stato** della tabella (§2): 🔲 da fare, 🔶 in corso (chat a
 2. **Un solo file dei controlli**, `controlli-6.6.json`, a cui aggiungo le schermate man mano; nei comandi si indica sempre `--controlli`, perché il lanciatore senza l'opzione prende l'ultimo file in ordine alfabetico.
 3. **Ordine dei controlli** (`policy-test.md` §6): prima i controlli (D), poi l'agente li implementa nel lanciatore (VC), poi la chat di implementazione (I) con L1, poi se c'è un trigger l'agente esegue L2 (V).
 4. **Riga di registro** (`area`, `detail`): la propone Composer nella Parte A del passo 4. **Import di produzione**: sessione a sé, passo 31.
+5. **Controlli in debito** (deciso il 2026-10-17 dopo VC1, in linea con `policy-test.md` §6, ultimo capoverso): l'agente VC implementa tutto ciò che si può fare **senza la schermata** (id, tipi, lettura degli attesi da `lib/`, dati di prova, controlli sulle schermate già esistenti) ed elenca nel rapporto i flussi che richiedono la schermata come «debito». La chat di implementazione dichiara quei controlli NON PROVATI (non è un blocco). L'agente V successivo li **completa e li esegue** nello stesso passo (modifica solo `scripts/ui-verify/**`, mai i controlli JSON); i difetti che emergono sono rilievi P e A come gli altri.
 
 ---
 
@@ -46,7 +47,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 |---|---|---|---|---|---|---|---|
 | 1 | ✅ e9867a5 | Solo il prompt del passo 1 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` | revisione, nessun codice | nessuna contraddizione, o corretta |
 | 2 | ✅ 6a77311 | — | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci | — | tu committi e pushi i file |
-| 3 | 🔲 | Solo il prompt del passo 3 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
+| 3 | ✅ 2db0723 | Solo il prompt del passo 3 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
 | 4 | 🔲 | Blocco comune + prompt del passo 4 | I0a | Composer | Permessi di cancellazione, registro, matrici | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
 | 5 | 🔲 | Blocco comune + prompt del passo 5 | I0b | Composer | Formati dei campi e import | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
 | 6 | 🔲 | — (comando nel terminale) | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
@@ -77,7 +78,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-17 (commit `5ca1de6`). **Prossimi passi**: 3 (VC1), poi 4 (I0a).
+**Ultimo aggiornamento**: 2026-10-17 (commit `2db0723`). **Prossimi passi**: 4 (I0a).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -114,8 +115,9 @@ REGOLE
    A fine di ogni passaggio che tocca una schermata L1: pnpm ui:verify --livello 1 --schermata <id>
    --controlli controlli-6.6.json (e, per la shell, gli id di controlli-8.2.json). NON modificare mai i controlli,
    le soglie o le tolleranze: se un controllo ti sembra sbagliato, scrivilo come «controllo dubbio». Se un
-   controllo della schermata non è ancora implementato nel lanciatore, L1 non è eseguibile da te: dichiaralo e
-   fermati, senza prove manuali al suo posto. Se un L1 fallisce, correggi e rilancia solo i controlli falliti;
+   controllo della schermata non è ancora implementato nel lanciatore, L1 non è eseguibile da te per quel
+   controllo: dichiaralo NON PROVATO (lo completa e lo esegue l'agente di verifica nel passo V successivo) e vai
+   avanti con il resto, senza prove manuali al suo posto; non è un motivo per fermare la chat. Se un L1 fallisce, correggi e rilancia solo i controlli falliti;
    al terzo giro fermati e riportami.
 6. FERMATI e riferisci, senza aggirare, se: un pacchetto non si installa o genera conflitti; serve un passaggio
    fuori dal codice (database, credenziali, deploy); un ambiente non c'è. Mai produzione: niente
@@ -171,7 +173,9 @@ Non proporre riscritture lunghe: una correzione per riga.
 
 ### Passo 3 — VC1: l'agente implementa i controlli di D1
 
-**Stato**: 🔲
+**Stato**: ✅ 2db0723
+
+> **Esito (2026-10-17)**: accettato con debito. Implementati nel lanciatore: navigazione, shell v4, home-testi e home-righe-di-stato (FALLITO atteso fino a I1: 2 controlli × 2 profili), NO-OVERRIDE, RICOMPILA-ASSENTE (parziale). Con solo cablaggio (NON PROVATO): `home-riga-menu-*` e `piatti-*`, che il passo V successivo completa ed esegue (vedi §1.4, punto 5). Rapporto: `docs/design/verifica/esiti/2026-10-17-controlli/rapporto.md`.
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -458,8 +462,14 @@ Leggi nell'ordine, per intero:
 Poi, in quest'ordine:
 0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
    Se git status non è pulito, fermati e dimmelo.
-A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
-   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+A. Il lanciatore implementa già i controlli di navigazione e di shell (passo VC1). Sono IN DEBITO i controlli
+   home-riga-menu-testo, home-riga-menu-casi, home-riga-menu-stati e home-riga-menu-altezza (elencati nel rapporto
+   docs/design/verifica/esiti/2026-10-17-controlli/rapporto.md): ora la home con la riga esiste (chat I1), quindi
+   IMPLEMENTALI tu in scripts/ui-verify/** (modulo scripts/ui-verify/lib/run-menu.mjs) ed ESEGUILI in questa
+   verifica, con le simulazioni APP_MENU_DEV_SIMULATE_* su un server di sviluppo separato (porta 3200, mai in
+   production). Non cambiare i controlli JSON. Nel rapporto scrivi quali hai completato ed eseguito e quali no, e
+   perché. Se un controllo di navigazione era un «controllo dubbio» di VC1 (nav-pannello-telefono), non toccarlo
+   ora.
 B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
    pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata home,navigazione
    pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
@@ -606,8 +616,14 @@ Leggi nell'ordine, per intero:
 Poi, in quest'ordine:
 0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
    Se git status non è pulito, fermati e dimmelo.
-A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
-   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+A. Il lanciatore ha già i controlli di home e navigazione. Sono IN DEBITO tutti i controlli piatti-* eseguibili
+   (elencati come debito nel rapporto VC1, docs/design/verifica/esiti/2026-10-17-controlli/rapporto.md) e il caso
+   degli avvisi di salvataggio e di eliminazione di RICOMPILA-ASSENTE: ora la schermata Piatti esiste (chat I2),
+   quindi IMPLEMENTALI tu in scripts/ui-verify/** (modulo scripts/ui-verify/lib/run-menu.mjs) ed ESEGUILI in
+   questa verifica, con dati di prova «verify-ui-…» creati e cancellati in try/finally e le simulazioni
+   APP_MENU_DEV_SIMULATE_* su un server di sviluppo separato (porta 3200, mai in production). Quelli «rinviati alla
+   6.5» restano NON PROVATI. Non cambiare i controlli JSON. Nel rapporto scrivi quali hai completato ed eseguito e
+   quali no, e perché.
 B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
    pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata piatti,home,navigazione
    pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
@@ -702,6 +718,10 @@ B. Implementa i tipi di controllo che mancano (elenco raggruppato per tipologia,
 C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
    id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I3) danno NON PROVATO
    con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.
+   Per i flussi che richiedono la schermata esistente (moduli, finestre, simulazioni): implementa tutto ciò che si
+   può senza la pagina (id, tipo, lettura degli attesi da lib/, dati di prova, funzioni di supporto) ed elenca nel
+   rapporto, sotto «Debito», i flussi che restano da completare: li completa ed esegue l'agente di verifica del
+   passo V successivo, dopo la chat di implementazione (policy-test.md §6, ultimo capoverso).
 D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
    aggiunti, controlli dubbi, NON PROVATO (con il motivo).
 
@@ -799,6 +819,10 @@ B. Implementa i tipi di controllo che mancano (schede come percorsi (/app/menu/f
 C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
    id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I4) danno NON PROVATO
    con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.
+   Per i flussi che richiedono la schermata esistente (moduli, finestre, simulazioni): implementa tutto ciò che si
+   può senza la pagina (id, tipo, lettura degli attesi da lib/, dati di prova, funzioni di supporto) ed elenca nel
+   rapporto, sotto «Debito», i flussi che restano da completare: li completa ed esegue l'agente di verifica del
+   passo V successivo, dopo la chat di implementazione (policy-test.md §6, ultimo capoverso).
 D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
    aggiunti, controlli dubbi, NON PROVATO (con il motivo).
 
@@ -880,8 +904,11 @@ Leggi nell'ordine, per intero:
 Poi, in quest'ordine:
 0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
    Se git status non è pulito, fermati e dimmelo.
-A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
-   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+A. Il lanciatore ha già i controlli di servizi e menu-fissi cablati (passo VC4). Se nel rapporto VC4
+   (docs/design/verifica/esiti/<data>-controlli/) ci sono flussi IN DEBITO, ora le schermate esistono (chat I4):
+   IMPLEMENTALI tu in scripts/ui-verify/** (modulo scripts/ui-verify/lib/run-menu.mjs) ed ESEGUILI in questa
+   verifica, con dati di prova «verify-ui-…» creati e cancellati in try/finally. Non cambiare i controlli JSON.
+   Nel rapporto scrivi quali hai completato ed eseguito e quali no, e perché.
 B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
    pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata menu-fissi,servizi,navigazione
    pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
@@ -982,6 +1009,10 @@ B. Implementa i tipi di controllo che mancano (campo data nativo, controllo di s
 C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
    id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I5) danno NON PROVATO
    con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.
+   Per i flussi che richiedono la schermata esistente (moduli, finestre, simulazioni): implementa tutto ciò che si
+   può senza la pagina (id, tipo, lettura degli attesi da lib/, dati di prova, funzioni di supporto) ed elenca nel
+   rapporto, sotto «Debito», i flussi che restano da completare: li completa ed esegue l'agente di verifica del
+   passo V successivo, dopo la chat di implementazione (policy-test.md §6, ultimo capoverso).
 D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
    aggiunti, controlli dubbi, NON PROVATO (con il motivo).
 
@@ -1120,8 +1151,12 @@ Leggi nell'ordine, per intero:
 Poi, in quest'ordine:
 0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
    Se git status non è pulito, fermati e dimmelo.
-A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
-   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+A. Il lanciatore ha già i controlli del Menù. Se nei rapporti dei passi VC (cartelle
+   docs/design/verifica/esiti/<data>-controlli/) o nei rapporti V precedenti ci sono controlli ancora IN DEBITO o
+   non completati, ora tutte le schermate esistono: IMPLEMENTALI tu in scripts/ui-verify/** ed ESEGUILI in questa
+   verifica. Rifinisci anche nav-pannello-telefono (caso telefono-390-basso, con le otto voci accese), che VC1 ha
+   lasciato come «controllo dubbio». Completa i controlli online nuovi del Menù previsti dal file dei controlli.
+   Non cambiare i controlli JSON. Nel rapporto scrivi quali hai completato ed eseguito e quali no, e perché.
 B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
    pnpm ui:verify --livello 2 --controlli controlli-6.6.json   (tutto)
    pnpm ui:verify --livello 2 --controlli controlli-8.2.json   (shell e accesso)
