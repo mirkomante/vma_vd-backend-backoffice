@@ -9,18 +9,35 @@ function Checkbox({ className, ...props }: CheckboxPrimitive.Root.Props) {
     <CheckboxPrimitive.Root
       data-slot="checkbox"
       className={cn(
-        "peer relative box-content flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none group-has-disabled/field:opacity-50 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:not-data-checked:border-input pointer-coarse:p-3.5 pointer-coarse:-m-3.5 pointer-coarse:after:absolute pointer-coarse:after:-inset-4 pointer-coarse:after:content-[''] focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground group-has-[:focus-visible]/field-label:data-checked:border-primary dark:data-checked:bg-primary",
+        "group/checkbox peer relative inline-flex size-4 shrink-0 items-center justify-center border-0 bg-transparent outline-none",
+        "pointer-coarse:size-11 pointer-coarse:after:absolute pointer-coarse:after:-inset-4 pointer-coarse:after:content-['']",
+        "group-has-disabled/field:opacity-50 disabled:cursor-not-allowed disabled:opacity-50",
+        "focus-visible:outline-none",
         className
       )}
       {...props}
     >
-      <CheckboxPrimitive.Indicator
-        data-slot="checkbox-indicator"
-        className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
+      <span
+        data-slot="checkbox-box"
+        className={cn(
+          "flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input bg-transparent transition-colors",
+          "group-has-[:focus-visible]/field-label:ring-0",
+          "group-data-checked/checkbox:border-primary group-data-checked/checkbox:bg-primary group-data-checked/checkbox:text-primary-foreground",
+          "group-has-[:focus-visible]/field-label:group-data-checked/checkbox:border-primary",
+          "group-focus-visible/checkbox:border-ring group-focus-visible/checkbox:ring-3 group-focus-visible/checkbox:ring-ring/50",
+          "group-aria-invalid/checkbox:border-destructive group-aria-invalid/checkbox:ring-3 group-aria-invalid/checkbox:ring-destructive/20",
+          "group-aria-invalid/checkbox:group-data-checked/checkbox:border-primary",
+          "dark:bg-input/30 dark:group-aria-invalid/checkbox:border-destructive/50 dark:group-aria-invalid/checkbox:ring-destructive/40",
+          "dark:group-data-checked/checkbox:bg-primary"
+        )}
       >
-        <CheckIcon
-        />
-      </CheckboxPrimitive.Indicator>
+        <CheckboxPrimitive.Indicator
+          data-slot="checkbox-indicator"
+          className="grid place-content-center text-current transition-none [&>svg]:size-3.5"
+        >
+          <CheckIcon />
+        </CheckboxPrimitive.Indicator>
+      </span>
     </CheckboxPrimitive.Root>
   )
 }
