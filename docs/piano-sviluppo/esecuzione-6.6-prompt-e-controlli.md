@@ -1,72 +1,91 @@
 # Esecuzione della 6.6: ordine completo, prompt e controlli
 
-**Stato**: approvato da Mirko il 2026-10-16 (i tre punti della sezione 1 sono confermati). Passo D1 consegnato il 2026-10-16: `controlli-6.6.json` (home, navigazione, Piatti) e `controlli-8.2.json` v4. La regola di lavoro resta quella di `00-come-eseguire-il-piano.md`.
-
-**Cosa contiene**: la tabella unica con l'ordine completo (sezione 2), i prompt per Composer (sezioni 4, 5 e 6) e quello che fa la chat di design e quando (sezione 7). I controlli sono quelli già in vigore: `docs/design/verifica/policy-test.md` (L0, L1, L2, L3, S) e `docs/piano-sviluppo/00-come-eseguire-il-piano.md` (una chat per sottofase, chiusura con Ufficiale / Percepito / Osservato, commit locale e push a mano).
-
-**Come si usa**: si procede riga per riga della tabella. Ogni prompt di implementazione si incolla **dopo** il «Blocco comune» (sezione 3) in una **chat nuova** di Composer. Dopo ogni chat tu fai il push e io controllo il repo, come per i pacchetti di design.
+**Stato**: approvato da Mirko il 2026-10-16. Riscritto il 2026-10-17 con **una scheda per ogni passo della tabella**: ogni passo ha il suo prompt (o le sue istruzioni, se tocca a te o alla chat di design) e la riga «Incolla in Cursor» che dice con cosa si abbina. La regola di lavoro resta quella di `00-come-eseguire-il-piano.md`; i controlli sono quelli di `docs/design/verifica/policy-test.md` (L0, L1, L2, L3, S).
 
 ---
 
-## 1. Punti da confermare prima di partire
+## 1. Come si usa questo documento
 
-1. **«Ricompila il menù pubblico» durante la 6.6.** La 6.5 (endpoint, Cloud Build, trigger) viene **dopo** la 6.6 e dopo la 6.9 (`fase-6` §6.5, §6.9). Quindi in 6.6 il pulsante e la sua finestra di conferma si costruiscono come componente, ma restano **dietro un'unica bandiera spenta** (non compaiono nelle schermate) finché la 6.5 non li accende. Un pulsante visibile che non fa nulla è peggio di uno assente. Conseguenza: i controlli sulla presenza del pulsante (`integrazione/spec.md` §10, punto 10) si spostano alla 6.5. Le specifiche già approvate restano come sono: descrivono il risultato finale. **Confermato.** Conseguenza che ho aggiunto io (**assunzione da confermare**): finché la bandiera è spenta, gli avvisi di salvataggio e di eliminazione non nominano il pulsante («Per vederlo sul menù pubblico serve «Ricompila…»») e hanno solo il titolo, così il manager non legge il nome di un pulsante che non c'è; gli avvisi di abilitazione, disabilitazione e «terminato» non cambiano (`integrazione/spec.md` §5).
-2. **Un solo file dei controlli**, `docs/design/verifica/controlli-6.6.json`, a cui aggiungo le schermate una alla volta (sezione 7). Il lanciatore sceglie di default l'ultimo file della cartella, quindi nei comandi si indica sempre `--controlli controlli-6.6.json`.
-3. **Ordine dei controlli per ogni gruppo di schermate** (`policy-test.md` §6, la regola esiste già): (a) la chat di design consegna i controlli; (b) **l'agente di verifica li implementa nel lanciatore, in una chat pulita, PRIMA della chat di implementazione**; (c) la chat di implementazione fa L0 e L1 con i controlli già pronti; (d) se c'è un trigger, l'agente fa L2 dopo. Una schermata senza i suoi controlli non si implementa. Per questo la tabella ha i passi **VC** prima di ogni chat I.
-4. **Controlli della shell**: i controlli di `controlli-8.2.json` assumono cinque voci e la vecchia descrizione della scheda «Menù». Dopo la chat I1 fallirebbero a torto: li aggiorno io prima di I1 (passo D1) e li implementa l'agente (VC1).
-5. **Riga di registro**: `area` e `detail` della riga `delete` li propone Composer nella Parte A della chat I0a (come lo fanno gli altri hook di `lib/activityLog/`); se serve toccare il campo `detail` nell'Admin, lo propone senza farlo.
-6. **Import di produzione 6.8**: è una sessione a sé con un passaggio esterno (backup di Cloud SQL), dopo la chiusura della 6.6. La chat I6 **non** lo esegue.
+### 1.1 Cosa incolli in Cursor: una regola sola
+
+| Tipo di passo | Passi | Cosa incolli in Cursor |
+|---|---|---|
+| **Implementazione** (Composer scrive codice) | 4, 5, 7, 11, 16, 19, 24, 26 | **Blocco comune (§3) + prompt del passo**, nello stesso primo messaggio, in quest'ordine |
+| **Import di produzione** | 31 | Blocco comune + prompt del passo 31 (che sostituisce la regola 6 del Blocco comune) |
+| **Revisione di regola** | 1 | Solo il prompt del passo (nessun Blocco comune) |
+| **Agente di verifica** (implementa i controlli: VC; esegue L2: V) | 3, 8, 13, 15, 18, 20, 23, 28 | Solo il prompt del passo (ha già le sue regole; **non** il Blocco comune) |
+| **Correzione dei rilievi P** (F) | 10, 14, 21, 29 | Solo il prompt del passo (è autonomo), e solo se ci sono rilievi P |
+| **Design, rilievi, tuoi** (D, RL, M) | 2, 6, 9, 12, 17, 22, 25, 27, 30 | Niente in Cursor: istruzioni nella scheda del passo |
+
+Ogni scheda del §4 comincia con la riga **«Incolla in Cursor»** con la combinazione giusta, e dentro il prompt la prima riga dice «PASSO N …» e, per le chat di implementazione, che segue il Blocco comune. Ogni chat di Cursor è **nuova**: non riusare chat di passi precedenti.
+
+### 1.2 Il ciclo di un passo con Cursor
+
+- **Chat di implementazione e di correzione (I, F)**: incolli → Cursor risponde con la **Parte A** (solo una proposta: file, ambiguità, verifiche) e si ferma → **la incolli qui** → io ti rispondo con le correzioni e il «procedi» → incolli la mia risposta in Cursor → Cursor implementa, verifica e chiude con la tabella «Esiti reali» e un commit locale → **incolli qui la risposta finale**, fai il push e scrivi «push fatto» → io controllo il repo e aggiorno lo stato.
+- **Agente di verifica e revisione (VC, V, R0)**: incolli → Cursor lavora e non fa git → **incolli qui il suo resoconto finale** → tu fai il commit del suo lavoro (messaggio indicato nella scheda) e il push, e scrivi «push fatto» → io controllo e aggiorno lo stato.
+- **Passi tuoi e della chat di design (D, RL, M)**: la scheda dice cosa fai.
+
+### 1.3 Dove si segna lo stato
+
+Nella colonna **Stato** della tabella (§2): 🔲 da fare, 🔶 in corso (chat aperta, o fatta ma non ancora controllata), ✅ completato con l'hash del commit che lo contiene. La aggiorna **solo la chat di design**, dopo il tuo «push fatto» e il mio controllo del repo (hash, file cambiati, esiti reali, `ui:check`): un passo è ✅ quando il controllo è passato e il push è nel repo, **non quando Cursor finisce**. Gli altri due posti: il CHANGELOG (storia di ogni chat, scritta da Composer) e la checklist di chiusura di 6.6 in `fase-6-menu-digitale.md` (cosa è stato consegnato, spuntata da Composer). Composer **non** modifica la tabella.
+
+### 1.4 Decisioni già confermate
+
+1. **«Ricompila il menù pubblico» nascosto** dietro una bandiera spenta durante tutta la 6.6: la 6.5 viene dopo la 6.6 e dopo la 6.9. I controlli sul pulsante sono NON PROVATI con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano OK, FALLITO, AVVISO, NON PROVATO). Assunzione ancora da confermare: gli avvisi di salvataggio e di eliminazione non nominano il pulsante e hanno solo il titolo (`integrazione/spec.md` §5).
+2. **Un solo file dei controlli**, `controlli-6.6.json`, a cui aggiungo le schermate man mano; nei comandi si indica sempre `--controlli`, perché il lanciatore senza l'opzione prende l'ultimo file in ordine alfabetico.
+3. **Ordine dei controlli** (`policy-test.md` §6): prima i controlli (D), poi l'agente li implementa nel lanciatore (VC), poi la chat di implementazione (I) con L1, poi se c'è un trigger l'agente esegue L2 (V).
+4. **Riga di registro** (`area`, `detail`): la propone Composer nella Parte A del passo 4. **Import di produzione**: sessione a sé, passo 31.
 
 ---
 
 ## 2. Tabella unica: l'ordine completo
 
-**Dove si segna lo stato.** Nella colonna **Stato** di questa tabella: 🔲 da fare, 🔶 in corso (chat aperta, o fatta ma non ancora controllata), ✅ completato con l'hash del commit del repo che lo contiene. La aggiorna **solo la chat di design**, dopo il tuo «push fatto» e il mio controllo del repo (hash, file cambiati, esiti reali, `ui:check`); il passo diventa ✅ quando il controllo è passato e il push è nel repo, non quando Cursor finisce. Gli altri due posti restano come sono: il CHANGELOG (storia di ogni chat, scritta da Composer) e la checklist di chiusura di 6.6 in `fase-6-menu-digitale.md` (cosa è stato consegnato, spuntata da Composer). Composer **non** modifica questa tabella.
+Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'agente di verifica implementa i controlli nel lanciatore (chat pulita, prima della chat I); **V** l'agente esegue L2 (chat pulita); **D** controlli scritti dalla chat di design; **RL** rilievi P e A della chat di design dopo un V; **F** correzione dei P (Composer); **M** passo tuo.
 
-**Ultimo aggiornamento**: 2026-10-17 (commit `e9867a5`). **Prossimi passi**: 3 (VC1), poi 4 (I0a).
+| # | Stato | Incolla in Cursor | Sigla | Chi | Cosa | Controlli | Si passa al successivo quando |
+|---|---|---|---|---|---|---|---|
+| 1 | ✅ e9867a5 | Solo il prompt del passo 1 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` | revisione, nessun codice | nessuna contraddizione, o corretta |
+| 2 | ✅ 6a77311 | — | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci | — | tu committi e pushi i file |
+| 3 | 🔲 | Solo il prompt del passo 3 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
+| 4 | 🔲 | Blocco comune + prompt del passo 4 | I0a | Composer | Permessi di cancellazione, registro, matrici | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
+| 5 | 🔲 | Blocco comune + prompt del passo 5 | I0b | Composer | Formati dei campi e import | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
+| 6 | 🔲 | — (comando nel terminale) | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
+| 7 | 🔲 | Blocco comune + prompt del passo 7 | I1 | Composer | Fondamenta UI e integrazione | L0 + **L1** `shell,home` | L1 verde; tu pushi |
+| 8 | 🔲 | Solo il prompt del passo 8 | V1 | Agente di verifica | **L2** su shell, home, navigazione | **L2** | rapporto scritto; tu committi |
+| 9 | 🔲 | — | RL1 | Design | Leggo il rapporto: rilievi P e A | — | nessun P aperto |
+| 10 | 🔲 | Solo il prompt del passo 10, se ci sono P | F1 | Composer | Correzione dei P di V1, solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |
+| 11 | 🔲 | Blocco comune + prompt del passo 11 | I2 | Composer | **Piatti** | L0 + **L1** `piatti` | L1 verde; tu pushi |
+| 12 | 🔲 | — | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
+| 13 | 🔲 | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
+| 14 | 🔲 | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
+| 15 | 🔲 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
+| 16 | 🔲 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
+| 17 | 🔲 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
+| 18 | 🔲 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
+| 19 | 🔲 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
+| 20 | 🔲 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
+| 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
+| 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
+| 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale | lint e typecheck | tu committi e pushi |
+| 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
+| 25 | 🔲 | — | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
+| 26 | 🔲 | Blocco comune + prompt del passo 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
+| 27 | 🔲 | — (istruzioni del passo) | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
+| 28 | 🔲 | Solo il prompt del passo 28 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali | **L2** | rapporto scritto |
+| 29 | 🔲 | Solo il prompt del passo 29, se ci sono P | RL6/F6 | Design, Composer | Rilievi di V6 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
+| 30 | 🔲 | — (istruzioni del passo) | M3/D9 | Tu, Design | **L3**: sessione reale su Cloud Run (io col tuo browser) e giro su iPhone vero (tu), §6 | **L3** | esito scritto; rilievi P chiusi |
+| 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
+| 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'agente di verifica implementa i controlli nel lanciatore (chat pulita, prima della chat I); **V** l'agente esegue L2 (chat pulita); **D** controlli scritti dalla chat di design; **RL** rilievi P e A della chat di design dopo un V; **F** correzione dei P (Composer); **M** passo tuo. Una chat di implementazione segue sempre il «Blocco comune».
+**Ultimo aggiornamento**: 2026-10-17 (commit `5ca1de6`). **Prossimi passi**: 3 (VC1), poi 4 (I0a).
 
-| # | Stato | Sigla | Chi | Cosa | Controlli | Si passa al successivo quando |
-|---|---|---|---|---|---|---|
-| 1 | ✅ e9867a5 | R0 | Composer (chat breve) | Revisione di asse di `.cursor/rules/ui/01-ui-app-invarianti.mdc` contro `02` e `03` (§4.0) | revisione, nessun codice | nessuna contraddizione, o corretta |
-| 2 | ✅ 6a77311 | D1 | Design | `controlli-6.6.json` con shell, home, navigazione e Piatti; aggiorno `controlli-8.2.json` per le otto voci (§7) | — | tu committi e pushi i file |
-| 3 | 🔲 | VC1 | Agente di verifica | Implementa nel lanciatore i controlli di D1 (§5, VC) | lint e typecheck; i controlli si caricano e le pagine assenti danno NON PROVATO | tu committi e pushi |
-| 4 | 🔲 | I0a | Composer | Permessi di cancellazione, registro, matrici (§4.1) | L0 + `verify:menu-6_2`, `6_3`, `6_4`, `availability-final-proofs` | tabella degli esiti senza FALLITO; tu pushi |
-| 5 | 🔲 | I0b | Composer | Formati dei campi e import (§4.2) | L0 + test unitari + `verify:menu-6_2` + idempotenza dell'import | idem |
-| 6 | 🔲 | M1 | Tu | Report a secco esteso sullo snapshot e mi mandi le forme di anno, grado, invecchiamento | — | non blocca; prima del passo 31 |
-| 7 | 🔲 | I1 | Composer | Fondamenta UI e integrazione (§4.3) | L0 + **L1** `shell,home` | L1 verde; tu pushi |
-| 8 | 🔲 | V1 | Agente di verifica | **L2** su shell, home, navigazione (§5, V1) | **L2** | rapporto scritto; tu committi |
-| 9 | 🔲 | RL1 | Design | Leggo il rapporto: rilievi P e A (§7) | — | nessun P aperto |
-| 10 | 🔲 | F1 | Composer | Correzione dei P di V1 (§6), solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |
-| 11 | 🔲 | I2 | Composer | **Piatti** (§4.4) | L0 + **L1** `piatti` | L1 verde; tu pushi |
-| 12 | 🔲 | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
-| 13 | 🔲 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home (§5, V2) | **L2** | rapporto scritto |
-| 14 | 🔲 | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
-| 15 | 🔲 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande (§5, VC) | lint e typecheck | tu committi e pushi |
-| 16 | 🔲 | I3 | Composer | **Vini, Distillati, Bevande** (§4.5) | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
-| 17 | 🔲 | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
-| 18 | 🔲 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi (§5, VC) | lint e typecheck | tu committi e pushi |
-| 19 | 🔲 | I4 | Composer | **Servizi e Menù fissi** con Categorie (§4.6) | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | 🔲 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade (§5, V4) | **L2** mirato | rapporto scritto |
-| 21 | 🔲 | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
-| 22 | 🔲 | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
-| 23 | 🔲 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale (§5, VC) | lint e typecheck | tu committi e pushi |
-| 24 | 🔲 | I5 | Composer | **Giorni speciali e Messaggio globale** (§4.7) | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
-| 25 | 🔲 | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
-| 26 | 🔲 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase (§4.8) | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
-| 27 | 🔲 | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
-| 28 | 🔲 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali (§5, V6) | **L2** | rapporto scritto |
-| 29 | 🔲 | RL6/F6 | Design, Composer | Rilievi di V6 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
-| 30 | 🔲 | M3/D9 | Tu, Design | **L3**: sessione reale su Cloud Run (io col tuo browser) e giro su iPhone vero (tu), sezione 8 | **L3** | esito scritto; rilievi P chiusi |
-| 31 | 🔲 | I7 | Tu e Composer | **Import di produzione 6.8** (§4.9): report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
-| 32 | 🔲 | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
-
-**Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke, `pnpm ui:verify online`) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat I0a e I0b non hanno L1).
+**Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
 ---
 
-## 3. Blocco comune (da incollare all'inizio di ogni prompt di implementazione)
+## 3. Blocco comune (da incollare PRIMA del prompt di ogni chat di implementazione)
+
+È il primo dei due testi che incolli nei passi 4, 5, 7, 11, 16, 19, 24, 26 e 31 (vedi §1.1). Il prompt del passo va **dopo**, nello stesso messaggio.
 
 ```text
 BLOCCO COMUNE: vale per tutte le chat di implementazione della sottofase 6.6.
@@ -112,11 +131,15 @@ REGOLE
 
 ---
 
-## 4. Prompt di implementazione
+## 4. Una scheda per ogni passo
 
-### 4.0 R0: revisione della regola UI (chat breve, passo 1)
+### Passo 1 — R0: revisione della regola UI (chat breve)
 
-Non usa il Blocco comune: è la revisione di asse prevista dal processo per ogni regola locale modificata.
+**Stato**: ✅ e9867a5
+
+> Già eseguito (✅ `e9867a5`): il prompt resta qui come riferimento.
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
 Revisione di coerenza di un asse delle regole di progetto. Non scrivere codice e non modificare nessun file.
@@ -135,10 +158,85 @@ Rispondi con: (1) contraddizioni trovate (file, riga, citazione breve), (2) punt
 Non proporre riscritture lunghe: una correzione per riga.
 ```
 
-### 4.1 I0a: Parte 0, permessi di cancellazione e registro (passo 4)
+**Quando Cursor ha finito**: incollami qui la sua risposta; io la verifico nei file e preparo le correzioni. Non c'è altro da incollare in Cursor.
+
+### Passo 2 — D1: controlli della shell, della home, della navigazione e di Piatti
+
+**Stato**: ✅ 6a77311
+
+> Già consegnato (✅ `6a77311`).
+
+**Chi**: la chat di design (io). **Niente da incollare in Cursor.**
+**Cosa fai tu**: scrivimi «passo 2»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
+
+### Passo 3 — VC1: l'agente implementa i controlli di D1
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui IMPLEMENTI I CONTROLLI nel lanciatore, non
+verifichi ancora nessuna schermata nuova. Istanza: VC1, prima della chat I1 della sottofase 6.6.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md (sezione 6: ordine per ogni schermata nuova)
+3. docs/design/verifica/controlli-6.6.json, SOLO le schermate: home, navigazione, piatti; più i controlli comuni
+   (NO-OVERRIDE, RICOMPILA-ASSENTE, RICOMPILA-PRESENTE) e dati_e_sicurezza.
+   E docs/design/verifica/controlli-8.2.json versione 4, SOLO la schermata: shell.
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/integrazione/spec.md,
+   docs/design/schermate/shell/spec.md, docs/design/schermate/piatti/spec.md
+
+Poi:
+A. Leggi scripts/ui-verify/run.mjs e scripts/ui-verify/lib/. Per ogni controllo delle schermate indicate, trova se il
+   lanciatore sa già eseguirlo (stesso tipo di controllo, stesso selettore). Elenca quelli che mancano.
+   Il modello è il modulo per schermata scripts/ui-verify/lib/run-orari.mjs (agganciato da run.mjs): per il Menù
+   crea un modulo analogo (per esempio scripts/ui-verify/lib/run-menu.mjs) e agganciaglielo. I valori attesi della
+   shell oggi sono anche scritti nel codice (scripts/ui-verify/lib/engine.mjs, riga circa 535, e run.mjs: home-testi,
+   shell-menu-voci, shell-segnaposto): portali a quelli di controlli-8.2.json v4 (descrizione della scheda Menù
+   «Piatti, vini, bevande, menù fissi e altro», titolo «Oggi», voci della navigazione lette da lib/app/navigation.ts
+   con enabled vero). Gestisci anche: «stato_prova» e «rinviato_a» (esito NON PROVATO con l'evidenza «rinviato alla
+   6.5»: gli esiti ammessi restano OK, FALLITO, AVVISO e NON PROVATO, non esiste un esito RINVIATO); il profilo
+   telefono-390-basso; le simulazioni APP_MENU_DEV_SIMULATE_* e i dati di prova «verify-ui-…» di dati_e_sicurezza
+   (creati e cancellati in try/finally, solo sviluppo); il comando NO-OVERRIDE; `--controlli controlli-6.6.json`
+   con `--schermata`.
+B. Implementa i tipi di controllo che mancano (per esempio: modulo con select, finestra di conferma con elenco,
+   riga di stato della home, flussi con dati di prova, lettura di testi attesi da lib/). Non cambiare nessun
+   controllo, soglia o tolleranza dei file JSON; i testi attesi delle costanti si leggono da lib/, non si copiano.
+   Se un controllo ti sembra sbagliato o impossibile, scrivilo come «controllo dubbio» e lascialo com'è.
+C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e controlli-8.2.json,
+   riconosce ogni id e tipo delle schermate indicate.
+   - Schermate non ancora implementate: oggi /app/menu è un SEGNAPOSTO (non Piatti) e la riga di stato della home e
+     le voci nuove della navigazione non esistono ancora (le fa la chat I1, Piatti la chat I2). I controlli di home
+     (riga del Menù), navigazione (voci non accese) e piatti danno NON PROVATO con l'evidenza «schermata non ancora
+     implementata», senza errori del lanciatore. Per riconoscere il segnaposto usa la logica che già c'è
+     (SEGNAPOSTO_H1).
+   - La shell esiste: esegui pnpm ui:verify --livello 1 --schermata shell --controlli controlli-8.2.json su
+     locale-prod. I controlli che descrivono lo stato DOPO la chat I1 (home-testi: «Oggi» e la nuova descrizione;
+     home-righe-di-stato) possono dare FALLITO sul codice di oggi: riportali nel rapporto come «FALLITO atteso fino
+     a I1», senza toccare né il codice dell'app né i controlli. Ogni altro FALLITO sulla shell va analizzato: o è un
+     difetto del lanciatore (correggilo) o un difetto vero (riportalo).
+D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
+   aggiunti, controlli dubbi, FALLITO attesi fino a I1, NON PROVATO (con il motivo).
+
+Non fare git. Puoi modificare solo scripts/ui-verify/** e il rapporto; non toccare app/, components/, lib/,
+docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO,
+AVVISO e NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli del Menù nel lanciatore (VC1)`
+
+### Passo 4 — I0a: Parte 0, permessi di cancellazione e registro (solo backend)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
+
+```text
+PASSO 4 (I0a). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I0a: Parte 0 di 6.6, permessi di cancellazione, registro attività, matrici di prova.
 Solo backend: nessuna schermata, nessuna migrazione, nessun L1.
@@ -188,10 +286,17 @@ locale in esecuzione: se non c'è, fermati e dimmelo.
 CHIUSURA: spunta in fase-6, 6.6, solo le voci di Parte 0 che hai davvero provato. Poi Parte D del blocco comune.
 ```
 
-### 4.2 I0b: formati dei campi e import (passo 5)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 5 — I0b: formati dei campi e import (solo backend)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+PASSO 5 (I0b). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I0b: formati dei campi di vini, distillati e bevande, e import.
 Solo backend: nessuna schermata, nessuna migrazione, nessun cambio di schema (i campi restano di tipo testo), nessun L1.
@@ -242,10 +347,32 @@ DOPO (non è di questa chat): io lancio da locale il report a secco sullo snapsh
 le regole di normalizzazione si fissano su quelli prima dell'import di produzione.
 ```
 
-### 4.3 I1: fondamenta UI e integrazione (passo 7)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 6 — M1: report a secco dell'import sullo snapshot
+
+**Stato**: 🔲
+
+**Chi**: tu, nel terminale. Nessun prompt di Cursor.
+
+**Prerequisito**: la chat I0b (passo 5) è chiusa e pushata, e il database di sviluppo è in esecuzione (127.0.0.1:5432/vma_vd_dev).
+
+**Cosa fai**
+1. Dalla radice del repo: `pnpm import:menu -- ~/vtn-export-2026-10-12`
+   Senza `--apply`: stampa solo il report a secco e non scrive nulla. Se la cartella dello snapshot non c'è, o vuoi uno snapshot del giorno, si rifà come in `docs/operativo/export-menu-vtn-backend.md` (lo snapshot non si committa).
+2. Copia il report completo (soprattutto la parte con le forme distinte di anno, grado, invecchiamento e capacità, e i conteggi) e incollamelo qui.
+
+**Cosa succede dopo**: io leggo le forme reali e ti dico se le regole di normalizzazione della chat I0b bastano. Se no, ti preparo una piccola chat di correzione da fare **prima** dell'import di produzione (passo 31). Questo passo non blocca il resto: va fatto prima del passo 31.
+
+### Passo 7 — I1: fondamenta UI e integrazione
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+PASSO 7 (I1). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I1: fondamenta UI e integrazione del Menù nella shell. NON costruire nessuna schermata di elenco o modulo.
 
@@ -308,10 +435,103 @@ home,navigazione --controlli controlli-6.6.json. Poi pnpm payload run scripts/ve
 CHIUSURA: Parte D del blocco comune.
 ```
 
-### 4.4 I2: Piatti (passo 11)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 8 — V1: l'agente esegue L2 su shell, home e navigazione
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi. Istanza: V1, dopo la chat I1.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/controlli-6.6.json (i controlli del Menù) e docs/design/verifica/controlli-8.2.json
+   (shell e accesso, per la regressione)
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/integrazione/spec.md, docs/design/schermate/shell/spec.md
+
+Poi, in quest'ordine:
+0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
+   Se git status non è pulito, fermati e dimmelo.
+A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
+   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata home,navigazione
+   pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
+C. Non eseguire i controlli «online-senza-credenziali»: si fanno in V6, dopo il deploy. Scrivili NON PROVATO con il motivo «si provano in V6».
+D. Scrivi gli esiti in docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/ come da README, sezione 7.
+E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti, e verifica con git status che i file nuovi siano solo
+   quelli attesi.
+
+Non fare git (puoi leggere git status). Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i
+controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore misurato e
+quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo: scrivilo come
+«controllo dubbio».
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V1 (shell, home, navigazione)`
+
+### Passo 9 — RL1: rilievi di V1
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io).
+**Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
+
+### Passo 10 — F1: correzione dei P di V1 (solo se ci sono)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+**Quando serve**: solo se nel passo 9 ti consegno dei rilievi P. In `<CARTELLA>` incolli il nome che ti do io.
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F1: correzione dei rilievi P della verifica L2 V1. Fai solo
+questo. Le regole di .cursor/rules si caricano da sole.
+
+CARTELLA DEI RILIEVI = <INCOLLA QUI il nome della cartella che ti dà la chat di design, per esempio 2026-10-17-locale-prod>
+
+LEGGI per intero:
+- docs/design/verifica/esiti/<CARTELLA>/: il rapporto dell'agente e rilievi.md (i rilievi P assegnati dalla chat di
+  design, uno per riga: id, valore misurato, valore atteso, schermata).
+- Le specifiche della schermata interessata, sezioni «Testi» e «Layout»: docs/design/schermate/integrazione/spec.md, docs/design/schermate/shell/spec.md
+
+REGOLE
+1. Correggi SOLO i rilievi P elencati in rilievi.md. Non toccare i rilievi A. Non cambiare controlli, soglie,
+   specifiche né documenti di design (docs/design/**). Se un P ti sembra un controllo dubbio o una specifica
+   sbagliata, dillo e non correggere.
+2. PARTE A, solo proposta: per ogni P scrivi la causa che vedi nel codice e il file che toccherai. Poi FERMATI e
+   aspetta il mio «procedi».
+3. Dati: Local API con la sessione dell'utente (overrideAccess: false). Nessuna nuova dipendenza, nessuna
+   migrazione. Componenti shadcn solo come da docs/design/installazione-componenti-ui.md.
+4. Verifiche: L0 (pnpm typecheck, pnpm lint, pnpm ui:check, test unitari di lib/) e L1 dei soli controlli falliti:
+   pnpm ui:verify --livello 1 --schermata <id> --controlli controlli-6.6.json (per la shell: --controlli
+   controlli-8.2.json). Al massimo due giri; al terzo fermati e riportami. Non modificare mai i controlli.
+5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
+6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
+   cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
+   F1); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
+```
+
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 11 — I2: Piatti (prima schermata accesa)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
+
+```text
+PASSO 11 (I2). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I2: schermata Piatti (/app/menu). È la prima schermata accesa del Menù e fa da modello per le altre.
 
@@ -354,10 +574,153 @@ sviluppo) entro pochi secondi.
 CHIUSURA: Parte D del blocco comune; aggiungi la riga «Piatti: fatto» nella sottofase 6.6 di fase-6.
 ```
 
-### 4.5 I3: Vini, Distillati, Bevande (passo 16)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 12 — D3: controlli per Vini, Distillati, Bevande
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io). **Niente da incollare in Cursor.**
+**Cosa fai tu**: scrivimi «passo 12»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
+
+Si fa in parallelo con la chat del passo 11 e deve essere pronto prima del passo 15.
+
+### Passo 13 — V2: l'agente esegue L2 su Piatti (primo elenco, primo modulo, primo foglio)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi. Istanza: V2, dopo la chat I2.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/controlli-6.6.json (i controlli del Menù) e docs/design/verifica/controlli-8.2.json
+   (shell e accesso, per la regressione)
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/piatti/spec.md, docs/design/schermate/integrazione/spec.md
+
+Poi, in quest'ordine:
+0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
+   Se git status non è pulito, fermati e dimmelo.
+A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
+   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata piatti,home,navigazione
+   pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
+C. Non eseguire i controlli «online-senza-credenziali»: si fanno in V6, dopo il deploy. Scrivili NON PROVATO con il motivo «si provano in V6».
+D. Scrivi gli esiti in docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/ come da README, sezione 7.
+E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti, e verifica con git status che i file nuovi siano solo
+   quelli attesi.
+
+Non fare git (puoi leggere git status). Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i
+controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore misurato e
+quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo: scrivilo come
+«controllo dubbio».
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V2 (Piatti)`
+
+### Passo 14 — RL2/F2: rilievi di V2 e correzione dei P (solo se ci sono)
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io).
+**Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
+
+Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segnano «validata» la policy dei test e la regola `ui/01-ui-app-invarianti.mdc` (`policy-test.md` §9, punto 4).
+
+**Passo F2 (solo se ci sono P)**
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F2: correzione dei rilievi P della verifica L2 V2. Fai solo
+questo. Le regole di .cursor/rules si caricano da sole.
+
+CARTELLA DEI RILIEVI = <INCOLLA QUI il nome della cartella che ti dà la chat di design, per esempio 2026-10-17-locale-prod>
+
+LEGGI per intero:
+- docs/design/verifica/esiti/<CARTELLA>/: il rapporto dell'agente e rilievi.md (i rilievi P assegnati dalla chat di
+  design, uno per riga: id, valore misurato, valore atteso, schermata).
+- Le specifiche della schermata interessata, sezioni «Testi» e «Layout»: docs/design/schermate/piatti/spec.md
+
+REGOLE
+1. Correggi SOLO i rilievi P elencati in rilievi.md. Non toccare i rilievi A. Non cambiare controlli, soglie,
+   specifiche né documenti di design (docs/design/**). Se un P ti sembra un controllo dubbio o una specifica
+   sbagliata, dillo e non correggere.
+2. PARTE A, solo proposta: per ogni P scrivi la causa che vedi nel codice e il file che toccherai. Poi FERMATI e
+   aspetta il mio «procedi».
+3. Dati: Local API con la sessione dell'utente (overrideAccess: false). Nessuna nuova dipendenza, nessuna
+   migrazione. Componenti shadcn solo come da docs/design/installazione-componenti-ui.md.
+4. Verifiche: L0 (pnpm typecheck, pnpm lint, pnpm ui:check, test unitari di lib/) e L1 dei soli controlli falliti:
+   pnpm ui:verify --livello 1 --schermata <id> --controlli controlli-6.6.json (per la shell: --controlli
+   controlli-8.2.json). Al massimo due giri; al terzo fermati e riportami. Non modificare mai i controlli.
+5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
+6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
+   cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
+   F2); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
+```
+
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 15 — VC3: l'agente implementa i controlli di Vini, Distillati, Bevande
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui IMPLEMENTI I CONTROLLI nel lanciatore, non
+verifichi ancora nessuna schermata nuova. Istanza: VC3, prima della chat I3 della sottofase 6.6.
+
+Prerequisito: i controlli di queste schermate li scrive la chat di design in docs/design/verifica/controlli-6.6.json.
+Se una delle schermate indicate qui sotto NON è nel file, fermati e dimmelo: non scriverle tu.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md (sezione 6: ordine per ogni schermata nuova)
+3. docs/design/verifica/controlli-6.6.json, SOLO le schermate: vini, distillati, bevande; più i controlli comuni
+   (NO-OVERRIDE, RICOMPILA-ASSENTE, RICOMPILA-PRESENTE) e dati_e_sicurezza.
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/vini/spec.md, distillati/spec.md, bevande/spec.md
+
+Poi:
+A. Il lanciatore ha già il modulo scripts/ui-verify/lib/run-menu.mjs creato dal passo VC1, con la gestione di
+   «stato_prova» e «rinviato_a», delle simulazioni APP_MENU_DEV_SIMULATE_* e dei dati di prova «verify-ui-…»:
+   ESTENDILO, non crearne un altro. Per ogni controllo delle schermate indicate, trova se il lanciatore sa già
+   eseguirlo (stesso tipo, stesso selettore). Elenca quelli che mancano.
+B. Implementa i tipi di controllo che mancano (elenco raggruppato per tipologia, foglio dei filtri con il filtro per origine a cascata (paese, regione, denominazione), select con la voce per svuotarlo, campo anno con la casella «Senza annata (NV)», avviso con «Mostra altri vini» con 101 voci di prova, flussi con dati «verify-ui-…»). Non cambiare nessun controllo, soglia o tolleranza dei
+   file JSON; i testi attesi delle costanti si leggono da lib/, non si copiano. Se un controllo ti sembra sbagliato
+   o impossibile, scrivilo come «controllo dubbio» e lascialo com'è.
+C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
+   id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I3) danno NON PROVATO
+   con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.
+D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
+   aggiunti, controlli dubbi, NON PROVATO (con il motivo).
+
+Non fare git (puoi leggere git status). Puoi modificare solo scripts/ui-verify/** e il rapporto; non toccare app/,
+components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, distinguendo
+sempre OK, FALLITO, AVVISO e NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Vini, Distillati, Bevande nel lanciatore (VC3)`
+
+### Passo 16 — I3: Vini, Distillati, Bevande
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
+
+```text
+PASSO 16 (I3). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I3: schermate Vini (/app/menu/wines), Distillati (/app/menu/spirits), Bevande (/app/menu/drinks).
 
@@ -392,10 +755,69 @@ VERIFICHE: L0; L1 su `vini,distillati,bevande`. Per «Mostra altri vini» crea n
 prova e poi eliminali (dichiaralo nella risposta); mai dati di prova in produzione.
 ```
 
-### 4.6 I4: Servizi e Menù fissi (passo 19)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 17 — D5: controlli per Servizi e Menù fissi
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io). **Niente da incollare in Cursor.**
+**Cosa fai tu**: scrivimi «passo 17»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
+
+Si fa in parallelo con la chat del passo 16 e deve essere pronto prima del passo 18.
+
+### Passo 18 — VC4: l'agente implementa i controlli di Servizi e Menù fissi
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui IMPLEMENTI I CONTROLLI nel lanciatore, non
+verifichi ancora nessuna schermata nuova. Istanza: VC4, prima della chat I4 della sottofase 6.6.
+
+Prerequisito: i controlli di queste schermate li scrive la chat di design in docs/design/verifica/controlli-6.6.json.
+Se una delle schermate indicate qui sotto NON è nel file, fermati e dimmelo: non scriverle tu.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md (sezione 6: ordine per ogni schermata nuova)
+3. docs/design/verifica/controlli-6.6.json, SOLO le schermate: servizi, menu-fissi; più i controlli comuni
+   (NO-OVERRIDE, RICOMPILA-ASSENTE, RICOMPILA-PRESENTE) e dati_e_sicurezza.
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/servizi/spec.md, menu-fissi/spec.md, integrazione/spec.md (§2: schede come percorsi)
+
+Poi:
+A. Il lanciatore ha già il modulo scripts/ui-verify/lib/run-menu.mjs creato dal passo VC1, con la gestione di
+   «stato_prova» e «rinviato_a», delle simulazioni APP_MENU_DEV_SIMULATE_* e dei dati di prova «verify-ui-…»:
+   ESTENDILO, non crearne un altro. Per ogni controllo delle schermate indicate, trova se il lanciatore sa già
+   eseguirlo (stesso tipo, stesso selettore). Elenca quelli che mancano.
+B. Implementa i tipi di controllo che mancano (schede come percorsi (/app/menu/fixed e /app/menu/fixed/categories), vista «Scegli piatti» dentro lo stesso foglio, frecce «Sposta su» e «Sposta giù», conferme di eliminazione con il cascade dichiarato, campo Categoria vuoto, avvisi di visibilità). Non cambiare nessun controllo, soglia o tolleranza dei
+   file JSON; i testi attesi delle costanti si leggono da lib/, non si copiano. Se un controllo ti sembra sbagliato
+   o impossibile, scrivilo come «controllo dubbio» e lascialo com'è.
+C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
+   id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I4) danno NON PROVATO
+   con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.
+D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
+   aggiunti, controlli dubbi, NON PROVATO (con il motivo).
+
+Non fare git (puoi leggere git status). Puoi modificare solo scripts/ui-verify/** e il rapporto; non toccare app/,
+components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, distinguendo
+sempre OK, FALLITO, AVVISO e NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Servizi e Menù fissi nel lanciatore (VC4)`
+
+### Passo 19 — I4: Servizi e Menù fissi con Categorie
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
+
+```text
+PASSO 19 (I4). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I4: schermate Servizi (/app/menu/services) e Menù fissi con Categorie (/app/menu/fixed e
 /app/menu/fixed/categories).
@@ -435,10 +857,150 @@ prova fa sparire i collegamenti; un piatto in un menù fisso non si elimina; la 
 apre la scheda giusta e le briciole sono corrette.
 ```
 
-### 4.7 I5: Giorni speciali e Messaggio globale (passo 24)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 20 — V4: l'agente esegue L2 mirato sui tipi nuovi
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi. Istanza: V4, dopo la chat I4.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/controlli-6.6.json (i controlli del Menù) e docs/design/verifica/controlli-8.2.json
+   (shell e accesso, per la regressione)
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/menu-fissi/spec.md, docs/design/schermate/servizi/spec.md, docs/design/schermate/integrazione/spec.md
+
+Poi, in quest'ordine:
+0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
+   Se git status non è pulito, fermati e dimmelo.
+A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
+   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata menu-fissi,servizi,navigazione
+   pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
+   (L2 mirato sui tipi nuovi: schede come percorsi, vista di scelta nel foglio, conferme con cascade)
+C. Non eseguire i controlli «online-senza-credenziali»: si fanno in V6, dopo il deploy. Scrivili NON PROVATO con il motivo «si provano in V6».
+D. Scrivi gli esiti in docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/ come da README, sezione 7.
+E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti, e verifica con git status che i file nuovi siano solo
+   quelli attesi.
+
+Non fare git (puoi leggere git status). Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i
+controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore misurato e
+quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo: scrivilo come
+«controllo dubbio».
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V4 (Menù fissi, Servizi)`
+
+### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io).
+**Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
+
+**Passo F4 (solo se ci sono P)**
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F4: correzione dei rilievi P della verifica L2 V4. Fai solo
+questo. Le regole di .cursor/rules si caricano da sole.
+
+CARTELLA DEI RILIEVI = <INCOLLA QUI il nome della cartella che ti dà la chat di design, per esempio 2026-10-17-locale-prod>
+
+LEGGI per intero:
+- docs/design/verifica/esiti/<CARTELLA>/: il rapporto dell'agente e rilievi.md (i rilievi P assegnati dalla chat di
+  design, uno per riga: id, valore misurato, valore atteso, schermata).
+- Le specifiche della schermata interessata, sezioni «Testi» e «Layout»: docs/design/schermate/menu-fissi/spec.md, docs/design/schermate/servizi/spec.md
+
+REGOLE
+1. Correggi SOLO i rilievi P elencati in rilievi.md. Non toccare i rilievi A. Non cambiare controlli, soglie,
+   specifiche né documenti di design (docs/design/**). Se un P ti sembra un controllo dubbio o una specifica
+   sbagliata, dillo e non correggere.
+2. PARTE A, solo proposta: per ogni P scrivi la causa che vedi nel codice e il file che toccherai. Poi FERMATI e
+   aspetta il mio «procedi».
+3. Dati: Local API con la sessione dell'utente (overrideAccess: false). Nessuna nuova dipendenza, nessuna
+   migrazione. Componenti shadcn solo come da docs/design/installazione-componenti-ui.md.
+4. Verifiche: L0 (pnpm typecheck, pnpm lint, pnpm ui:check, test unitari di lib/) e L1 dei soli controlli falliti:
+   pnpm ui:verify --livello 1 --schermata <id> --controlli controlli-6.6.json (per la shell: --controlli
+   controlli-8.2.json). Al massimo due giri; al terzo fermati e riportami. Non modificare mai i controlli.
+5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
+6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
+   cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
+   F4); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
+```
+
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 22 — D6: controlli per Giorni speciali e Messaggio globale
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io). **Niente da incollare in Cursor.**
+**Cosa fai tu**: scrivimi «passo 22»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
+
+### Passo 23 — VC5: l'agente implementa i controlli di Giorni speciali e Messaggio globale
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui IMPLEMENTI I CONTROLLI nel lanciatore, non
+verifichi ancora nessuna schermata nuova. Istanza: VC5, prima della chat I5 della sottofase 6.6.
+
+Prerequisito: i controlli di queste schermate li scrive la chat di design in docs/design/verifica/controlli-6.6.json.
+Se una delle schermate indicate qui sotto NON è nel file, fermati e dimmelo: non scriverle tu.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md (sezione 6: ordine per ogni schermata nuova)
+3. docs/design/verifica/controlli-6.6.json, SOLO le schermate: giorni-speciali, messaggio-globale; più i controlli comuni
+   (NO-OVERRIDE, RICOMPILA-ASSENTE, RICOMPILA-PRESENTE) e dati_e_sicurezza.
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: docs/design/schermate/giorni-speciali/spec.md, messaggio-globale/spec.md
+
+Poi:
+A. Il lanciatore ha già il modulo scripts/ui-verify/lib/run-menu.mjs creato dal passo VC1, con la gestione di
+   «stato_prova» e «rinviato_a», delle simulazioni APP_MENU_DEV_SIMULATE_* e dei dati di prova «verify-ui-…»:
+   ESTENDILO, non crearne un altro. Per ogni controllo delle schermate indicate, trova se il lanciatore sa già
+   eseguirlo (stesso tipo, stesso selettore). Elenca quelli che mancano.
+B. Implementa i tipi di controllo che mancano (campo data nativo, controllo di sovrapposizione nel modulo, gruppi Prossimi e Passati con la data di oggi in Europe/Rome, pagina con «Salva modifiche» e «Togli il messaggio», indicatore di pubblicazione (in sviluppo con lo storage in memoria; stato «file non leggibile»)). Non cambiare nessun controllo, soglia o tolleranza dei
+   file JSON; i testi attesi delle costanti si leggono da lib/, non si copiano. Se un controllo ti sembra sbagliato
+   o impossibile, scrivilo come «controllo dubbio» e lascialo com'è.
+C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
+   id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I5) danno NON PROVATO
+   con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.
+D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
+   aggiunti, controlli dubbi, NON PROVATO (con il motivo).
+
+Non fare git (puoi leggere git status). Puoi modificare solo scripts/ui-verify/** e il rapporto; non toccare app/,
+components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, distinguendo
+sempre OK, FALLITO, AVVISO e NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Giorni speciali e Messaggio globale nel lanciatore (VC5)`
+
+### Passo 24 — I5: Giorni speciali e Messaggio globale
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
+
+```text
+PASSO 24 (I5). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I5: schermate Giorni speciali (/app/menu/special-days) e Messaggio globale (/app/menu/message).
 
@@ -473,13 +1035,27 @@ COSA FARE
 NON FARE: «Ricompila» visibile, modifiche a hook o a disponibilita.json, scritture dirette sul file dalla schermata.
 
 VERIFICHE: L0; L1 su `giorni-speciali,messaggio-globale`. In sviluppo prova la lettura del file con lo storage
-in memoria (dichiaralo). La lettura sul bucket vero NON si prova qui: va nei NON PROVATO e nel passo L3.
+in memoria (dichiaralo). La lettura sul bucket vero NON si prova qui: va nei NON PROVATO e nel passo 30 (L3).
 ```
 
-### 4.8 I6: chiusura della sottofase (passo 26)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 25 — D7: controlli di chiusura (L2 completo e L3)
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io). **Niente da incollare in Cursor.**
+**Cosa fai tu**: scrivimi «passo 25»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
+
+### Passo 26 — I6: chiusura della sottofase (solo verifica, documentazione e correzioni minime)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
 ```text
-[incolla prima il BLOCCO COMUNE]
+PASSO 26 (I6). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
 
 CHAT I6: chiusura di 6.6 (solo verifica, documentazione e correzioni minime). NON eseguire l'import di produzione.
 
@@ -508,11 +1084,141 @@ NON FARE: import di produzione, deploy, modifiche alle specifiche.
 VERIFICHE: quelle del punto 2. Risposta finale: la tabella completa delle checklist e l'elenco dei debiti.
 ```
 
-### 4.9 I7: import di produzione 6.8 (passo 31)
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 27 — M2: deploy in produzione e smoke
+
+**Stato**: 🔲
+
+**Chi**: tu. Nessun prompt di Cursor.
+
+**Che cos'è**: il deploy è **automatico**. Ogni push su `main` avvia il trigger Cloud Build (progetto `vma-vd`, regione `europe-west1`, servizio Cloud Run `vma-vd-backend-backoffice-git`; vedi `docs/operativo/cloud-run-produzione.md`). Non c'è un comando di deploy da lanciare, e la 6.6 non ha migrazioni: nessun passaggio sul database di produzione.
+
+**Cosa fai**
+1. Dopo il push della chat I6 (passo 26), in Google Cloud Console apri Cloud Build → Cronologia e controlla che la build del commit di I6 sia terminata con **successo**; in Cloud Run controlla che la revisione più recente serva il 100 % del traffico. Se la build fallisce, incollami l'errore del log.
+2. Smoke (1 minuto, nessuna credenziale): `BASE_URL=<indirizzo pubblico dell'App, senza /app> pnpm ui:verify online --controlli controlli-8.2.json`
+3. Scrivimi «deploy fatto» con l'hash del commit e incollami l'esito dello smoke.
+
+### Passo 28 — V6: l'agente esegue L2 completo (tutte le schermate, WebKit, online senza credenziali)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi. Istanza: V6, dopo la chat I6 e del deploy (passo 27).
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/controlli-6.6.json (i controlli del Menù) e docs/design/verifica/controlli-8.2.json
+   (shell e accesso, per la regressione)
+4. docs/design/verifica/misura-tocco.md
+5. Le specifiche, solo per capire i controlli: le nove specifiche in docs/design/schermate/: piatti, vini, distillati, bevande, servizi, menu-fissi, giorni-speciali, messaggio-globale, integrazione
+
+Poi, in quest'ordine:
+0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
+   Se git status non è pulito, fermati e dimmelo.
+A. Il lanciatore implementa già i controlli (passi VC). Se un controllo del perimetro non è implementato, scrivilo
+   NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa.
+B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json   (tutto)
+   pnpm ui:verify --livello 2 --controlli controlli-8.2.json   (shell e accesso)
+   pnpm ui:verify --livello 2 --controlli controlli-8.5.json   (Orari)
+C. Esegui i controlli «online-senza-credenziali» contro BASE_URL = <DOMINIO PUBBLICO DI CLOUD RUN: sostituiscilo con l'indirizzo con cui apri l'App in produzione, senza /app>, con il comando
+   BASE_URL=<dominio> pnpm ui:verify online --controlli controlli-8.2.json
+   Nessuna credenziale, nessun utente di prova sul dominio pubblico.
+D. Scrivi gli esiti in docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/ come da README, sezione 7.
+E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti, e verifica con git status che i file nuovi siano solo
+   quelli attesi.
+
+Non fare git (puoi leggere git status). Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i
+controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore misurato e
+quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo: scrivilo come
+«controllo dubbio».
+```
+
+**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto».
+**Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V6 (Menù completo)`
+
+### Passo 29 — RL6/F6: rilievi di V6 e correzione dei P (solo se ci sono)
+
+**Stato**: 🔲
+
+**Chi**: la chat di design (io).
+**Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
+
+**Passo F6 (solo se ci sono P)**
+
+**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F6: correzione dei rilievi P della verifica L2 V6. Fai solo
+questo. Le regole di .cursor/rules si caricano da sole.
+
+CARTELLA DEI RILIEVI = <INCOLLA QUI il nome della cartella che ti dà la chat di design, per esempio 2026-10-17-locale-prod>
+
+LEGGI per intero:
+- docs/design/verifica/esiti/<CARTELLA>/: il rapporto dell'agente e rilievi.md (i rilievi P assegnati dalla chat di
+  design, uno per riga: id, valore misurato, valore atteso, schermata).
+- Le specifiche della schermata interessata, sezioni «Testi» e «Layout»: le specifiche delle schermate interessate in docs/design/schermate/
+
+REGOLE
+1. Correggi SOLO i rilievi P elencati in rilievi.md. Non toccare i rilievi A. Non cambiare controlli, soglie,
+   specifiche né documenti di design (docs/design/**). Se un P ti sembra un controllo dubbio o una specifica
+   sbagliata, dillo e non correggere.
+2. PARTE A, solo proposta: per ogni P scrivi la causa che vedi nel codice e il file che toccherai. Poi FERMATI e
+   aspetta il mio «procedi».
+3. Dati: Local API con la sessione dell'utente (overrideAccess: false). Nessuna nuova dipendenza, nessuna
+   migrazione. Componenti shadcn solo come da docs/design/installazione-componenti-ui.md.
+4. Verifiche: L0 (pnpm typecheck, pnpm lint, pnpm ui:check, test unitari di lib/) e L1 dei soli controlli falliti:
+   pnpm ui:verify --livello 1 --schermata <id> --controlli controlli-6.6.json (per la shell: --controlli
+   controlli-8.2.json). Al massimo due giri; al terzo fermati e riportami. Non modificare mai i controlli.
+5. Fermati e riferisci, senza aggirare, se serve un passaggio fuori dal codice o manca un ambiente. Mai produzione.
+6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] con cosa era sbagliato e cosa è
+   cambiato (comprensibile senza questa chat); commit locale (git add + git commit, messaggio che nomina la chat
+   F6); MAI git push. Non modificare la tabella degli stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md.
+7. RISPOSTA FINALE: tabella «Esiti reali» con un rigo per ogni P: corretto / non corretto, con evidenza.
+```
+
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+
+### Passo 30 — M3/D9: L3, sessione reale su Cloud Run e giro su iPhone
+
+**Stato**: 🔲
+
+**Chi**: tu e la chat di design. Nessun prompt di Cursor.
+
+**Prerequisito**: il deploy del passo 27 è fatto, V6 (passo 28) e le sue correzioni (passo 29) sono chiusi.
+
+**Parte D9, la fa la chat di design con il tuo browser**
+1. Sul computer apri Chrome con l'estensione Claude collegata e accedi a `<indirizzo pubblico>/app` come manager.
+2. Scrivimi «pronto». Io eseguo i controlli con sessione reale: Esci con clic vero, accesso all'Admin, i tre ruoli (manager, admin, utente senza ruolo), le righe `delete` nel registro attività dopo l'eliminazione di una voce di prova che creo e cancello io, e per il Messaggio globale la lettura di `disponibilita.json` lato server con l'ora mostrata. Non tocco dati veri.
+
+**Parte M3, il giro su iPhone, la fai tu** (15 minuti, Safari, in chiaro e in scuro): la lista qui sotto. Scrivimi per ogni punto «ok» oppure cosa non va, con uno screenshot se serve.
+
+1. Home «Oggi»: la riga «{N} piatti terminati» e il tocco sulla scheda «Menù».
+2. Pannello di navigazione con le otto voci (su un iPhone con schermo basso le voci scorrono e restano fissi il blocco «Area App» e quello utente).
+3. Piatti: interruttore «Terminato», occhio, cestino (tocco comodo, nessun tocco sbagliato); foglio dal basso con la tastiera aperta sul prezzo (tastiera decimale, i pulsanti restano visibili).
+4. Vini: i menu a tendina, l'anno con la tastiera numerica, la cascata dell'origine.
+5. Menù fissi: la vista «Scegli piatti» (scorrimento, caselle), le frecce, il tasto indietro tra le schede.
+6. Giorni speciali: il selettore della data di iOS, il tema scuro dei controlli nativi.
+7. Messaggio globale: la tastiera sull'area di testo, e dopo il salvataggio «Menù pubblico aggiornato alle…».
+8. Un'eliminazione di una voce di prova con la conferma (testo leggibile, pulsanti raggiungibili).
+
+### Passo 31 — I7: import di produzione 6.8 (sessione con passaggi esterni)
+
+**Stato**: 🔲
+
+**Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto (che sostituisce la regola 6 «mai produzione» del Blocco comune).
 
 È una sessione con passaggi esterni: Composer propone e prepara, **non esegue nulla in produzione senza il tuo «vai» per ogni passaggio**.
 
 ```text
+PASSO 31 (I7). Questo prompt segue il Blocco comune incollato qui sopra, nello stesso messaggio.
+
 CHAT I7: esecuzione in produzione dell'import di 6.8 (una volta sola, alla chiusura della 6.6, prima della 6.9).
 Questa chat segue il BLOCCO COMUNE ma con questa eccezione: la regola 6 («mai produzione») è sostituita da quanto
 scritto qui sotto, passaggio per passaggio.
@@ -521,7 +1227,7 @@ LEGGI
 - docs/piano-sviluppo/fase-6-menu-digitale.md, 6.8, sezione «Esecuzione in produzione» e checklist.
 - docs/operativo/export-menu-vtn-backend.md, docs/operativo/cloud-sql-produzione.md.
 - scripts/prod-db.sh, scripts/import-menu-vtn-backend.ts e scripts/import-menu-vtn-backend/; il report a secco
-  esteso di I0b e le regole di normalizzazione fissate dopo il mio passo M1.
+  esteso di I0b e le regole di normalizzazione fissate dopo il passo 6 (M1).
 
 PARTE A (solo proposta): la sequenza esatta, con i comandi e i flag (incluso --allow-non-dev-database), e
 quali passaggi sono ESTERNI (li fa Mirko): (1) snapshot del giorno, (2) report a secco sul database di produzione:
@@ -538,129 +1244,19 @@ CHIUSURA: spunta in fase-6 6.6 la voce «esecuzione in produzione» e in 6.8 la 
 conteggi coincidono. CHANGELOG con gli esiti reali (anche parziali). Commit locale; il push è mio.
 ```
 
----
+**Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
+**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Io controllo il repo e aggiorno la colonna Stato.
+In più: **prima di dare il «vai» a ogni comando che tocca la produzione, incollami il comando e aspetta il mio ok**; il backup di Cloud SQL lo fai tu e mi scrivi «backup fatto».
 
-## 5. Prompt dell'agente di verifica (chat pulita)
+### Passo 32 — Dopo la 6.6: 6.9 e 6.5
 
-Una **chat nuova** di Cursor con Composer, che non ha scritto il codice. Regola: `.cursor/rules/ui/02-ui-verifica-agente.mdc`. Due modelli: **VC** (implementa i controlli nel lanciatore, prima di una chat I) e **V** (esegue L2, dopo). Si incolla il modello e si sostituiscono i campi `<…>`.
+**Stato**: 🔲
 
-### VC: l'agente implementa i controlli (prima delle chat I)
-
-Le schermate non esistono ancora: il lanciatore deve saper eseguire i controlli, e li prova solo come caricamento e cablaggio.
-
-```text
-Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui IMPLEMENTI I CONTROLLI nel lanciatore, non
-verifichi ancora nessuna schermata.
-
-Leggi nell'ordine, per intero:
-1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
-2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md (sezione 6: ordine per ogni schermata nuova)
-3. docs/design/verifica/controlli-6.6.json, SOLO le schermate: <ID DELL'ISTANZA>
-   (per VC1 anche la shell aggiornata di docs/design/verifica/controlli-8.2.json)
-4. docs/design/verifica/misura-tocco.md
-5. Le specifiche, solo per capire i controlli: <ELENCO DELLE SPECIFICHE DELL'ISTANZA>
-
-Poi:
-A. Leggi scripts/ui-verify/run.mjs e scripts/ui-verify/lib/. Per ogni controllo delle schermate indicate, trova se il
-   lanciatore sa già eseguirlo (stesso tipo di controllo, stesso selettore). Elenca quelli che mancano.
-   Il modello è il modulo per schermata scripts/ui-verify/lib/run-orari.mjs (agganciato da run.mjs): per il Menù
-   crea un modulo analogo (per esempio scripts/ui-verify/lib/run-menu.mjs) e agganciaglielo. I valori attesi della
-   shell oggi sono anche scritti nel codice (scripts/ui-verify/lib/engine.mjs, riga circa 535, e run.mjs: home-testi,
-   shell-menu-voci, shell-segnaposto): in VC1 portali a quelli di controlli-8.2.json v4 (descrizione della scheda
-   Menù, titolo «Oggi», voci della navigazione lette da lib/app/navigation.ts con enabled vero). Gestisci anche:
-   «stato_prova» e «rinviato_a» (esito NON PROVATO con l'evidenza «rinviato alla 6.5»: gli esiti ammessi restano
-   OK, FALLITO, AVVISO e NON PROVATO, non esiste un esito RINVIATO); il profilo telefono-390-basso; le
-   simulazioni APP_MENU_DEV_SIMULATE_* e i dati di prova «verify-ui-…» di dati_e_sicurezza (creati e cancellati
-   in try/finally, solo sviluppo); il comando NO-OVERRIDE; `--controlli controlli-6.6.json` con `--schermata`.
-B. Implementa i tipi di controllo che mancano (per esempio: modulo con select, finestra di conferma con elenco,
-   scheda a percorsi, vista di scelta dentro un foglio, riga di stato della home, campo data nativo, lettura di
-   testi attesi da lib/). Non cambiare nessun controllo, soglia o tolleranza dei file JSON; i testi attesi delle
-   costanti si leggono da lib/, non si copiano. Se un controllo ti sembra sbagliato o impossibile, scrivilo come
-   «controllo dubbio» e lascialo com'è.
-C. Prova solo il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json, riconosce
-   ogni id e tipo delle schermate indicate; sulle pagine che non esistono ancora l'esito è NON PROVATO, senza errori
-   del lanciatore. Non provare le schermate (non ci sono).
-D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
-   aggiunti, controlli dubbi, NON PROVATO.
-
-Non fare git. Puoi modificare solo scripts/ui-verify/** e, se serve, il rapporto; non toccare app/, components/,
-lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, distinguendo sempre OK,
-FALLITO, AVVISO e NON PROVATO.
-```
-
-| Istanza | Prima di | Schermate nel JSON | Specifiche |
-|---|---|---|---|
-| **VC1** | I1 | `shell`, `home`, `piatti` | `integrazione`, `shell`, `piatti` |
-| **VC3** | I3 | `vini`, `distillati`, `bevande` | le tre |
-| **VC4** | I4 | `servizi`, `menu-fissi` | `servizi`, `menu-fissi`, `integrazione` |
-| **VC5** | I5 | `giorni-speciali`, `messaggio-globale` | le due |
-
-### V: l'agente esegue L2 (dopo le chat I)
-
-```text
-Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi.
-
-Leggi nell'ordine, per intero:
-1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
-2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
-3. docs/design/verifica/controlli-6.6.json (i controlli del Menù) e docs/design/verifica/controlli-8.2.json
-   (shell e accesso, per la regressione)
-4. docs/design/verifica/misura-tocco.md
-5. Le specifiche, solo per capire i controlli: <ELENCO DELLE SPECIFICHE DELL'ISTANZA>
-
-Poi, in quest'ordine:
-A. Lanciatore: scripts/ui-verify/run.mjs implementa già i controlli (passo VC). Se un controllo del perimetro
-   non è implementato, scrivilo NON PROVATO e segnalalo: completarlo spetta a una chat VC, non a questa. Deve
-   passare pnpm lint e pnpm typecheck se tocchi il lanciatore (solo per i controlli online nuovi di V6).
-B. Esegui <COMANDI DELL'ISTANZA> su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri).
-C. Esegui i controlli «online-senza-credenziali» contro BASE_URL = <DOMINIO PUBBLICO DI CLOUD RUN>, solo se è stato
-   fatto un deploy dopo l'ultimo commit; altrimenti scrivili come NON PROVATO. Nessuna credenziale, nessun
-   utente di prova sul dominio pubblico.
-D. Scrivi gli esiti in docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/ come da README, sezione 7.
-E. Cancella l'utente di prova e verifica con git status che i file nuovi siano solo quelli attesi.
-
-Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli.
-Rispondi come da regola, in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore
-misurato e quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo:
-scrivilo come «controllo dubbio».
-```
-
-| Istanza | Dopo | Specifiche (punto 5) | Comandi (punto B) |
-|---|---|---|---|
-| **V1** | I1 | `integrazione`, `shell` | `pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata shell,home`, e una seconda esecuzione con `--controlli controlli-8.2.json --schermata shell` per la regressione (il lanciatore legge un file per volta) |
-| **V2** | I2 | `piatti`, `integrazione` | `pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata piatti,shell,home` (shell e home sono id di `controlli-6.6.json`) |
-| **V4** | I4 | `menu-fissi`, `servizi`, `integrazione` | `pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata menu-fissi,servizi` (tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade) |
-| **V6** | I6 e deploy | tutte le nove | `pnpm ui:verify --livello 2 --controlli controlli-6.6.json` (tutto) e poi `pnpm ui:verify online --controlli controlli-8.2.json` (i controlli online senza credenziali; quelli del Menù li aggiunge D7) |
+Non c'è un prompt in questo documento: la 6.9 (scaffold del frontend) e la 6.5 (rebuild) hanno le loro sottofasi in `fase-6-menu-digitale.md`, e li preparo quando la 6.6 è chiusa (passo 31 ✅). La 6.5 accende la bandiera del pulsante «Ricompila il menù pubblico» e prova ciò che qui è NON PROVATO «rinviato alla 6.5»: vedi §7.
 
 ---
 
-## 6. Prompt di correzione dei rilievi P (Composer)
-
-Si usa dopo ogni V, solo se ci sono rilievi **P**. Io li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` (sezione 7) e li committi con il rapporto.
-
-```text
-[incolla prima il BLOCCO COMUNE, tranne le regole 2 (Parte A) e 7 (stato), che qui non servono]
-
-CHAT F: correzione dei rilievi P di una verifica L2.
-
-LEGGI
-- docs/design/verifica/esiti/<CARTELLA>/rapporto (il rapporto dell'agente) e rilievi.md (i P assegnati dalla
-  chat di design, uno per riga: id, valore misurato, valore atteso, schermata).
-- La specifica della schermata interessata, sezione «Testi» e «Layout».
-
-COSA FARE: correggi SOLO i rilievi P elencati in rilievi.md. Non toccare i rilievi A. Non cambiare controlli,
-soglie o specifiche. Se un P ti sembra un controllo dubbio, dillo e non correggere.
-
-VERIFICHE: L0 e L1 dei soli controlli falliti (pnpm ui:verify --livello 1 --schermata <id> --controlli
-controlli-6.6.json); al massimo due giri, al terzo fermati.
-
-CHIUSURA: voce in CHANGELOG con cosa era sbagliato e cosa è cambiato (senza il contesto della chat); commit locale;
-niente push. Risposta: tabella «Esiti reali» per ogni P: corretto / non corretto, con evidenza.
-```
-
----
-
-## 7. Cosa fa la chat di design e quando
+## 5. Riferimento: cosa fa la chat di design e quando
 
 | Passo | Cosa produco | Contenuto |
 |---|---|---|
@@ -674,7 +1270,9 @@ I controlli non si cambiano mai per farli passare: se uno è sbagliato lo correg
 
 ---
 
-## 8. L3: giro su iPhone vero (tuo, passo 30)
+---
+
+## 6. Riferimento: L3, giro su iPhone vero (tuo, passo 30)
 
 Un'ora in tutto, 15 minuti tuoi. Safari su iPhone, in chiaro e in scuro:
 
@@ -689,6 +1287,8 @@ Un'ora in tutto, 15 minuti tuoi. Safari su iPhone, in chiaro e in scuro:
 
 ---
 
-## 9. Dopo la 6.6
+---
+
+## 7. Dopo la 6.6
 
 Ordine del piano (`fase-6` §6.9, §6.5): **6.9** (scaffold del frontend del menù, sul Firebase nuovo) e poi **6.5** (endpoint e trigger di Cloud Build). La 6.5 accende la bandiera del pulsante «Ricompila il menù pubblico» costruito in I1 e prova nella sua checklist ciò che qui è NON PROVATO con l'evidenza «rinviato alla 6.5»: pulsante presente nelle sette intestazioni (Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali), assente nel Messaggio globale e in home, finestra di conferma, esito «avviata». Quel passo ha il suo L1 sulle sette schermate.
