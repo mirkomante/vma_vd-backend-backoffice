@@ -31,12 +31,11 @@ NON PROVATO — si provano in V6, dopo il deploy.
 
 ## Regressione shell (8.2)
 
-- **FALLITO**: `shell-menu-voci` | notebook-1280/chiaro | misurato `navLinks:4` | atteso `navLinks:3` (dettaglio in `2026-10-17-locale-prod/rapporto.md`).
+- **`shell-menu-voci`**: il primo giro segnalava **FALLITO** (`navLinks:4` vs `3`) per **difetto del lanciatore** — `checkShellMenuVoci` contava anche il `SidebarMenuButton` «Area App» in header (`/app`), fuori dai gruppi di navigazione. Corretto il selettore a `[data-sidebar="group"] [data-sidebar="menu-button"][href]`. **Riesecuzione** `pnpm ui:verify locale-prod --livello 2 --controlli controlli-8.2.json --schermata shell` (commit `4f165a4`, dopo fix): **OK** — `navLinks:3` con Piatti, Orari, Elenco; **0 FALLITO** su shell (`2026-10-17-locale-prod/rapporto.md`).
 
 ## Controlli dubbi
 
 1. **`home-riga-menu-stati`**: il JSON cita Skeleton con `aria-busy`; in UI lo skeleton usa `aria-hidden` sul wrapper — il lanciatore rileva `[data-slot=skeleton]` / `animate-pulse`.
-2. **`shell-menu-voci`**: il conteggio `navLinks` potrebbe includere un collegamento extra oltre alle tre voci abilitate (da valutare in design).
 
 ## Pulizia
 

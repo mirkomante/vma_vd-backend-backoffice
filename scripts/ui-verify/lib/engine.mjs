@@ -738,7 +738,9 @@ export async function checkShellMenuVoci(page, navExpectations) {
         .filter(Boolean)
       if (label) itemsByGroup[label] = items
     })
-    const navLinks = document.querySelectorAll('[data-sidebar=menu-button][href], a[data-sidebar=menu-button]').length
+    const navLinks = document.querySelectorAll(
+      '[data-sidebar="group"] [data-sidebar="menu-button"][href], [data-sidebar="group"] a[data-sidebar="menu-button"]',
+    ).length
     return { groups, itemsByGroup, navLinks }
   })
   const attesoGroups = navExpectations?.navGroups?.map((g) => g.label) ?? ['Menù', 'Orari', 'Prenotazioni']
