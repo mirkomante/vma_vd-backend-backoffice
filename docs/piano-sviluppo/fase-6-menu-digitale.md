@@ -386,7 +386,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.6 — Backoffice «Menù» nell'App
 
-**Stato**: 🔶 in corso (Parte 0 chat I0a: permessi delete, registro, matrici verify — 2026-10-17)
+**Stato**: 🔶 in corso (Parte 0 I0a ✅; I0b formati/import — 2026-10-17)
 
 **Dipende da**: Fase 8 (8.2 shell e navigazione, 8.3 guardia di accesso; `arco-30`), 6.2 (`arco-15`) e 6.4 (i cambi di stato riscrivono il file).
 
@@ -423,6 +423,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Deviazioni (sottofase 6.6)**:
 - **Registro senza utente** (I0a, 2026-10-17): **Ufficiale** — ADR-115 nota 2026-10-14: ogni cancellazione lascia una riga con `user`. **Percepito** — le cancellazioni di cleanup negli script (`overrideAccess: true` senza sessione) non devono inquinare il registro. **Osservato** — `menuContentDeleteAfterDelete` non scrive se `req.user` è assente; le prove con utente autenticato coprono il caso operativo.
+- **Formati campi e import** (I0b, 2026-10-17): **Ufficiale** — modulo unico `lib/menu/formats.ts`, `validate` sui campi, import normalizza senza arrotondare valori fuori griglia; report a secco per vini/distillati; bevande senza grado/capacità nello snapshot. **Percepito** — eccezione «valore non modificato» via `previousValue` / campo assente nel PATCH; nessun `beforeValidate` aggiuntivo. **Osservato** — Payload 3.90.2 accetta `update({ disabled: true })` con `abv` non canonico preimpostato via SQL (manager, `overrideAccess: false`); `COMBINED_SHA256` fingerprint import su `vma_vd_dev` dopo verify I0b: `a7ac076f7b10ac0d432f44e141b040e6c37fc7e7e53ab7f076953dd864c4a992` (riferimento checklist 6.3 `793f4746…` non riallineato in questo commit).
 
 **Checklist di chiusura sottofase**:
 - [x] Parte 0: permessi di cancellazione applicati; matrici `verify-menu-6_2` e `verify-menu-6_3` aggiornate; riga di registro per ogni cancellazione (con utente); le categorie dei menù fissi non sono cancellabili dal manager.

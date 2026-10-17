@@ -17,13 +17,6 @@ export const CLASSIFICATION_NORMALIZE: Readonly<Record<string, string>> = {
   'A.O.P': 'A.O.P.',
 }
 
-/** Forme capacità note nello snapshot di riferimento → forma canonica (hint admin «75 cl»). */
-export const VOLUME_CANONICAL: Readonly<Record<string, string>> = {
-  '75cl': '75 cl',
-  '75 cl': '75 cl',
-  '50 cl': '50 cl',
-}
-
 export const KNOWN_MANUAL_REVIEW_WINE_NAMES = [
   'Cremant De Loire Blanc',
   'Chablis cuvée Hélène',

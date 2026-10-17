@@ -21,6 +21,15 @@ import {
 import { fixedMenuCategoryAccess, menuContentAccess, menuContentAdminMeta } from '@/lib/menu/contentCollection'
 import { menuContentCollectionHooks } from '@/lib/menu/menuContentCollectionHooks'
 import { menuVisibilityField } from '@/lib/menu/visibilityField'
+import {
+  validateDrinkAbvField,
+  validateDrinkVolumeField,
+  validateSpiritAbvField,
+  validateSpiritAgingField,
+  validateWineAbvField,
+  validateWineVolumeField,
+  validateWineYearField,
+} from '@/lib/menu/formats'
 import { validateFixedMenuDishesField } from '@/lib/menu/validateFixedMenuDishes'
 import { validateWineGeography } from '@/lib/menu/validateWineGeography'
 
@@ -155,17 +164,20 @@ export const Wines: CollectionConfig = {
       name: 'year',
       type: 'text',
       label: 'Anno',
+      validate: validateWineYearField,
     },
     {
       name: 'volume',
       type: 'text',
       label: 'Capacità',
       admin: { description: 'Es. «75 cl».' },
+      validate: validateWineVolumeField,
     },
     {
       name: 'abv',
       type: 'text',
       label: 'Grado alcolico',
+      validate: validateWineAbvField,
     },
     {
       name: 'price',
@@ -239,11 +251,13 @@ export const Spirits: CollectionConfig = {
       name: 'abv',
       type: 'text',
       label: 'Grado alcolico',
+      validate: validateSpiritAbvField,
     },
     {
       name: 'aging',
       type: 'text',
       label: 'Invecchiamento',
+      validate: validateSpiritAgingField,
     },
     {
       name: 'volume',
@@ -319,11 +333,13 @@ export const Drinks: CollectionConfig = {
       name: 'abv',
       type: 'text',
       label: 'Grado alcolico',
+      validate: validateDrinkAbvField,
     },
     {
       name: 'volume',
       type: 'text',
       label: 'Capacità',
+      validate: validateDrinkVolumeField,
     },
     {
       name: 'allergens',

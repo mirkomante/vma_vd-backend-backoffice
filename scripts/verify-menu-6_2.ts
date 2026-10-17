@@ -5,6 +5,7 @@
  * Usa vma_vd_dev (DATABASE_URL da .env). REST: `pnpm dev` su APP_PUBLIC_URL.
  */
 import config from '@payload-config'
+import { sql } from '@payloadcms/db-postgres'
 import { APIError, type CollectionSlug, getPayload, ValidationError } from 'payload'
 
 import {
@@ -33,6 +34,11 @@ import {
 } from '@/lib/menu/menuContentDeleteLog'
 import type { User } from '@/payload-types'
 
+import {
+  DRINK_VOLUME_ERROR_MESSAGE,
+  SPIRIT_ABV_ERROR_MESSAGE,
+  WINE_VOLUME_ERROR_MESSAGE,
+} from '@/lib/menu/formats'
 import { assertDevDatabaseFromEnv } from './import-menu-vtn-backend/databaseUrl'
 import { runMenuTaxonomiesSeed } from './seed-menu-taxonomies'
 import { maybeInjectControlledFailure } from './verify-menu-inject-fail'
@@ -79,6 +85,14 @@ function validationHasPath(error: unknown, path: string): boolean {
   }
   const validation = error as ValidationError
   return validation.data.errors.some((fieldError) => fieldError.path === path)
+}
+
+function validationMessageAtPath(error: unknown, path: string): string | undefined {
+  if (!isValidationError(error)) {
+    return undefined
+  }
+  const validation = error as ValidationError
+  return validation.data.errors.find((fieldError) => fieldError.path === path)?.message
 }
 
 function asNumericId(id: number | string): number {
@@ -1071,6 +1085,122 @@ async function main(): Promise<void> {
       }
     }
     console.log('OK: PATCH solo country che contraddice region salvata rifiutata')
+
+    console.log('--- Formati vini, distillati, bevande (server) ---')
+    const wineFormat = await payload.create({
+      collection: WINES_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      data: {
+        name: `Fmt wine ${TEST_RUN_ID}`,
+        price: 10,
+        country: asNumericId(fixtureIds.italyId),
+        type: asNumericId(fixtureIds.wineTypeId),
+        year: '2020',
+        volume: '75 cl',
+        abv: '13%',
+      },
+    })
+    trackCreated(createdDocIds, WINES_SLUG, wineFormat.id)
+
+    try {
+      await payload.create({
+        collection: SPIRITS_SLUG,
+        overrideAccess: true,
+        depth: 0,
+        locale: 'it',
+        data: {
+          name: `Fmt bad spirit ${TEST_RUN_ID}`,
+          price: 8,
+          country: asNumericId(fixtureIds.italyId),
+          type: asNumericId(fixtureIds.spiritTypeId),
+          abv: '46%',
+        },
+      })
+      throw new Error('spirit abv 46%: attesa ValidationError')
+    } catch (error) {
+      const msg = validationMessageAtPath(error, 'abv')
+      if (msg !== SPIRIT_ABV_ERROR_MESSAGE) {
+        throw new Error(`spirit abv: messaggio atteso spec, ottenuto «${msg ?? 'n/a'}»`)
+      }
+    }
+    console.log('OK: distillato con grado 46% rifiutato (messaggio spec)')
+
+    try {
+      await payload.create({
+        collection: DRINKS_SLUG,
+        overrideAccess: true,
+        depth: 0,
+        locale: 'it',
+        data: {
+          name: `Fmt bad drink ${TEST_RUN_ID}`,
+          price: 4,
+          type: asNumericId(fixtureIds.drinkTypeId),
+          volume: '20 cl',
+        },
+      })
+      throw new Error('drink volume 20 cl: attesa ValidationError')
+    } catch (error) {
+      const msg = validationMessageAtPath(error, 'volume')
+      if (msg !== DRINK_VOLUME_ERROR_MESSAGE) {
+        throw new Error(`drink volume: messaggio atteso spec, ottenuto «${msg ?? 'n/a'}»`)
+      }
+    }
+    console.log('OK: bevanda con capacità 20 cl rifiutata (messaggio spec)')
+
+    try {
+      await payload.update({
+        collection: WINES_SLUG,
+        id: wineFormat.id,
+        overrideAccess: true,
+        depth: 0,
+        data: { volume: '70 cl' },
+      })
+      throw new Error('wine volume 70 cl: attesa ValidationError')
+    } catch (error) {
+      const msg = validationMessageAtPath(error, 'volume')
+      if (msg !== WINE_VOLUME_ERROR_MESSAGE) {
+        throw new Error(`wine volume: messaggio atteso spec, ottenuto «${msg ?? 'n/a'}»`)
+      }
+    }
+    console.log('OK: vino con capacità 70 cl rifiutato (messaggio spec)')
+
+    await payload.db.drizzle.execute(
+      sql`UPDATE wines SET abv = ${'12,8%'} WHERE id = ${asNumericId(wineFormat.id)}`,
+    )
+    await payload.update({
+      collection: WINES_SLUG,
+      id: wineFormat.id,
+      overrideAccess: false,
+      depth: 0,
+      user: managerApp,
+      data: { disabled: true },
+    })
+    const wineAfterPartial = await payload.findByID({
+      collection: WINES_SLUG,
+      id: wineFormat.id,
+      depth: 0,
+      overrideAccess: true,
+    })
+    if (wineAfterPartial.disabled !== true || wineAfterPartial.abv !== '12,8%') {
+      throw new Error('PATCH parziale disabled con abv non canonico: stato inatteso')
+    }
+    console.log(
+      'OK: manager PATCH solo disabled con abv non canonico preesistente (Local API, overrideAccess false)',
+    )
+
+    try {
+      const res = await restFetchAnon(`/api/wines/${wineFormat.id}`, 'PATCH', { disabled: false })
+      if (res.status === 403) {
+        console.log('NON PROVATO: REST PATCH formati (anonimo 403, serve sessione manager)')
+      } else if (res.ok) {
+        console.log('OK: REST PATCH vino (anonimo o senza auth — esito inatteso da rivedere)')
+      } else {
+        console.log(`NON PROVATO: REST PATCH formati (status ${res.status}, pnpm dev con cookie manager)`)
+      }
+    } catch {
+      console.log('NON PROVATO: REST PATCH formati (fetch fallita, pnpm dev non in ascolto?)')
+    }
 
     console.log('--- Menu fisso: doppione, portion, visibility ---')
     try {

@@ -27,7 +27,15 @@ import {
   resolveAllergenSeedName,
   taxonomyId,
 } from './lookups'
-import { normalizeVolume } from './normalizeVolume'
+import type { NormalizeResult } from '@/lib/menu/formats'
+import {
+  normalizeSpiritAbvForImport,
+  normalizeSpiritAgingForImport,
+  normalizeSpiritVolumeForImport,
+  normalizeWineAbvForImport,
+  normalizeWineVolumeForImport,
+  normalizeWineYearForImport,
+} from '@/lib/menu/formats'
 import {
   isInvalidOptionalGlassRaw,
   isNonPositiveNumericPrice,
@@ -59,8 +67,11 @@ export type ImportReport = {
     seedName: string
     dishCount: number
   }>
-  volumeForms: Array<{ raw: string; count: number; canonical?: string }>
-  volumeRule: string
+  formatDistinct: Array<{
+    label: string
+    forms: Array<{ raw: string; count: number; treatment: string; canonical?: string }>
+  }>
+  drinksFormatNote: string
   glassPriceDistinct: Array<{ raw: string; count: number; treatment: string }>
   normalizations: Array<{ kind: string; example: string }>
   taxonomyReview: Array<{ name: string; hint: string }>
@@ -96,14 +107,62 @@ function pushDuplicateErrors(
   return dups
 }
 
-function collectVolumeStats(snapshot: SnapshotBundle): Map<string, number> {
+function collectStringFieldStats<T>(
+  rows: T[],
+  getValue: (row: T) => string | null | undefined,
+): Map<string, number> {
   const counts = new Map<string, number>()
-  for (const row of [...snapshot.vini, ...snapshot.liquori]) {
-    const raw = row.capacita
+  for (const row of rows) {
+    const raw = getValue(row)
     const label = raw === null || raw === undefined || String(raw).trim() === '' ? '(vuoto)' : String(raw)
     counts.set(label, (counts.get(label) ?? 0) + 1)
   }
   return counts
+}
+
+function treatmentForNormalizedField(
+  raw: string,
+  norm: NormalizeResult,
+): { treatment: string; canonical?: string; error?: boolean } {
+  if (raw === '(vuoto)') {
+    return { treatment: 'omesso' }
+  }
+  if (!norm.ok) {
+    return { treatment: 'rifiutata' }
+  }
+  if (!norm.canonical) {
+    return { treatment: 'omesso' }
+  }
+  if (norm.raw === norm.canonical || raw === norm.canonical) {
+    return { treatment: 'accettata', canonical: norm.canonical }
+  }
+  return { treatment: 'normalizzata', canonical: norm.canonical }
+}
+
+function buildFormatDistinctSection(
+  label: string,
+  stats: Map<string, number>,
+  normalizer: (raw: unknown) => NormalizeResult,
+  errors: ReportError[],
+  errorCode: string,
+  normalizations: ImportReport['normalizations'],
+  kind: string,
+): ImportReport['formatDistinct'][number] {
+  const forms: ImportReport['formatDistinct'][number]['forms'] = []
+  for (const [raw, count] of [...stats.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const norm = raw === '(vuoto)' ? { ok: true as const, raw: null } : normalizer(raw)
+    const { treatment, canonical } = treatmentForNormalizedField(raw, norm)
+    forms.push({ raw, count, treatment, ...(canonical ? { canonical } : {}) })
+    if (raw !== '(vuoto)' && !norm.ok) {
+      errors.push({
+        code: errorCode,
+        message: `${label}: forma non riconosciuta «${raw}» (${count} occorrenze)`,
+      })
+    } else if (norm.ok && norm.canonical && norm.raw && norm.raw !== norm.canonical) {
+      normalizations.push({ kind, example: `${norm.raw} → ${norm.canonical}` })
+    }
+  }
+  return { label, forms }
 }
 
 function collectGlassPriceStats(snapshot: SnapshotBundle): Map<string, number> {
@@ -240,27 +299,63 @@ export async function buildImportReport(
     }
   }
 
-  const volumeStats = collectVolumeStats(snapshot)
-  const volumeForms: ImportReport['volumeForms'] = []
-  for (const [raw, count] of [...volumeStats.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
-    if (raw === '(vuoto)') {
-      volumeForms.push({ raw, count, canonical: '(omesso)' })
-      continue
-    }
-    const norm = normalizeVolume(raw)
-    if (!norm.ok) {
-      volumeForms.push({ raw, count })
-      errors.push({
-        code: 'volume_unknown',
-        message: `Capacità non riconosciuta: «${raw}» (${count} occorrenze)`,
-      })
-    } else {
-      volumeForms.push({ raw, count, canonical: norm.canonical })
-      if (norm.raw && norm.canonical && norm.raw !== norm.canonical) {
-        normalizations.push({ kind: 'capacita', example: `${norm.raw} → ${norm.canonical}` })
-      }
-    }
-  }
+  const formatDistinct: ImportReport['formatDistinct'] = [
+    buildFormatDistinctSection(
+      'vini.year',
+      collectStringFieldStats(snapshot.vini, (w) => w.anno ?? null),
+      (raw) => normalizeWineYearForImport(raw),
+      errors,
+      'wine_year_unknown',
+      normalizations,
+      'anno',
+    ),
+    buildFormatDistinctSection(
+      'vini.abv',
+      collectStringFieldStats(snapshot.vini, (w) => w.grado ?? null),
+      (raw) => normalizeWineAbvForImport(raw),
+      errors,
+      'wine_abv_unknown',
+      normalizations,
+      'grado_vino',
+    ),
+    buildFormatDistinctSection(
+      'vini.volume',
+      collectStringFieldStats(snapshot.vini, (w) => w.capacita ?? null),
+      (raw) => normalizeWineVolumeForImport(raw),
+      errors,
+      'wine_volume_unknown',
+      normalizations,
+      'capacita_vino',
+    ),
+    buildFormatDistinctSection(
+      'distillati.abv',
+      collectStringFieldStats(snapshot.liquori, (l) => l.grado ?? null),
+      (raw) => normalizeSpiritAbvForImport(raw),
+      errors,
+      'spirit_abv_unknown',
+      normalizations,
+      'grado_distillato',
+    ),
+    buildFormatDistinctSection(
+      'distillati.aging',
+      collectStringFieldStats(snapshot.liquori, (l) => l.invecchiamento ?? null),
+      (raw) => normalizeSpiritAgingForImport(raw),
+      errors,
+      'spirit_aging_unknown',
+      normalizations,
+      'invecchiamento',
+    ),
+    buildFormatDistinctSection(
+      'distillati.volume',
+      collectStringFieldStats(snapshot.liquori, (l) => l.capacita ?? null),
+      (raw) => normalizeSpiritVolumeForImport(raw),
+      errors,
+      'spirit_volume_unknown',
+      normalizations,
+      'capacita_distillato',
+    ),
+  ]
+  const drinksFormatNote = 'bevande: grado e capacità non presenti nello snapshot'
 
   const glassStats = collectGlassPriceStats(snapshot)
   const glassPriceDistinct: ImportReport['glassPriceDistinct'] = []
@@ -577,9 +672,8 @@ export async function buildImportReport(
     manualReview,
     entities,
     allergenTable,
-    volumeForms,
-    volumeRule:
-      'Forme note: «75cl» e «75 cl» → «75 cl»; «50 cl» invariato; capacità null/vuota omessa; qualsiasi altra stringa è errore.',
+    formatDistinct,
+    drinksFormatNote,
     glassPriceDistinct,
     normalizations,
     taxonomyReview,
@@ -598,11 +692,16 @@ export function printReport(report: ImportReport, apply: boolean): void {
   }
   console.log('')
 
-  console.log('--- Capacità (vini + distillati) ---')
-  console.log(report.volumeRule)
-  for (const row of report.volumeForms) {
-    console.log(`  «${row.raw}»: ${row.count} → ${row.canonical ?? 'ERRORE'}`)
+  console.log('--- Formati (anno, grado, capacità, invecchiamento) ---')
+  for (const section of report.formatDistinct) {
+    console.log(`[${section.label}]`)
+    for (const row of section.forms) {
+      const tail = row.canonical ? ` → ${row.canonical}` : ''
+      console.log(`  «${row.raw}»: ${row.count} — ${row.treatment}${tail}`)
+    }
+    console.log('')
   }
+  console.log(report.drinksFormatNote)
   console.log('')
 
   console.log('--- prezzoCalice (vini) ---')
@@ -855,9 +954,17 @@ export async function runApply(
     if (!typeId) {
       throw new Error(`Vino «${name}»: tipologia non risolta`)
     }
-    const vol = normalizeVolume(w.capacita)
+    const vol = normalizeWineVolumeForImport(w.capacita)
     if (!vol.ok) {
       throw new Error(`Vino «${name}»: capacità non valida`)
+    }
+    const yearNorm = normalizeWineYearForImport(w.anno)
+    if (!yearNorm.ok) {
+      throw new Error(`Vino «${name}»: anno non valido`)
+    }
+    const abvNorm = normalizeWineAbvForImport(w.grado)
+    if (!abvNorm.ok) {
+      throw new Error(`Vino «${name}»: grado non valido`)
     }
     const glass = parseOptionalGlassPrice(w.prezzoCalice)
     const regionName = w.regione?.nome?.trim()
@@ -892,8 +999,8 @@ export async function runApply(
         name,
         ...(w.descrizione?.trim() ? { description: w.descrizione.trim() } : {}),
         ...(w.cantina?.trim() ? { winery: w.cantina.trim() } : {}),
-        ...(w.anno?.trim() ? { year: w.anno.trim() } : {}),
-        ...(w.grado?.trim() ? { abv: w.grado.trim() } : {}),
+        ...(yearNorm.canonical ? { year: yearNorm.canonical } : {}),
+        ...(abvNorm.canonical ? { abv: abvNorm.canonical } : {}),
         ...(vol.canonical ? { volume: vol.canonical } : {}),
         price: price.value,
         ...(glass.kind === 'value' && glass.value > 0 ? { glassPrice: glass.value } : {}),
@@ -932,9 +1039,17 @@ export async function runApply(
     if (!typeId) {
       throw new Error(`Distillato «${name}»: tipologia non risolta`)
     }
-    const vol = normalizeVolume(l.capacita)
+    const vol = normalizeSpiritVolumeForImport(l.capacita)
     if (!vol.ok) {
       throw new Error(`Distillato «${name}»: capacità non valida`)
+    }
+    const abvNorm = normalizeSpiritAbvForImport(l.grado)
+    if (!abvNorm.ok) {
+      throw new Error(`Distillato «${name}»: grado non valido`)
+    }
+    const agingNorm = normalizeSpiritAgingForImport(l.invecchiamento)
+    if (!agingNorm.ok) {
+      throw new Error(`Distillato «${name}»: invecchiamento non valido`)
     }
     await payload.create({
       collection: SPIRITS_SLUG,
@@ -945,8 +1060,8 @@ export async function runApply(
       data: {
         name,
         ...(l.descrizione?.trim() ? { description: l.descrizione.trim() } : {}),
-        ...(l.grado?.trim() ? { abv: l.grado.trim() } : {}),
-        ...(l.invecchiamento?.trim() ? { aging: l.invecchiamento.trim() } : {}),
+        ...(abvNorm.canonical ? { abv: abvNorm.canonical } : {}),
+        ...(agingNorm.canonical ? { aging: agingNorm.canonical } : {}),
         ...(vol.canonical ? { volume: vol.canonical } : {}),
         price: price.value,
         country: countryId,
