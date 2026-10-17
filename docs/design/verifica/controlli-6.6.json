@@ -390,7 +390,7 @@
       "server separato con errore_caricamento: apri /app"
      ],
      "atteso": [
-      "durante l'attesa la scheda Menù mostra uno Skeleton (aria-busy) alto quanto la riga di testo (±2 px) e le altre schede sono già visibili; poi compare la riga",
+      "durante l'attesa la scheda Menù mostra uno Skeleton (elemento con data-slot=skeleton, decorativo: nessun aria-busy richiesto) alto quanto la riga di testo (±2 px) e le altre schede sono già visibili; poi compare la riga",
       "con l'errore la riga non compare, la scheda Menù resta con titolo e descrizione, il collegamento a /app/menu funziona, nessun avviso di errore nella home e nessun pageerror"
      ],
      "fonte": "integrazione/spec.md §3, decisioni D2 (stati di ogni riga)"
