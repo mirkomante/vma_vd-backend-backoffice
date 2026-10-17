@@ -47,3 +47,18 @@ La riesecuzione L2 su locale-prod è stata interrotta dopo circa 17 minuti; gli 
 1. **F2** (Composer): correggere P1–P6 (passo 14).
 2. **V2 bis** (agente di verifica): correggere i difetti del lanciatore e rifare L2 completo su Piatti (passo 14b).
 3. Solo dopo, passo 15 (VC3).
+
+## Aggiornamento dopo V2 bis (2026-10-17, commit `c67467e`)
+
+**F2 non era stato eseguito quando V2 bis è girato** (nessun commit di correzione tra il passo 12 e V2 bis): le misure di V2 bis sono quindi lo **stato di partenza**, non un controllo delle correzioni. Hanno confermato tutti i P (P1: pulsante 326 su 358 px; P2: nome 20 px; P3: trigger 358×38 e caselle 16×16; P5: allergeni) e hanno corretto sette difetti del lanciatore (lanciatore 3.4.1). Estensioni e riclassificazioni:
+
+- **P4 esteso**: il `Select` mostra il valore interno anche nel foglio dei filtri («all» al posto di «Tutte le categorie» e di «Tutti»), oltre all'identificativo della categoria nel modulo. Si risolve nel `Select` condiviso, associando il valore all'etichetta della voce.
+- **P6 esteso**: nel foglio dei filtri i pulsanti sono «Azzera, Applica», nel riferimento «Applica, Azzera» (il pulsante principale per primo); la spaziatura verticale dei campi è più stretta del riferimento.
+- **`piatti-elimina-concorrenza`**: l'app ricontrolla l'uso dei menù fissi alla conferma e mostra «Non si può eliminare…» con l'elenco aggiornato, invece di «Operazione non riuscita». **Non è un rilievo**: è un comportamento migliore di quello scritto; ho aggiornato la specifica (§9 punto 22c) e il controllo, e resta «Operazione non riuscita» per il rifiuto del database in una corsa vera.
+- **`piatti-modulo-inglese`** (null/null): difetto del lanciatore: la ricerca per nome con `locale: 'en'` cerca il campo inglese vuoto e non trova il piatto; va cercato per id (o per nome con locale `it`). La configurazione ha `fallback: true`, quindi la lettura in inglese ricade sull'italiano. Controllo corretto nel testo.
+- **`piatti-ordine-100`** («su 145» invece di «su 101»): difetto del lanciatore: ha creato 101 piatti in più su un database con 44 piatti. L'app mostra correttamente «su 145». Il controllo ora dice di portare il totale a 101.
+- **`piatti-tassonomie`** («0 opzioni UI»): il lanciatore non aspetta che le opzioni si carichino; P4 resta da valutare con la lettura corretta.
+- **`*-stati-ui` e «vuoto»**: il lanciatore ha ancora la voce «vuoto» dentro `piatti-stati-ui` (il JSON l'ha già spostata nel controllo NON PROVABILE `piatti-stato-vuoto`).
+
+**Da correggere nel lanciatore in V2 ter** (dopo F2): soglia di FALLITO a 100 px per `piatti-colonna-elenco`; attesa delle opzioni in `piatti-tassonomie`; ricerca per id in `piatti-modulo-inglese`; portare il totale a 101 in `piatti-ordine-100`; togliere «vuoto» da `piatti-stati-ui`; nuova aspettativa di `piatti-elimina-concorrenza`.
+

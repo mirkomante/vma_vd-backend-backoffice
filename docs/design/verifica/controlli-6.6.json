@@ -1069,10 +1069,10 @@
       "premi «Elimina»"
      ],
      "atteso": [
-      "il database rifiuta la cancellazione e la finestra mostra «Operazione non riuscita» con «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.»",
-      "il piatto resta e nessuna riga di registro viene scritta"
+      "al momento della conferma l'azione ricontrolla l'uso: la finestra mostra «Non si può eliminare {nome}» con l'elenco aggiornato dei menù (comportamento scelto il 2026-10-17); se invece il rifiuto arriva dal database (corsa tra il controllo e la cancellazione) la finestra mostra «Operazione non riuscita» con «Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.»",
+      "in entrambi i casi il piatto resta e nessuna riga di registro viene scritta"
      ],
-     "fonte": "piatti/spec.md §9 punto 22c; ADR-108 nota del 2026-10-13"
+     "fonte": "docs/design/schermate/piatti/spec.md §9 punto 22c (rivisto il 2026-10-17); ADR-108 nota del 2026-10-13"
     },
     {
      "id": "piatti-elimina-permessi",
@@ -1158,7 +1158,7 @@
      "passi": [
       "apri un piatto senza traduzione inglese",
       "apri un piatto con nome o descrizione inglese",
-      "con la Local API leggi il piatto senza inglese con locale=en"
+      "con la Local API leggi il piatto senza inglese con locale=en (cercalo per id, oppure per nome con locale it: una ricerca per nome con locale en non lo trova)"
      ],
      "atteso": [
       "traduzione chiusa e badge «Manca»",
@@ -1257,7 +1257,7 @@
       "chiaro"
      ],
      "passi": [
-      "porta il numero dei piatti a 101 con piatti di prova «verify-ui-bulk-NNN» (e poi eliminali in try/finally)",
+      "porta il numero TOTALE dei piatti a 101 (crea 101 meno quelli già presenti: il database non è vuoto) con piatti di prova «verify-ui-bulk-NNN» (e poi eliminali in try/finally)",
       "apri /app/menu"
      ],
      "atteso": [
@@ -1798,7 +1798,7 @@
      "passi": [
       "apri un vino senza traduzione inglese",
       "apri un vino con descrizione inglese",
-      "con la Local API leggi il vino senza inglese con locale=en"
+      "con la Local API leggi il vino senza inglese con locale=en (cercalo per id, oppure per nome con locale it: una ricerca per nome con locale en non lo trova)"
      ],
      "atteso": [
       "traduzione chiusa e badge «Manca»",
@@ -2068,7 +2068,7 @@
       "chiaro"
      ],
      "passi": [
-      "porta il numero dei record a 101 con «verify-ui-vini-bulk-NNN» (poi eliminali in try/finally)",
+      "porta il numero TOTALE dei record a 101 (crea 101 meno quelli già presenti: il database non è vuoto) con «verify-ui-vini-bulk-NNN» (poi eliminali in try/finally)",
       "apri la pagina",
       "premi «{c['parz'][2]}»"
      ],
@@ -2577,7 +2577,7 @@
      "passi": [
       "apri un distillato senza traduzione inglese",
       "apri un distillato con descrizione inglese",
-      "con la Local API leggi il distillato senza inglese con locale=en"
+      "con la Local API leggi il distillato senza inglese con locale=en (cercalo per id, oppure per nome con locale it: una ricerca per nome con locale en non lo trova)"
      ],
      "atteso": [
       "traduzione chiusa e badge «Manca»",
@@ -2741,7 +2741,7 @@
       "chiaro"
      ],
      "passi": [
-      "porta il numero dei record a 101 con «verify-ui-distillati-bulk-NNN» (poi eliminali in try/finally)",
+      "porta il numero TOTALE dei record a 101 (crea 101 meno quelli già presenti: il database non è vuoto) con «verify-ui-distillati-bulk-NNN» (poi eliminali in try/finally)",
       "apri la pagina",
       "premi «{c['parz'][2]}»"
      ],
@@ -3235,7 +3235,7 @@
      "passi": [
       "apri un bevanda senza traduzione inglese",
       "apri un bevanda con descrizione inglese o nome inglese",
-      "con la Local API leggi il bevanda senza inglese con locale=en"
+      "con la Local API leggi il bevanda senza inglese con locale=en (cercalo per id, oppure per nome con locale it: una ricerca per nome con locale en non lo trova)"
      ],
      "atteso": [
       "traduzione chiusa e badge «Manca»",
@@ -3395,7 +3395,7 @@
       "chiaro"
      ],
      "passi": [
-      "porta il numero dei record a 101 con «verify-ui-bevande-bulk-NNN» (poi eliminali in try/finally)",
+      "porta il numero TOTALE dei record a 101 (crea 101 meno quelli già presenti: il database non è vuoto) con «verify-ui-bevande-bulk-NNN» (poi eliminali in try/finally)",
       "apri la pagina",
       "premi «{c['parz'][2]}»"
      ],

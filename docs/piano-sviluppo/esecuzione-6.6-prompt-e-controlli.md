@@ -78,7 +78,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 11 | ✅ f4ffb96 | Blocco comune + prompt del passo 11 | I2 | Composer | **Piatti** | L0 + **L1** `piatti` | L1 verde; tu pushi |
 | 12 | ✅ 6507cde | — | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
 | 13 | 🔶 incompleto: da rifare dopo F2 (V2 bis) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
-| 14 | 🔲 F2 da lanciare (P1–P6 assegnati) | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
+| 14 | 🔲 **F2 da lanciare** (P1–P6; V2 bis è girato prima, vale come stato di partenza) | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
 | 15 | 🔲 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
 | 16 | 🔲 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
 | 17 | 🔲 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
@@ -704,7 +704,9 @@ REGOLE
 
 ### Passo 14b — V2 bis: l'agente rifà L2 su Piatti dopo F2
 
-**Quando**: dopo che F2 è chiuso e pushato. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
+> **Esito (2026-10-17)**: **eseguito prima di F2** (commit `c67467e`). Non verifica le correzioni: dà lo stato di partenza e ha corretto sette difetti del lanciatore (3.4.1). Le correzioni di F2 si verificano con **V2 ter** (passo 14c, sotto). Il prompt qui sotto è rimasto per riferimento.
+
+**Quando** (se mai si ripetesse): dopo che F2 è chiuso e pushato. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
 
 ```text
 Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi l'app. Istanza: V2 bis,
@@ -759,6 +761,62 @@ quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibil
 ```
 
 **Quando Cursor ha finito**: incollami il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/`: fai tu `git add -A` e un commit con il messaggio `test(ui-verify): V2 bis — rilievi P e difetti del lanciatore corretti`, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
+
+
+### Passo 14c — V2 ter: l'agente verifica le correzioni di F2 su Piatti
+
+**Quando**: **dopo** che F2 (passo 14) è chiuso, controllato e pushato. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi l'app. Istanza: V2 ter,
+dopo la chat F2 (correzione dei rilievi P di V2).
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/controlli-6.6.json (schermate home, navigazione, piatti; comuni) e
+   docs/design/verifica/controlli-8.2.json (shell e accesso, per la regressione)
+4. docs/design/verifica/misura-tocco.md
+5. docs/design/verifica/esiti/2026-10-17-V2/rilievi.md (compreso l'«Aggiornamento dopo V2 bis») e
+   docs/design/verifica/esiti/2026-10-17-V2bis/rapporto.md
+6. Le specifiche, solo per capire i controlli: docs/design/schermate/piatti/spec.md,
+   docs/design/schermate/integrazione/spec.md
+
+Poi, in quest'ordine:
+0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status
+   --short). Se git status non è pulito, fermati e dimmelo.
+A. LANCIATORE (modifichi solo scripts/ui-verify/**, mai i controlli JSON). Correggi i difetti rimasti dopo V2 bis:
+   1. piatti-colonna-elenco: FALLITO se il nome della scheda ha meno di 100 px (avviso se fuori di 10 px da 137).
+   2. piatti-tassonomie: aspetta che le opzioni del Select si carichino e leggile aprendo il menu; riporta le
+      opzioni lette, quelle delle collection e l'esito delle creazioni rifiutate. Il menu deve mostrare i NOMI
+      delle categorie (non gli identificativi) e nel foglio dei filtri «Tutte le categorie» e «Tutti».
+   3. piatti-modulo-inglese: leggi il piatto senza inglese per id (o per nome con locale it), non per nome con
+      locale en: l'inglese è vuoto e la ricerca non lo troverebbe. Atteso: con locale=en nome e descrizione
+      ricadono sull'italiano.
+   4. piatti-ordine-100: porta il numero TOTALE dei piatti a 101 (crea 101 meno quelli già presenti), poi verifica
+      «Mostrati 100 piatti su 101».
+   5. piatti-stati-ui: togli la voce «vuoto» (è nel controllo piatti-stato-vuoto, NON PROVABILE).
+   6. piatti-elimina-concorrenza: atteso «Non si può eliminare {nome}» con l'elenco aggiornato dei menù oppure
+      «Operazione non riuscita»; in entrambi i casi il piatto resta (il JSON e la specifica sono già aggiornati).
+B. Esegui, su locale-dev (solo il controllo CONSOLE e le simulazioni) e su locale-prod (tutti gli altri):
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata piatti,home,navigazione
+   pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
+   Il giro completo dura più di 20 minuti: è normale. Non interromperlo e non dichiarare fatto ciò che non è girato.
+C. Non eseguire i controlli «online-senza-credenziali»: si fanno in V6. Scrivili NON PROVATO con il motivo.
+D. Scrivi gli esiti in docs/design/verifica/esiti/2026-10-17-locale-prod/ e 2026-10-17-locale-dev/ come da README,
+   sezione 7, e un riepilogo breve in docs/design/verifica/esiti/2026-10-17-V2ter/rapporto.md: i sei P (P1–P6) uno
+   per uno con l'esito (corretto, non corretto, non valutabile) e il valore misurato, i difetti del lanciatore uno
+   per uno, i NON PROVATO con il motivo, e il numero di screenshot salvati per il confronto visivo.
+E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti, e verifica con git status che i file nuovi siano solo
+   quelli attesi.
+
+Non fare git (puoi leggere git status). Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i
+controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore misurato e
+quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo: scrivilo come
+«controllo dubbio».
+```
+
+**Quando Cursor ha finito**: incollami il suo resoconto finale. Fai tu `git add -A` e un commit con il messaggio `test(ui-verify): V2 ter — verifica delle correzioni di F2 su Piatti`, poi il push, e scrivimi «push fatto». Io confronto gli screenshot con i PNG di riferimento (C10), assegno i rilievi e ti do il prompt di aggiornamento stato (§1.3). Il passo 13 diventa ✅ quando V2 ter è senza P aperti.
 
 ### Passo 15 — VC3: l'agente implementa i controlli di Vini, Distillati, Bevande
 
