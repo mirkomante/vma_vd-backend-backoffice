@@ -1,11 +1,11 @@
 # Esito verifica — locale-prod — 2026-10-17
-Commit: 34675680cec8 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 6 min 17 s
+Commit: bd061bcd2ce7 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-8.5.json v3 · Durata: 3 min 43 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 376 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 98 · Controlli distinti nel JSON corrente: 28
+OK: 380 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 102 · Controlli distinti nel JSON corrente: 30
 
 ## Pacchetto: accesso
-Righe: 60 · OK: 60 · FALLITO: 0
+Righe: 62 · OK: 62 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
@@ -29,7 +29,7 @@ Righe: 110 · OK: 107 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: completo
-Righe: 125 · OK: 39 · FALLITO: 0
+Righe: 131 · OK: 41 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -78,12 +78,12 @@ Righe: 125 · OK: 39 · FALLITO: 0
 - **piatti-terminato**: OK in 1/1 combinazioni
 - **piatti-testi**: OK in 1/1 combinazioni
 - **RICOMPILA-ASSENTE**: OK in 1/1 combinazioni
-- **AMBIENTE**: OK in 39/40 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **AMBIENTE**: OK in 41/42 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C1**: OK in 66/69 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C2**: OK in 64/67 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C2-mouse**: OK in 18/19 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C3**: OK in 66/69 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C9**: OK in 39/40 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C9**: OK in 41/42 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-colonne**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-larghezza**: OK in 4/5 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-righe-di-stato**: OK in 2/3 combinazioni (con fallimenti o avvisi su altre combinazioni)
@@ -169,10 +169,9 @@ Righe: 125 · OK: 39 · FALLITO: 0
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **orari-errore-server** | — | — | misurato `—` | atteso `—` | evidenza: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
-- **orari-errore-caricamento** | — | — | misurato `—` | atteso `—` | evidenza: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
-- **orari-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
@@ -194,39 +193,46 @@ Righe: 125 · OK: 39 · FALLITO: 0
 - **NO-OVERRIDE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **orari-errore-server** | — | — | misurato `—` | atteso `—` | evidenza: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- **orari-errore-caricamento** | — | — | misurato `—` | atteso `—` | evidenza: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- **orari-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | NON PROVATO (39/40) |
+| AMBIENTE | NON PROVATO (41/42) |
 | C1 | NON PROVATO (66/69) |
 | C2 | NON PROVATO (64/67) |
 | C2-mouse | NON PROVATO (18/19) |
 | C3 | NON PROVATO (66/69) |
-| C9 | NON PROVATO (39/40) |
-| NO-OVERRIDE | NON PROVATO (0/1) |
-| RICOMPILA-ASSENTE | OK (1/1) |
-| piatti-azioni-pagina | OK (2/2) |
-| piatti-colonna-elenco | OK (2/2) |
-| piatti-console | NON PROVATO (0/1) |
-| piatti-disabilita | OK (1/1) |
-| piatti-elimina-bloccato | OK (1/1) |
-| piatti-elimina-libero | OK (1/1) |
-| piatti-elimina-permessi | OK (1/1) |
-| piatti-elimina-registro | OK (1/1) |
-| piatti-filtri-ricerca | OK (1/1) |
-| piatti-modulo-campi | OK (2/2) |
-| piatti-modulo-footer | OK (1/1) |
-| piatti-modulo-inglese | OK (1/1) |
-| piatti-modulo-validazione | OK (1/1) |
-| piatti-nomi-accessibili | OK (1/1) |
-| piatti-persistenza | OK (1/1) |
-| piatti-righe-azioni | OK (1/1) |
-| piatti-stati-ui | NON PROVATO (0/1) |
-| piatti-tassonomie | OK (1/1) |
-| piatti-terminato | OK (1/1) |
-| piatti-testi | OK (1/1) |
+| C9 | NON PROVATO (41/42) |
+| orari-annulla | OK (1/1) |
+| orari-barra-misure | OK (2/2) |
+| orari-campi-dentro-scheda | OK (4/4) |
+| orari-campi-ora | OK (1/1) |
+| orari-chiusure-foglio | OK (2/2) |
+| orari-colonna | OK (2/2) |
+| orari-console | NON PROVATO (0/1) |
+| orari-dati | OK (1/1) |
+| orari-errore-caricamento | NON PROVATO (0/1) |
+| orari-errore-server | NON PROVATO (0/1) |
+| orari-errore-validazione | OK (2/2) |
+| orari-festivita | OK (1/1) |
+| orari-giorni-riposo | OK (1/1) |
+| orari-giorno-selezionato | OK (2/2) |
+| orari-intestazione-anno | OK (2/2) |
+| orari-modificato-barra | OK (2/2) |
+| orari-nomi-accessibili | OK (1/1) |
+| orari-non-configurato | OK (1/1) |
+| orari-permessi | OK (1/1) |
+| orari-salvataggio-in-corso | OK (1/1) |
+| orari-salvataggio-ok | OK (1/1) |
+| orari-stato-iniziale | OK (1/1) |
+| orari-testi | OK (1/1) |
+| orari-validazione-server | OK (1/1) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -304,10 +310,9 @@ Righe: 125 · OK: 39 · FALLITO: 0
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| orari-errore-server | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
-| orari-errore-caricamento | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
-| orari-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
@@ -329,13 +334,43 @@ Righe: 125 · OK: 39 · FALLITO: 0
 | NO-OVERRIDE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| orari-errore-server | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
+| orari-errore-caricamento | — | — | NON PROVATO | — | — | simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200) |
+| orari-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
 - verify-link-valido: facoltativo: token reale monouso non ottenuto
 - shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
-- NO-OVERRIDE: controllo non eseguito dal lanciatore in questa esecuzione
-- piatti-console: controllo non eseguito dal lanciatore in questa esecuzione
-- piatti-stati-ui: controllo non eseguito dal lanciatore in questa esecuzione
+- orari-errore-server: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- orari-errore-caricamento: simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)
+- orari-console: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
-- (nessuna)
+- Global iniziale (snapshot): weeklyClosedDays=[]; services=2; closures=3; bnb=presente
+- orari-stato-iniziale · avvisi main: 0
+- orari/iniziale · telefono-390/chiaro · avvisi main: 0
+- orari/iniziale · notebook-1280/chiaro · avvisi main: 0
+- orari/iniziale · telefono-390/scuro · avvisi main: 0
+- orari/iniziale · notebook-1280/scuro · avvisi main: 0
+- orari/modificato · telefono-390/chiaro · avvisi main: 0
+- orari/modificato · notebook-1280/chiaro · avvisi main: 0
+- orari/modificato · telefono-390/scuro · avvisi main: 0
+- orari/modificato · notebook-1280/scuro · avvisi main: 0
+- orari/errore-validazione · telefono-390/chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.
+- orari/errore-validazione · notebook-1280/chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.
+- orari/errore-validazione · telefono-390/scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.
+- orari/errore-validazione · notebook-1280/scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.
+- orari/salvato · telefono-390/chiaro · avvisi main: 2 → Orari salvati | Orari salvati
+- orari/salvato · notebook-1280/chiaro · avvisi main: 0
+- orari/salvato · telefono-390/scuro · avvisi main: 0
+- orari/salvato · notebook-1280/scuro · avvisi main: 0
+- orari/foglio-chiusura · telefono-390/chiaro · avvisi main: 0
+- orari/foglio-chiusura · notebook-1280/chiaro · avvisi main: 0
+- orari/foglio-chiusura · telefono-390/scuro · avvisi main: 0
+- orari/foglio-chiusura · notebook-1280/scuro · avvisi main: 0
+- orari/conferma-rimozione · telefono-390/chiaro · avvisi main: 0
+- orari/conferma-rimozione · notebook-1280/chiaro · avvisi main: 0
+- orari/conferma-rimozione · telefono-390/scuro · avvisi main: 0
+- orari/conferma-rimozione · notebook-1280/scuro · avvisi main: 0

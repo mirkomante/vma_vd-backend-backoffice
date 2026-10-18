@@ -68,7 +68,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
-- **Fase 6.6 F2 — esiti L1 `locale-prod` (checkbox radice/box)** (2026-10-17) — C2 telefono-390 su `nuovo`, `nuovo-errori`, `modulo-allergeni` (chiaro/scuro): **OK** (`nessun elemento`); misura su `nuovo`/390/chiaro: radice **44×44**, `checkbox-box` **16×16**; L1 Orari (`8.5`) **0 FALLITO**.
+- **Fase 6.6 F2 — esiti L1 `locale-prod` (checkbox radice/box)** (2026-10-17) — C2 telefono-390 su `nuovo`, `nuovo-errori`, `modulo-allergeni` (chiaro/scuro): **OK** (`nessun elemento`); misura su `nuovo`/390/chiaro: radice **44×44**, `checkbox-box` **16×16**; L1 Orari (`8.5`) **0 FALLITO**. Esiti aggiornati in commit `test(ui-verify)` post-`2b53c00` (Piatti 390 + Orari).
 
 - **Fase 6.6 F2 — esiti L1 `locale-prod`** (2026-10-17) — Aggiornati `docs/design/verifica/esiti/2026-10-17-locale-prod` dopo L1 post-commit `c9eda6e`: Piatti (`controlli-6.6.json`, tutti profili/temi) **0 FALLITO** menu; regressione Orari (`8.5`) **OK** al secondo giro (primo giro: **22 FALLITO** runtime Orari per `ERR_CONNECTION_REFUSED` su `:3100`); shell (`8.2`) e `home,navigazione` (`6.6`) **0 FALLITO**.
 
