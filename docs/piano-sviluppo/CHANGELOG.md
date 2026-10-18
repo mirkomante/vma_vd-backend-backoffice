@@ -20,9 +20,13 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Added
 
+- **Fase 6.6 I4 (chat Servizi, checkpoint)** — Schermata `/app/menu/services` sul catalogo condiviso con `features` opzionali (per Servizi: niente ricerca, filtri, raggruppamento né avviso parziale); `listFlatCatalogPage`, testi in `lib/menu/services/copy.ts`, azioni in `services-actions.ts` (impatto eliminazione con `overrideAccess: false`, EN con `name: nameEn` sempre); helper `formatListedReferences` / `formatCascadeDeleteDescription`; voce nav **Servizi** `enabled: true`. **Tests**: L0 `typecheck`, `lint` (0 errori), `ui:check`, unitari nuovi `lib/menu/format*.test.ts` e `lib/app/services/formModel.test.ts` OK; `pnpm payload run scripts/verify-lib-app-8_2.ts` OK; L1 `servizi` (`telefono-390`, chiaro, `controlli-6.6.json`) OK sui flussi cablati; controlli `servizi-testi`, colonne, azioni pagina ecc. **NON PROVATO** (debito runner passo V). Prima del L1 ripuliti 3 servizi `verify-ui-*` orfani (`delete-prefix` non include `menu-services`).
+
 - **Script dev (F-EN / ripristino 6.8)** — `scripts/audit-dev-db-snapshot.ts` (conteggi collection menù + `COMBINED_SHA256` + record `verify-*`); `scripts/prep-wipe-clear-nonimport.ts` (svuota menù fissi/categorie/giorni speciali prima di `wipe-menu-import-dev` quando il delete piatti fallisce per FK).
 
 ### Changed
+
+- **Catalogo condiviso (I4 Servizi)** — `CatalogListPage` accetta `features` e `deleteDialog.description`; `CatalogTypeGroupBlock` rende tabella o schede con `useIsMobile` (evita doppi pulsanti in a11y); `MenuPageHeader` con `flex-col-reverse` su telefono (primaria sopra Ricompila).
 
 - **F-EN accettato (passo 18b ✅)** (2026-10-18; solo documenti): controllati `5e5b7d3` e `fad9e26`. Difetto riprodotto su cinque collection; nelle tabelle delle lingue `name` è `NOT NULL`, quindi la correzione tiene `required: true`, usa una `validate` che esige il nome solo nella lingua predefinita e scrive il nome inglese vuoto come stringa vuota, senza migrazione. `verify:menu-6_3` e `verify:menu-6_4` passano sul database di sviluppo ripristinato (le due regressioni erano residui di prove, non F-EN). Script di servizio nuovi protetti dal controllo del database di sviluppo. Il passo V4 rilancia con `--solo` la traduzione inglese di Bevande e Piatti dal modulo. Debito documentale: allineare i tre riferimenti dell'impronta dell'import. **Non verificato**: il comportamento dal modulo dell'app (lo prova V4).
 

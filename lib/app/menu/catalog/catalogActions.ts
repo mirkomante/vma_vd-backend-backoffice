@@ -118,6 +118,81 @@ export async function listCatalogPage<TRow extends { id: number | string; name: 
   }
 }
 
+/** Elenco piatto ordinato per nome, senza raggruppamento per tipologia. */
+export async function listFlatCatalogPage<TRow extends { id: number | string; name: string }>(
+  path: string,
+  opts: {
+    collection: CollectionSlug
+    page: number
+    mapDoc: (doc: unknown) => TRow
+    previousRows?: readonly TRow[]
+  },
+): Promise<CatalogListResult<TRow & { typeId: string; typeName: string }>> {
+  if (shouldSimulateMenuLoadError()) {
+    return { ok: false, error: 'load' }
+  }
+
+  await sleepCatalogLoadDelay()
+
+  try {
+    const req = await createAppPayloadRequest(path)
+    const [countRes, found] = await Promise.all([
+      req.payload.count({
+        collection: opts.collection,
+        overrideAccess: false,
+        req,
+      }),
+      req.payload.find({
+        collection: opts.collection,
+        depth: 0,
+        limit: CATALOG_LIST_LIMIT,
+        locale: 'it',
+        overrideAccess: false,
+        page: opts.page,
+        pagination: true,
+        req,
+        sort: 'name',
+      }),
+    ])
+
+    const pageRows = found.docs.map((doc) => opts.mapDoc(doc))
+    const totalDocs = countRes.totalDocs
+    const merged =
+      opts.page === 1 ? pageRows : mergePaginatedRows(opts.previousRows ?? [], pageRows)
+
+    type Row = TRow & { typeId: string; typeName: string }
+    const withType: Row[] = merged.map((row) => ({
+      ...row,
+      typeId: '_flat',
+      typeName: '',
+    }))
+
+    const groups: CatalogTypeGroup<Row>[] = [
+      {
+        typeId: '_flat',
+        typeName: '',
+        heading: '',
+        rows: withType,
+      },
+    ]
+
+    const hasMore = merged.length < totalDocs
+    const emptyDatabase = totalDocs === 0
+
+    return {
+      ok: true,
+      rows: withType,
+      groups,
+      totalDocs,
+      hasMore,
+      emptyDatabase,
+      page: opts.page,
+    }
+  } catch {
+    return { ok: false, error: 'load' }
+  }
+}
+
 export async function patchCatalogDisabled(
   path: string,
   collection: CollectionSlug,

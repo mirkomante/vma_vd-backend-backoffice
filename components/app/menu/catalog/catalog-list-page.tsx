@@ -18,7 +18,12 @@ import { Input } from '@/components/ui/input'
 import type { CatalogTypeGroup } from '@/lib/menu/catalog/groupByType'
 import { CatalogPartialAlert } from './catalog-partial-alert'
 import { CatalogTypeGroupBlock } from './catalog-type-group'
-import type { CatalogListConfig, CatalogListRowBase } from './catalog-list-config'
+import {
+  DEFAULT_CATALOG_LIST_FEATURES,
+  type CatalogListConfig,
+  type CatalogListFeatures,
+  type CatalogListRowBase,
+} from './catalog-list-config'
 
 export type CatalogPageNotice =
   | { kind: 'enabled' }
@@ -29,6 +34,7 @@ export type CatalogPageNotice =
 
 type CatalogListPageProps<TRow extends CatalogListRowBase> = {
   config: CatalogListConfig<TRow>
+  features?: CatalogListFeatures
   groups: CatalogTypeGroup<TRow>[]
   totalDocs: number
   hasMore: boolean
@@ -54,6 +60,7 @@ type CatalogListPageProps<TRow extends CatalogListRowBase> = {
   deleteDialog: {
     open: boolean
     title: string
+    description?: ReactNode
     pending: boolean
     actionError: boolean
     onOpenChange: (open: boolean) => void
@@ -65,6 +72,7 @@ type CatalogListPageProps<TRow extends CatalogListRowBase> = {
 
 export function CatalogListPage<TRow extends CatalogListRowBase>({
   config,
+  features: featuresProp,
   groups,
   totalDocs,
   hasMore,
@@ -91,9 +99,19 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
   filterSheet,
   formSheet,
 }: CatalogListPageProps<TRow>) {
+  const features = { ...DEFAULT_CATALOG_LIST_FEATURES, ...featuresProp }
   const { texts } = config
   const hasGroups = groups.some((g) => g.rows.length > 0)
-  const noResults = !loading && !loadError && !emptyDatabase && !hasGroups
+  const noResults =
+    !loading &&
+    !loadError &&
+    !emptyDatabase &&
+    !hasGroups &&
+    (features.search || features.filters)
+  const listCountLabel =
+    !features.typeGrouping && config.formatListCount && totalDocs > 0 && hasGroups
+      ? config.formatListCount(totalDocs)
+      : null
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
@@ -136,7 +154,7 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
         </>
       ) : null}
 
-      {hasMore ? (
+      {features.partialAlert && hasMore ? (
         <CatalogPartialAlert
           title={`${texts.partialTitlePrefix}${totalDocs}`}
           description={texts.partialDescription}
@@ -146,30 +164,38 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
         />
       ) : null}
 
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <div className="relative min-w-0 flex-1">
-            <Search
-              className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden
-            />
-            <Input
-              placeholder={texts.searchPlaceholder}
-              value={searchValue}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <Button type="button" variant="outline" onClick={onOpenFilters}>
-            <SlidersHorizontal className="size-4" aria-hidden />
-            {texts.filtersButton}
-            {activeFilterCount > 0 ? (
-              <Badge variant="default" className="ml-1">{activeFilterCount}</Badge>
+      {features.search || features.filters ? (
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-2">
+            {features.search ? (
+              <div className="relative min-w-0 flex-1">
+                <Search
+                  className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+                  aria-hidden
+                />
+                <Input
+                  placeholder={texts.searchPlaceholder}
+                  value={searchValue}
+                  onChange={(e) => onSearchChange(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
             ) : null}
-          </Button>
+            {features.filters ? (
+              <Button type="button" variant="outline" onClick={onOpenFilters}>
+                <SlidersHorizontal className="size-4" aria-hidden />
+                {texts.filtersButton}
+                {activeFilterCount > 0 ? (
+                  <Badge variant="default" className="ml-1">{activeFilterCount}</Badge>
+                ) : null}
+              </Button>
+            ) : null}
+          </div>
+          {features.filters ? (
+            <MenuActiveFilterChips filters={filterChips} onRemove={onRemoveFilterChip} />
+          ) : null}
         </div>
-        <MenuActiveFilterChips filters={filterChips} onRemove={onRemoveFilterChip} />
-      </div>
+      ) : null}
 
       {loadError ? (
         <MenuListErrorState
@@ -198,6 +224,9 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
         />
       ) : (
         <div className="flex flex-col gap-6">
+          {listCountLabel ? (
+            <p className="text-sm text-muted-foreground" role="status">{listCountLabel}</p>
+          ) : null}
           {groups.map((group) =>
             group.rows.length > 0 ? (
               <CatalogTypeGroupBlock
@@ -221,7 +250,7 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
         open={deleteDialog.open}
         onOpenChange={deleteDialog.onOpenChange}
         title={deleteDialog.title}
-        description={texts.deleteIrreversible}
+        description={deleteDialog.description ?? texts.deleteIrreversible}
         cancelLabel={texts.deleteBack}
         confirmLabel={texts.deleteConfirm}
         pending={deleteDialog.pending}

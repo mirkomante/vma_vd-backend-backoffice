@@ -49,9 +49,25 @@ export type CatalogListRowBase = {
   disabled?: boolean | null
 }
 
+export type CatalogListFeatures = {
+  search?: boolean
+  filters?: boolean
+  typeGrouping?: boolean
+  partialAlert?: boolean
+}
+
+export const DEFAULT_CATALOG_LIST_FEATURES: CatalogListFeatures = {
+  search: true,
+  filters: true,
+  typeGrouping: true,
+  partialAlert: true,
+}
+
 export type CatalogListConfig<TRow extends CatalogListRowBase> = {
   texts: CatalogListTexts
   tableColumns: CatalogTableColumn[]
+  /** Conteggio sopra l’elenco (es. servizi senza gruppi). */
+  formatListCount?: (total: number) => string
   /** Colonna interruttore «Disponibile» in tabella (prima delle azioni). */
   showAvailabilityColumn?: boolean
   renderTableCells: (row: TRow) => ReactNode[]

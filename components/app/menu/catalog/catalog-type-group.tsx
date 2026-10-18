@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Pencil, Trash2 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import type { CatalogTypeGroup } from '@/lib/menu/catalog/groupByType'
 import type { CatalogListConfig, CatalogListRowBase } from './catalog-list-config'
@@ -27,13 +28,15 @@ export function CatalogTypeGroupBlock<TRow extends CatalogListRowBase>({
   onEdit,
   onDelete,
 }: CatalogTypeGroupBlockProps<TRow>) {
+  const isMobile = useIsMobile()
   const { texts, tableColumns, renderTableCells, renderCardSecondary, renderCardTertiary, tableRowAriaLabel } =
     config
 
   return (
     <section className="flex flex-col gap-2" data-block={`gruppo-${group.typeId}`}>
-      <h2 className="text-base font-semibold">{group.heading}</h2>
-      <div className="hidden md:block">
+      {group.heading ? <h2 className="text-base font-semibold">{group.heading}</h2> : null}
+      {!isMobile ? (
+      <div>
         <Table className="table-fixed">
           <TableHeader>
             <TableRow>
@@ -99,7 +102,8 @@ export function CatalogTypeGroupBlock<TRow extends CatalogListRowBase>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex flex-col gap-2 md:hidden">
+      ) : (
+      <div className="flex flex-col gap-2">
         {group.rows.map((row) => {
           const disabledRow = Boolean(row.disabled)
           const tertiary = renderCardTertiary?.(row)
@@ -138,6 +142,7 @@ export function CatalogTypeGroupBlock<TRow extends CatalogListRowBase>({
           )
         })}
       </div>
+      )}
     </section>
   )
 }

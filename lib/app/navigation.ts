@@ -84,7 +84,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Servizi',
         href: '/app/menu/services',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'concierge-bell',
       },
       {
