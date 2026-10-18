@@ -35,6 +35,29 @@ export async function readComboboxTriggerText(page, comboboxLabel) {
   return (await combo.innerText()).trim()
 }
 
+/** Nome localizzato del paese su un documento catalogo (Local API depth 1, locale all). */
+export function resolveCatalogCountryName(doc, listCountries) {
+  const c = doc?.country
+  if (c == null) return null
+  if (typeof c === 'string') return c
+  if (typeof c === 'object') {
+    const n = c.name
+    if (typeof n === 'string') return n
+    if (n && typeof n === 'object') {
+      const localized = n.it ?? n.en ?? Object.values(n).find((v) => typeof v === 'string')
+      if (localized) return localized
+    }
+    const id = c.id
+    if (id != null) {
+      return listCountries?.find((row) => String(row.id) === String(id))?.name ?? null
+    }
+  }
+  if (typeof c === 'number') {
+    return listCountries?.find((row) => String(row.id) === String(c))?.name ?? null
+  }
+  return null
+}
+
 export async function waitForListboxOptions(page, { minCount = 1, timeoutMs = 12000 } = {}) {
   const listbox = page.getByRole('listbox')
   await listbox.waitFor({ state: 'visible', timeout: timeoutMs })

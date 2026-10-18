@@ -78,6 +78,14 @@ export function menuAddDishToFixedMenu(managerEmail, menuName, dishName) {
   return menuPayloadRun('add-dish-to-fixed-menu', [managerEmail, menuName, dishName])
 }
 
+export function menuCreateMenuService(managerEmail, spec) {
+  return menuPayloadRun('create-menu-service', [managerEmail, JSON.stringify(spec)])
+}
+
+export function menuCreateSpecialDayForMenu(managerEmail, menuName, dateIso) {
+  return menuPayloadRun('create-special-day-for-menu', [managerEmail, menuName, dateIso])
+}
+
 export function menuFindStaffUser(role) {
   return menuPayloadRun('find-staff-user', [role])
 }

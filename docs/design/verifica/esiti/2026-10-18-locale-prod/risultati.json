@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-18",
-    "commit": "54ed0d69cf90",
-    "launcherVersion": "3.5.0",
-    "launcherHeader": "3.5.0 (L1)",
+    "commit": "384f28c1d50a",
+    "launcherVersion": "3.6.0",
+    "launcherHeader": "3.6.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L1",
     "controlliVersion": 1,
-    "durataMs": 55261,
+    "durataMs": 24690,
     "invalidRun": false
   },
   "counts": {
-    "OK": 1364,
-    "FALLITO": 7,
+    "OK": 1367,
+    "FALLITO": 5,
     "AVVISO": 3,
-    "NON PROVATO": 184
+    "NON PROVATO": 186
   },
-  "distinctControls": 2,
+  "distinctControls": 1,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -15501,16 +15501,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "vini-origine-cascata",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "UI regioni (12): Nessuna regione | Piemonte | Campania | Friuli Venezia Giulia | Trentino Alto Adige | Umbria | Lombardia | Marche; collection sample: Alsazia | Borgogna | Campania | Friuli Venezia Giulia | Loira | Lombardia | Marche | Piemonte; denominazioni Collio assenti",
-      "atteso": "origine §7",
-      "evidenza": "/app/menu/wines",
-      "pacchetto": "menu"
-    },
-    {
       "id": "C2",
       "schermata": "vini/elimina",
       "profiloTema": "telefono-390/chiaro",
@@ -15551,16 +15541,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-modulo-inglese",
-      "schermata": "bevande",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "badge/en non letto; menu payload create-catalog-items: $ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- create-catalog-items verify-ui-1792342563625@test.local drinks '[{\"name\":\"verify-ui-bevande-yesen\",\"description\":\"Desc IT\",\"descriptionEn\":\"Desc EN\"}]'\nIl seguente campo non è valido: Nome\n",
-      "atteso": "inglese",
-      "evidenza": "/app/menu/drinks",
-      "pacchetto": "menu"
-    },
-    {
       "id": "bevande-persistenza",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
@@ -15568,16 +15548,6 @@
       "misurato": "create non verificato; locator.click: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator('#drink-field-type')\n    - locator resolved to <button tabindex=\"0\" type=\"button\" role=\"combobox\" data-placeholder=\"\" data-size=\"default\" id=\"drink-field-type\" aria-expanded=\"false\" aria-haspopup=\"listbox\" data-slot=\"select-trigger\" class=\"flex items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:bord…>…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 100ms\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n",
       "atteso": "persistenza",
       "evidenza": "/app/menu/drinks",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "vini-formati-ui",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.scrollIntoViewIfNeeded: Timeout 29997.076ms exceeded.\nCall log:\n  - attempting scroll into view action\n    2 × waiting for element to be stable\n      - element is not visible\n    - retrying scroll into view action\n    - waiting 20ms\n    2 × waiting for element to be stable\n      - element is not visible\n    - retrying scroll into view action\n      - waiting 100ms\n    58 × waiting for element to be stable\n       - element is not visible\n     - retrying scroll into view action\n       - waiting 500ms\n",
-      "atteso": "capacità/grado",
-      "evidenza": "/app/menu/wines",
       "pacchetto": "menu"
     },
     {
@@ -15591,21 +15561,78 @@
       "pacchetto": "menu"
     },
     {
+      "id": "servizi-testi",
+      "schermata": "servizi",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "schermata non ancora implementata",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "menu-fissi-schede-percorsi",
+      "schermata": "menu-fissi",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "schermata non ancora implementata",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-inglese",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge noen=\"Traduzione inglese (facoltativa) Manca\"; badge yesen=\"Traduzione inglese (facoltativa) Presente\"; API locale=en noen name=\"verify-ui-bevande-noen\" desc=\"Desc IT\"; yesen desc=\"Desc EN\"; modulo-solo-desc-en=Modifica bevanda (verify-ui-bevande-uien-only) Operazione non riuscita Non è stato modificato nulla. Controlla la connes",
+      "atteso": "inglese",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
       "id": "vini-persistenza",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
       "esito": "FALLITO",
-      "misurato": "create non verificato; locator.scrollIntoViewIfNeeded: Element is not attached to the DOM\nCall log:\n  - attempting scroll into view action\n    2 × waiting for element to be stable\n      - element is not stable\n    - retrying scroll into view action\n    - waiting 20ms\n    - waiting for element to be stable\n    - element is not stable\n  - retrying scroll into view action\n    - waiting 100ms\n    - waiting for element to be stable\n",
+      "misurato": "create non verificato; locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('#wine-field-type')\n",
       "atteso": "persistenza",
       "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-formati-ui",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /Modifica verify-ui-grade-fmt/i }).first() to be visible\n",
+      "atteso": "capacità/grado",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-cascata",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "UI regioni (12): Nessuna regione | Piemonte | Campania | Friuli Venezia Giulia | Trentino Alto Adige | Umbria | Lombardia | Marche; collection sample: Alsazia | Borgogna | Campania | Friuli Venezia Giulia | Loira | Lombardia | Marche | Piemonte",
+      "atteso": "origine §7",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-paese-fuori-filtro",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "paese API=Vietnam; trigger=\"Vietnam\"; sottotitolo=",
+      "atteso": "nome paese salvato nel trigger (atteso: Vietnam)",
+      "evidenza": "/app/menu/spirits",
       "pacchetto": "menu"
     }
   ],
   "nonProvato": [],
-  "anomalie": [
-    "[prova-extra distillati paese fuori filtro] paese API=[object Object]; trigger Paese=\"Vietnam\"",
-    "[prova-extra bevande paese fuori filtro] record senza paese in API"
-  ],
+  "anomalie": [],
   "screenshotHashes": [
     {
       "name": "shell-home-telefono-390-chiaro",
@@ -16906,6 +16933,16 @@
       "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
       "temaKey": "chiaro",
       "hash": "d0c11f25198a088c91393ac91c1b94b9f5594477580acc1455b6bd6cde3c4c26"
+    },
+    {
+      "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f31b80625c604f49ed683e45baa828fdcd169962c5f875f5ab07ec1d740445dc"
+    },
+    {
+      "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "f31b80625c604f49ed683e45baa828fdcd169962c5f875f5ab07ec1d740445dc"
     }
   ]
 }

@@ -31,6 +31,7 @@ import {
 import { CATALOG_SCREENS, CATALOG_SCREEN_IDS } from './catalog-config.mjs'
 import { runCatalogScreens } from './run-catalog.mjs'
 import { runCatalogConsoleForScreen, runCatalogStatiUi } from './run-catalog-flows.mjs'
+import { runMenuListScreens, runMenuListStatiUi } from './run-menu-list.mjs'
 import { runWithStateTimeout } from './timeouts.mjs'
 
 const ROOT_MENU = join(import.meta.dirname, '../../..')
@@ -253,7 +254,9 @@ export function runMenuComuniChecks(report, runCtx, addRow, { ambiente } = {}) {
     runCtx.screenIncluded('piatti') ||
     runCtx.screenIncluded('vini') ||
     runCtx.screenIncluded('distillati') ||
-    runCtx.screenIncluded('bevande')
+    runCtx.screenIncluded('bevande') ||
+    runCtx.screenIncluded('servizi') ||
+    runCtx.screenIncluded('menu-fissi')
   if (runCtx.shouldRun('RICOMPILA-ASSENTE') && ambiente === 'locale-prod' && !ricompilaViaMenuScreen) {
     addRow(report, {
       id: 'RICOMPILA-ASSENTE',
@@ -1019,6 +1022,27 @@ export async function runMenuChecks(ctx) {
     startMenuDevServer,
     waitForUrl,
   })
+
+  await runMenuListScreens({
+    browser,
+    baseUrl,
+    report,
+    runCtx,
+    CONTROLLI,
+    newPage,
+    loginApp,
+    testUser,
+    testPassword,
+    addRow,
+    progressStep,
+    resultToEsito,
+    screenshot,
+    SHOT_PROFILES,
+    SHOT_TEMI,
+    ambiente,
+    startMenuDevServer,
+    waitForUrl,
+  })
 }
 
 export async function runMenuDevSimulations(ctx) {
@@ -1051,6 +1075,12 @@ export async function runMenuDevSimulations(ctx) {
       CATALOG_SCREENS[screenId],
     )
   }
+
+  await runMenuListStatiUi({
+    ...ctx,
+    startMenuDevServer,
+    waitForUrl,
+  })
 
   if (!runCtx.shouldRun('home-riga-menu-stati')) return
 

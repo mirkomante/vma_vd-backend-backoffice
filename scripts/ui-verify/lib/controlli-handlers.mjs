@@ -38,6 +38,7 @@ export const DEDICATED_FLOW_IDS = new Set([
 ])
 
 const CATALOG_SCREEN_IDS = new Set(['vini', 'distillati', 'bevande'])
+const MENU_LIST_SCREEN_IDS = new Set(['servizi', 'menu-fissi'])
 
 /** Controllo id → runner catalogo (run-catalog.mjs). */
 export function isCatalogFlowControlId(id) {
@@ -47,6 +48,11 @@ export function isCatalogFlowControlId(id) {
     id.startsWith('distillati-') ||
     id.startsWith('bevande-')
   )
+}
+
+export function isMenuListFlowControlId(id) {
+  if (!id) return false
+  return id.startsWith('servizi-') || id.startsWith('menu-fissi-')
 }
 
 export function auditControlliWiring(controlli, { screenIds = null } = {}) {
@@ -68,6 +74,9 @@ export function auditControlliWiring(controlli, { screenIds = null } = {}) {
       if (c.tipo === 'flusso' || c.tipo === 'misura' || c.tipo === 'testo' || c.tipo === 'attributi') {
         if (CATALOG_SCREEN_IDS.has(s.id) && !isCatalogFlowControlId(c.id) && !DEDICATED_FLOW_IDS.has(c.id)) {
           issues.push(`${s.id}/${c.id}: id catalogo senza prefisso schermata`)
+        }
+        if (MENU_LIST_SCREEN_IDS.has(s.id) && !isMenuListFlowControlId(c.id) && !DEDICATED_FLOW_IDS.has(c.id)) {
+          issues.push(`${s.id}/${c.id}: id elenco menù senza prefisso schermata`)
         }
       }
     }

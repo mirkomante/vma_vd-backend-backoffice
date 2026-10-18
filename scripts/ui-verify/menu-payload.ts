@@ -20,6 +20,8 @@ import {
   DRINKS_SLUG,
   FIXED_MENU_CATEGORIES_SLUG,
   FIXED_MENUS_SLUG,
+  MENU_SERVICES_SLUG,
+  SPECIAL_DAYS_SLUG,
   APPELLATIONS_SLUG,
   CLASSIFICATIONS_SLUG,
   REGIONS_SLUG,
@@ -236,7 +238,7 @@ async function main() {
         await payload.update({
           collection: slug,
           id: doc.id,
-          data: { description: spec.descriptionEn },
+          data: { name: spec.name, description: spec.descriptionEn },
           overrideAccess: false,
           user,
           locale: 'en',
@@ -1431,6 +1433,70 @@ async function main() {
       canonicalOk = false
     }
     console.log(JSON.stringify({ results, canonicalOk }))
+    return
+  }
+
+  if (action === 'create-menu-service') {
+    const email = args[1]
+    const json = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !json) throw new Error('create-menu-service: email e json richiesti')
+    const spec = JSON.parse(json) as { name: string; price?: number; disabled?: boolean; nameEn?: string }
+    const doc = await payload.create({
+      collection: MENU_SERVICES_SLUG,
+      data: {
+        name: spec.name,
+        price: spec.price ?? 2,
+        disabled: spec.disabled ?? false,
+      },
+      overrideAccess: false,
+      user,
+    })
+    if (spec.nameEn) {
+      await payload.update({
+        collection: MENU_SERVICES_SLUG,
+        id: doc.id,
+        data: { name: spec.nameEn },
+        overrideAccess: false,
+        user,
+        locale: 'en',
+      })
+    }
+    console.log(JSON.stringify({ ok: true, id: doc.id }))
+    return
+  }
+
+  if (action === 'create-special-day-for-menu') {
+    const email = args[1]
+    const menuName = args[2]
+    const dateIso = args[3]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !menuName || !dateIso) throw new Error('create-special-day-for-menu: parametri mancanti')
+    const menu = await payload.find({
+      collection: FIXED_MENUS_SLUG,
+      where: { name: { equals: menuName } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const menuId = menu.docs[0]?.id
+    if (menuId == null) {
+      console.log(JSON.stringify({ ok: false, reason: 'menu_missing' }))
+      return
+    }
+    const doc = await payload.create({
+      collection: SPECIAL_DAYS_SLUG,
+      data: {
+        date: dateIso,
+        scope: 'day',
+        content: {
+          fixedMenus: [menuId],
+        },
+      },
+      overrideAccess: false,
+      user,
+    })
+    console.log(JSON.stringify({ ok: true, id: doc.id }))
     return
   }
 

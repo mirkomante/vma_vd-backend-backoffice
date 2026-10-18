@@ -13,6 +13,7 @@ import {
   clearComboboxToEmptyOption,
   openFiltersSheet,
   readComboboxTriggerText,
+  resolveCatalogCountryName,
   selectComboboxOption,
   selectComboboxOptionByKeyboard,
   selectFiltersStateOption,
@@ -93,57 +94,6 @@ function pickFirstRealSelectOption(opts) {
 
 const WINE_VOLUME_EXPECTED = ['Non indicata', '25 cl', '33 cl', '37,5 cl', '50 cl', '75 cl', '150 cl']
 
-/** Prova manuale paese disabilitato (senza id nel JSON). */
-async function proveCountryOffFilterExtra(ctx, config, report) {
-  const { browser, baseUrl, newPage, loginApp, testUser, testPassword, screenshot } = ctx
-  const sid = config.id
-  const fieldIds =
-    sid === 'vini' ? WINE_FIELD_IDS : sid === 'distillati' ? SPIRIT_FIELD_IDS : DRINK_FIELD_IDS
-  const name = `verify-ui-${sid}-off-filter-extra`
-  let prevEnabled = true
-  let misurato = 'non eseguito'
-  try {
-    menuDeleteVerifyPrefix()
-    menuCreateCatalogItems(testUser.email, config.collection, [{ name }])
-    const item = menuFindCatalogItem(testUser.email, config.collection, name)
-    const countryRef = item.doc?.country
-    const countryName =
-      typeof countryRef === 'object' && countryRef != null
-        ? countryRef.name ?? String(countryRef.id ?? '')
-        : countryRef
-          ? String(countryRef)
-          : null
-    if (!countryName) {
-      misurato = 'record senza paese in API'
-    } else {
-      if (sid === 'vini') {
-        const tax = menuListWineOriginTaxonomies()
-        const row = tax?.countries?.find((c) => c.name === countryName)
-        prevEnabled = row?.enabled !== false
-      }
-      menuSetCountryEnabled(countryName, false)
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoCatalog(page, config)
-      await clickRowAction(page, name, 'edit')
-      await waitForCatalogEditSheetReady(page, fieldIds.name)
-      const countryLabel = copy(sid, 'FORM_COUNTRY') ?? 'Paese'
-      const trigger = await readComboboxTriggerText(page, countryLabel)
-      misurato = `paese API=${countryName}; trigger Paese=${JSON.stringify(trigger)}`
-      if (screenshot) {
-        await screenshot(page, report, `${sid}-modulo-paese-fuori-filtro-telefono-390-chiaro`, 'chiaro')
-      }
-      await pctx.close()
-    }
-  } finally {
-    const item = menuFindCatalogItem(testUser.email, config.collection, name)
-    const countryName = typeof item.doc?.country === 'object' ? item.doc.country?.name : null
-    if (countryName) menuSetCountryEnabled(countryName, prevEnabled)
-    menuDeleteVerifyPrefix()
-  }
-  report.anomalie.push(`[prova-extra ${sid} paese fuori filtro] ${misurato}`)
-}
-
 function copy(screenId, name) {
   return catalogCopyConst(screenId, name)
 }
@@ -200,29 +150,10 @@ async function clickRowAction(page, name, action) {
 
 async function openSelectDom(page, domId) {
   await page.keyboard.press('Escape')
-  await page.locator(`#${domId}`).click({ timeout: 12000 })
-}
-
-function resolveCatalogCountryName(doc, listCountries) {
-  const c = doc?.country
-  if (c == null) return null
-  if (typeof c === 'string') return c
-  if (typeof c === 'object') {
-    const n = c.name
-    if (typeof n === 'string') return n
-    if (n && typeof n === 'object') {
-      const localized = n.it ?? n.en ?? Object.values(n).find((v) => typeof v === 'string')
-      if (localized) return localized
-    }
-    const id = c.id
-    if (id != null) {
-      return listCountries?.find((row) => String(row.id) === String(id))?.name ?? null
-    }
-  }
-  if (typeof c === 'number') {
-    return listCountries?.find((row) => String(row.id) === String(c))?.name ?? null
-  }
-  return null
+  await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+  const el = page.locator(`#${domId}`)
+  await el.scrollIntoViewIfNeeded()
+  await el.click({ timeout: 12000, force: false })
 }
 
 async function toggleDisponibile(page, name) {
@@ -233,6 +164,67 @@ function loadErrorTitle(screenId) {
   if (screenId === 'vini') return copy('vini', 'LOAD_ERROR_TITLE') ?? 'Impossibile caricare i vini'
   if (screenId === 'distillati') return copy('distillati', 'LOAD_ERROR_TITLE') ?? 'Impossibile caricare i distillati'
   return copy('bevande', 'LOAD_ERROR_TITLE') ?? 'Impossibile caricare le bevande'
+}
+
+async function runPaeseFuoriFiltroFlow(ctx, config, { controlId, recordName, screenshotName }) {
+  const { browser, baseUrl, report, newPage, loginApp, testUser, testPassword, addRow, screenshot } = ctx
+  const sid = config.id
+  const fieldIds = sid === 'vini' ? WINE_FIELD_IDS : sid === 'distillati' ? SPIRIT_FIELD_IDS : DRINK_FIELD_IDS
+  const failures = []
+  let misuratoPaese = 'paese non letto'
+  let countryNameSaved = null
+  let prevEnabled = true
+  try {
+    menuDeleteVerifyPrefix()
+    menuCreateCatalogItems(testUser.email, config.collection, [{ name: recordName }])
+    const item = menuFindCatalogItem(testUser.email, config.collection, recordName)
+    const taxForCountry = menuListWineOriginTaxonomies()
+    countryNameSaved = resolveCatalogCountryName(item.doc, taxForCountry.countries)
+    if (!countryNameSaved) failures.push('record senza paese in API')
+    if (countryNameSaved) {
+      const row = taxForCountry.countries?.find((c) => c.name === countryNameSaved)
+      prevEnabled = row?.enabled !== false
+      menuSetCountryEnabled(countryNameSaved, false)
+    }
+    const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+    await loginApp(page, baseUrl, testUser.email, testPassword)
+    await gotoCatalog(page, config)
+    await page.getByPlaceholder(config.searchPlaceholder).fill(recordName).catch(() => {})
+    await page.waitForTimeout(500)
+    await clickRowAction(page, recordName, 'edit')
+    await waitForCatalogEditSheetReady(page, fieldIds.name)
+    const subtitle = await page
+      .locator('[data-slot=sheet-content] [data-slot=sheet-description], [data-slot=sheet-content] .text-muted-foreground')
+      .first()
+      .innerText()
+      .catch(() => '')
+    if (subtitle && recordName && !subtitle.includes(recordName)) failures.push(`sottotitolo foglio=${JSON.stringify(subtitle)}`)
+    const countryLabel = copy(sid, 'FORM_COUNTRY') ?? 'Paese'
+    await page.locator(`#${sid === 'vini' ? 'wine' : sid === 'distillati' ? 'spirit' : 'drink'}-field-country`).scrollIntoViewIfNeeded()
+    const trigger = await readComboboxTriggerText(page, countryLabel)
+    misuratoPaese = `paese API=${countryNameSaved ?? 'n/a'}; trigger=${JSON.stringify(trigger)}; sottotitolo=${subtitle.trim()}`
+    if (countryNameSaved && !trigger.includes(countryNameSaved)) failures.push('paese salvato non nel trigger')
+    if (screenshot && screenshotName) {
+      await screenshot(page, report, screenshotName, 'chiaro')
+    }
+    await pctx.close()
+  } catch (e) {
+    failures.push(e.message)
+  } finally {
+    const item = menuFindCatalogItem(testUser.email, config.collection, recordName)
+    const restoreName = resolveCatalogCountryName(item.doc, menuListWineOriginTaxonomies().countries)
+    if (restoreName) menuSetCountryEnabled(restoreName, prevEnabled)
+    menuDeleteVerifyPrefix()
+  }
+  addRow(report, {
+    id: controlId,
+    schermata: sid,
+    profiloTema: 'telefono-390/chiaro',
+    esito: failures.length ? 'FALLITO' : 'OK',
+    misurato: failures.length ? `${misuratoPaese}; ${failures.join(' | ')}` : misuratoPaese,
+    atteso: `nome paese salvato nel trigger (atteso: ${countryNameSaved ?? 'paese salvato'})`,
+    evidenza: config.path,
+  })
 }
 
 /**
@@ -618,6 +610,23 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         if (!yesEnOk) failures.push(`yesen badge letto=${JSON.stringify(badgeYes)}; API en desc=${JSON.stringify(enYes.description)}`)
         if (enNo.description == null && enNo.name == null) failures.push('read en noen')
         misuratoEn = `badge noen=${JSON.stringify(badgeNo)}; badge yesen=${JSON.stringify(badgeYes)}; API locale=en noen name=${JSON.stringify(enNo.name)} desc=${JSON.stringify(enNo.description)}; yesen desc=${JSON.stringify(enYes.description)}`
+        if (sid === 'bevande') {
+          menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-bevande-uien-only' }])
+          await page.keyboard.press('Escape')
+          await gotoCatalog(page, config)
+          await clickRowAction(page, 'verify-ui-bevande-uien-only', 'edit')
+          await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+          await page.getByRole('button', { name: transBtn }).click()
+          const descEn = page.getByRole('textbox', { name: /Description/i })
+          await descEn.fill('Only EN description from module')
+          await page.getByRole('button', { name: copy(sid, 'FORM_SAVE') ?? 'Salva' }).click()
+          await page.waitForTimeout(600)
+          const sheetText = await page.locator('[data-slot=sheet-content]').innerText().catch(() => '')
+          if (/Nome/i.test(sheetText) && /non è valido|obbligatorio/i.test(sheetText)) {
+            failures.push(`APP: salvataggio solo descrizione EN fallisce: ${sheetText.slice(0, 200)}`)
+          }
+          misuratoEn += `; modulo-solo-desc-en=${sheetText.slice(0, 120).replace(/\s+/g, ' ')}`
+        }
         await pctx.close()
       } catch (e) {
         failures.push(e.message)
@@ -695,8 +704,10 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         }
         await page.keyboard.press('Escape')
         await page.getByPlaceholder(config.searchPlaceholder).fill('verify-ui-grade-fmt')
-        await page.waitForTimeout(600)
-        await clickRowAction(page, 'verify-ui-grade-fmt', 'edit')
+        await page.waitForTimeout(800)
+        const rowBtn = page.getByRole('button', { name: /Modifica verify-ui-grade-fmt/i })
+        await rowBtn.first().waitFor({ state: 'visible', timeout: 20000 })
+        await rowBtn.first().click()
         await waitForCatalogEditSheetReady(page, WINE_FIELD_IDS.name)
         try {
           abvText = await readComboboxTriggerText(page, copy('vini', 'FORM_ABV') ?? 'Grado')
@@ -881,6 +892,7 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         const regOpts = await waitForListboxOptions(page)
         if (!regOpts.some((o) => o.includes('Friuli'))) failures.push('regioni Italia assenti in UI')
         await selectComboboxOptionByKeyboard(page, regionLabel, 'Friuli Venezia Giulia')
+        await selectComboboxOptionByKeyboard(page, appLabel, 'Collio').catch(() => {})
         await page.getByRole('combobox', { name: appLabel }).click()
         const appOpts = await waitForListboxOptions(page)
         if (!appOpts.some((o) => o.includes('Collio'))) failures.push('denominazioni Collio assenti')
@@ -933,57 +945,27 @@ export async function runCatalogFlowControlsFull(ctx, config) {
     }
 
     if (sid === 'vini' && runCtx.shouldRun('vini-origine-fuori-filtro')) {
-      const failures = []
-      let misuratoPaese = 'paese non letto'
-      let countryNameSaved = null
-      let prevEnabled = true
-      try {
-        menuDeleteVerifyPrefix()
-        menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-vini-off-filter' }])
-        const item = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-vini-off-filter')
-        const taxForCountry = menuListWineOriginTaxonomies()
-        countryNameSaved = resolveCatalogCountryName(item.doc, taxForCountry.countries)
-        if (!countryNameSaved) failures.push('record senza paese in API')
-        if (countryNameSaved) {
-          const tax = menuListWineOriginTaxonomies()
-          const row = tax.countries?.find((c) => c.name === countryNameSaved)
-          prevEnabled = row?.enabled !== false
-          menuSetCountryEnabled(countryNameSaved, false)
-        }
-        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await gotoCatalog(page, config)
-        await clickRowAction(page, 'verify-ui-vini-off-filter', 'edit')
-        await waitForCatalogEditSheetReady(page, WINE_FIELD_IDS.name)
-        const countryLabel = copy('vini', 'FORM_COUNTRY') ?? 'Paese'
-        const trigger = await readComboboxTriggerText(page, countryLabel)
-        misuratoPaese = `paese API=${countryNameSaved ?? 'n/a'}; trigger=${JSON.stringify(trigger)}`
-        if (countryNameSaved && !trigger.includes(countryNameSaved)) failures.push('paese salvato non nel trigger')
-        if (screenshot) {
-          await screenshot(page, report, 'vini-modulo-paese-fuori-filtro-telefono-390-chiaro', 'chiaro')
-        }
-        await pctx.close()
-        try {
-          await proveCountryOffFilterExtra(ctx, CATALOG_SCREENS.distillati, report)
-          await proveCountryOffFilterExtra(ctx, CATALOG_SCREENS.bevande, report)
-        } catch (e) {
-          failures.push(`prove-extra: ${e.message}`)
-        }
-      } catch (e) {
-        failures.push(e.message)
-      } finally {
-        const item = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-vini-off-filter')
-        const restoreName = resolveCatalogCountryName(item.doc, menuListWineOriginTaxonomies().countries)
-        if (restoreName) menuSetCountryEnabled(restoreName, prevEnabled)
-        menuDeleteVerifyPrefix()
-      }
-      add(
-        'vini-origine-fuori-filtro',
-        failures.length ? 'FALLITO' : 'OK',
-        failures.length ? `${misuratoPaese}; ${failures.join(' | ')}` : misuratoPaese,
-        `nome paese disabilitato visibile nel trigger (atteso: ${countryNameSaved ?? 'paese salvato'})`,
-        config.path,
-      )
+      await runPaeseFuoriFiltroFlow(ctx, config, {
+        controlId: 'vini-origine-fuori-filtro',
+        recordName: 'verify-ui-vini-off-filter',
+        screenshotName: 'vini-modulo-paese-fuori-filtro-telefono-390-chiaro',
+      })
+    }
+
+    if (sid === 'distillati' && runCtx.shouldRun('distillati-paese-fuori-filtro')) {
+      await runPaeseFuoriFiltroFlow(ctx, config, {
+        controlId: 'distillati-paese-fuori-filtro',
+        recordName: 'verify-ui-distillati-off-filter',
+        screenshotName: 'distillati-modulo-paese-fuori-filtro-telefono-390-chiaro',
+      })
+    }
+
+    if (sid === 'bevande' && runCtx.shouldRun('bevande-paese-fuori-filtro')) {
+      await runPaeseFuoriFiltroFlow(ctx, config, {
+        controlId: 'bevande-paese-fuori-filtro',
+        recordName: 'verify-ui-bevande-off-filter',
+        screenshotName: 'bevande-modulo-paese-fuori-filtro-telefono-390-chiaro',
+      })
     }
 
     if (sid === 'vini' && runCtx.shouldRun('vini-coerenza-geografica') && ambiente === 'locale-dev') {
@@ -1054,6 +1036,7 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoCatalog(page, config)
         await page.getByRole('button', { name: config.newButton }).click()
+        await waitForCatalogEditSheetReady(page, fieldIds.name)
         await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
         await page.locator('[data-slot=sheet-content]').evaluate((el) => {
           el.scrollTop = 0

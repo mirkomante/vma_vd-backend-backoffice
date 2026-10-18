@@ -13,10 +13,10 @@ export function allControlIds(controlli, ambiente, opts = {}) {
 
   if (ambiente === 'locale-dev') {
     const ids = []
-    const menuScreenIds = ['home', 'navigazione', 'piatti', 'vini', 'distillati', 'bevande']
+    const menuScreenIds = ['home', 'navigazione', 'piatti', 'vini', 'distillati', 'bevande', 'servizi', 'menu-fissi']
     const menuInScope = schermate && menuScreenIds.some((id) => schermate.has(id))
     if (menuInScope) {
-      for (const screenId of ['piatti', 'vini', 'distillati', 'bevande']) {
+      for (const screenId of ['piatti', 'vini', 'distillati', 'bevande', 'servizi', 'menu-fissi']) {
         if (schermate && !schermate.has(screenId)) continue
         const screen = controlli.schermate?.find((s) => s.id === screenId)
         for (const c of screen?.controlli ?? []) {
@@ -27,7 +27,7 @@ export function allControlIds(controlli, ambiente, opts = {}) {
       for (const c of controlli.comuni ?? []) {
         if (c.id === 'CONSOLE' && schermate?.has('piatti') && levelOk('CONSOLE')) ids.push('CONSOLE')
       }
-      for (const screenId of ['vini', 'distillati', 'bevande']) {
+      for (const screenId of ['vini', 'distillati', 'bevande', 'servizi', 'menu-fissi']) {
         if (schermate && !schermate.has(screenId)) continue
         const consoleId = `${screenId}-console`
         if (levelOk(consoleId)) ids.push(consoleId)

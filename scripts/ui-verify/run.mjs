@@ -135,7 +135,9 @@ function menuScreensInScope() {
     runCtx.screenIncluded('piatti') ||
     runCtx.screenIncluded('vini') ||
     runCtx.screenIncluded('distillati') ||
-    runCtx.screenIncluded('bevande')
+    runCtx.screenIncluded('bevande') ||
+    runCtx.screenIncluded('servizi') ||
+    runCtx.screenIncluded('menu-fissi')
   )
 }
 
@@ -1237,9 +1239,13 @@ async function main() {
   runCtx = createRunContext(CONTROLLI, cli)
 
   if (controlliBasename.includes('6.6')) {
-    const wiringIssues = auditControlliWiring(CONTROLLI, {
-      screenIds: new Set(['vini', 'distillati', 'bevande', 'piatti']),
-    })
+    const wiringScreens = new Set(['vini', 'distillati', 'bevande', 'piatti', 'servizi', 'menu-fissi'])
+    if (runCtx.schermate?.size) {
+      for (const id of runCtx.schermate) {
+        if (['vini', 'distillati', 'bevande', 'piatti', 'servizi', 'menu-fissi'].includes(id)) wiringScreens.add(id)
+      }
+    }
+    const wiringIssues = auditControlliWiring(CONTROLLI, { screenIds: wiringScreens })
     if (wiringIssues.length) {
       console.error('[ui:verify] cablaggio controlli incompleto:')
       for (const line of wiringIssues) console.error(`  - ${line}`)
