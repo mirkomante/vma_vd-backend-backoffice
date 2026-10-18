@@ -70,6 +70,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   const [formOpen, setFormOpen] = useState(false)
+  const [formSessionKey, setFormSessionKey] = useState(0)
   const [formMode, setFormMode] = useState<'new' | 'edit'>('new')
   const [editSpiritId, setEditSpiritId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
@@ -138,7 +139,17 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
     if (context.loadError) {
       return
     }
-    void reload(query, 1, [])
+    let cancelled = false
+    void (async () => {
+      await Promise.resolve()
+      if (cancelled) {
+        return
+      }
+      await reload(query, 1, [])
+    })()
+    return () => {
+      cancelled = true
+    }
   }, [context.loadError, query, reload])
 
   const removeChip = (id: string) => {
@@ -210,6 +221,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
       }}
       onNew={() => {
         setNotice(null)
+        setFormSessionKey((k) => k + 1)
         setFormMode('new')
         setEditSpiritId(null)
         setEditName('')
@@ -243,6 +255,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
           setEditName(row.name)
           setFormValues(emptySpiritFormValues())
           setFormCountries(context.countries)
+          setFormSessionKey((k) => k + 1)
           setFormOpen(true)
           return
         }
@@ -253,6 +266,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
         setFormCountries(loaded.countries)
         setFormFieldErrors({})
         setFormActionError(false)
+        setFormSessionKey((k) => k + 1)
         setFormOpen(true)
       }}
       onDeleteRequest={(row) => {
@@ -365,6 +379,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
       }
       formSheet={
         <SpiritFormSheet
+          key={formSessionKey}
           open={formOpen}
           mode={formMode}
           editName={editName}

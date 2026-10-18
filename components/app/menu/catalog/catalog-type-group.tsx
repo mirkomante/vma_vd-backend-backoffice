@@ -1,7 +1,5 @@
 'use client'
 
-import type { ReactNode } from 'react'
-
 import { MenuContentRowActions } from '@/components/app/menu/menu-content-row-actions'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { LocalizedTranslationCollapsible } from '@/components/app/menu/localized-translation-collapsible'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -98,14 +98,6 @@ export function SpiritFormSheet({
   const [translationOpen, setTranslationOpen] = useState(() =>
     hasEnglishSpiritDescription(initialValues),
   )
-
-  useEffect(() => {
-    if (!open) {
-      return
-    }
-    setValues(initialValues)
-    setTranslationOpen(hasEnglishSpiritDescription(initialValues))
-  }, [open, initialValues])
 
   const typeItems = useMemo(
     () => Object.fromEntries(spiritTypes.map((t) => [t.id, t.name])),

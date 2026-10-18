@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { LocalizedTranslationCollapsible } from '@/components/app/menu/localized-translation-collapsible'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -99,14 +99,6 @@ export function DrinkFormSheet({
   const isMobile = useIsMobile()
   const [values, setValues] = useState(initialValues)
   const [translationOpen, setTranslationOpen] = useState(() => hasEnglishDrinkFields(initialValues))
-
-  useEffect(() => {
-    if (!open) {
-      return
-    }
-    setValues(initialValues)
-    setTranslationOpen(hasEnglishDrinkFields(initialValues))
-  }, [open, initialValues])
 
   const typeItems = useMemo(
     () => Object.fromEntries(drinkTypes.map((t) => [t.id, t.name])),

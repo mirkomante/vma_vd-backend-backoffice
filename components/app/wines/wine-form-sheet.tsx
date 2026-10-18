@@ -112,14 +112,6 @@ export function WineFormSheet({
     if (!open) {
       return
     }
-    setValues(initialValues)
-    setTranslationOpen(hasEnglishWineDescription(initialValues))
-  }, [open, initialValues])
-
-  useEffect(() => {
-    if (!open) {
-      return
-    }
     let cancelled = false
     void loadWineOriginOptionsAction({
       countryId: values.countryId || undefined,

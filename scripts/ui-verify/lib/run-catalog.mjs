@@ -193,7 +193,7 @@ export async function runCatalogFlowControls(ctx, config) {
         })
         await applyFiltersSheet(page)
         await openFiltersSheet(page)
-        await clearComboboxToEmptyOption(page, 'Paese', '—')
+        await clearComboboxToEmptyOption(page, 'Paese', 'Tutti i paesi')
         await applyFiltersSheet(page)
       } catch (e) {
         failures.push(e.message)

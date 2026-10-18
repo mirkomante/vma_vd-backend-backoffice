@@ -43,8 +43,6 @@ import {
   VINI_FILTERS_ALL_COUNTRIES,
   VINI_FILTERS_ALL_REGIONS,
   VINI_FILTERS_ALL_TYPES,
-  VINI_FILTERS_APPLY,
-  VINI_FILTERS_RESET,
   VINI_FILTERS_SHEET_DESCRIPTION,
   VINI_FILTERS_SHEET_TITLE,
   VINI_FILTER_STATE_ALL,
@@ -79,6 +77,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   const [formOpen, setFormOpen] = useState(false)
+  const [formSessionKey, setFormSessionKey] = useState(0)
   const [formMode, setFormMode] = useState<'new' | 'edit'>('new')
   const [editWineId, setEditWineId] = useState<string | null>(null)
   const [editName, setEditName] = useState('')
@@ -178,7 +177,17 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
     if (context.loadError) {
       return
     }
-    void reload(query, 1, [])
+    let cancelled = false
+    void (async () => {
+      await Promise.resolve()
+      if (cancelled) {
+        return
+      }
+      await reload(query, 1, [])
+    })()
+    return () => {
+      cancelled = true
+    }
   }, [context.loadError, query, reload])
 
   const removeChip = (id: string) => {
@@ -280,6 +289,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
       }}
       onNew={() => {
         setNotice(null)
+        setFormSessionKey((k) => k + 1)
         setFormMode('new')
         setEditWineId(null)
         setEditName('')
@@ -313,6 +323,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
           setEditWineId(String(row.id))
           setEditName(row.name)
           setFormValues(emptyWineFormValues())
+          setFormSessionKey((k) => k + 1)
           setFormOpen(true)
           return
         }
@@ -322,6 +333,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
         setFormValues(loaded.values)
         setFormFieldErrors({})
         setFormActionError(false)
+        setFormSessionKey((k) => k + 1)
         setFormOpen(true)
       }}
       onDeleteRequest={(row) => {
@@ -369,7 +381,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
           }}
         >
           <Field>
-            <FieldLabel>{VINI_FORM_TYPE}</FieldLabel>
+            <FieldLabel htmlFor="wine-filter-type">{VINI_FORM_TYPE}</FieldLabel>
             <Select
               items={Object.fromEntries(
                 context.wineTypes.map((t) => [t.id, t.name]),
@@ -379,7 +391,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
                 setDraftQuery((q) => ({ ...q, typeId: !v || v === '__all__' ? '' : v }))
               }
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="wine-filter-type" className="w-full">
                 <SelectValue placeholder={VINI_FILTERS_ALL_TYPES} />
               </SelectTrigger>
               <SelectContent>
@@ -391,7 +403,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
             </Select>
           </Field>
           <Field>
-            <FieldLabel>{VINI_FORM_COUNTRY}</FieldLabel>
+            <FieldLabel htmlFor="wine-filter-country">{VINI_FORM_COUNTRY}</FieldLabel>
             <Select
               items={countryFilterItems}
               value={draftQuery.countryId || undefined}
@@ -405,7 +417,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
                 }))
               }}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="wine-filter-country" className="w-full">
                 <SelectValue placeholder={VINI_FILTERS_ALL_COUNTRIES} />
               </SelectTrigger>
               <SelectContent>
@@ -417,8 +429,11 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
             </Select>
           </Field>
           <Field>
-            <FieldLabel>{VINI_FORM_REGION}</FieldLabel>
+            <FieldLabel htmlFor="wine-filter-region">{VINI_FORM_REGION}</FieldLabel>
             <Select
+              items={Object.fromEntries(
+                filterOriginOptions.regions.map((r) => [r.id, r.name]),
+              )}
               value={draftQuery.regionId || undefined}
               disabled={!draftQuery.countryId}
               onValueChange={(v) =>
@@ -429,7 +444,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
                 }))
               }
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="wine-filter-region" className="w-full">
                 <SelectValue placeholder={VINI_FILTERS_ALL_REGIONS} />
               </SelectTrigger>
               <SelectContent>
@@ -441,8 +456,11 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
             </Select>
           </Field>
           <Field>
-            <FieldLabel>{VINI_FORM_APPELLATION}</FieldLabel>
+            <FieldLabel htmlFor="wine-filter-appellation">{VINI_FORM_APPELLATION}</FieldLabel>
             <Select
+              items={Object.fromEntries(
+                filterOriginOptions.appellations.map((a) => [a.id, a.name]),
+              )}
               value={draftQuery.appellationId || undefined}
               disabled={!draftQuery.regionId}
               onValueChange={(v) =>
@@ -452,7 +470,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
                 }))
               }
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger id="wine-filter-appellation" className="w-full">
                 <SelectValue placeholder={VINI_FILTERS_ALL_APPELLATIONS} />
               </SelectTrigger>
               <SelectContent>
@@ -488,6 +506,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
       }
       formSheet={
         <WineFormSheet
+          key={formSessionKey}
           open={formOpen}
           mode={formMode}
           editName={editName}

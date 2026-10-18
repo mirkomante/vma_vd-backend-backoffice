@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-17",
-    "commit": "7f87ecb348b2",
+    "commit": "c498377ab5a3",
     "launcherVersion": "3.4.1",
     "launcherHeader": "3.4.1 (L1)",
     "browsers": "Chromium 140.0.7339.186",
-    "controlliBasename": "controlli-8.5.json",
+    "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L1",
-    "controlliVersion": 3,
-    "durataMs": 49834,
+    "controlliVersion": 1,
+    "durataMs": 220691,
     "invalidRun": false
   },
   "counts": {
-    "OK": 2958,
-    "FALLITO": 1,
+    "OK": 3070,
+    "FALLITO": 0,
     "AVVISO": 0,
-    "NON PROVATO": 134
+    "NON PROVATO": 253
   },
-  "distinctControls": 6,
+  "distinctControls": 76,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -30751,6 +30751,776 @@
       "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
     },
     {
+      "id": "NO-OVERRIDE",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-azioni-pagina",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-colonna-elenco",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-colonne-fisse",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-disponibilita",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-elimina",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-elimina-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-filtri-ricerca",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-formati-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-formati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-modulo-campi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-modulo-footer",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-modulo-inglese",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-modulo-validazione",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-nomi-accessibili",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-paese-facoltativo",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-righe-azioni",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-tassonomie",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-azioni-pagina",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-capacita-non-gestita",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-colonna-elenco",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-colonne-fisse",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-disponibilita",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-elimina",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-elimina-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-filtri-ricerca",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-formati-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-formati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-modulo-campi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-modulo-footer",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-modulo-inglese",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-modulo-validazione",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-nomi-accessibili",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-righe-azioni",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-tassonomie",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-azioni-pagina",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-coerenza-geografica",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-colonna-elenco",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-colonne-fisse",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-disponibilita",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-elimina",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-elimina-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-filtri-ricerca",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-formati-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-formati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-modulo-campi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-modulo-footer",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-modulo-inglese",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-modulo-validazione",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-nomi-accessibili",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-origine-cascata",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-origine-fuori-filtro",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-origine-opzioni-query",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-righe-azioni",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-tassonomie",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
       "id": "vini-testi",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
@@ -30764,8 +31534,8 @@
       "id": "vini-filtri-origine",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "locator.isDisabled: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('combobox', { name: 'Regione' })\n",
+      "esito": "OK",
+      "misurato": "cascata filtri origine",
       "atteso": "foglio filtri origine §7",
       "evidenza": "/app/menu/wines",
       "pacchetto": "menu"
@@ -30781,53 +31551,683 @@
       "pacchetto": "menu"
     },
     {
-      "id": "vini-ordine-100",
+      "id": "vini-colonna-elenco",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "101 record e «Mostra altri …»",
-      "evidenza": "completamento flusso dopo I3 (bulk verify-ui-…)",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "vini-ricompila",
+      "id": "vini-colonne-fisse",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "—",
-      "evidenza": "rinviato alla 6.5",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "vini-accesso",
+      "id": "vini-azioni-pagina",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "guardia 8.3",
-      "evidenza": "verify-roles-8_3.ts",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "vini-stato-vuoto",
+      "id": "vini-righe-azioni",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "vuoto DB",
-      "evidenza": "non si svuota il DB dev",
+      "atteso": "attributi",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "vini-confronto-visivo",
+      "id": "vini-disponibilita",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "screenshot C10",
-      "evidenza": "esecuzione confronto visivo al passo V (dopo I3)",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-elimina",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-elimina-registro-permessi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-campi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "attributi",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-validazione",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-inglese",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-footer",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-formati-ui",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-formati-server",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-cascata",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-opzioni-query",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-fuori-filtro",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-coerenza-geografica",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-tassonomie",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-persistenza",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-filtri-ricerca",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-stati-ui",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-nomi-accessibili",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "testo",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-console",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "console-pulita",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "origine-senza-regioni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "origine-senza-regioni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "origine-senza-regioni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-geografia",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-geografia",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-geografia",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-anno",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-anno",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-anno",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
       "pacchetto": "menu"
     },
     {
@@ -30841,53 +32241,503 @@
       "pacchetto": "menu"
     },
     {
-      "id": "distillati-ordine-100",
+      "id": "distillati-colonna-elenco",
       "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "101 record e «Mostra altri …»",
-      "evidenza": "completamento flusso dopo I3 (bulk verify-ui-…)",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "distillati-ricompila",
+      "id": "distillati-colonne-fisse",
       "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "—",
-      "evidenza": "rinviato alla 6.5",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "distillati-accesso",
+      "id": "distillati-azioni-pagina",
       "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "guardia 8.3",
-      "evidenza": "verify-roles-8_3.ts",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "distillati-stato-vuoto",
+      "id": "distillati-righe-azioni",
       "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "vuoto DB",
-      "evidenza": "non si svuota il DB dev",
+      "atteso": "attributi",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "distillati-confronto-visivo",
+      "id": "distillati-disponibilita",
       "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "screenshot C10",
-      "evidenza": "esecuzione confronto visivo al passo V (dopo I3)",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-elimina",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-elimina-registro-permessi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-campi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "attributi",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-validazione",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-inglese",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-footer",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-formati-ui",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-formati-server",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-capacita-non-gestita",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-tassonomie",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-persistenza",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-filtri-ricerca",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-stati-ui",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-nomi-accessibili",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "testo",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-console",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "console-pulita",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
       "pacchetto": "menu"
     },
     {
@@ -30901,53 +32751,503 @@
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-ordine-100",
+      "id": "bevande-colonna-elenco",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "101 record e «Mostra altri …»",
-      "evidenza": "completamento flusso dopo I3 (bulk verify-ui-…)",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-ricompila",
+      "id": "bevande-colonne-fisse",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "—",
-      "evidenza": "rinviato alla 6.5",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-accesso",
+      "id": "bevande-azioni-pagina",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "guardia 8.3",
-      "evidenza": "verify-roles-8_3.ts",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-stato-vuoto",
+      "id": "bevande-righe-azioni",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "vuoto DB",
-      "evidenza": "non si svuota il DB dev",
+      "atteso": "attributi",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-confronto-visivo",
+      "id": "bevande-disponibilita",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
       "esito": "NON PROVATO",
       "misurato": "—",
-      "atteso": "screenshot C10",
-      "evidenza": "esecuzione confronto visivo al passo V (dopo I3)",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-elimina",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-elimina-registro-permessi",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-campi",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "attributi",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-validazione",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-inglese",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-footer",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "misura",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-formati-ui",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-formati-server",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-paese-facoltativo",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-tassonomie",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-persistenza",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-filtri-ricerca",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-stati-ui",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "flusso",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-nomi-accessibili",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "testo",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-console",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "console-pulita",
+      "evidenza": "debito passo V: flusso da completare dopo implementazione I3",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
       "pacchetto": "menu"
     }
   ],
