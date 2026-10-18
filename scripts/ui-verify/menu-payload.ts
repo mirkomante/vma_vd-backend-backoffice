@@ -323,7 +323,7 @@ async function main() {
       categoryName: string
       menuNames: string[]
     }
-    let cat = await payload.find({
+    const cat = await payload.find({
       collection: FIXED_MENU_CATEGORIES_SLUG,
       where: { name: { equals: spec.categoryName } },
       limit: 1,

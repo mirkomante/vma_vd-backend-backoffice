@@ -1,5 +1,5 @@
 # Esito verifica — locale-dev — 2026-10-17
-Commit: c7b24ba0fae8 · Lanciatore: 3.4.1 (L2) · Browser: Chromium 140.0.7339.186; WebKit 26.0 · Controlli: controlli-6.6.json v1 · Durata: 50 s
+Commit: 22ad305f67f5 · Lanciatore: 3.4.1 (L2) · Browser: Chromium 140.0.7339.186; WebKit 26.0 · Controlli: controlli-6.6.json v1 · Durata: 47 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
 OK: 9 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 3 · Controlli distinti nel JSON corrente: 6
