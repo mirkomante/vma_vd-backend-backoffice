@@ -83,7 +83,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 16 | ✅ 97a48b5 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
-| 19 | 🔶 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
+| 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
 | 20 | 🔲 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
 | 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `fad9e26`). **Prossimi passi**: 19 (I4: Servizi e Menù fissi). Il database di sviluppo è pulito (44 piatti, 90 vini, 0 menù fissi, 0 giorni speciali).
+**Ultimo aggiornamento**: 2026-10-18 (commit `2f3f932`). **Prossimi passi**: 20 (V4: L2 su Servizi e Menù fissi, una schermata per volta; completa i flussi in debito del lanciatore), poi 21 (correzione dei rilievi).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -141,6 +141,10 @@ REGOLE
    controllo: dichiaralo NON PROVATO (lo completa e lo esegue l'agente di verifica nel passo V successivo) e vai
    avanti con il resto, senza prove manuali al suo posto; non è un motivo per fermare la chat. Se un L1 fallisce, correggi e rilancia solo i controlli falliti;
    al terzo giro fermati e riportami.
+5b. PRIMA DI OGNI COMMIT, anche di soli script o documenti: pnpm typecheck e pnpm lint sull'INTERO repo. La build di Cloud
+   Build (next build) controlla anche scripts/**: un commit senza controllo dei tipi ha già fatto fallire la build di
+   produzione (F-EN, script di servizio). Non lasciare correzioni locali non committate. Giri di ui:verify: UNO alla
+   volta (il lanciatore rifiuta il secondo) e, a livello 2, una schermata per volta.
 6. FERMATI e riferisci, senza aggirare, se: un pacchetto non si installa o genera conflitti; serve un passaggio
    fuori dal codice (database, credenziali, deploy); un ambiente non c'è. Mai produzione: niente
    scripts/prod-db.sh, niente credenziali di produzione, niente utenti di prova su Cloud SQL.
@@ -1324,6 +1328,8 @@ REGOLE
 
 ### Passo 19 — I4: Servizi e Menù fissi con Categorie
 
+> **Esito (2026-10-18)**: ✅ `2813234` (Servizi), `4a9c36c` (correzione dello script che faceva fallire la build di produzione), `2f3f932` (Menù fissi con Categorie). Controllato io su `2f3f932`: 34 file, nessuno in `collections/`, nessuna dipendenza né migrazione, nessun file del lanciatore; `tsc --noEmit` sull'intero repo **0 errori**, ESLint sui file toccati senza errori, **89 test unitari su 89**. Servizi usa il catalogo condiviso con ricerca, filtri, raggruppamento e avviso parziale spenti (nessun terzo elenco); Menù fissi: schede come collegamenti, un solo `findByID` con `depth=2` per il modulo, vista «Scegli piatti» nel foglio, categorie senza cestino, inglese con tutte le righe `dishes` (id e piatto) e nome vuoto come stringa vuota (`verify-fixed-menu-en-locale.ts`: ordine, piatti e porzioni italiane invariati). L1: parziale, per difetti del lanciatore e non dell'app: `menu-fissi-schede-percorsi` (`page.goBack()` subito dopo il clic: gara con la navigazione, le schede sono `<a href>` che ricaricano il documento) e `menu-fissi-composizione` (la fixture del lanciatore richiede `verify-ui-p1` dopo un `delete-prefix` che non copre le collection nuove). **Da migliorare dopo V4 (rilievo A)**: le schede sono `<a>` semplici (navigazione con ricarica completa, `role="tab"` senza `aria-selected`): meglio `Link` di Next. **Nuovi script di servizio, solo sviluppo**: `scripts/cleanup-verify-ui-menu-fixtures.ts` (elimina i `verify-ui-*` su servizi, menù fissi, categorie e giorni speciali e ricrea `verify-ui-pranzo` e `verify-ui-sempre`).
+
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
 ```text
@@ -1398,9 +1404,29 @@ A. Il lanciatore ha già i controlli di servizi e menu-fissi cablati (passo VC4)
    IMPLEMENTALI tu in scripts/ui-verify/** (modulo scripts/ui-verify/lib/run-menu.mjs) ed ESEGUILI in questa
    verifica, con dati di prova «verify-ui-…» creati e cancellati in try/finally. Non cambiare i controlli JSON.
    Nel rapporto scrivi quali hai completato ed eseguito e quali no, e perché.
-B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
-   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata menu-fissi,servizi,navigazione
-   pnpm ui:verify --livello 2 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
+A2. DEBITI NOTI del lanciatore dopo I4 (da correggere ora in scripts/ui-verify/**):
+   1. menu-fissi-schede-percorsi: dopo il clic sulla scheda «Categorie» ASPETTA la navigazione (per esempio
+      Promise.all([page.waitForURL(...), clic])) prima di page.goBack(): oggi la chiama subito e la gara con la
+      navigazione lascia l'URL su /app/menu/fixed/categories. Riporta anche, come informazione (non esito), se il
+      passaggio tra le schede ricarica il documento (metti window.__v4 = 1 prima del clic e controllalo dopo): le
+      schede sono <a href> semplici e questo dà il rilievo A «meglio Link di Next».
+   2. Fixture e dati di prova: delete-prefix non copre menu-services, fixed-menus, fixed-menu-categories e
+      special-days; la composizione dei menù fissi richiede piatti «verify-ui-p1…» dopo un delete-prefix che li
+      cancella. Estendi delete-prefix a queste collection (nell'ordine che rispetta le chiavi esterne: giorni speciali,
+      menù fissi, categorie, servizi, piatti) e crea le fixture (categorie verify-ui-pranzo e verify-ui-sempre, piatti
+      di prova, servizi) DOPO la pulizia e prima del flusso. Puoi usare scripts/cleanup-verify-ui-menu-fixtures.ts
+      come riferimento (non lo modificare).
+   3. Completa ed esegui i flussi in debito di servizi e menu-fissi (composizione, ordine con le frecce, doppioni,
+      porzione e traduzione, visibilità dalla categoria, eliminazione con cascade e registro, disponibilità,
+      persistenza, accesso dove provabile, stati simulati): con --solo, UNA schermata per volta, riportando
+      il valore misurato.
+B. Esegui UNA schermata alla volta (il lanciatore a livello 2 rifiuta più schermate e due giri insieme), su locale-dev
+   (solo il controllo CONSOLE) e su locale-prod (tutti gli altri). Budget per schermata 15 minuti; se un giro supera
+   5 minuti senza produrre file, fermati e riportalo:
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata servizi
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata menu-fissi
+   pnpm ui:verify --livello 1 --controlli controlli-6.6.json --schermata navigazione,home,piatti   (regressione veloce)
+   pnpm ui:verify --livello 1 --controlli controlli-8.2.json --schermata shell   (regressione della shell)
    (L2 mirato sui tipi nuovi: schede come percorsi, vista di scelta nel foglio, conferme con cascade)
 B2. Dopo F-EN (passo 18b): rilancia con --solo, in due minuti, bevande-modulo-inglese (dal modulo: scrivi SOLO la
    descrizione inglese di una bevanda e salva: atteso salvataggio riuscito e badge «Presente») e piatti-modulo-inglese
