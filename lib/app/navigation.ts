@@ -52,7 +52,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Vini',
         href: '/app/menu/wines',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'wine',
       },
       {
@@ -60,7 +60,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Bevande',
         href: '/app/menu/drinks',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'cup-soda',
       },
       {
@@ -68,7 +68,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Distillati',
         href: '/app/menu/spirits',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'martini',
       },
       {

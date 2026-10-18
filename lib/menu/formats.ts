@@ -358,3 +358,10 @@ export const validateDrinkAbvField = makeMenuFormatFieldValidate(
   (v) => DRINK_ABV_SET.has(v),
   DRINK_ABV_ERROR_MESSAGE,
 )
+
+/** Elenchi per select UI (nessuna modifica a validate/normalize). */
+export const WINE_ABV_SELECT_OPTIONS = buildAbvCanonicalList(5, 20, 0.5)
+export const DRINK_ABV_SELECT_OPTIONS = buildAbvCanonicalList(3, 12, 0.5)
+export const SPIRIT_ABV_SELECT_OPTIONS = buildAbvCanonicalList(30, 45, 1)
+export const SPIRIT_AGING_SELECT_OPTIONS = [...SPIRIT_AGING_CANONICAL]
+export const DRINK_VOLUME_SELECT_OPTIONS = [...DRINK_VOLUME_CANONICAL]

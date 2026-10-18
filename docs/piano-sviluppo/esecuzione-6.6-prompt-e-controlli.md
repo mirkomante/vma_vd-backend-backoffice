@@ -80,7 +80,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 13 | ✅ 0c0f4e8 (con V2 quater) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
 | 14 | ✅ 2b53c00 | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
 | 15 | ✅ 1fdb2d9 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
-| 16 | 🔲 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
+| 16 | 🔶 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
 | 17 | 🔲 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | 🔲 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | 🔲 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |

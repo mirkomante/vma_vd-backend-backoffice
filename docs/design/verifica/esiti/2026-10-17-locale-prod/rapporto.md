@@ -1,11 +1,11 @@
 # Esito verifica — locale-prod — 2026-10-17
-Commit: ef5942cbb15f · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 6 min 28 s
+Commit: 7f87ecb348b2 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-8.5.json v3 · Durata: 50 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 3061 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 121 · Controlli distinti nel JSON corrente: 30
+OK: 2958 · FALLITO: 1 · AVVISO: 0 · NON PROVATO: 134 · Controlli distinti nel JSON corrente: 6
 
 ## Pacchetto: accesso
-Righe: 2174 · OK: 2173 · FALLITO: 0
+Righe: 2178 · OK: 2177 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
@@ -17,10 +17,13 @@ Righe: 389 · OK: 387 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 125 · OK: 115 · FALLITO: 0
+Righe: 20 · OK: 4 · FALLITO: 1
 
 ### FALLITO (menu)
-- (nessuno)
+- **vini-filtri-origine** | vini | telefono-390/chiaro | misurato `locator.isDisabled: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByRole('combobox', { name: 'Regione' })
+` | atteso `foglio filtri origine §7` | evidenza: /app/menu/wines
 
 ## Pacchetto: orari
 Righe: 342 · OK: 338 · FALLITO: 0
@@ -29,7 +32,7 @@ Righe: 342 · OK: 338 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: completo
-Righe: 152 · OK: 48 · FALLITO: 0
+Righe: 164 · OK: 52 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -53,8 +56,10 @@ Righe: 152 · OK: 48 · FALLITO: 0
 - **avviso-reset-senza-token**: OK in 16/16 combinazioni
 - **avviso-verify-senza-token**: OK in 16/16 combinazioni
 - **avviso-verify-token-non-valido**: OK in 16/16 combinazioni
+- **bevande-testi**: OK in 1/1 combinazioni
 - **C3-cambio-sistema**: OK in 3/3 combinazioni
 - **C3-no-lampo**: OK in 128/128 combinazioni
+- **distillati-testi**: OK in 1/1 combinazioni
 - **forgot-testi**: OK in 16/16 combinazioni
 - **forgot-titolo-documento**: OK in 32/32 combinazioni
 - **g1**: OK in 1/1 combinazioni
@@ -87,29 +92,9 @@ Righe: 152 · OK: 48 · FALLITO: 0
 - **orari-testi**: OK in 1/1 combinazioni
 - **orari-uscita**: OK in 2/2 combinazioni
 - **orari-validazione-server**: OK in 1/1 combinazioni
-- **piatti-allergeni-selezione**: OK in 2/2 combinazioni
-- **piatti-azioni-pagina**: OK in 2/2 combinazioni
-- **piatti-casella-misure**: OK in 2/2 combinazioni
-- **piatti-colonna-elenco**: OK in 2/2 combinazioni
-- **piatti-disabilita**: OK in 1/1 combinazioni
-- **piatti-elimina-bloccato**: OK in 1/1 combinazioni
-- **piatti-elimina-libero**: OK in 1/1 combinazioni
-- **piatti-elimina-permessi**: OK in 1/1 combinazioni
-- **piatti-elimina-registro**: OK in 1/1 combinazioni
-- **piatti-filtri-ricerca**: OK in 1/1 combinazioni
-- **piatti-modulo-campi**: OK in 2/2 combinazioni
-- **piatti-modulo-footer**: OK in 1/1 combinazioni
-- **piatti-modulo-inglese**: OK in 1/1 combinazioni
-- **piatti-modulo-validazione**: OK in 1/1 combinazioni
-- **piatti-nomi-accessibili**: OK in 1/1 combinazioni
-- **piatti-persistenza**: OK in 1/1 combinazioni
-- **piatti-tassonomie**: OK in 1/1 combinazioni
-- **piatti-terminato**: OK in 1/1 combinazioni
-- **piatti-testi**: OK in 1/1 combinazioni
 - **reset-campi**: OK in 32/32 combinazioni
 - **reset-senza-token-vuoto**: OK in 1/1 combinazioni
 - **reset-testi**: OK in 32/32 combinazioni
-- **RICOMPILA-ASSENTE**: OK in 1/1 combinazioni
 - **shell-barra-alta**: OK in 36/36 combinazioni
 - **shell-blocco-in-cima**: OK in 1/1 combinazioni
 - **shell-blocco-utente**: OK in 1/1 combinazioni
@@ -123,12 +108,14 @@ Righe: 152 · OK: 48 · FALLITO: 0
 - **shell-tema-scelta**: OK in 1/1 combinazioni
 - **shell-uscita**: OK in 1/1 combinazioni
 - **verify-testi**: OK in 32/32 combinazioni
-- **AMBIENTE**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C1**: OK in 246/249 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2**: OK in 230/233 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **vini-modulo-anno**: OK in 1/1 combinazioni
+- **vini-testi**: OK in 1/1 combinazioni
+- **AMBIENTE**: OK in 7/8 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C1**: OK in 216/217 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2**: OK in 200/201 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C2-mouse**: OK in 76/77 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C3**: OK in 346/349 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C9**: OK in 49/50 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C3**: OK in 316/317 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C9**: OK in 53/54 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-colonne**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-larghezza**: OK in 8/9 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-righe-di-stato**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
@@ -136,7 +123,10 @@ Righe: 152 · OK: 48 · FALLITO: 0
 - **shell-menu-utente**: OK in 2/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
-- (nessuno)
+- **vini-filtri-origine** | vini | telefono-390/chiaro | misurato `locator.isDisabled: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByRole('combobox', { name: 'Regione' })
+` | atteso `foglio filtri origine §7` | evidenza: /app/menu/wines
 
 ### AVVISO
 - (nessuno)
@@ -253,51 +243,40 @@ Righe: 152 · OK: 48 · FALLITO: 0
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **piatti-righe-azioni** | piatti | telefono-390/chiaro | misurato `misura non acquisita: btnSize riga azioni` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu
-- **C1** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
-- **C2** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
-- **C3** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
-- **C1** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
-- **C2** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
-- **C3** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
-- **NO-OVERRIDE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **piatti-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **piatti-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **vini-ordine-100** | vini | telefono-390/chiaro | misurato `—` | atteso `101 record e «Mostra altri …»` | evidenza: completamento flusso dopo I3 (bulk verify-ui-…)
+- **vini-ricompila** | vini | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
+- **vini-accesso** | vini | telefono-390/chiaro | misurato `—` | atteso `guardia 8.3` | evidenza: verify-roles-8_3.ts
+- **vini-stato-vuoto** | vini | telefono-390/chiaro | misurato `—` | atteso `vuoto DB` | evidenza: non si svuota il DB dev
+- **vini-confronto-visivo** | vini | telefono-390/chiaro | misurato `—` | atteso `screenshot C10` | evidenza: esecuzione confronto visivo al passo V (dopo I3)
+- **distillati-ordine-100** | distillati | telefono-390/chiaro | misurato `—` | atteso `101 record e «Mostra altri …»` | evidenza: completamento flusso dopo I3 (bulk verify-ui-…)
+- **distillati-ricompila** | distillati | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
+- **distillati-accesso** | distillati | telefono-390/chiaro | misurato `—` | atteso `guardia 8.3` | evidenza: verify-roles-8_3.ts
+- **distillati-stato-vuoto** | distillati | telefono-390/chiaro | misurato `—` | atteso `vuoto DB` | evidenza: non si svuota il DB dev
+- **distillati-confronto-visivo** | distillati | telefono-390/chiaro | misurato `—` | atteso `screenshot C10` | evidenza: esecuzione confronto visivo al passo V (dopo I3)
+- **bevande-ordine-100** | bevande | telefono-390/chiaro | misurato `—` | atteso `101 record e «Mostra altri …»` | evidenza: completamento flusso dopo I3 (bulk verify-ui-…)
+- **bevande-ricompila** | bevande | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
+- **bevande-accesso** | bevande | telefono-390/chiaro | misurato `—` | atteso `guardia 8.3` | evidenza: verify-roles-8_3.ts
+- **bevande-stato-vuoto** | bevande | telefono-390/chiaro | misurato `—` | atteso `vuoto DB` | evidenza: non si svuota il DB dev
+- **bevande-confronto-visivo** | bevande | telefono-390/chiaro | misurato `—` | atteso `screenshot C10` | evidenza: esecuzione confronto visivo al passo V (dopo I3)
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | NON PROVATO (3/4) |
-| C1 | NON PROVATO (246/249) |
-| C2 | NON PROVATO (230/233) |
+| AMBIENTE | NON PROVATO (7/8) |
+| C1 | NON PROVATO (216/217) |
+| C2 | NON PROVATO (200/201) |
 | C2-mouse | NON PROVATO (76/77) |
-| C3 | NON PROVATO (346/349) |
-| C9 | NON PROVATO (49/50) |
-| NO-OVERRIDE | NON PROVATO (0/1) |
-| RICOMPILA-ASSENTE | OK (1/1) |
-| piatti-allergeni-selezione | OK (2/2) |
-| piatti-azioni-pagina | OK (2/2) |
-| piatti-casella-misure | OK (2/2) |
-| piatti-colonna-elenco | OK (2/2) |
-| piatti-console | NON PROVATO (0/1) |
-| piatti-disabilita | OK (1/1) |
-| piatti-elimina-bloccato | OK (1/1) |
-| piatti-elimina-libero | OK (1/1) |
-| piatti-elimina-permessi | OK (1/1) |
-| piatti-elimina-registro | OK (1/1) |
-| piatti-filtri-ricerca | OK (1/1) |
-| piatti-modulo-campi | OK (2/2) |
-| piatti-modulo-footer | OK (1/1) |
-| piatti-modulo-inglese | OK (1/1) |
-| piatti-modulo-validazione | OK (1/1) |
-| piatti-nomi-accessibili | OK (1/1) |
-| piatti-persistenza | OK (1/1) |
-| piatti-righe-azioni | NON PROVATO (0/1) |
-| piatti-stati-ui | NON PROVATO (0/1) |
-| piatti-tassonomie | OK (1/1) |
-| piatti-terminato | OK (1/1) |
-| piatti-testi | OK (1/1) |
+| C3 | NON PROVATO (316/317) |
+| C9 | NON PROVATO (53/54) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -413,23 +392,34 @@ Righe: 152 · OK: 48 · FALLITO: 0
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| piatti-righe-azioni | piatti | telefono-390/chiaro | NON PROVATO | misura non acquisita: btnSize riga azioni | tre icone, switch disabilitato su disabled | /app/menu |
-| C1 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
-| C2 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
-| C3 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
-| C1 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
-| C2 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
-| C3 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
-| NO-OVERRIDE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| piatti-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| piatti-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| vini-filtri-origine | vini | telefono-390/chiaro | FALLITO | locator.isDisabled: Timeout 30000ms exceeded. Call log:   - waiting for getByRole('combobox', { name: 'Regione' })  | foglio filtri origine §7 | /app/menu/wines |
+| vini-ordine-100 | vini | telefono-390/chiaro | NON PROVATO | — | 101 record e «Mostra altri …» | completamento flusso dopo I3 (bulk verify-ui-…) |
+| vini-ricompila | vini | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
+| vini-accesso | vini | telefono-390/chiaro | NON PROVATO | — | guardia 8.3 | verify-roles-8_3.ts |
+| vini-stato-vuoto | vini | telefono-390/chiaro | NON PROVATO | — | vuoto DB | non si svuota il DB dev |
+| vini-confronto-visivo | vini | telefono-390/chiaro | NON PROVATO | — | screenshot C10 | esecuzione confronto visivo al passo V (dopo I3) |
+| distillati-ordine-100 | distillati | telefono-390/chiaro | NON PROVATO | — | 101 record e «Mostra altri …» | completamento flusso dopo I3 (bulk verify-ui-…) |
+| distillati-ricompila | distillati | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
+| distillati-accesso | distillati | telefono-390/chiaro | NON PROVATO | — | guardia 8.3 | verify-roles-8_3.ts |
+| distillati-stato-vuoto | distillati | telefono-390/chiaro | NON PROVATO | — | vuoto DB | non si svuota il DB dev |
+| distillati-confronto-visivo | distillati | telefono-390/chiaro | NON PROVATO | — | screenshot C10 | esecuzione confronto visivo al passo V (dopo I3) |
+| bevande-ordine-100 | bevande | telefono-390/chiaro | NON PROVATO | — | 101 record e «Mostra altri …» | completamento flusso dopo I3 (bulk verify-ui-…) |
+| bevande-ricompila | bevande | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
+| bevande-accesso | bevande | telefono-390/chiaro | NON PROVATO | — | guardia 8.3 | verify-roles-8_3.ts |
+| bevande-stato-vuoto | bevande | telefono-390/chiaro | NON PROVATO | — | vuoto DB | non si svuota il DB dev |
+| bevande-confronto-visivo | bevande | telefono-390/chiaro | NON PROVATO | — | screenshot C10 | esecuzione confronto visivo al passo V (dopo I3) |
 
 ## Non provato (e perché)
 - verify-link-valido: facoltativo: token reale monouso non ottenuto
 - shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
-- NO-OVERRIDE: controllo non eseguito dal lanciatore in questa esecuzione
-- piatti-console: controllo non eseguito dal lanciatore in questa esecuzione
-- piatti-stati-ui: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
 - (nessuna)
