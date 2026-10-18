@@ -54,6 +54,8 @@ export type CatalogListFeatures = {
   filters?: boolean
   typeGrouping?: boolean
   partialAlert?: boolean
+  /** Conteggio sopra l’elenco anche con raggruppamento per tipologia/categoria. */
+  listCountWhenGrouped?: boolean
 }
 
 export const DEFAULT_CATALOG_LIST_FEATURES: CatalogListFeatures = {

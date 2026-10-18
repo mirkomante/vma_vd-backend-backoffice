@@ -68,6 +68,7 @@ type CatalogListPageProps<TRow extends CatalogListRowBase> = {
   }
   filterSheet: ReactNode
   formSheet: ReactNode
+  showPageHeader?: boolean
 }
 
 export function CatalogListPage<TRow extends CatalogListRowBase>({
@@ -98,6 +99,7 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
   deleteDialog,
   filterSheet,
   formSheet,
+  showPageHeader = true,
 }: CatalogListPageProps<TRow>) {
   const features = { ...DEFAULT_CATALOG_LIST_FEATURES, ...featuresProp }
   const { texts } = config
@@ -109,22 +111,27 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
     !hasGroups &&
     (features.search || features.filters)
   const listCountLabel =
-    !features.typeGrouping && config.formatListCount && totalDocs > 0 && hasGroups
+    config.formatListCount &&
+    totalDocs > 0 &&
+    hasGroups &&
+    (!features.typeGrouping || features.listCountWhenGrouped)
       ? config.formatListCount(totalDocs)
       : null
 
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
-      <MenuPageHeader
-        title={texts.pageTitle}
-        description={texts.pageDescription}
-        primaryAction={
-          <Button type="button" size="lg" className="w-full md:w-auto" onClick={onNew}>
-            <Plus className="size-4" aria-hidden />
-            {texts.newButton}
-          </Button>
-        }
-      />
+      {showPageHeader ? (
+        <MenuPageHeader
+          title={texts.pageTitle}
+          description={texts.pageDescription}
+          primaryAction={
+            <Button type="button" size="lg" className="w-full md:w-auto" onClick={onNew}>
+              <Plus className="size-4" aria-hidden />
+              {texts.newButton}
+            </Button>
+          }
+        />
+      ) : null}
 
       {notice ? (
         <>

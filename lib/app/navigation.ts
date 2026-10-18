@@ -76,7 +76,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Menù fissi',
         href: '/app/menu/fixed',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'book-open',
       },
       {

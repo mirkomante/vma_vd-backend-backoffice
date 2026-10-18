@@ -10,6 +10,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Added
+
+- **Fase 6.6 I4 (Menù fissi + Categorie, secondo commit)** — Rotte `/app/menu/fixed` e `/app/menu/fixed/categories` con schede come `Link` (A53); elenco menù raggruppato per categoria; scheda Categorie senza eliminazione; modulo menù a due viste (modulo + «Scegli piatti»), frecce ordine 44px, visibilità/precompilazione e avvisi in `lib/menu/fixedMenus/`; testi `lib/menu/fixed-menus/copy.ts`; azioni `fixed-menus-actions.ts` (`findByID` depth=2 per caricamento modulo, EN con riscrittura completa righe `dishes`, `overrideAccess: false`); `formatFixedMenuDeleteDescription` (date giorni speciali con `formatSpecialDayDateLong`); nav **Menù fissi** `enabled: true`; script `cleanup-verify-ui-menu-fixtures.ts` (special-days per relazione a menù `verify-ui-*`, non per `name`).
+
+### Tests
+
+- **I4 Menù fissi (secondo commit)** — L0: `typecheck`, `lint` (0 errori), `ui:check` OK; unitari nuovi 15/15 (`lib/menu/fixedMenus`, `formatCascadeDeleteDescription`, `writeFixedMenuEnglish`); `verify-lib-app-8_2` OK; `pnpm payload run scripts/verify-fixed-menu-en-locale.ts` OK (IT invariato dopo update EN). L1 `locale-prod` `menu-fissi` (`controlli-6.6.json`, telefono-390/chiaro, cleanup `verify-ui-*` prima/dopo): **OK** `menu-fissi-categoria-modulo`, `menu-fissi-modulo-validazione`; **FALLITO** `menu-fissi-schede-percorsi` (`page.goBack()` resta su `/app/menu/fixed/categories`); run interrotto su `menu-fissi-composizione` (timeout «Modifica verify-ui-menu-comp» — `delete-prefix` nel flusso rimuove `verify-ui-p1` prima della fixture); resto **NON PROVATO**. Pulizia dev: es. `menu-services` 1, categorie seed 2 ricreate.
+
 ### Fixed
 
 - **F-EN (passo 18b) — traduzione inglese solo descrizione / nome EN facoltativo** (2026-10-18): salvare dal modulo App solo la descrizione inglese (nome EN vuoto) falliva perché Payload applicava `required: true` su `name` localizzato nella locale `en`. **Causa aggiuntiva**: colonne `name` NOT NULL nelle tabelle `*_locales` (migrazione 6.2) — la traduzione assente è rappresentata con stringa vuota, non `NULL`. **Fix**: `validateLocalizedRequiredName` sui cinque `name` in `menuContentCollections.ts`; scrittura EN con `name: ''` quando il nome non è tradotto (`dishes-actions.ts`, `drinks-actions.ts`); niente copia del nome IT nel campo EN. **Nota dati dev**: i piatti già salvati con nome IT copiato in EN restano invariati (non produzione; nome uguale nelle due lingue può essere legittimo).

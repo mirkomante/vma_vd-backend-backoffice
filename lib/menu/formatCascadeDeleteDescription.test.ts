@@ -3,6 +3,7 @@ import { describe, it } from 'node:test'
 
 import {
   CASCADE_DELETE_IRREVERSIBLE,
+  formatFixedMenuDeleteDescription,
   formatServiceDeleteDescription,
 } from './formatCascadeDeleteDescription.ts'
 
@@ -23,5 +24,17 @@ describe('formatServiceDeleteDescription', () => {
       formatServiceDeleteDescription(['M1', 'M2', 'M3', 'M4']),
       `Verrà tolto anche da 4 menù fissi: M1, M2, M3, e altri 1. ${CASCADE_DELETE_IRREVERSIBLE}`,
     )
+  })
+})
+
+describe('formatFixedMenuDeleteDescription', () => {
+  it('senza giorni speciali', () => {
+    assert.equal(formatFixedMenuDeleteDescription([]), CASCADE_DELETE_IRREVERSIBLE)
+  })
+
+  it('ordina le date', () => {
+    const text = formatFixedMenuDeleteDescription(['2026-12-31', '2026-01-02'])
+    assert.match(text, /2 giorni speciali/)
+    assert.match(text, /Non si può annullare/)
   })
 })
