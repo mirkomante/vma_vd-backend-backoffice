@@ -1,8 +1,8 @@
 # Esito verifica — locale-prod — 2026-10-18
-Commit: 4437057201b5 · Lanciatore: 3.5.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 6 min 13 s
+Commit: 54ed0d69cf90 · Lanciatore: 3.5.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 55 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 1399 · FALLITO: 14 · AVVISO: 3 · NON PROVATO: 187 · Controlli distinti nel JSON corrente: 1
+OK: 1364 · FALLITO: 7 · AVVISO: 3 · NON PROVATO: 184 · Controlli distinti nel JSON corrente: 2
 
 ## Pacchetto: accesso
 Righe: 26 · OK: 26 · FALLITO: 0
@@ -17,26 +17,41 @@ Righe: 28 · OK: 28 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 1499 · OK: 1327 · FALLITO: 14
+Righe: 1454 · OK: 1292 · FALLITO: 7
 
 ### FALLITO (menu)
-- **bevande-elimina-registro-permessi** | bevande | telefono-390/chiaro | misurato `registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)` | atteso `registro e permessi staff (norole coperto da verify-roles-8_3)` | evidenza: payload
-- **bevande-modulo-inglese** | bevande | telefono-390/chiaro | misurato `badge: atteso «Presente» nel foglio` | atteso `inglese` | evidenza: /app/menu/drinks
-- **bevande-persistenza** | bevande | telefono-390/chiaro | misurato `tipologia=Calde; paese=—; API found=false price=n/a; create read` | atteso `persistenza` | evidenza: /app/menu/drinks
-- **C2** | distillati/elimina | telefono-390/chiaro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina
-- **C2** | vini/elimina | telefono-390/chiaro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina
-- **distillati-elimina-registro-permessi** | distillati | telefono-390/chiaro | misurato `registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)` | atteso `registro e permessi staff (norole coperto da verify-roles-8_3)` | evidenza: payload
-- **distillati-modulo-inglese** | distillati | telefono-390/chiaro | misurato `badge: atteso «Presente» nel foglio` | atteso `inglese` | evidenza: /app/menu/spirits
-- **distillati-persistenza** | distillati | telefono-390/chiaro | misurato `tipologia=Amari e Liquori; paese=Filippine; API found=false price=n/a; create read` | atteso `persistenza` | evidenza: /app/menu/spirits
-- **vini-elimina-registro-permessi** | vini | telefono-390/chiaro | misurato `registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)` | atteso `registro e permessi staff (norole coperto da verify-roles-8_3)` | evidenza: payload
-- **vini-formati-ui** | vini | telefono-390/chiaro | misurato `volume opzioni (0): ; grado UI=12,8%; volume Non indicata non in [] | volume 75 cl non in [] | volume 150 cl non in []` | atteso `capacità/grado` | evidenza: /app/menu/wines
-- **vini-modulo-inglese** | vini | telefono-390/chiaro | misurato `badge: atteso «Presente» nel foglio` | atteso `inglese` | evidenza: /app/menu/wines
-- **vini-origine-cascata** | vini | telefono-390/chiaro | misurato `regioni Italia assenti | locator.click: Timeout 30000ms exceeded.
+- **bevande-modulo-inglese** | bevande | telefono-390/chiaro | misurato `badge/en non letto; menu payload create-catalog-items: $ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- create-catalog-items verify-ui-1792342563625@test.local drinks '[{"name":"verify-ui-bevande-yesen","description":"Desc IT","descriptionEn":"Desc EN"}]'
+Il seguente campo non è valido: Nome
+` | atteso `inglese` | evidenza: /app/menu/drinks
+- **bevande-persistenza** | bevande | telefono-390/chiaro | misurato `create non verificato; locator.click: Timeout 12000ms exceeded.
 Call log:
-  - waiting for getByRole('option', { name: 'Friuli Venezia Giulia', exact: true })
-    - locator resolved to <div role="option" tabindex="-1" aria-selected="false" data-slot="select-item" class="relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pointer-coarse:py-3 pr-8 pl-1.5 text-sm outline-hidden ` | atteso `origine §7` | evidenza: /app/menu/wines
-- **vini-origine-fuori-filtro** | vini | telefono-390/chiaro | misurato `paese salvato non visibile` | atteso `paese disabilitato in elenco` | evidenza: /app/menu/wines
-- **vini-persistenza** | vini | telefono-390/chiaro | misurato `tipologia=Bianchi; paese=Filippine; API found=false price=n/a; create read` | atteso `persistenza` | evidenza: /app/menu/wines
+  - waiting for locator('#drink-field-type')
+    - locator resolved to <button tabindex="0" type="button" role="combobox" data-placeholder="" data-size="default" id="drink-field-type" aria-expanded="false" aria-haspopup="listbox" data-slot="select-trigger" class="flex items-center justify-between gap-1.5 rounded-lg border bo` | atteso `persistenza` | evidenza: /app/menu/drinks
+- **distillati-persistenza** | distillati | telefono-390/chiaro | misurato `create non verificato; locator.click: Timeout 12000ms exceeded.
+Call log:
+  - waiting for locator('#spirit-field-type')
+    - locator resolved to <button tabindex="0" type="button" role="combobox" data-placeholder="" data-size="default" aria-expanded="false" id="spirit-field-type" aria-haspopup="listbox" data-slot="select-trigger" class="flex items-center justify-between gap-1.5 rounded-lg border ` | atteso `persistenza` | evidenza: /app/menu/spirits
+- **vini-formati-ui** | vini | telefono-390/chiaro | misurato `volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.scrollIntoViewIfNeeded: Timeout 29997.076ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - wai` | atteso `capacità/grado` | evidenza: /app/menu/wines
+- **vini-origine-cascata** | vini | telefono-390/chiaro | misurato `UI regioni (12): Nessuna regione | Piemonte | Campania | Friuli Venezia Giulia | Trentino Alto Adige | Umbria | Lombardia | Marche; collection sample: Alsazia | Borgogna | Campania | Friuli Venezia Giulia | Loira | Lombardia | Marche | Piemonte; denominazioni Collio assenti` | atteso `origine §7` | evidenza: /app/menu/wines
+- **vini-origine-fuori-filtro** | vini | telefono-390/chiaro | misurato `paese API=[object Object]; trigger="Vietnam"; paese salvato non nel trigger` | atteso `nome paese disabilitato visibile nel trigger (atteso: [object Object])` | evidenza: /app/menu/wines
+- **vini-persistenza** | vini | telefono-390/chiaro | misurato `create non verificato; locator.scrollIntoViewIfNeeded: Element is not attached to the DOM
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not stable
+    - retrying scroll into view action
+    - waiting 20ms
+    - waiting for element to be stable
+    - element is not stable
+  - retrying scroll into view action
+    - waiting 100ms
+    - wa` | atteso `persistenza` | evidenza: /app/menu/wines
 
 ## Pacchetto: completo
 Righe: 50 · OK: 18 · FALLITO: 0
@@ -52,6 +67,7 @@ Righe: 50 · OK: 18 · FALLITO: 0
 - **bevande-colonne-fisse**: OK in 1/1 combinazioni
 - **bevande-disponibilita**: OK in 1/1 combinazioni
 - **bevande-elimina**: OK in 1/1 combinazioni
+- **bevande-elimina-registro-permessi**: OK in 1/1 combinazioni
 - **bevande-filtri-ricerca**: OK in 1/1 combinazioni
 - **bevande-formati-server**: OK in 1/1 combinazioni
 - **bevande-modulo-campi**: OK in 2/2 combinazioni
@@ -61,6 +77,7 @@ Righe: 50 · OK: 18 · FALLITO: 0
 - **bevande-paese-facoltativo**: OK in 1/1 combinazioni
 - **bevande-tassonomie**: OK in 1/1 combinazioni
 - **bevande-testi**: OK in 1/1 combinazioni
+- **C2**: OK in 4/4 combinazioni
 - **C3-cambio-sistema**: OK in 8/8 combinazioni
 - **C9**: OK in 18/18 combinazioni
 - **distillati-azioni-pagina**: OK in 2/2 combinazioni
@@ -68,10 +85,12 @@ Righe: 50 · OK: 18 · FALLITO: 0
 - **distillati-colonne-fisse**: OK in 1/1 combinazioni
 - **distillati-disponibilita**: OK in 1/1 combinazioni
 - **distillati-elimina**: OK in 1/1 combinazioni
+- **distillati-elimina-registro-permessi**: OK in 1/1 combinazioni
 - **distillati-filtri-ricerca**: OK in 1/1 combinazioni
 - **distillati-formati-server**: OK in 1/1 combinazioni
 - **distillati-modulo-campi**: OK in 2/2 combinazioni
 - **distillati-modulo-footer**: OK in 1/1 combinazioni
+- **distillati-modulo-inglese**: OK in 1/1 combinazioni
 - **distillati-modulo-validazione**: OK in 1/1 combinazioni
 - **distillati-nomi-accessibili**: OK in 1/1 combinazioni
 - **distillati-tassonomie**: OK in 1/1 combinazioni
@@ -114,12 +133,14 @@ Righe: 50 · OK: 18 · FALLITO: 0
 - **vini-colonne-fisse**: OK in 1/1 combinazioni
 - **vini-disponibilita**: OK in 1/1 combinazioni
 - **vini-elimina**: OK in 1/1 combinazioni
+- **vini-elimina-registro-permessi**: OK in 1/1 combinazioni
 - **vini-filtri-origine**: OK in 1/1 combinazioni
 - **vini-filtri-ricerca**: OK in 1/1 combinazioni
 - **vini-formati-server**: OK in 1/1 combinazioni
 - **vini-modulo-anno**: OK in 1/1 combinazioni
 - **vini-modulo-campi**: OK in 2/2 combinazioni
 - **vini-modulo-footer**: OK in 1/1 combinazioni
+- **vini-modulo-inglese**: OK in 1/1 combinazioni
 - **vini-modulo-validazione**: OK in 1/1 combinazioni
 - **vini-nomi-accessibili**: OK in 1/1 combinazioni
 - **vini-origine-opzioni-query**: OK in 1/1 combinazioni
@@ -131,26 +152,40 @@ Righe: 50 · OK: 18 · FALLITO: 0
 - **distillati-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **bevande-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C1**: OK in 39/103 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2**: OK in 44/49 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
-- **bevande-elimina-registro-permessi** | bevande | telefono-390/chiaro | misurato `registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)` | atteso `registro e permessi staff (norole coperto da verify-roles-8_3)` | evidenza: payload
-- **bevande-modulo-inglese** | bevande | telefono-390/chiaro | misurato `badge: atteso «Presente» nel foglio` | atteso `inglese` | evidenza: /app/menu/drinks
-- **bevande-persistenza** | bevande | telefono-390/chiaro | misurato `tipologia=Calde; paese=—; API found=false price=n/a; create read` | atteso `persistenza` | evidenza: /app/menu/drinks
-- **C2** | distillati/elimina | telefono-390/chiaro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina
-- **C2** | vini/elimina | telefono-390/chiaro | misurato `Indietro 274x42; Elimina 274x42` | atteso `nessun elemento sotto 44 px` | evidenza: elimina
-- **distillati-elimina-registro-permessi** | distillati | telefono-390/chiaro | misurato `registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)` | atteso `registro e permessi staff (norole coperto da verify-roles-8_3)` | evidenza: payload
-- **distillati-modulo-inglese** | distillati | telefono-390/chiaro | misurato `badge: atteso «Presente» nel foglio` | atteso `inglese` | evidenza: /app/menu/spirits
-- **distillati-persistenza** | distillati | telefono-390/chiaro | misurato `tipologia=Amari e Liquori; paese=Filippine; API found=false price=n/a; create read` | atteso `persistenza` | evidenza: /app/menu/spirits
-- **vini-elimina-registro-permessi** | vini | telefono-390/chiaro | misurato `registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)` | atteso `registro e permessi staff (norole coperto da verify-roles-8_3)` | evidenza: payload
-- **vini-formati-ui** | vini | telefono-390/chiaro | misurato `volume opzioni (0): ; grado UI=12,8%; volume Non indicata non in [] | volume 75 cl non in [] | volume 150 cl non in []` | atteso `capacità/grado` | evidenza: /app/menu/wines
-- **vini-modulo-inglese** | vini | telefono-390/chiaro | misurato `badge: atteso «Presente» nel foglio` | atteso `inglese` | evidenza: /app/menu/wines
-- **vini-origine-cascata** | vini | telefono-390/chiaro | misurato `regioni Italia assenti | locator.click: Timeout 30000ms exceeded.
+- **bevande-modulo-inglese** | bevande | telefono-390/chiaro | misurato `badge/en non letto; menu payload create-catalog-items: $ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- create-catalog-items verify-ui-1792342563625@test.local drinks '[{"name":"verify-ui-bevande-yesen","description":"Desc IT","descriptionEn":"Desc EN"}]'
+Il seguente campo non è valido: Nome
+` | atteso `inglese` | evidenza: /app/menu/drinks
+- **bevande-persistenza** | bevande | telefono-390/chiaro | misurato `create non verificato; locator.click: Timeout 12000ms exceeded.
 Call log:
-  - waiting for getByRole('option', { name: 'Friuli Venezia Giulia', exact: true })
-    - locator resolved to <div role="option" tabindex="-1" aria-selected="false" data-slot="select-item" class="relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pointer-coarse:py-3 pr-8 pl-1.5 text-sm outline-hidden ` | atteso `origine §7` | evidenza: /app/menu/wines
-- **vini-origine-fuori-filtro** | vini | telefono-390/chiaro | misurato `paese salvato non visibile` | atteso `paese disabilitato in elenco` | evidenza: /app/menu/wines
-- **vini-persistenza** | vini | telefono-390/chiaro | misurato `tipologia=Bianchi; paese=Filippine; API found=false price=n/a; create read` | atteso `persistenza` | evidenza: /app/menu/wines
+  - waiting for locator('#drink-field-type')
+    - locator resolved to <button tabindex="0" type="button" role="combobox" data-placeholder="" data-size="default" id="drink-field-type" aria-expanded="false" aria-haspopup="listbox" data-slot="select-trigger" class="flex items-center justify-between gap-1.5 rounded-lg border bo` | atteso `persistenza` | evidenza: /app/menu/drinks
+- **distillati-persistenza** | distillati | telefono-390/chiaro | misurato `create non verificato; locator.click: Timeout 12000ms exceeded.
+Call log:
+  - waiting for locator('#spirit-field-type')
+    - locator resolved to <button tabindex="0" type="button" role="combobox" data-placeholder="" data-size="default" aria-expanded="false" id="spirit-field-type" aria-haspopup="listbox" data-slot="select-trigger" class="flex items-center justify-between gap-1.5 rounded-lg border ` | atteso `persistenza` | evidenza: /app/menu/spirits
+- **vini-formati-ui** | vini | telefono-390/chiaro | misurato `volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.scrollIntoViewIfNeeded: Timeout 29997.076ms exceeded.
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not visible
+    - retrying scroll into view action
+    - wai` | atteso `capacità/grado` | evidenza: /app/menu/wines
+- **vini-origine-cascata** | vini | telefono-390/chiaro | misurato `UI regioni (12): Nessuna regione | Piemonte | Campania | Friuli Venezia Giulia | Trentino Alto Adige | Umbria | Lombardia | Marche; collection sample: Alsazia | Borgogna | Campania | Friuli Venezia Giulia | Loira | Lombardia | Marche | Piemonte; denominazioni Collio assenti` | atteso `origine §7` | evidenza: /app/menu/wines
+- **vini-origine-fuori-filtro** | vini | telefono-390/chiaro | misurato `paese API=[object Object]; trigger="Vietnam"; paese salvato non nel trigger` | atteso `nome paese disabilitato visibile nel trigger (atteso: [object Object])` | evidenza: /app/menu/wines
+- **vini-persistenza** | vini | telefono-390/chiaro | misurato `create non verificato; locator.scrollIntoViewIfNeeded: Element is not attached to the DOM
+Call log:
+  - attempting scroll into view action
+    2 × waiting for element to be stable
+      - element is not stable
+    - retrying scroll into view action
+    - waiting 20ms
+    - waiting for element to be stable
+    - element is not stable
+  - retrying scroll into view action
+    - waiting 100ms
+    - wa` | atteso `persistenza` | evidenza: /app/menu/wines
 
 ### AVVISO
 - **vini-colonna-elenco** | vini | telefono-390/chiaro | misurato `{"tableVisible":false,"colW":358,"nameW":178}` | atteso `layout colonna/schede` | evidenza: /app/menu/wines
@@ -342,15 +377,13 @@ Call log:
 - **C1** | piatti/piu-di-100 | notebook-1280/chiaro | misurato `tempo: piu-di-100` | atteso `scroll orizzontale` | evidenza: piu-di-100
 - **C1** | piatti/piu-di-100 | telefono-390/scuro | misurato `tempo: piu-di-100` | atteso `scroll orizzontale` | evidenza: piu-di-100
 - **C1** | piatti/piu-di-100 | notebook-1280/scuro | misurato `tempo: piu-di-100` | atteso `scroll orizzontale` | evidenza: piu-di-100
-- **C2** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
-- **C2** | vini/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 90 record` | atteso `C2` | evidenza: vuoto
-- **C2** | distillati/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 38 record` | atteso `C2` | evidenza: vuoto
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| C2 | FALLITO (44/49) |
+| vini-origine-fuori-filtro | FALLITO (0/1) |
+| vini-persistenza | FALLITO (0/1) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -542,26 +575,17 @@ Call log:
 | C1 | piatti/piu-di-100 | notebook-1280/chiaro | NON PROVATO | tempo: piu-di-100 | scroll orizzontale | piu-di-100 |
 | C1 | piatti/piu-di-100 | telefono-390/scuro | NON PROVATO | tempo: piu-di-100 | scroll orizzontale | piu-di-100 |
 | C1 | piatti/piu-di-100 | notebook-1280/scuro | NON PROVATO | tempo: piu-di-100 | scroll orizzontale | piu-di-100 |
-| vini-elimina-registro-permessi | vini | telefono-390/chiaro | FALLITO | registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts) | registro e permessi staff (norole coperto da verify-roles-8_3) | payload |
-| vini-modulo-inglese | vini | telefono-390/chiaro | FALLITO | badge: atteso «Presente» nel foglio | inglese | /app/menu/wines |
-| vini-formati-ui | vini | telefono-390/chiaro | FALLITO | volume opzioni (0): ; grado UI=12,8%; volume Non indicata non in [] \| volume 75 cl non in [] \| volume 150 cl non in [] | capacità/grado | /app/menu/wines |
-| vini-origine-cascata | vini | telefono-390/chiaro | FALLITO | regioni Italia assenti \| locator.click: Timeout 30000ms exceeded. Call log:   - waiting for getByRole('option', { name: 'Friuli Venezia Giulia', exact: true })     - locator resolved to <div role="option" tabindex="-1" aria-selected="false" data-slot="select-item" class="relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pointer-coarse:py-3 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:…>…</div>   - attempting click action     2 × waiting for element to be visible, enabled and stable       - element is not visible     - retrying click action     - waiting 20ms     2 × waiting for element to be visible, enabled and stable       - element is not visible     - retrying click action       - waiting 100ms     58 × waiting for element to be visible, enabled and stable        - element is not visible      - retrying click action        - waiting 500ms  | origine §7 | /app/menu/wines |
-| vini-origine-fuori-filtro | vini | telefono-390/chiaro | FALLITO | paese salvato non visibile | paese disabilitato in elenco | /app/menu/wines |
-| vini-persistenza | vini | telefono-390/chiaro | FALLITO | tipologia=Bianchi; paese=Filippine; API found=false price=n/a; create read | persistenza | /app/menu/wines |
-| distillati-elimina-registro-permessi | distillati | telefono-390/chiaro | FALLITO | registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts) | registro e permessi staff (norole coperto da verify-roles-8_3) | payload |
-| distillati-modulo-inglese | distillati | telefono-390/chiaro | FALLITO | badge: atteso «Presente» nel foglio | inglese | /app/menu/spirits |
-| distillati-persistenza | distillati | telefono-390/chiaro | FALLITO | tipologia=Amari e Liquori; paese=Filippine; API found=false price=n/a; create read | persistenza | /app/menu/spirits |
-| bevande-elimina-registro-permessi | bevande | telefono-390/chiaro | FALLITO | registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts) | registro e permessi staff (norole coperto da verify-roles-8_3) | payload |
-| bevande-modulo-inglese | bevande | telefono-390/chiaro | FALLITO | badge: atteso «Presente» nel foglio | inglese | /app/menu/drinks |
-| bevande-persistenza | bevande | telefono-390/chiaro | FALLITO | tipologia=Calde; paese=—; API found=false price=n/a; create read | persistenza | /app/menu/drinks |
-| C2 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
-| C2 | vini/elimina | telefono-390/chiaro | FALLITO | Indietro 274x42; Elimina 274x42 | nessun elemento sotto 44 px | elimina |
-| C2 | vini/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 90 record | C2 | vuoto |
-| C2 | distillati/elimina | telefono-390/chiaro | FALLITO | Indietro 274x42; Elimina 274x42 | nessun elemento sotto 44 px | elimina |
-| C2 | distillati/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 38 record | C2 | vuoto |
+| vini-origine-cascata | vini | telefono-390/chiaro | FALLITO | UI regioni (12): Nessuna regione \| Piemonte \| Campania \| Friuli Venezia Giulia \| Trentino Alto Adige \| Umbria \| Lombardia \| Marche; collection sample: Alsazia \| Borgogna \| Campania \| Friuli Venezia Giulia \| Loira \| Lombardia \| Marche \| Piemonte; denominazioni Collio assenti | origine §7 | /app/menu/wines |
+| distillati-persistenza | distillati | telefono-390/chiaro | FALLITO | create non verificato; locator.click: Timeout 12000ms exceeded. Call log:   - waiting for locator('#spirit-field-type')     - locator resolved to <button tabindex="0" type="button" role="combobox" data-placeholder="" data-size="default" aria-expanded="false" id="spirit-field-type" aria-haspopup="listbox" data-slot="select-trigger" class="flex items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:bor…>…</button>   - attempting click action     2 × waiting for element to be visible, enabled and stable       - element is not stable     - retrying click action     - waiting 20ms     - waiting for element to be visible, enabled and stable     - element is not stable   - retrying click action     - waiting 100ms     - waiting for element to be visible, enabled and stable   - element was detached from the DOM, retrying  | persistenza | /app/menu/spirits |
+| bevande-modulo-inglese | bevande | telefono-390/chiaro | FALLITO | badge/en non letto; menu payload create-catalog-items: $ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- create-catalog-items verify-ui-1792342563625@test.local drinks '[{"name":"verify-ui-bevande-yesen","description":"Desc IT","descriptionEn":"Desc EN"}]' Il seguente campo non è valido: Nome  | inglese | /app/menu/drinks |
+| bevande-persistenza | bevande | telefono-390/chiaro | FALLITO | create non verificato; locator.click: Timeout 12000ms exceeded. Call log:   - waiting for locator('#drink-field-type')     - locator resolved to <button tabindex="0" type="button" role="combobox" data-placeholder="" data-size="default" id="drink-field-type" aria-expanded="false" aria-haspopup="listbox" data-slot="select-trigger" class="flex items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:bord…>…</button>   - attempting click action     2 × waiting for element to be visible, enabled and stable       - element is not stable     - retrying click action     - waiting 20ms     - waiting for element to be visible, enabled and stable     - element is not stable   - retrying click action     - waiting 100ms     - waiting for element to be visible, enabled and stable   - element was detached from the DOM, retrying  | persistenza | /app/menu/drinks |
+| vini-formati-ui | vini | telefono-390/chiaro | FALLITO | volume opzioni (7): Non indicata \| 25 cl \| 33 cl \| 37,5 cl \| 50 cl \| 75 cl \| 150 cl; atteso: Non indicata \| 25 cl \| 33 cl \| 37,5 cl \| 50 cl \| 75 cl \| 150 cl; grado UI=; locator.scrollIntoViewIfNeeded: Timeout 29997.076ms exceeded. Call log:   - attempting scroll into view action     2 × waiting for element to be stable       - element is not visible     - retrying scroll into view action     - waiting 20ms     2 × waiting for element to be stable       - element is not visible     - retrying scroll into view action       - waiting 100ms     58 × waiting for element to be stable        - element is not visible      - retrying scroll into view action        - waiting 500ms  | capacità/grado | /app/menu/wines |
+| vini-origine-fuori-filtro | vini | telefono-390/chiaro | FALLITO | paese API=[object Object]; trigger="Vietnam"; paese salvato non nel trigger | nome paese disabilitato visibile nel trigger (atteso: [object Object]) | /app/menu/wines |
+| vini-persistenza | vini | telefono-390/chiaro | FALLITO | create non verificato; locator.scrollIntoViewIfNeeded: Element is not attached to the DOM Call log:   - attempting scroll into view action     2 × waiting for element to be stable       - element is not stable     - retrying scroll into view action     - waiting 20ms     - waiting for element to be stable     - element is not stable   - retrying scroll into view action     - waiting 100ms     - waiting for element to be stable  | persistenza | /app/menu/wines |
 
 ## Non provato (e perché)
 - (nessuno)
 
 ## Anomalie dell'ambiente
-- (nessuna)
+- [prova-extra distillati paese fuori filtro] paese API=[object Object]; trigger Paese="Vietnam"
+- [prova-extra bevande paese fuori filtro] record senza paese in API

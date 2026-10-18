@@ -12,6 +12,59 @@ export async function selectComboboxOption(page, comboboxLabel, optionText) {
   await page.getByRole('option', { name: optionText, exact: true }).click()
 }
 
+/** Apre il combobox e sceglie con tastiera (utile se l'opzione è fuori viewport). */
+export async function selectComboboxOptionByKeyboard(page, comboboxLabel, optionText) {
+  const combo = page.getByRole('combobox', { name: comboboxLabel })
+  await combo.click()
+  const listbox = page.getByRole('listbox')
+  await listbox.waitFor({ state: 'visible', timeout: 12000 })
+  const prefix = optionText.slice(0, Math.min(8, optionText.length))
+  await combo.pressSequentially(prefix, { delay: 40 })
+  const opt = listbox.getByRole('option', { name: optionText, exact: true })
+  try {
+    await opt.scrollIntoViewIfNeeded({ timeout: 5000 })
+    await opt.click({ timeout: 8000 })
+  } catch {
+    await page.keyboard.press('Enter')
+  }
+  await listbox.waitFor({ state: 'hidden', timeout: 8000 }).catch(() => {})
+}
+
+export async function readComboboxTriggerText(page, comboboxLabel) {
+  const combo = page.getByRole('combobox', { name: comboboxLabel })
+  return (await combo.innerText()).trim()
+}
+
+export async function waitForListboxOptions(page, { minCount = 1, timeoutMs = 12000 } = {}) {
+  const listbox = page.getByRole('listbox')
+  await listbox.waitFor({ state: 'visible', timeout: timeoutMs })
+  await page.waitForFunction(
+    (min) => {
+      const lb = document.querySelector('[role=listbox]')
+      if (!lb) return false
+      return lb.querySelectorAll('[role=option]').length >= min
+    },
+    minCount,
+    { timeout: timeoutMs },
+  )
+  return (await listbox.getByRole('option').allTextContents()).map((t) => t.trim()).filter(Boolean)
+}
+
+/** Modulo catalogo aperto: nome compilato (edit) o foglio visibile (nuovo). */
+export async function waitForCatalogEditSheetReady(page, nameFieldId) {
+  const sheet = page.locator('[data-slot=sheet-content]')
+  await sheet.waitFor({ state: 'visible', timeout: 15000 })
+  await page.waitForFunction(
+    (id) => {
+      const el = document.getElementById(id)
+      return el && String(el.value ?? '').trim().length > 0
+    },
+    nameFieldId,
+    { timeout: 15000 },
+  )
+  await page.waitForTimeout(150)
+}
+
 /** Prima voce «vuota» del select (Nessuna regione, Nessun paese, …). */
 export async function clearComboboxToEmptyOption(page, comboboxLabel, emptyOptionLabel) {
   await selectComboboxOption(page, comboboxLabel, emptyOptionLabel)
@@ -64,6 +117,21 @@ export async function selectFiltersStateOption(page, stateLabel) {
   const combo = sheet.getByRole('combobox').last()
   await combo.click()
   await page.getByRole('option', { name: stateLabel, exact: true }).click()
+}
+
+export async function measureDeleteDialogButtons(page) {
+  return page.evaluate(() => {
+    const dlg = document.querySelector('[role=alertdialog]')
+    if (!dlg) return null
+    const btns = [...dlg.querySelectorAll('button')].filter((b) => getComputedStyle(b).visibility !== 'hidden')
+    const pick = (label) => {
+      const b = btns.find((x) => x.textContent?.trim() === label)
+      if (!b) return null
+      const r = b.getBoundingClientRect()
+      return `${Math.round(r.width)}x${Math.round(r.height)}`
+    }
+    return { indietro: pick('Indietro'), elimina: pick('Elimina') }
+  })
 }
 
 export function showMoreButtonLabel(screenId) {

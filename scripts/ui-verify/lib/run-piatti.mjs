@@ -200,6 +200,11 @@ export async function preparePiattiState(page, statoId, ctx) {
       menuCreateDishes(testUser.email, [{ name: 'verify-ui-libero' }])
       await gotoPiatti(page)
       await clickRowAction(page, 'verify-ui-libero', 'delete')
+      await page.locator('[role=alertdialog]').waitFor({ timeout: 10000 })
+      {
+        const { waitForAnimationsSettled } = await import('./measure-stable.mjs')
+        await waitForAnimationsSettled(page, { rootSelector: '[role=alertdialog]' })
+      }
       return
     case 'elimina-bloccato':
       menuCreateDishes(testUser.email, [{ name: 'verify-ui-in-uso' }])

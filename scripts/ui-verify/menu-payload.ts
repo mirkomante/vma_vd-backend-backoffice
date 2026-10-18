@@ -185,7 +185,12 @@ async function main() {
     if (slug !== WINES_SLUG && slug !== SPIRITS_SLUG && slug !== DRINKS_SLUG) {
       throw new Error('create-catalog-items: slug non valido')
     }
-    const specs = JSON.parse(json) as Array<{ name: string; disabled?: boolean; description?: string }>
+    const specs = JSON.parse(json) as Array<{
+      name: string
+      disabled?: boolean
+      description?: string
+      descriptionEn?: string
+    }>
     const typeSlug =
       slug === WINES_SLUG ? WINE_TYPES_SLUG : slug === SPIRITS_SLUG ? SPIRIT_TYPES_SLUG : DRINK_TYPES_SLUG
     const typeRes = await payload.find({ collection: typeSlug, limit: 1, depth: 0, overrideAccess: true })
@@ -217,12 +222,26 @@ async function main() {
       if (slug === WINES_SLUG || slug === SPIRITS_SLUG) {
         data.country = countryId
       }
+      if (slug === DRINKS_SLUG) {
+        data.volume = '33 cl'
+        data.abv = '5%'
+      }
       const doc = await payload.create({
         collection: slug,
         data: data as never,
         overrideAccess: false,
         user,
       })
+      if (spec.descriptionEn) {
+        await payload.update({
+          collection: slug,
+          id: doc.id,
+          data: { description: spec.descriptionEn },
+          overrideAccess: false,
+          user,
+          locale: 'en',
+        })
+      }
       ids.push(doc.id)
     }
     console.log(JSON.stringify({ ok: true, ids }))

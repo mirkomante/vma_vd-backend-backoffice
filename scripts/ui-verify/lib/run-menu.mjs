@@ -13,6 +13,7 @@ import {
   withinTolerance,
 } from './engine.mjs'
 import { loadNavExpectations, loadPiattiCopyFromLib, readTsStringExport } from './lib-readers.mjs'
+import { measureDeleteDialogButtons } from './catalog-ui-helpers.mjs'
 import { SIM_PORT, isPortFree, waitForPortFree } from './ensure-ports.mjs'
 import {
   menuCountDishes,
@@ -839,13 +840,16 @@ export async function runMenuChecks(ctx) {
     }
 
     if (ready && piattiScreen?.stati_c1_c2) {
-      const matrixStateIds = [
+      let matrixStateIds = [
         ...piattiScreen.stati_c1_c2.filter((id) => !HEAVY_PIATTI_C1_STATES.has(id)),
         ...new Set([
           ...piattiScreen.stati_c1_c2.filter((id) => HEAVY_PIATTI_C1_STATES.has(id)),
           'piu-di-100',
         ]),
       ]
+      if (runCtx.matrixStateIncluded) {
+        matrixStateIds = matrixStateIds.filter((id) => runCtx.matrixStateIncluded(id))
+      }
       const matrixControlIds = ['C1', 'C2', 'C3', 'C2-mouse']
       const runMatrix = matrixControlIds.some((id) => runCtx.shouldRun(id))
 
@@ -927,7 +931,22 @@ export async function runMenuChecks(ctx) {
                 }
                 if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
                   const r = await checkToccoMinimo(sp)
-                  addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                  let misuratoC2 = r.misurato
+                  if (statoId === 'elimina-libero') {
+                    const dims = await measureDeleteDialogButtons(sp)
+                    if (dims?.indietro && dims?.elimina) {
+                      misuratoC2 = `Indietro ${dims.indietro}; Elimina ${dims.elimina}${r.ok ? '' : `; violazioni C2: ${r.misurato}`}`
+                    }
+                  }
+                  addRow(report, {
+                    id: 'C2',
+                    schermata: sch,
+                    profiloTema: pt,
+                    esito: resultToEsito(r),
+                    misurato: misuratoC2,
+                    atteso: r.atteso,
+                    evidenza: statoId,
+                  })
                 }
                 if (runCtx.shouldRun('C3')) {
                   const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)

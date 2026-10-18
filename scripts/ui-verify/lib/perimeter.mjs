@@ -102,10 +102,19 @@ export function createRunContext(controlli, cli) {
     return `L${livello}`
   }
 
+  const statiFilter = cli.stati?.size ? cli.stati : null
+
+  function matrixStateIncluded(statoId) {
+    if (!statiFilter) return true
+    return statiFilter.has(statoId)
+  }
+
   return {
     livello,
     schermate,
     solo,
+    statiFilter,
+    matrixStateIncluded,
     levels,
     shouldRun,
     screenIncluded,

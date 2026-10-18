@@ -10,9 +10,11 @@ import { CATALOG_SCREENS, CATALOG_SCREEN_IDS } from './catalog-config.mjs'
 import {
   applyFiltersSheet,
   applyOriginFilterCascade,
+  measureDeleteDialogButtons,
   openFiltersSheet,
   selectComboboxOption,
 } from './catalog-ui-helpers.mjs'
+import { waitForAnimationsSettled } from './measure-stable.mjs'
 import { catalogCopyConst } from './catalog-copy.mjs'
 import { menuCountCatalog, menuCreateCatalogItems, menuDeleteVerifyPrefix } from './menu-payload.mjs'
 import { SIM_PORT, waitForPortFree } from './ensure-ports.mjs'
@@ -224,6 +226,8 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-del` }])
       await gotoCatalog(page, config)
       await clickRowAction(page, `verify-ui-${sid}-del`, 'delete')
+      await page.locator('[role=alertdialog]').waitFor({ timeout: 10000 })
+      await waitForAnimationsSettled(page, { rootSelector: '[role=alertdialog]' })
       return true
     case 'eliminato':
       menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-del-done` }])
@@ -296,10 +300,13 @@ export async function runCatalogC1C2Matrix(ctx, config) {
   const temiAll = runCtx.temiKeys().filter((t) => ['chiaro', 'scuro'].includes(t))
   const profiliL1 = runCtx.profiliAccess().filter((p) => ['telefono-390', 'notebook-1280'].includes(p))
   const bulkId = bulkStateId(config)
-  const matrixStateIds = [
+  let matrixStateIds = [
     ...stati.filter((id) => !HEAVY_STATES.has(id) && id !== bulkId),
     ...new Set([...stati.filter((id) => HEAVY_STATES.has(id)), bulkId].filter(Boolean)),
   ]
+  if (runCtx.matrixStateIncluded) {
+    matrixStateIds = matrixStateIds.filter((id) => runCtx.matrixStateIncluded(id))
+  }
 
   async function runMatrix(statoId) {
     for (const temaKey of temiAll) {
@@ -379,7 +386,22 @@ export async function runCatalogC1C2Matrix(ctx, config) {
             }
             if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
               const r = await checkToccoMinimo(sp)
-              addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+              let misuratoC2 = r.misurato
+              if (statoId === 'elimina') {
+                const dims = await measureDeleteDialogButtons(sp)
+                if (dims?.indietro && dims?.elimina) {
+                  misuratoC2 = `Indietro ${dims.indietro}; Elimina ${dims.elimina}${r.ok ? '' : `; violazioni C2: ${r.misurato}`}`
+                }
+              }
+              addRow(report, {
+                id: 'C2',
+                schermata: sch,
+                profiloTema: pt,
+                esito: resultToEsito(r),
+                misurato: misuratoC2,
+                atteso: r.atteso,
+                evidenza: statoId,
+              })
             }
             if (runCtx.shouldRun('C3')) {
               const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)

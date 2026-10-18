@@ -92,7 +92,18 @@ export async function checkTemaClasse(page, htmlDark) {
   return { ok, misurato: has ? 'dark presente' : 'dark assente', atteso: htmlDark ? 'dark presente' : 'dark assente' }
 }
 
-export async function checkToccoMinimo(page, { stableFirst = false } = {}) {
+export async function checkToccoMinimo(page, { stableFirst = false, waitAnimations = true } = {}) {
+  if (waitAnimations) {
+    const { waitForAnimationsSettled } = await import('./measure-stable.mjs')
+    const dialog = page.locator('[role=alertdialog]')
+    if ((await dialog.count()) > 0) {
+      await waitForAnimationsSettled(page, { rootSelector: '[role=alertdialog]' })
+    } else if ((await page.locator('[data-slot=sheet-content]').count()) > 0) {
+      await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+    } else {
+      await waitForAnimationsSettled(page)
+    }
+  }
   if (stableFirst) {
     const { waitForPageLayoutStable } = await import('./measure-stable.mjs')
     await waitForPageLayoutStable(page)

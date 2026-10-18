@@ -110,7 +110,18 @@ export function initReport({
     },
     prepareMenuPackageRerun(runCtx) {
       if (runCtx?.solo?.size) {
-        this.replaceControlIds([...runCtx.solo])
+        const ids = [...runCtx.solo]
+        const matrixIds = new Set(['C1', 'C2', 'C3', 'C2-mouse'])
+        const onlyMatrix =
+          ids.length > 0 &&
+          ids.every((id) => matrixIds.has(id)) &&
+          runCtx.statiFilter?.size &&
+          runCtx.schermate?.size
+        if (onlyMatrix) {
+          for (const id of ids) this.replaceMatrixControlRows(id, runCtx)
+          return
+        }
+        this.replaceControlIds(ids)
         return
       }
       const scoped = menuScreensInRun(runCtx)
@@ -120,6 +131,23 @@ export function initReport({
       }
       this.replacePacchetto('menu')
       this.replaceMenuScreens(['vini', 'distillati', 'bevande'])
+    },
+    /** Rimuove le righe C1/C2/C3 limitate a schermata+stato del giro (--solo C2 --stati …). */
+    replaceMatrixControlRows(controlId, runCtx) {
+      const screens = runCtx.schermate
+      const stati = runCtx.statiFilter
+      if (!screens?.size || !stati?.size) return
+      this.rows = this.rows.filter((r) => {
+        if (r.id !== controlId) return true
+        const sch = r.schermata ?? ''
+        const slash = sch.indexOf('/')
+        if (slash < 0) return true
+        const screen = sch.slice(0, slash)
+        const stato = sch.slice(slash + 1)
+        if (!screens.has(screen)) return true
+        if (!stati.has(stato)) return true
+        return false
+      })
     },
     /** Rimuove le righe dei controlli indicati (merge --solo). */
     replaceControlIds(controlIds) {

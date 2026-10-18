@@ -76,7 +76,20 @@ export function parseCli(argv) {
     throw new Error('Con --livello 1 serve --schermata <id>[,<id>] oppure --solo <id,...>')
   }
 
-  return { mode, livello, schermate, profili, temi, controlliFile, solo }
+  const statiRaw = flags.stati && flags.stati !== true ? String(flags.stati) : null
+  const stati = statiRaw
+    ? new Set(
+        statiRaw
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+      )
+    : null
+  if (stati?.size && !solo?.size) {
+    throw new Error('--stati richiede --solo (limita la matrice C1/C2/C3 agli stati indicati)')
+  }
+
+  return { mode, livello, schermate, profili, temi, controlliFile, solo, stati }
 }
 
 export function loadControlli(controlliFileArg) {

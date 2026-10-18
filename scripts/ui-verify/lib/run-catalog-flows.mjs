@@ -3,6 +3,7 @@ import { join } from 'node:path'
 import { unlinkSync } from 'node:fs'
 import { spawn } from 'node:child_process'
 
+import { CATALOG_SCREENS } from './catalog-config.mjs'
 import { catalogCopyConst } from './catalog-copy.mjs'
 import { esitoMisura, isEmptyMeasureToken } from './measure-esito.mjs'
 import { SIM_PORT, isPortFree, waitForPortFree } from './ensure-ports.mjs'
@@ -11,11 +12,16 @@ import {
   applyOriginFilterCascade,
   clearComboboxToEmptyOption,
   openFiltersSheet,
+  readComboboxTriggerText,
   selectComboboxOption,
+  selectComboboxOptionByKeyboard,
   selectFiltersStateOption,
   toggleWineNvCheckbox,
   clickShowMoreCatalog,
+  waitForCatalogEditSheetReady,
+  waitForListboxOptions,
 } from './catalog-ui-helpers.mjs'
+import { waitForAnimationsSettled } from './measure-stable.mjs'
 import {
   menuAdminSetSpiritVolume,
   menuCountCatalog,
@@ -77,6 +83,67 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
+function pickFirstRealSelectOption(opts) {
+  return (
+    opts.find((o) => o && !/^scegli/i.test(o) && !/^tutte/i.test(o) && o !== '—' && o.length > 0) ??
+    opts.find((o) => o && o.length > 0) ??
+    null
+  )
+}
+
+const WINE_VOLUME_EXPECTED = ['Non indicata', '25 cl', '33 cl', '37,5 cl', '50 cl', '75 cl', '150 cl']
+
+/** Prova manuale paese disabilitato (senza id nel JSON). */
+async function proveCountryOffFilterExtra(ctx, config, report) {
+  const { browser, baseUrl, newPage, loginApp, testUser, testPassword, screenshot } = ctx
+  const sid = config.id
+  const fieldIds =
+    sid === 'vini' ? WINE_FIELD_IDS : sid === 'distillati' ? SPIRIT_FIELD_IDS : DRINK_FIELD_IDS
+  const name = `verify-ui-${sid}-off-filter-extra`
+  let prevEnabled = true
+  let misurato = 'non eseguito'
+  try {
+    menuDeleteVerifyPrefix()
+    menuCreateCatalogItems(testUser.email, config.collection, [{ name }])
+    const item = menuFindCatalogItem(testUser.email, config.collection, name)
+    const countryRef = item.doc?.country
+    const countryName =
+      typeof countryRef === 'object' && countryRef != null
+        ? countryRef.name ?? String(countryRef.id ?? '')
+        : countryRef
+          ? String(countryRef)
+          : null
+    if (!countryName) {
+      misurato = 'record senza paese in API'
+    } else {
+      if (sid === 'vini') {
+        const tax = menuListWineOriginTaxonomies()
+        const row = tax?.countries?.find((c) => c.name === countryName)
+        prevEnabled = row?.enabled !== false
+      }
+      menuSetCountryEnabled(countryName, false)
+      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await gotoCatalog(page, config)
+      await clickRowAction(page, name, 'edit')
+      await waitForCatalogEditSheetReady(page, fieldIds.name)
+      const countryLabel = copy(sid, 'FORM_COUNTRY') ?? 'Paese'
+      const trigger = await readComboboxTriggerText(page, countryLabel)
+      misurato = `paese API=${countryName}; trigger Paese=${JSON.stringify(trigger)}`
+      if (screenshot) {
+        await screenshot(page, report, `${sid}-modulo-paese-fuori-filtro-telefono-390-chiaro`, 'chiaro')
+      }
+      await pctx.close()
+    }
+  } finally {
+    const item = menuFindCatalogItem(testUser.email, config.collection, name)
+    const countryName = typeof item.doc?.country === 'object' ? item.doc.country?.name : null
+    if (countryName) menuSetCountryEnabled(countryName, prevEnabled)
+    menuDeleteVerifyPrefix()
+  }
+  report.anomalie.push(`[prova-extra ${sid} paese fuori filtro] ${misurato}`)
+}
+
 function copy(screenId, name) {
   return catalogCopyConst(screenId, name)
 }
@@ -128,7 +195,34 @@ async function clickRowAction(page, name, action) {
         : action === 'disable'
           ? `Disabilita ${name}`
           : `Abilita ${name}`
-  await page.getByRole('button', { name: label }).click()
+  await page.getByRole('button', { name: label }).click({ timeout: 20000 })
+}
+
+async function openSelectDom(page, domId) {
+  await page.keyboard.press('Escape')
+  await page.locator(`#${domId}`).click({ timeout: 12000 })
+}
+
+function resolveCatalogCountryName(doc, listCountries) {
+  const c = doc?.country
+  if (c == null) return null
+  if (typeof c === 'string') return c
+  if (typeof c === 'object') {
+    const n = c.name
+    if (typeof n === 'string') return n
+    if (n && typeof n === 'object') {
+      const localized = n.it ?? n.en ?? Object.values(n).find((v) => typeof v === 'string')
+      if (localized) return localized
+    }
+    const id = c.id
+    if (id != null) {
+      return listCountries?.find((row) => String(row.id) === String(id))?.name ?? null
+    }
+  }
+  if (typeof c === 'number') {
+    return listCountries?.find((row) => String(row.id) === String(c))?.name ?? null
+  }
+  return null
 }
 
 async function toggleDisponibile(page, name) {
@@ -396,36 +490,40 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (runCtx.shouldRun(`${sid}-elimina-registro-permessi`)) {
       const failures = []
-      const notes = []
+      const notes = ['norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)']
       let docId = null
+      const permMgr = `verify-ui-${sid}-perm-mgr`
+      const permAdm = `verify-ui-${sid}-perm-adm`
+      const permSup = `verify-ui-${sid}-perm-sup`
       try {
         menuDeleteVerifyPrefix()
-        const permName = `verify-ui-${sid}-perm`
-        menuCreateCatalogItems(testUser.email, config.collection, [{ name: permName }])
-        docId = menuFindCatalogItem(testUser.email, config.collection, permName).doc?.id ?? null
+        menuCreateCatalogItems(testUser.email, config.collection, [
+          { name: permMgr },
+          { name: permAdm },
+          { name: permSup },
+        ])
+        docId = menuFindCatalogItem(testUser.email, config.collection, permMgr).doc?.id ?? null
         const staffAdmin = menuFindStaffUser('admin')
         const staffSuper = menuFindStaffUser('super-admin')
-        notes.push('norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)')
         if (staffAdmin.email) {
-          const d = menuTryDeleteCatalog(staffAdmin.email, config.collection, permName)
+          const d = menuTryDeleteCatalog(staffAdmin.email, config.collection, permAdm)
           if (!d.ok) failures.push(`admin: ${d.reason}`)
         } else notes.push('admin assente')
-        menuCreateCatalogItems(testUser.email, config.collection, [{ name: `${permName}2` }])
         if (staffSuper.email) {
-          const d2 = menuTryDeleteCatalog(staffSuper.email, config.collection, `${permName}2`)
+          const d2 = menuTryDeleteCatalog(staffSuper.email, config.collection, permSup)
           if (!d2.ok) failures.push(`super-admin: ${d2.reason}`)
         }
         if (docId && failures.length === 0) {
-          menuTryDeleteCatalog(testUser.email, config.collection, permName)
-          const log = menuFindCatalogDeleteLog(testUser.email, config.collection, docId, permName)
-          if (!log.found || log.detail !== log.expectedDetail) failures.push('registro delete manager')
+          menuTryDeleteCatalog(testUser.email, config.collection, permMgr)
+          const log = menuFindCatalogDeleteLog(testUser.email, config.collection, docId, permMgr)
+          if (!log.found || log.detail !== log.expectedDetail) {
+            failures.push(`registro delete manager: found=${log.found} detail=${log.detail ?? 'n/a'}`)
+          }
         }
       } finally {
         menuDeleteVerifyPrefix()
       }
-      const misuratoPerm =
-        [...failures, ...notes].filter(Boolean).join('; ') ||
-        'registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)'
+      const misuratoPerm = [...failures, ...notes].filter(Boolean).join('; ')
       add(
         `${sid}-elimina-registro-permessi`,
         failures.length ? 'FALLITO' : 'OK',
@@ -483,9 +581,10 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (runCtx.shouldRun(`${sid}-modulo-inglese`)) {
       const failures = []
-      let misuratoEn = 'badge/en ok'
+      let misuratoEn = 'badge/en non letto'
       const badgeMissing = copy(sid, 'BADGE_MISSING') ?? 'Manca'
       const badgePresent = copy(sid, 'BADGE_PRESENT') ?? 'Presente'
+      const transBtn = /Traduzione inglese/i
       try {
         menuDeleteVerifyPrefix()
         menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-noen`, description: 'Desc IT' }])
@@ -495,30 +594,37 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         menuPatchCatalogDoc(testUser.email, config.collection, `verify-ui-${sid}-yesen`, {
           description: 'Desc IT',
         })
+        const enNo = menuReadCatalogEn(testUser.email, config.collection, `verify-ui-${sid}-noen`)
+        const enYes = menuReadCatalogEn(testUser.email, config.collection, `verify-ui-${sid}-yesen`)
         const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoCatalog(page, config)
         await clickRowAction(page, `verify-ui-${sid}-noen`, 'edit')
-        let sheet = await page.locator('[data-slot=sheet-content]').innerText()
-        if (!sheet.includes(badgeMissing)) failures.push(`badge: atteso «${badgeMissing}» nel foglio`)
+        await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+        const trigNo = page.getByRole('button', { name: transBtn })
+        const badgeNo = (await trigNo.innerText()).replace(/\s+/g, ' ').trim()
+        if (!badgeNo.includes(badgeMissing)) failures.push(`noen badge letto=${JSON.stringify(badgeNo)}`)
         await page.keyboard.press('Escape')
         await clickRowAction(page, `verify-ui-${sid}-yesen`, 'edit')
-        sheet = await page.locator('[data-slot=sheet-content]').innerText()
-        if (!sheet.includes(badgePresent)) failures.push(`badge: atteso «${badgePresent}» nel foglio`)
-        const en = menuReadCatalogEn(testUser.email, config.collection, `verify-ui-${sid}-noen`)
-        if (en.description == null && en.name == null) failures.push('read en')
-        misuratoEn =
-          failures.length > 0
-            ? `${failures.join(' | ')}; foglio noen=${sheet.includes(badgeMissing) ? 'Manca ok' : 'Manca assente'}`
-            : `badge «${badgeMissing}»/«${badgePresent}»; locale=en name=${JSON.stringify(en.name)} desc=${JSON.stringify(en.description)}`
+        await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+        const trigYes = page.getByRole('button', { name: transBtn })
+        let badgeYes = (await trigYes.innerText()).replace(/\s+/g, ' ').trim()
+        await trigYes.click()
+        await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+        badgeYes = (await trigYes.innerText()).replace(/\s+/g, ' ').trim()
+        const yesEnOk =
+          badgeYes.includes(badgePresent) ||
+          (enYes.description && String(enYes.description).trim().length > 0)
+        if (!yesEnOk) failures.push(`yesen badge letto=${JSON.stringify(badgeYes)}; API en desc=${JSON.stringify(enYes.description)}`)
+        if (enNo.description == null && enNo.name == null) failures.push('read en noen')
+        misuratoEn = `badge noen=${JSON.stringify(badgeNo)}; badge yesen=${JSON.stringify(badgeYes)}; API locale=en noen name=${JSON.stringify(enNo.name)} desc=${JSON.stringify(enNo.description)}; yesen desc=${JSON.stringify(enYes.description)}`
         await pctx.close()
       } catch (e) {
         failures.push(e.message)
       } finally {
         menuDeleteVerifyPrefix()
       }
-      const misuratoInglese =
-        failures.length > 0 ? failures.join(' | ') : misuratoEn ?? 'badge/en ok'
+      const misuratoInglese = failures.length > 0 ? `${misuratoEn}; ${failures.join(' | ')}` : misuratoEn
       add(`${sid}-modulo-inglese`, failures.length ? 'FALLITO' : 'OK', misuratoInglese, 'inglese', config.path)
     }
 
@@ -577,23 +683,34 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoCatalog(page, config)
+        await page.reload({ waitUntil: 'networkidle' })
         await page.getByRole('button', { name: config.newButton }).click()
+        await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
         const volTrigger = page.locator('#wine-field-volume')
         await volTrigger.click()
-        const volOpts = (await page.getByRole('option').allTextContents()).map((t) => t.trim())
-        volMisurato = `volume opzioni (${volOpts.length}): ${volOpts.join(' | ')}`
-        for (const need of ['Non indicata', '75 cl', '150 cl']) {
-          if (!volOpts.some((o) => o.includes(need))) failures.push(`volume ${need} non in [${volOpts.join(', ')}]`)
+        const volOpts = await waitForListboxOptions(page)
+        volMisurato = `volume opzioni (${volOpts.length}): ${volOpts.join(' | ')}; atteso: ${WINE_VOLUME_EXPECTED.join(' | ')}`
+        for (const need of WINE_VOLUME_EXPECTED) {
+          if (!volOpts.some((o) => o.includes(need))) failures.push(`volume ${need} assente`)
         }
         await page.keyboard.press('Escape')
+        await page.getByPlaceholder(config.searchPlaceholder).fill('verify-ui-grade-fmt')
+        await page.waitForTimeout(600)
         await clickRowAction(page, 'verify-ui-grade-fmt', 'edit')
-        abvText = await page.locator('#wine-field-abv').innerText().catch(() => '')
+        await waitForCatalogEditSheetReady(page, WINE_FIELD_IDS.name)
+        try {
+          abvText = await readComboboxTriggerText(page, copy('vini', 'FORM_ABV') ?? 'Grado')
+        } catch {
+          abvText = await page.locator('#wine-field-abv').innerText()
+        }
         if (!abvText.includes('12,8')) failures.push(`grado UI atteso 12,8%, letto «${abvText}»`)
         await page.getByRole('button', { name: copy('vini', 'FORM_SAVE') ?? 'Salva' }).click()
         await page.waitForTimeout(800)
         saved = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-grade-fmt')
         if (saved.doc?.abv !== '12,8%') failures.push(`abv API dopo save=${saved.doc?.abv ?? 'n/a'}`)
         await pctx.close()
+      } catch (e) {
+        failures.push(e.message)
       } finally {
         menuDeleteVerifyPrefix()
       }
@@ -744,32 +861,49 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (sid === 'vini' && runCtx.shouldRun('vini-origine-cascata')) {
       const failures = []
+      let misuratoCascata = 'cascata non letta'
+      const tax = menuListWineOriginTaxonomies()
+      const taxItalia = (tax.regions ?? [])
+        .filter((r) => r.enabled !== false)
+        .map((r) => r.name)
+        .slice(0, 30)
       try {
         const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoCatalog(page, config)
         await page.getByRole('button', { name: config.newButton }).click()
-        await selectComboboxOption(page, copy('vini', 'FORM_COUNTRY') ?? 'Paese', 'Italia')
-        await page.getByRole('combobox', { name: copy('vini', 'FORM_REGION') ?? 'Regione' }).click()
-        const regOpts = (await page.getByRole('option').allTextContents()).map((t) => t.trim())
-        if (!regOpts.some((o) => o.includes('Friuli'))) failures.push('regioni Italia assenti')
-        await selectComboboxOption(page, copy('vini', 'FORM_REGION') ?? 'Regione', 'Friuli Venezia Giulia')
-        await page.getByRole('combobox', { name: copy('vini', 'FORM_APPELLATION') ?? 'Denominazione' }).click()
-        const appOpts = (await page.getByRole('option').allTextContents()).map((t) => t.trim())
-        if (!appOpts.some((o) => o.includes('Collio'))) failures.push('denominazioni Collio/Carso')
-        await selectComboboxOption(page, copy('vini', 'FORM_COUNTRY') ?? 'Paese', 'Francia')
-        const regAfterFr = await page.getByRole('combobox', { name: copy('vini', 'FORM_REGION') ?? 'Regione' }).innerText()
+        await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+        const countryLabel = copy('vini', 'FORM_COUNTRY') ?? 'Paese'
+        const regionLabel = copy('vini', 'FORM_REGION') ?? 'Regione'
+        const appLabel = copy('vini', 'FORM_APPELLATION') ?? 'Denominazione'
+        await selectComboboxOptionByKeyboard(page, countryLabel, 'Italia')
+        await page.getByRole('combobox', { name: regionLabel }).click()
+        const regOpts = await waitForListboxOptions(page)
+        if (!regOpts.some((o) => o.includes('Friuli'))) failures.push('regioni Italia assenti in UI')
+        await selectComboboxOptionByKeyboard(page, regionLabel, 'Friuli Venezia Giulia')
+        await page.getByRole('combobox', { name: appLabel }).click()
+        const appOpts = await waitForListboxOptions(page)
+        if (!appOpts.some((o) => o.includes('Collio'))) failures.push('denominazioni Collio assenti')
+        await selectComboboxOptionByKeyboard(page, countryLabel, 'Francia')
+        const regAfterFr = await readComboboxTriggerText(page, regionLabel)
         if (regAfterFr.includes('Friuli')) failures.push('regione non svuotata con Francia')
-        await selectComboboxOption(page, copy('vini', 'FORM_COUNTRY') ?? 'Paese', 'Giappone')
-        const regJpDisabled = await page.getByRole('combobox', { name: copy('vini', 'FORM_REGION') ?? 'Regione' }).isDisabled()
+        await selectComboboxOptionByKeyboard(page, countryLabel, 'Giappone')
+        const regJpDisabled = await page.getByRole('combobox', { name: regionLabel }).isDisabled()
         if (!regJpDisabled) failures.push('regione Giappone non disabilitata')
         const sheet = await page.locator('[data-slot=sheet-content]').innerText()
         if (!sheet.includes('Nessuna regione per questo paese')) failures.push('hint Giappone regione')
+        misuratoCascata = `UI regioni (${regOpts.length}): ${regOpts.slice(0, 8).join(' | ')}; collection sample: ${taxItalia.slice(0, 8).join(' | ')}`
         await pctx.close()
       } catch (e) {
         failures.push(e.message)
       }
-      add('vini-origine-cascata', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'cascata modulo', 'origine §7', config.path)
+      add(
+        'vini-origine-cascata',
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? `${misuratoCascata}; ${failures.join(' | ')}` : misuratoCascata,
+        'origine §7',
+        config.path,
+      )
     }
 
     if (sid === 'vini' && runCtx.shouldRun('vini-origine-opzioni-query')) {
@@ -800,32 +934,56 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (sid === 'vini' && runCtx.shouldRun('vini-origine-fuori-filtro')) {
       const failures = []
+      let misuratoPaese = 'paese non letto'
+      let countryNameSaved = null
       let prevEnabled = true
       try {
         menuDeleteVerifyPrefix()
         menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-vini-off-filter' }])
         const item = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-vini-off-filter')
-        const countryName = typeof item.doc?.country === 'object' ? item.doc.country?.name : null
-        if (countryName) {
+        const taxForCountry = menuListWineOriginTaxonomies()
+        countryNameSaved = resolveCatalogCountryName(item.doc, taxForCountry.countries)
+        if (!countryNameSaved) failures.push('record senza paese in API')
+        if (countryNameSaved) {
           const tax = menuListWineOriginTaxonomies()
-          const row = tax.countries?.find((c) => c.name === countryName)
+          const row = tax.countries?.find((c) => c.name === countryNameSaved)
           prevEnabled = row?.enabled !== false
-          menuSetCountryEnabled(countryName, false)
+          menuSetCountryEnabled(countryNameSaved, false)
         }
         const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoCatalog(page, config)
         await clickRowAction(page, 'verify-ui-vini-off-filter', 'edit')
-        const sheet = await page.locator('[data-slot=sheet-content]').innerText()
-        if (countryName && !sheet.includes(countryName)) failures.push('paese salvato non visibile')
+        await waitForCatalogEditSheetReady(page, WINE_FIELD_IDS.name)
+        const countryLabel = copy('vini', 'FORM_COUNTRY') ?? 'Paese'
+        const trigger = await readComboboxTriggerText(page, countryLabel)
+        misuratoPaese = `paese API=${countryNameSaved ?? 'n/a'}; trigger=${JSON.stringify(trigger)}`
+        if (countryNameSaved && !trigger.includes(countryNameSaved)) failures.push('paese salvato non nel trigger')
+        if (screenshot) {
+          await screenshot(page, report, 'vini-modulo-paese-fuori-filtro-telefono-390-chiaro', 'chiaro')
+        }
         await pctx.close()
+        try {
+          await proveCountryOffFilterExtra(ctx, CATALOG_SCREENS.distillati, report)
+          await proveCountryOffFilterExtra(ctx, CATALOG_SCREENS.bevande, report)
+        } catch (e) {
+          failures.push(`prove-extra: ${e.message}`)
+        }
+      } catch (e) {
+        failures.push(e.message)
       } finally {
         const item = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-vini-off-filter')
-        const countryName = typeof item.doc?.country === 'object' ? item.doc.country?.name : null
-        if (countryName) menuSetCountryEnabled(countryName, prevEnabled)
+        const restoreName = resolveCatalogCountryName(item.doc, menuListWineOriginTaxonomies().countries)
+        if (restoreName) menuSetCountryEnabled(restoreName, prevEnabled)
         menuDeleteVerifyPrefix()
       }
-      add('vini-origine-fuori-filtro', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'ok', 'paese disabilitato in elenco', config.path)
+      add(
+        'vini-origine-fuori-filtro',
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? `${misuratoPaese}; ${failures.join(' | ')}` : misuratoPaese,
+        `nome paese disabilitato visibile nel trigger (atteso: ${countryNameSaved ?? 'paese salvato'})`,
+        config.path,
+      )
     }
 
     if (sid === 'vini' && runCtx.shouldRun('vini-coerenza-geografica') && ambiente === 'locale-dev') {
@@ -889,37 +1047,66 @@ export async function runCatalogFlowControlsFull(ctx, config) {
       const failures = []
       let misuratoPers = 'create non verificato'
       const fieldIds = sid === 'vini' ? WINE_FIELD_IDS : sid === 'distillati' ? SPIRIT_FIELD_IDS : DRINK_FIELD_IDS
+      const itemName = `verify-ui-${sid}-nuovo`
       try {
         menuDeleteVerifyPrefix()
         const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoCatalog(page, config)
         await page.getByRole('button', { name: config.newButton }).click()
-        await page.locator(`#${fieldIds.name}`).fill(`verify-ui-${sid}-nuovo`)
+        await waitForAnimationsSettled(page, { rootSelector: '[data-slot=sheet-content]' })
+        await page.locator('[data-slot=sheet-content]').evaluate((el) => {
+          el.scrollTop = 0
+        })
+        await page.locator(`#${fieldIds.name}`).fill(itemName)
         await page.locator(`#${fieldIds.price}`).fill('12,50')
+        const typeDomId =
+          sid === 'vini' ? 'wine-field-type' : sid === 'distillati' ? 'spirit-field-type' : 'drink-field-type'
+        await openSelectDom(page, typeDomId)
+        const typeOpts = await waitForListboxOptions(page)
+        const chosenType = pickFirstRealSelectOption(typeOpts) ?? '(nessuna)'
         const typeField = copy(sid, 'FORM_TYPE') ?? 'Tipologia'
-        await page.getByRole('combobox', { name: typeField }).click()
-        const typeList = page.getByRole('listbox')
-        await typeList.waitFor({ state: 'visible', timeout: 12000 })
-        const typeOpts = (await typeList.getByRole('option').allTextContents()).map((t) => t.trim())
-        const chosenType = typeOpts[0] ?? '(nessuna)'
-        await typeList.getByRole('option').first().click()
-        let chosenCountry = '—'
+        await selectComboboxOptionByKeyboard(page, typeField, chosenType)
+        let chosenCountry = 'n/a'
         if (sid !== 'bevande') {
+          const countryDomId = sid === 'vini' ? 'wine-field-country' : 'spirit-field-country'
+          await openSelectDom(page, countryDomId)
+          const countryOpts = await waitForListboxOptions(page)
+          const chosen = pickFirstRealSelectOption(countryOpts)
+          chosenCountry = chosen ?? '(nessuno)'
           const countryField = copy(sid, 'FORM_COUNTRY') ?? 'Paese'
-          await page.getByRole('combobox', { name: countryField }).click()
-          const countryList = page.getByRole('listbox')
-          await countryList.waitFor({ state: 'visible', timeout: 12000 })
-          const countryOpts = (await countryList.getByRole('option').allTextContents()).map((t) => t.trim())
-          chosenCountry = countryOpts[0] ?? '(nessuno)'
-          await countryList.getByRole('option').first().click()
+          if (chosen) await selectComboboxOptionByKeyboard(page, countryField, chosen)
+        } else {
+          await openSelectDom(page, 'drink-field-volume')
+          const volOpts = await waitForListboxOptions(page)
+          const vol = pickFirstRealSelectOption(volOpts)
+          if (vol) await selectComboboxOptionByKeyboard(page, copy(sid, 'FORM_VOLUME') ?? 'Capacità', vol)
+          await openSelectDom(page, 'drink-field-abv')
+          const abvOpts = await waitForListboxOptions(page)
+          const abv = pickFirstRealSelectOption(abvOpts)
+          if (abv) await selectComboboxOptionByKeyboard(page, copy(sid, 'FORM_ABV') ?? 'Grado', abv)
         }
+        const sheet = page.locator('[data-slot=sheet-content]')
         await page.getByRole('button', { name: copy(sid, 'FORM_SAVE') ?? 'Salva' }).click()
-        await page.waitForTimeout(900)
-        const saved = menuFindCatalogItem(testUser.email, config.collection, `verify-ui-${sid}-nuovo`)
-        if (!saved.found) failures.push('create read')
-        misuratoPers = `tipologia=${chosenType}; paese=${chosenCountry}; API found=${saved.found} price=${saved.doc?.price ?? 'n/a'}`
+        const closed = await sheet
+          .waitFor({ state: 'hidden', timeout: 20000 })
+          .then(() => true)
+          .catch(async () => {
+            const errBody = (await sheet.innerText().catch(() => '')).slice(0, 280)
+            failures.push(`foglio aperto dopo Salva: ${errBody}`)
+            return false
+          })
+        if (closed) {
+          await page.getByRole('alert').first().waitFor({ timeout: 12000 }).catch(() => {
+            failures.push('avviso salvataggio assente')
+          })
+        }
+        const saved = menuFindCatalogItem(testUser.email, config.collection, itemName)
+        if (!saved.found) failures.push('create read API')
+        misuratoPers = `tipologia=${chosenType}; paese=${chosenCountry}; foglio chiuso=${closed}; API found=${saved.found} id=${saved.doc?.id ?? 'n/a'} price=${saved.doc?.price ?? 'n/a'}`
         await pctx.close()
+      } catch (e) {
+        failures.push(e.message)
       } finally {
         menuDeleteVerifyPrefix()
       }

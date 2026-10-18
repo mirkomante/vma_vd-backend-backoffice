@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-18",
-    "commit": "4437057201b5",
+    "commit": "54ed0d69cf90",
     "launcherVersion": "3.5.0",
     "launcherHeader": "3.5.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L1",
     "controlliVersion": 1,
-    "durataMs": 372688,
+    "durataMs": 55261,
     "invalidRun": false
   },
   "counts": {
-    "OK": 1399,
-    "FALLITO": 14,
+    "OK": 1364,
+    "FALLITO": 7,
     "AVVISO": 3,
-    "NON PROVATO": 187
+    "NON PROVATO": 184
   },
-  "distinctControls": 1,
+  "distinctControls": 2,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -15401,56 +15401,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "vini-elimina-registro-permessi",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
-      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
-      "evidenza": "payload",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "vini-modulo-inglese",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "badge: atteso «Presente» nel foglio",
-      "atteso": "inglese",
-      "evidenza": "/app/menu/wines",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "vini-formati-ui",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "volume opzioni (0): ; grado UI=12,8%; volume Non indicata non in [] | volume 75 cl non in [] | volume 150 cl non in []",
-      "atteso": "capacità/grado",
-      "evidenza": "/app/menu/wines",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "vini-origine-cascata",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "regioni Italia assenti | locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByRole('option', { name: 'Friuli Venezia Giulia', exact: true })\n    - locator resolved to <div role=\"option\" tabindex=\"-1\" aria-selected=\"false\" data-slot=\"select-item\" class=\"relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pointer-coarse:py-3 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:…>…</div>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
-      "atteso": "origine §7",
-      "evidenza": "/app/menu/wines",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "vini-origine-fuori-filtro",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "paese salvato non visibile",
-      "atteso": "paese disabilitato in elenco",
-      "evidenza": "/app/menu/wines",
-      "pacchetto": "menu"
-    },
-    {
       "id": "vini-tassonomie",
       "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
@@ -15461,36 +15411,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "vini-persistenza",
-      "schermata": "vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "tipologia=Bianchi; paese=Filippine; API found=false price=n/a; create read",
-      "atteso": "persistenza",
-      "evidenza": "/app/menu/wines",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "distillati-elimina-registro-permessi",
-      "schermata": "distillati",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
-      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
-      "evidenza": "payload",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "distillati-modulo-inglese",
-      "schermata": "distillati",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "badge: atteso «Presente» nel foglio",
-      "atteso": "inglese",
-      "evidenza": "/app/menu/spirits",
-      "pacchetto": "menu"
-    },
-    {
       "id": "distillati-tassonomie",
       "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
@@ -15498,36 +15418,6 @@
       "misurato": "tipologie (7): Amari e Liquori | Calvados | Distillati vietnamiti | Grappe | Rum | Vin Doux Naturel | Whisky",
       "atteso": "tassonomie",
       "evidenza": "/app/menu/spirits",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "distillati-persistenza",
-      "schermata": "distillati",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "tipologia=Amari e Liquori; paese=Filippine; API found=false price=n/a; create read",
-      "atteso": "persistenza",
-      "evidenza": "/app/menu/spirits",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "bevande-elimina-registro-permessi",
-      "schermata": "bevande",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
-      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
-      "evidenza": "payload",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "bevande-modulo-inglese",
-      "schermata": "bevande",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "badge: atteso «Presente» nel foglio",
-      "atteso": "inglese",
-      "evidenza": "/app/menu/drinks",
       "pacchetto": "menu"
     },
     {
@@ -15551,93 +15441,53 @@
       "pacchetto": "menu"
     },
     {
-      "id": "bevande-persistenza",
+      "id": "vini-elimina-registro-permessi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
+      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-inglese",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge noen=\"Traduzione inglese (facoltativa) Manca\"; badge yesen=\"Traduzione inglese (facoltativa) Presente\"; API locale=en noen name=\"verify-ui-vini-noen\" desc=\"Desc IT\"; yesen desc=\"Desc EN\"",
+      "atteso": "inglese",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-elimina-registro-permessi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
+      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-inglese",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge noen=\"Traduzione inglese (facoltativa) Manca\"; badge yesen=\"Traduzione inglese (facoltativa) Presente\"; API locale=en noen name=\"verify-ui-distillati-noen\" desc=\"Desc IT\"; yesen desc=\"Desc EN\"",
+      "atteso": "inglese",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-elimina-registro-permessi",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "tipologia=Calde; paese=—; API found=false price=n/a; create read",
-      "atteso": "persistenza",
-      "evidenza": "/app/menu/drinks",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo-errori",
+      "misurato": "norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
+      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
+      "evidenza": "payload",
       "pacchetto": "menu"
     },
     {
@@ -15645,414 +15495,117 @@
       "schermata": "piatti/elimina-libero",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "nessun elemento",
+      "misurato": "Indietro 288x44; Elimina 288x44",
       "atteso": "nessun elemento sotto 44 px",
       "evidenza": "elimina-libero",
       "pacchetto": "menu"
     },
     {
-      "id": "C2",
-      "schermata": "piatti/elimina-bloccato",
+      "id": "vini-origine-cascata",
+      "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "tocco ≥44px",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/filtri",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/filtri-attivi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/filtri-origine",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri-origine",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/modulo-origine",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-origine",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/origine-senza-regioni",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "origine-senza-regioni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/nuovo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/nuovo-errori",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/errore-geografia",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-geografia",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/errore-anno",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-anno",
+      "esito": "FALLITO",
+      "misurato": "UI regioni (12): Nessuna regione | Piemonte | Campania | Friuli Venezia Giulia | Trentino Alto Adige | Umbria | Lombardia | Marche; collection sample: Alsazia | Borgogna | Campania | Friuli Venezia Giulia | Loira | Lombardia | Marche | Piemonte; denominazioni Collio assenti",
+      "atteso": "origine §7",
+      "evidenza": "/app/menu/wines",
       "pacchetto": "menu"
     },
     {
       "id": "C2",
       "schermata": "vini/elimina",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "Indietro 274x42; Elimina 274x42",
+      "esito": "OK",
+      "misurato": "Indietro 288x44; Elimina 288x44",
       "atteso": "nessun elemento sotto 44 px",
       "evidenza": "elimina",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/errore-azione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/nessun-risultato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/errore-caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/vuoto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 90 record",
-      "atteso": "C2",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "vini/piu-di-100-vini",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "piu-di-100-vini",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/filtri",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/filtri-attivi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/nuovo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "distillati/nuovo-errori",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo-errori",
       "pacchetto": "menu"
     },
     {
       "id": "C2",
       "schermata": "distillati/elimina",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "Indietro 274x42; Elimina 274x42",
+      "esito": "OK",
+      "misurato": "Indietro 288x44; Elimina 288x44",
       "atteso": "nessun elemento sotto 44 px",
       "evidenza": "elimina",
       "pacchetto": "menu"
     },
     {
       "id": "C2",
-      "schermata": "distillati/errore-azione",
+      "schermata": "bevande/elimina",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "nessun elemento",
+      "misurato": "Indietro 288x44; Elimina 288x44",
       "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-azione",
+      "evidenza": "elimina",
       "pacchetto": "menu"
     },
     {
-      "id": "C2",
-      "schermata": "distillati/nessun-risultato",
+      "id": "distillati-persistenza",
+      "schermata": "distillati",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nessun-risultato",
+      "esito": "FALLITO",
+      "misurato": "create non verificato; locator.click: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator('#spirit-field-type')\n    - locator resolved to <button tabindex=\"0\" type=\"button\" role=\"combobox\" data-placeholder=\"\" data-size=\"default\" aria-expanded=\"false\" id=\"spirit-field-type\" aria-haspopup=\"listbox\" data-slot=\"select-trigger\" class=\"flex items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:bor…>…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 100ms\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu/spirits",
       "pacchetto": "menu"
     },
     {
-      "id": "C2",
-      "schermata": "distillati/caricamento",
+      "id": "bevande-modulo-inglese",
+      "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "caricamento",
+      "esito": "FALLITO",
+      "misurato": "badge/en non letto; menu payload create-catalog-items: $ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- create-catalog-items verify-ui-1792342563625@test.local drinks '[{\"name\":\"verify-ui-bevande-yesen\",\"description\":\"Desc IT\",\"descriptionEn\":\"Desc EN\"}]'\nIl seguente campo non è valido: Nome\n",
+      "atteso": "inglese",
+      "evidenza": "/app/menu/drinks",
       "pacchetto": "menu"
     },
     {
-      "id": "C2",
-      "schermata": "distillati/errore-caricamento",
+      "id": "bevande-persistenza",
+      "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-caricamento",
+      "esito": "FALLITO",
+      "misurato": "create non verificato; locator.click: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator('#drink-field-type')\n    - locator resolved to <button tabindex=\"0\" type=\"button\" role=\"combobox\" data-placeholder=\"\" data-size=\"default\" id=\"drink-field-type\" aria-expanded=\"false\" aria-haspopup=\"listbox\" data-slot=\"select-trigger\" class=\"flex items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:bord…>…</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not stable\n    - retrying click action\n    - waiting 20ms\n    - waiting for element to be visible, enabled and stable\n    - element is not stable\n  - retrying click action\n    - waiting 100ms\n    - waiting for element to be visible, enabled and stable\n  - element was detached from the DOM, retrying\n",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu/drinks",
       "pacchetto": "menu"
     },
     {
-      "id": "C2",
-      "schermata": "distillati/vuoto",
+      "id": "vini-formati-ui",
+      "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 38 record",
-      "atteso": "C2",
-      "evidenza": "vuoto",
+      "esito": "FALLITO",
+      "misurato": "volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.scrollIntoViewIfNeeded: Timeout 29997.076ms exceeded.\nCall log:\n  - attempting scroll into view action\n    2 × waiting for element to be stable\n      - element is not visible\n    - retrying scroll into view action\n    - waiting 20ms\n    2 × waiting for element to be stable\n      - element is not visible\n    - retrying scroll into view action\n      - waiting 100ms\n    58 × waiting for element to be stable\n       - element is not visible\n     - retrying scroll into view action\n       - waiting 500ms\n",
+      "atteso": "capacità/grado",
+      "evidenza": "/app/menu/wines",
       "pacchetto": "menu"
     },
     {
-      "id": "C2",
-      "schermata": "distillati/piu-di-100-distillati",
+      "id": "vini-origine-fuori-filtro",
+      "schermata": "vini",
       "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "piu-di-100-distillati",
+      "esito": "FALLITO",
+      "misurato": "paese API=[object Object]; trigger=\"Vietnam\"; paese salvato non nel trigger",
+      "atteso": "nome paese disabilitato visibile nel trigger (atteso: [object Object])",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-persistenza",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "create non verificato; locator.scrollIntoViewIfNeeded: Element is not attached to the DOM\nCall log:\n  - attempting scroll into view action\n    2 × waiting for element to be stable\n      - element is not stable\n    - retrying scroll into view action\n    - waiting 20ms\n    - waiting for element to be stable\n    - element is not stable\n  - retrying scroll into view action\n    - waiting 100ms\n    - waiting for element to be stable\n",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu/wines",
       "pacchetto": "menu"
     }
   ],
   "nonProvato": [],
-  "anomalie": [],
+  "anomalie": [
+    "[prova-extra distillati paese fuori filtro] paese API=[object Object]; trigger Paese=\"Vietnam\"",
+    "[prova-extra bevande paese fuori filtro] record senza paese in API"
+  ],
   "screenshotHashes": [
     {
       "name": "shell-home-telefono-390-chiaro",
@@ -17323,6 +16876,36 @@
       "name": "piatti-modulo-allergeni-telefono-390-scuro",
       "temaKey": "scuro",
       "hash": "6d23d64d78a441bec4d90c5bee01589b2665c8bcc1eb6e60f824e13c8f8742b0"
+    },
+    {
+      "name": "vini-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "9e12ef196ad6ec30e19efa1e8a0611a97d8c8f5ba1f5829f69e9036ea5b991fd"
+    },
+    {
+      "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d0c11f25198a088c91393ac91c1b94b9f5594477580acc1455b6bd6cde3c4c26"
+    },
+    {
+      "name": "vini-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "050df6be2e943b80413d5cefb9f77e49b4acf3f9a301f41ec142da6f5246f6b7"
+    },
+    {
+      "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d0c11f25198a088c91393ac91c1b94b9f5594477580acc1455b6bd6cde3c4c26"
+    },
+    {
+      "name": "vini-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "050df6be2e943b80413d5cefb9f77e49b4acf3f9a301f41ec142da6f5246f6b7"
+    },
+    {
+      "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "d0c11f25198a088c91393ac91c1b94b9f5594477580acc1455b6bd6cde3c4c26"
     }
   ]
 }

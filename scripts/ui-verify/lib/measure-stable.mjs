@@ -60,6 +60,30 @@ export async function waitForPageLayoutStable(page, { rounds = 25, intervalMs = 
   }
 }
 
+/** Attende fine animazioni CSS/WAAPI su documento o sottoalbero, poi un frame di layout. */
+export async function waitForAnimationsSettled(page, { rootSelector = null, timeoutMs = 12000 } = {}) {
+  try {
+    await page.waitForFunction(
+      (sel) => {
+        const root = sel ? document.querySelector(sel) : document.documentElement
+        if (!root) return true
+        const anims = root.getAnimations({ subtree: true })
+        return anims.every((a) => a.playState === 'finished' || a.playState === 'idle')
+      },
+      rootSelector,
+      { timeout: timeoutMs },
+    )
+  } catch {
+    /* timeout: misura comunque */
+  }
+  await page.evaluate(
+    () =>
+      new Promise((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(resolve))
+      }),
+  )
+}
+
 export async function waitFieldCenteredAndFocused(page, fieldId, { timeoutMs = 6000 } = {}) {
   const start = Date.now()
   let lastTop = null
