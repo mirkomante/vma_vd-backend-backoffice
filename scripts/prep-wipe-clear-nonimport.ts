@@ -1,6 +1,6 @@
 /** Rimuove fixed-menus/categories/special-days prima di wipe-menu-import-dev se il wipe fallisce per FK. */
 import config from '@payload-config'
-import { getPayload } from 'payload'
+import { type CollectionSlug, getPayload } from 'payload'
 
 import {
   FIXED_MENU_CATEGORIES_SLUG,
@@ -10,7 +10,10 @@ import {
 
 import { assertDevDatabaseFromEnv } from './import-menu-vtn-backend/databaseUrl'
 
-async function clearSlug(payload: Awaited<ReturnType<typeof getPayload>>, slug: string): Promise<number> {
+async function clearSlug(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  slug: CollectionSlug,
+): Promise<number> {
   let n = 0
   for (;;) {
     const batch = await payload.find({ collection: slug, limit: 50, depth: 0, overrideAccess: true })
@@ -28,7 +31,8 @@ async function clearSlug(payload: Awaited<ReturnType<typeof getPayload>>, slug: 
 try {
   assertDevDatabaseFromEnv()
   const payload = await getPayload({ config })
-  for (const slug of [FIXED_MENUS_SLUG, FIXED_MENU_CATEGORIES_SLUG, SPECIAL_DAYS_SLUG]) {
+  const slugs: CollectionSlug[] = [FIXED_MENUS_SLUG, FIXED_MENU_CATEGORIES_SLUG, SPECIAL_DAYS_SLUG]
+  for (const slug of slugs) {
     console.log(`${slug}: eliminati ${await clearSlug(payload, slug)}`)
   }
   await payload.destroy()
