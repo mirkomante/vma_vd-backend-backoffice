@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `97a48b5`). **Prossimi passi**: 16b (V3: L2 su Vini, Distillati e Bevande), poi 18 (VC4). Non in parallelo: i due agenti usano lo stesso lanciatore e lo stesso build.
+**Ultimo aggiornamento**: 2026-10-18 (commit `8acc58f`). **Prossimi passi**: 16c (F3: correzione di P1 su Vini, Distillati e Bevande), poi 16d (VC-tempi: lanciatore veloce e senza blocchi), 16e (V3 bis: rilancio mirato) e solo dopo 18 (VC4). Niente giri lunghi finché 16d non è chiuso.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -977,6 +977,8 @@ prova e poi eliminali (dichiaralo nella risposta); mai dati di prova in produzio
 
 ### Passo 16b — V3: l'agente esegue L2 su Vini, Distillati e Bevande
 
+> **Esito (2026-10-18)**: **incompleto**, circa due ore di esecuzione (non giustificate: vedi il passo 16d). Eseguiti i flussi veri dei tre cataloghi (200 screenshot), regressione veloce OK. Dei 33 FALLITO, un solo difetto dell'app è certo (**P1**: il modulo mostra l'identificativo di un valore salvato fuori dall'elenco, per esempio un paese poi disabilitato); gli altri sono difetti del lanciatore o misure troppo povere per classificare. Rilievi in `docs/design/verifica/esiti/2026-10-18-V3/rilievi.md`. Il passo si chiude con **16e (V3 bis)**.
+
 **Quando**: ora che I3 e la sua correzione sono nel repo (passo 16 ✅) e i controlli di Servizi e Menù fissi sono già nel file (passo 17 ✅). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Non** lanciare VC4 (passo 18) in parallelo: usano lo stesso lanciatore e lo stesso build.
 
 ```text
@@ -1032,6 +1034,145 @@ scrivilo come «controllo dubbio».
 ```
 
 **Quando Cursor ha finito**: incollami il suo resoconto finale. Fai tu `git add -A` e un commit con il messaggio `test(ui-verify): V3 — L2 su Vini, Distillati e Bevande`, poi il push, e scrivimi «push fatto». Io confronto gli screenshot con i PNG di riferimento (C10), assegno i rilievi P e A e, se ci sono P, ti do il prompt di correzione.
+
+
+### Passo 16c — F3: correzione di P1 su Vini, Distillati e Bevande
+
+**Quando**: ora. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (è autonomo; **non** il Blocco comune).
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F3: correzione del rilievo P1 della verifica L2 V3.
+Fai solo questo. Le regole di .cursor/rules si caricano da sole.
+
+LEGGI per intero:
+- docs/design/verifica/esiti/2026-10-18-V3/rilievi.md (P1, i punti «da verificare» e i difetti del lanciatore)
+- docs/design/schermate/vini/spec.md, distillati/spec.md e bevande/spec.md, in particolare §7 (valore salvato fuori
+  elenco)
+- il codice: components/app/wines/wine-form-sheet.tsx, spirit-form-sheet.tsx, drink-form-sheet.tsx,
+  lib/menu/catalog/selectItems.ts, app/(app)/app/(shell)/menu/wines-actions.ts, spirits-actions.ts, drinks-actions.ts,
+  lib/app/menu/catalog/catalogActions.ts
+
+REGOLE
+1. Correggi SOLO il P1. Non toccare controlli, soglie, specifiche, documenti di design (docs/design/**) né
+   scripts/ui-verify/**: il lanciatore non è tuo. Gli altri punti del rilievo («da verificare») li leggi nel codice e
+   riporti la causa che vedi, SENZA correggere senza evidenza.
+2. PARTE A, solo proposta: per P1 scrivi la causa che vedi nel codice, i file che toccherai e come leggi il nome del
+   valore salvato; per ogni punto «da verificare» scrivi che cosa vedi nel codice e se, secondo te, è un difetto
+   dell'app o del lanciatore (con la riga di codice). Poi FERMATI e aspetta il mio «procedi».
+3. P1: un valore salvato che non è più nell'elenco (paese o regione disabilitati, denominazione o classificazione non
+   più presenti) deve mostrare il NOME del valore salvato nel campo, e restare salvabile senza cambiarlo.
+   buildSelectItems oggi riceve l'etichetta solo per alcuni campi, e nella regione passa l'identificativo come
+   etichetta. Leggi il nome dal record salvato (depth sufficiente) e passalo come savedLabel per paese, regione,
+   denominazione e classificazione nei vini e per il paese nei distillati e nelle bevande. Test unitari (node
+   --experimental-strip-types con il caricatore) che mostrano il nome per un valore fuori elenco.
+4. Dati: Local API con la sessione dell'utente (overrideAccess: false). Nessuna dipendenza, nessuna migrazione.
+5. Verifiche: L0 (pnpm typecheck, pnpm lint con 0 errori, pnpm ui:check, test unitari di lib/) e un L1 BREVE:
+   pnpm ui:verify locale-prod --livello 1 --schermata vini,distillati,bevande --controlli controlli-6.6.json
+   --profili telefono-390 --temi chiaro. Non fare giri più lunghi: la verifica completa la farà V3 bis.
+6. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased] (cosa era sbagliato e cosa è cambiato);
+   commit locale (messaggio che nomina F3); MAI git push.
+7. RISPOSTA FINALE: tabella «Esiti reali» per P1 e, per ogni punto «da verificare», che cosa hai letto nel codice.
+```
+
+**Quando Cursor ha scritto la Parte A**: incollamela qui; io rispondo con il «procedi» e le correzioni. Poi segui il ciclo normale: tabella degli esiti, commit, push, «push fatto».
+
+### Passo 16d — VC-tempi: il lanciatore veloce, mirato e senza blocchi
+
+**Perché**: V3 è durato circa due ore (V2 quater circa 26 minuti per giro). I blocchi e la lentezza vengono dal lanciatore, non dal modello: nessun tempo massimo vero, uscita non garantita, build rifatta a ogni giro, nessuna possibilità di rilanciare un solo controllo. **Quando**: dopo F3 (16c), prima di V3 bis e di qualunque altro giro lungo. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui MIGLIORI IL LANCIATORE (scripts/ui-verify/**):
+non verifichi nessuna schermata nuova. Istanza: VC-tempi. Obiettivo: giri più veloci, mirati e che non si bloccano.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/esiti/2026-10-18-V3/rilievi.md (sezione «Difetti del lanciatore») e
+   docs/design/verifica/esiti/2026-10-18-V3/rapporto.md
+4. scripts/ui-verify/run.mjs e scripts/ui-verify/lib/ (cli.mjs, engine.mjs, run-menu.mjs, run-piatti.mjs,
+   run-catalog.mjs, run-catalog-flows.mjs, report.mjs, ensure-ports.mjs)
+
+Poi, in quest'ordine (modifichi SOLO scripts/ui-verify/**, mai i controlli JSON):
+A. Rilancio mirato: aggiungi `--solo <id,id,…>` che esegue SOLO i controlli indicati (qualunque schermata), anche a
+   livello 2, senza eseguire gli altri e senza i loro stati; le righe dei controlli non eseguiti restano quelle
+   dell'ultimo esito (non vengono azzerate). Con --solo il profilo e il tema si limitano a quelli del controllo (o a
+   --profili e --temi se indicati).
+B. Build riusata: salva in .next/ui-verify-build.json l'hash di git HEAD più l'hash dello stato di app/, components/,
+   lib/, collections/, globals/, payload.config.ts, package.json e pnpm-lock.yaml (git diff e file non tracciati). Se
+   l'hash coincide con l'ultima build riuscita, salta pnpm build e riusa .next; altrimenti rifai la build. Scrivi
+   nel log «build riusata» o «build rifatta».
+C. Tempi massimi veri, con uscita forzata:
+   1. per ogni controllo a flusso 90 secondi; per ogni stato della matrice C1/C2/C3 60 secondi. Allo scadere: esito
+      NON PROVATO con il motivo «tempo» e il nome dello stato o del passo, e si prosegue;
+   2. un budget per schermata (default 15 minuti, configurabile con UI_VERIFY_BUDGET_MS) e un timer di guardia
+      (budget più 2 minuti) che, se il giro è ancora vivo, chiude il browser, ferma il server e fa process.exit con
+      i risultati già scritti. Riporta il default di 25 minuti (non 45) e togli l'allungamento a 45 minuti.
+   3. chiusura pulita in un finally: browser, contesti, server di produzione e server di simulazione (porta 3200)
+      sempre chiusi, anche dopo un errore; alla fine controlla con `ps` che non ne resti nessuno e scrivilo nel log.
+D. A livello 2 il lanciatore ACCETTA UNA SOLA schermata per volta: con più schermate esce subito con un messaggio
+   chiaro («a livello 2 lancia una schermata per volta, oppure usa --solo»), senza eseguire nulla. Il livello 1 resta
+   libero.
+E. Esiti onesti: ogni FALLITO e ogni AVVISO riporta i valori REALI misurati e attesi; se una parte del controllo non è
+   provabile, NON PROVATO per quella parte, mai FALLITO per tutto il controllo. In particolare:
+   1. i controlli *-elimina-registro-permessi non danno FALLITO perché l'utente «senza ruolo» non è creabile (schema
+      Users): quella parte è NON PROVATO «coperto da scripts/verify-roles-8_3.ts» e il resto decide l'esito;
+   2. i controlli *-modulo-inglese, *-tassonomie, *-persistenza e vini-formati-ui scrivono nel «misurato» che cosa è
+      stato letto (opzioni, valori, conteggi), e per le opzioni dei Select aspettano che si carichino aprendo il menu
+      prima di leggerle (come già in piatti-tassonomie);
+   3. la creazione di un record dal modulo sceglie davvero la tipologia (e il paese dove serve) prima di salvare.
+F. Prova, con numeri: (1) `--solo piatti-testi,piatti-azioni-pagina,piatti-colonna-elenco` su locale-prod: riporta il
+   tempo totale (atteso meno di 4 minuti) e se ha riusato la build; (2) lo stesso comando subito dopo: atteso build
+   riusata e meno di 2 minuti; (3) un L2 con due schermate: atteso il messaggio di rifiuto; (4) uno stato forzato a
+   superare il tempo (per esempio con UI_VERIFY_STATE_TIMEOUT_MS=1000): atteso NON PROVATO «tempo» e prosecuzione;
+   (5) `ps` a fine giro senza processi residui. pnpm lint a 0 errori.
+G. Scrivi un breve rapporto in docs/design/verifica/esiti/2026-10-18-VCtempi/rapporto.md con le cinque misure e le
+   opzioni nuove (--solo, UI_VERIFY_BUDGET_MS, UI_VERIFY_STATE_TIMEOUT_MS).
+
+Non fare git (puoi leggere git status e git log). Non toccare app/, components/, lib/, docs/design (fuori da
+verifica/esiti), né i controlli JSON. Rispondi in italiano con la tabella OK / FALLITO / NON PROVATO delle cinque prove.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto, commit `test(ui-verify): VC-tempi — rilancio mirato, build riusata, tempi massimi, una schermata per giro`, push, «push fatto». Criterio di accettazione: i tempi misurati al punto F; se non li rispetta, non passiamo oltre.
+
+### Passo 16e — V3 bis: rilancio mirato dei controlli di V3
+
+**Quando**: dopo F3 (16c) e VC-tempi (16d). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi l'app. Istanza: V3 bis, dopo F3
+(correzione del rilievo P1) e dopo VC-tempi (lanciatore con --solo, build riusata e tempi massimi).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/README.md e
+policy-test.md; docs/design/verifica/esiti/2026-10-18-V3/rilievi.md; docs/design/verifica/esiti/2026-10-18-VCtempi/
+rapporto.md; docs/design/schermate/vini/spec.md, distillati/spec.md e bevande/spec.md (solo per capire i controlli).
+
+Poi:
+0. Riporta l'hash di HEAD e git status (solo lettura). PRECONDIZIONI: `git log --oneline 8acc58f..HEAD -- components
+   lib app` deve elencare il commit di F3, e `git log --oneline 8acc58f..HEAD -- scripts/ui-verify` quello di
+   VC-tempi. Se manca uno dei due, FERMATI e dimmelo.
+B. Rilancia SOLO questi controlli, una schermata per volta, con --solo (usa il minimo di profili e temi: telefono-390
+   chiaro, e notebook-1280 chiaro dove il controllo lo richiede):
+   - vini: vini-origine-fuori-filtro, vini-origine-cascata, vini-tassonomie, vini-persistenza, vini-formati-ui,
+     vini-modulo-inglese, vini-elimina-registro-permessi, C2 sullo stato «elimina»
+   - distillati: distillati-origine-fuori-filtro se esiste, distillati-tassonomie, distillati-persistenza,
+     distillati-modulo-inglese, distillati-elimina-registro-permessi, C2 sullo stato «elimina»
+   - bevande: gli stessi (per il paese facoltativo: bevande-paese-facoltativo)
+   Per il «fuori filtro» (P1): disabilita un paese con la Local API, apri il modulo di un record che lo usa e riporta
+   che cosa mostra il campo (atteso: il NOME del paese), poi ripristina il paese in un finally.
+   Per C2 sull'eliminazione: riporta le altezze misurate dei pulsanti «Indietro» ed «Elimina» e lo stesso valore in
+   Piatti, nello stesso contesto, così si capisce se la differenza è dell'app o della misura.
+C. Per ogni controllo riporta il valore misurato e quello atteso (mai «—») e la tua classificazione: «corretto»,
+   «difetto dell'app», «difetto del lanciatore», «controllo dubbio». Nessun giro completo. Tempo atteso: meno di
+   15 minuti in tutto; se un controllo supera il tempo massimo, NON PROVATO con il motivo.
+D. Scrivi gli esiti in docs/design/verifica/esiti/2026-10-18-locale-prod/ e un riepilogo in
+   docs/design/verifica/esiti/2026-10-18-V3bis/rapporto.md. Chiudi i processi, cancella i dati «verify-ui-…» e
+   l'utente di prova.
+
+Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in
+italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto, commit `test(ui-verify): V3 bis — rilancio mirato dei controlli di V3`, push, «push fatto». Se non ci sono P aperti, il passo 16b si chiude.
 
 ### Passo 17 — D5: controlli per Servizi e Menù fissi
 
