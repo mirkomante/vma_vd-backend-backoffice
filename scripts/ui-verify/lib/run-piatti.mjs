@@ -4,6 +4,7 @@ import { spawn } from 'node:child_process'
 
 import { readTsStringExport } from './lib-readers.mjs'
 import { withinTolerance, openUserMenu } from './engine.mjs'
+import { esitoMisura, isEmptyMeasureToken } from './measure-esito.mjs'
 import { SIM_PORT, isPortFree, waitForPortFree } from './ensure-ports.mjs'
 
 const ROOT_PIATTI = join(import.meta.dirname, '../../..')
@@ -450,12 +451,20 @@ export async function runPiattiFlowControls(ctx) {
           linkOnName: Boolean(document.querySelector('main a .truncate')),
         }
       })
-      const ok =
-        m.btn?.startsWith('Modifica ') &&
-        m.btnSize &&
-        !m.linkOnName &&
-        m.switchDisabled
-      add('piatti-righe-azioni', ok ? 'OK' : 'FALLITO', JSON.stringify(m), 'tre icone, switch disabilitato su disabled', '/app/menu')
+      const failures = []
+      const missingMeasures = []
+      if (isEmptyMeasureToken(m.btnSize)) missingMeasures.push('btnSize riga azioni')
+      else {
+        if (!m.btn?.startsWith('Modifica ')) failures.push('aria-label Modifica mancante')
+        if (m.linkOnName) failures.push('link sul nome')
+        if (!m.switchDisabled) failures.push('switch non disabilitato su piatto disabled')
+      }
+      const { esito, misurato } = esitoMisura({
+        failures,
+        missingMeasures,
+        misurato: JSON.stringify(m),
+      })
+      add('piatti-righe-azioni', esito, misurato, 'tre icone, switch disabilitato su disabled', '/app/menu')
       await pctx.close()
       menuDeleteVerifyPrefix()
     }
@@ -1023,41 +1032,94 @@ export async function runPiattiFlowControls(ctx) {
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoPiatti(page)
         await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
-        const labels = [
-          copyConst('PIATTI_FORM_GLUTEN_FREE') ?? 'Senza glutine',
-          copyConst('PIATTI_FORM_DAIRY_FREE') ?? 'Senza latticini',
-          copyConst('PIATTI_FORM_VEGAN') ?? 'Vegano',
-          copyConst('PIATTI_FORM_EGG_FREE') ?? 'Senza uova',
-          copyConst('PIATTI_FORM_SOLD_OUT_LABEL') ?? 'Terminato per il servizio',
-          copyConst('PIATTI_FORM_DISABLED_LABEL') ?? 'Disabilitato',
+        await page.locator('[data-slot=sheet-content]').waitFor({ state: 'visible' })
+        await page
+          .locator('[data-slot=sheet-content] [data-slot=checkbox]')
+          .first()
+          .waitFor({ state: 'attached', timeout: 15_000 })
+        await page.locator('#dish-gluten-free').scrollIntoViewIfNeeded().catch(() => {})
+        const fieldSpecs = [
+          { name: copyConst('PIATTI_FORM_GLUTEN_FREE') ?? 'Senza glutine', kind: 'checkbox', id: 'dish-gluten-free' },
+          { name: copyConst('PIATTI_FORM_DAIRY_FREE') ?? 'Senza latticini', kind: 'checkbox', id: 'dish-dairy-free' },
+          { name: copyConst('PIATTI_FORM_VEGAN') ?? 'Vegano', kind: 'checkbox', id: 'dish-vegan' },
+          { name: copyConst('PIATTI_FORM_EGG_FREE') ?? 'Senza uova', kind: 'checkbox', id: 'dish-egg-free' },
+          {
+            name: copyConst('PIATTI_FORM_SOLD_OUT_LABEL') ?? 'Terminato per il servizio',
+            kind: 'switch',
+            switchIndex: 0,
+          },
+          {
+            name: copyConst('PIATTI_FORM_DISABLED_LABEL') ?? 'Disabilitato',
+            kind: 'switch',
+            switchIndex: 1,
+          },
         ]
-        const m = await page.evaluate((names) => {
+        const m = await page.locator('[data-slot=sheet-content]').evaluate((sheet, specs) => {
+          const switches = [...sheet.querySelectorAll('[data-slot=switch]')]
+          const resolveCheckboxRoot = (id) => {
+            const byId = document.getElementById(id)
+            if (byId) {
+              if (byId.matches('[data-slot=checkbox]')) return byId
+              const inner = byId.querySelector('[data-slot=checkbox][role=checkbox]')
+              if (inner) return inner
+              const closest = byId.closest('[data-slot=checkbox]')
+              if (closest) return closest
+            }
+            const label = sheet.querySelector(`[for="${id}"]`)
+            const field = label?.closest('[data-orientation="horizontal"]')
+            return (
+              field?.querySelector('[data-slot=checkbox][role=checkbox]') ??
+              field?.querySelector('[data-slot=checkbox]') ??
+              null
+            )
+          }
           const out = []
-          for (const name of names) {
-            const root = document.querySelector(`[role=checkbox][aria-label="${name}"]`)
-            const box = root?.querySelector('[data-slot=checkbox-box]')
+          for (const spec of specs) {
+            let root = null
+            let box = null
+            if (spec.kind === 'checkbox' && spec.id) {
+              root = resolveCheckboxRoot(spec.id)
+              box = root?.querySelector('[data-slot=checkbox-box]') ?? null
+            } else if (spec.kind === 'switch') {
+              root = switches[spec.switchIndex] ?? null
+              box = root?.querySelector('[data-slot=switch-thumb]') ?? null
+            }
             const rr = root?.getBoundingClientRect()
             const br = box?.getBoundingClientRect()
             out.push({
-              name,
+              name: spec.name,
+              kind: spec.kind,
               root: rr ? `${Math.round(rr.width)}x${Math.round(rr.height)}` : '—',
               box: br ? `${Math.round(br.width)}x${Math.round(br.height)}` : '—',
             })
           }
           return out
-        }, labels)
+        }, fieldSpecs)
         const failures = []
+        const missingMeasures = []
         for (const row of m) {
-          const [rw, rh] = (row.root || '0x0').split('x').map(Number)
-          const [bw, bh] = (row.box || '0x0').split('x').map(Number)
-          if (rw < 43 || rh < 43) failures.push(`${row.name} root ${row.root}`)
-          if (bw < 15 || bw > 17 || bh < 15 || bh > 17) failures.push(`${row.name} box ${row.box}`)
+          if (isEmptyMeasureToken(row.root)) {
+            missingMeasures.push(`${row.name}: radice non trovata`)
+            continue
+          }
+          if (row.kind === 'checkbox' && isEmptyMeasureToken(row.box)) {
+            missingMeasures.push(`${row.name}: checkbox-box non trovato`)
+            continue
+          }
+          const [rw, rh] = row.root.split('x').map(Number)
+          const [bw, bh] = row.box.split('x').map(Number)
+          if (row.kind === 'checkbox') {
+            if (rw < 43 || rh < 43) failures.push(`${row.name} root ${row.root}`)
+            if (bw < 15 || bw > 17 || bh < 15 || bh > 17) failures.push(`${row.name} box ${row.box}`)
+          }
         }
+        const misuratoText = m.map((r) => `${r.name}: root=${r.root}, box=${r.box}`).join('; ')
+        const { esito, misurato } = esitoMisura({ failures, missingMeasures, misurato: misuratoText })
         add(
           'piatti-casella-misure',
-          failures.length ? 'FALLITO' : 'OK',
-          failures.length ? failures.join('; ') : JSON.stringify(m),
-          'radice ≥44×44; box 16×16 (±1)',
+          esito,
+          misurato,
+          'radice ≥44×44; box 16×16 (±1) per checkbox; switch con thumb visibile',
           '/app/menu',
           'piatti/modulo',
           `telefono-390/${temaKey}`,
@@ -1072,28 +1134,59 @@ export async function runPiattiFlowControls(ctx) {
         await loginApp(page, baseUrl, testUser.email, testPassword)
         await gotoPiatti(page)
         await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
-        const allergenButtons = page.locator('[data-slot=sheet-content] [role=group] button')
-        const count = await allergenButtons.count()
+        const toggles = page.locator(
+          '[data-slot=sheet-content] [data-slot=toggle-group] [data-slot=toggle-group-item]',
+        )
+        const count = await toggles.count()
         const failures = []
-        if (count < 2) failures.push('meno di due allergeni nel modulo')
-        else {
-          await allergenButtons.nth(0).click()
-          await allergenButtons.nth(1).click()
+        let misuratoParts = []
+        if (count < 2) {
+          failures.push('meno di due allergeni nel modulo')
+        } else {
+          const name0 = (await toggles.nth(0).innerText()).trim()
+          const name1 = (await toggles.nth(1).innerText()).trim()
+          await toggles.nth(0).click()
+          await page.waitForFunction(
+            () =>
+              document.querySelectorAll(
+                '[data-slot=sheet-content] [data-slot=toggle-group-item][aria-pressed="true"]',
+              ).length >= 1,
+          )
+          await toggles.nth(1).click()
+          await page.waitForFunction(
+            () =>
+              document.querySelectorAll(
+                '[data-slot=sheet-content] [data-slot=toggle-group-item][aria-pressed="true"]',
+              ).length >= 2,
+          )
+          misuratoParts.push(`allergeni=${name0}, ${name1}`)
         }
         await page.getByRole('checkbox', { name: copyConst('PIATTI_FORM_DAIRY_FREE') ?? 'Senza latticini' }).click()
         const hint = await page.locator('[data-slot=sheet-content]').innerText()
         if (!hint.includes('Selezionati: 2.')) failures.push('conteggio allergeni')
-        const pressed = await page.evaluate(() =>
-          [...document.querySelectorAll('[data-slot=sheet-content] button[aria-pressed=true]')].length,
+        const pressedInfo = await page.evaluate(() => {
+          const items = [
+            ...document.querySelectorAll(
+              '[data-slot=sheet-content] [data-slot=toggle-group-item][aria-pressed="true"]',
+            ),
+          ]
+          return {
+            count: items.length,
+            labels: items.map((el) => el.textContent?.trim() ?? ''),
+          }
+        })
+        if (pressedInfo.count < 2) failures.push(`aria-pressed=${pressedInfo.count}`)
+        misuratoParts.push(
+          `premuti=${pressedInfo.count} (${pressedInfo.labels.join(', ')})`,
+          hint.includes('Selezionati: 2.') ? 'conteggio=Selezionati: 2.' : 'conteggio≠2',
         )
-        if (pressed < 2) failures.push(`aria-pressed=${pressed}`)
         if (screenshot) {
           await screenshot(page, report, `piatti-modulo-allergeni-telefono-390-${temaKey}`, temaKey)
         }
         add(
           'piatti-allergeni-selezione',
           failures.length ? 'FALLITO' : 'OK',
-          failures.join(' | ') || '2 allergeni + Senza latticini; screenshot modulo-allergeni',
+          misuratoParts.join('; ') || '—',
           'Selezionati: 2.; stato selezionato visibile',
           'img/',
           'piatti/modulo-allergeni',

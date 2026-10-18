@@ -1,7 +1,7 @@
 # Esito VC3 — cablaggio controlli 6.6 (Vini, Distillati, Bevande) — 2026-10-18
 
 **Istanza**: VC3 (prima di I3). **Ambiente esecuzione controlli**: nessuno (solo validazione lanciatore).  
-**Validazione codice**: `pnpm lint` OK (0 errori) · `pnpm typecheck` OK · `node scripts/ui-verify/verify-controlli-wire.mjs` OK.
+**Validazione codice**: `pnpm lint` OK (0 errori) · `node scripts/ui-verify/verify-controlli-wire.mjs` OK · giro L1 Piatti (`locale-prod`, `telefono-390`, temi chiaro/scuro) su `piatti-casella-misure` e `piatti-allergeni-selezione` OK (esiti in `docs/design/verifica/esiti/2026-10-17-locale-prod/`).
 
 ## Riepilogo cablaggio
 
@@ -47,12 +47,38 @@
 2. **C2-mouse senza textarea**: selettore in `checkAltezzaMouse` (`engine.mjs`) — `textarea` esclusa come da JSON.
 3. **Controlli Piatti A3/A4**: vedi tabella sopra.
 
-**Regressione C2 (post-fix touch)** — `pnpm ui:verify locale-prod --livello 1 --schermata piatti --controlli controlli-6.6.json --profili telefono-390 --temi chiaro`: **C2** su `piatti/*` a `telefono-390/chiaro` → **15 OK**, **1 NON PROVATO** (`piatti/vuoto`, DB popolato). Esito completo in `docs/design/verifica/esiti/2026-10-17-locale-prod/risultati.json` (2 FALLITO su `piatti-allergeni-selezione`, non legati al touch).
+**Regressione C2 (post-fix touch)** — `pnpm ui:verify locale-prod --livello 1 --schermata piatti --controlli controlli-6.6.json --profili telefono-390 --temi chiaro`: **C2** su `piatti/*` a `telefono-390/chiaro` → **15 OK**, **1 NON PROVATO** (`piatti/vuoto`, DB popolato). Esito completo in `docs/design/verifica/esiti/2026-10-17-locale-prod/risultati.json`.
+
+### B3. Seconda correzione Piatti (VC3, 2026-10-18)
+
+| Problema | Causa | Correzione |
+|---|---|---|
+| `piatti-casella-misure` OK con `—` | Selettore `[aria-label=…]` inesistente; `#id[data-slot=checkbox]` falliva se `id` non coincide con il nodo `data-slot` | Risoluzione per `#dish-*` + label `for`; misura su `[data-slot=checkbox][role=checkbox]` e `[data-slot=checkbox-box]`; switch Disponibilità con `[data-slot=switch]` + thumb; attesa foglio e checkbox |
+| `piatti-allergeni-selezione` FALLITO (`aria-pressed=1`) | Click su `[role=group] button` (gruppi diversi dal `ToggleGroup` allergeni) | Click su `[data-slot=toggle-group-item]` con attesa stato; conteggio solo su toggle allergeni |
+| OK con misure vuote | `failures.length ? FALLITO : OK` senza guardia | `lib/measure-esito.mjs` (`esitoMisura`); applicato a `piatti-casella-misure` e `piatti-righe-azioni` |
+
+**Misure acquisite** (`telefono-390`, chiaro e scuro identici):
+
+| Voce | root | box (quadratino / thumb) |
+|---|---|---|
+| Senza glutine | 44×44 | 16×16 |
+| Senza latticini | 44×44 | 16×16 |
+| Vegano | 44×44 | 16×16 |
+| Senza uova | 44×44 | 16×16 |
+| Terminato per il servizio | 32×18 (switch) | 16×16 (thumb) |
+| Disabilitato | 32×18 (switch) | 16×16 (thumb) |
+
+**Allergeni** (primi due in elenco): *Anidride solforosa e solfiti*, *Arachidi* — `premuti=2`, conteggio «Selezionati: 2.»; screenshot `piatti-modulo-allergeni-telefono-390-{chiaro,scuro}` in `2026-10-17-locale-prod/img/`.
+
+| Controllo | chiaro | scuro |
+|---|---|---|
+| `piatti-casella-misure` | OK | OK |
+| `piatti-allergeni-selezione` | OK | OK |
 
 ## Controlli dubbi
 
 - **`vini-filtri-origine` — rimozione etichetta paese**: il JSON chiede di togliere l’etichetta chip; il runner prova anche `clearComboboxToEmptyOption` con etichetta «—» (da confermare con la UI reale dopo I3).
-- **`piatti-allergeni-selezione`**: assume pulsanti allergeni con `aria-pressed` nel foglio; se la UI usa solo classi CSS, il controllo andrà adattato al passo V (non modificato il JSON).
+- **`piatti-casella-misure` — switch Terminato/Disabilitato**: nel JSON sono descritti come checkbox 44×44; in UI sono `Switch` (track 32×18, thumb 16×16). Il controllo valida le quattro checkbox; per gli switch riporta le misure del track senza soglia root 44 px (area tocco via pseudo-elemento non inclusa in `getBoundingClientRect`).
 
 ## NON PROVATO (atteso in VC3)
 
@@ -62,7 +88,6 @@
 | `*-confronto-visivo` (C10) | **NON PROVATO** — esecuzione al passo V dopo I3 |
 | `*-ordine-100`, flussi payload/SQL pesanti | **NON PROVATO** — debito passo V (helper pronti) |
 | `*-accesso`, `*-stato-vuoto`, `*-ricompila` | **NON PROVATO** — come da `stato_prova` / JSON |
-| Esecuzione browser su Piatti (nuovi controlli casella/allergeni) | **NON PROVATO** in questa istanza (solo cablaggio; verifica al passo V su Piatti già implementato) |
 
 ## Debito (passo V, dopo I3)
 
@@ -76,5 +101,5 @@ Completare ed eseguire in `run-catalog.mjs` (policy-test.md §6):
 ## File toccati (solo `scripts/ui-verify/**` + questo rapporto)
 
 - `lib/controlli-handlers.mjs`, `lib/catalog-config.mjs`, `lib/catalog-ui-helpers.mjs`, `lib/run-catalog.mjs`, `measure-touch-css.mjs`
-- `lib/run-menu.mjs`, `lib/run-piatti.mjs`, `lib/engine.mjs`, `lib/controlli-index.mjs`, `lib/menu-payload.mjs`
+- `lib/run-menu.mjs`, `lib/run-piatti.mjs`, `lib/measure-esito.mjs`, `lib/engine.mjs`, `lib/controlli-index.mjs`, `lib/menu-payload.mjs`
 - `menu-payload.ts`, `run.mjs`, `verify-controlli-wire.mjs`

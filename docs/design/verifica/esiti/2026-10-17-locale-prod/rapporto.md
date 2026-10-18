@@ -1,11 +1,11 @@
 # Esito verifica — locale-prod — 2026-10-17
-Commit: e080e666d752 · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 4 min 39 s
+Commit: ef5942cbb15f · Lanciatore: 3.4.1 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 6 min 28 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 3011 · FALLITO: 2 · AVVISO: 0 · NON PROVATO: 113 · Controlli distinti nel JSON corrente: 30
+OK: 3061 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 121 · Controlli distinti nel JSON corrente: 30
 
 ## Pacchetto: accesso
-Righe: 2172 · OK: 2171 · FALLITO: 0
+Righe: 2174 · OK: 2173 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
@@ -17,11 +17,10 @@ Righe: 389 · OK: 387 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 77 · OK: 69 · FALLITO: 2
+Righe: 125 · OK: 115 · FALLITO: 0
 
 ### FALLITO (menu)
-- **piatti-allergeni-selezione** | piatti/modulo-allergeni | telefono-390/chiaro | misurato `conteggio allergeni | aria-pressed=1` | atteso `Selezionati: 2.; stato selezionato visibile` | evidenza: img/
-- **piatti-allergeni-selezione** | piatti/modulo-allergeni | telefono-390/scuro | misurato `conteggio allergeni | aria-pressed=1` | atteso `Selezionati: 2.; stato selezionato visibile` | evidenza: img/
+- (nessuno)
 
 ## Pacchetto: orari
 Righe: 342 · OK: 338 · FALLITO: 0
@@ -30,7 +29,7 @@ Righe: 342 · OK: 338 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: completo
-Righe: 146 · OK: 46 · FALLITO: 0
+Righe: 152 · OK: 48 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -88,6 +87,7 @@ Righe: 146 · OK: 46 · FALLITO: 0
 - **orari-testi**: OK in 1/1 combinazioni
 - **orari-uscita**: OK in 2/2 combinazioni
 - **orari-validazione-server**: OK in 1/1 combinazioni
+- **piatti-allergeni-selezione**: OK in 2/2 combinazioni
 - **piatti-azioni-pagina**: OK in 2/2 combinazioni
 - **piatti-casella-misure**: OK in 2/2 combinazioni
 - **piatti-colonna-elenco**: OK in 2/2 combinazioni
@@ -103,7 +103,6 @@ Righe: 146 · OK: 46 · FALLITO: 0
 - **piatti-modulo-validazione**: OK in 1/1 combinazioni
 - **piatti-nomi-accessibili**: OK in 1/1 combinazioni
 - **piatti-persistenza**: OK in 1/1 combinazioni
-- **piatti-righe-azioni**: OK in 1/1 combinazioni
 - **piatti-tassonomie**: OK in 1/1 combinazioni
 - **piatti-terminato**: OK in 1/1 combinazioni
 - **piatti-testi**: OK in 1/1 combinazioni
@@ -124,12 +123,12 @@ Righe: 146 · OK: 46 · FALLITO: 0
 - **shell-tema-scelta**: OK in 1/1 combinazioni
 - **shell-uscita**: OK in 1/1 combinazioni
 - **verify-testi**: OK in 32/32 combinazioni
-- **AMBIENTE**: OK in 1/2 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C1**: OK in 231/233 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C2**: OK in 215/217 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **AMBIENTE**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C1**: OK in 246/249 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C2**: OK in 230/233 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C2-mouse**: OK in 76/77 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C3**: OK in 331/333 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **C9**: OK in 47/48 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C3**: OK in 346/349 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **C9**: OK in 49/50 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-colonne**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-larghezza**: OK in 8/9 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-righe-di-stato**: OK in 5/6 combinazioni (con fallimenti o avvisi su altre combinazioni)
@@ -137,8 +136,7 @@ Righe: 146 · OK: 46 · FALLITO: 0
 - **shell-menu-utente**: OK in 2/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
-- **piatti-allergeni-selezione** | piatti/modulo-allergeni | telefono-390/chiaro | misurato `conteggio allergeni | aria-pressed=1` | atteso `Selezionati: 2.; stato selezionato visibile` | evidenza: img/
-- **piatti-allergeni-selezione** | piatti/modulo-allergeni | telefono-390/scuro | misurato `conteggio allergeni | aria-pressed=1` | atteso `Selezionati: 2.; stato selezionato visibile` | evidenza: img/
+- (nessuno)
 
 ### AVVISO
 - (nessuno)
@@ -251,9 +249,17 @@ Righe: 146 · OK: 46 · FALLITO: 0
 - **orari-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **piatti-righe-azioni** | piatti | telefono-390/chiaro | misurato `misura non acquisita: btnSize riga azioni` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu
 - **C1** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
 - **C2** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
 - **C3** | piatti/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
+- **C1** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `scroll orizzontale` | evidenza: vuoto
+- **C2** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `tocco ≥44px` | evidenza: vuoto
+- **C3** | piatti/vuoto | telefono-390/scuro | misurato `stato vuoto: DB con 44 piatti` | atteso `classe tema` | evidenza: vuoto
 - **NO-OVERRIDE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **piatti-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
@@ -262,15 +268,15 @@ Righe: 146 · OK: 46 · FALLITO: 0
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | NON PROVATO (1/2) |
-| C1 | NON PROVATO (231/233) |
-| C2 | NON PROVATO (215/217) |
+| AMBIENTE | NON PROVATO (3/4) |
+| C1 | NON PROVATO (246/249) |
+| C2 | NON PROVATO (230/233) |
 | C2-mouse | NON PROVATO (76/77) |
-| C3 | NON PROVATO (331/333) |
-| C9 | NON PROVATO (47/48) |
+| C3 | NON PROVATO (346/349) |
+| C9 | NON PROVATO (49/50) |
 | NO-OVERRIDE | NON PROVATO (0/1) |
 | RICOMPILA-ASSENTE | OK (1/1) |
-| piatti-allergeni-selezione | FALLITO (0/2) |
+| piatti-allergeni-selezione | OK (2/2) |
 | piatti-azioni-pagina | OK (2/2) |
 | piatti-casella-misure | OK (2/2) |
 | piatti-colonna-elenco | OK (2/2) |
@@ -287,7 +293,7 @@ Righe: 146 · OK: 46 · FALLITO: 0
 | piatti-modulo-validazione | OK (1/1) |
 | piatti-nomi-accessibili | OK (1/1) |
 | piatti-persistenza | OK (1/1) |
-| piatti-righe-azioni | OK (1/1) |
+| piatti-righe-azioni | NON PROVATO (0/1) |
 | piatti-stati-ui | NON PROVATO (0/1) |
 | piatti-tassonomie | OK (1/1) |
 | piatti-terminato | OK (1/1) |
@@ -403,11 +409,17 @@ Righe: 146 · OK: 46 · FALLITO: 0
 | orari-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| piatti-allergeni-selezione | piatti/modulo-allergeni | telefono-390/chiaro | FALLITO | conteggio allergeni \| aria-pressed=1 | Selezionati: 2.; stato selezionato visibile | img/ |
-| piatti-allergeni-selezione | piatti/modulo-allergeni | telefono-390/scuro | FALLITO | conteggio allergeni \| aria-pressed=1 | Selezionati: 2.; stato selezionato visibile | img/ |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| piatti-righe-azioni | piatti | telefono-390/chiaro | NON PROVATO | misura non acquisita: btnSize riga azioni | tre icone, switch disabilitato su disabled | /app/menu |
 | C1 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
 | C2 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
 | C3 | piatti/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
+| C1 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | scroll orizzontale | vuoto |
+| C2 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | tocco ≥44px | vuoto |
+| C3 | piatti/vuoto | telefono-390/scuro | NON PROVATO | stato vuoto: DB con 44 piatti | classe tema | vuoto |
 | NO-OVERRIDE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | piatti-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
