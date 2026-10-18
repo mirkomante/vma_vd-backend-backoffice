@@ -77,7 +77,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 10 | — non necessario (nessun P) | Solo il prompt del passo 10, se ci sono P | F1 | Composer | Correzione dei P di V1, solo se ce ne sono | L0 + L1 dei soli controlli falliti | P chiusi |
 | 11 | ✅ f4ffb96 | Blocco comune + prompt del passo 11 | I2 | Composer | **Piatti** | L0 + **L1** `piatti` | L1 verde; tu pushi |
 | 12 | ✅ 6507cde | — | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
-| 13 | 🔶 incompleto: da rifare dopo F2 (V2 bis) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
+| 13 | ✅ 0c0f4e8 (con V2 quater) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
 | 14 | ✅ 2b53c00 | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
 | 15 | 🔲 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
 | 16 | 🔲 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `0a839de`). **Prossimi passi**: 14d (V2 quater: verifica di F2 su Piatti), poi 15 (VC3).
+**Ultimo aggiornamento**: 2026-10-18 (commit `0c0f4e8`). **Prossimi passi**: 15 (VC3).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -610,7 +610,7 @@ Si fa in parallelo con la chat del passo 11 e deve essere pronto prima del passo
 
 ### Passo 13 — V2: l'agente esegue L2 su Piatti (primo elenco, primo modulo, primo foglio)
 
-> **Esito (2026-10-17)**: **incompleto**. Eseguiti la regressione della shell, la console di sviluppo e buona parte dei flussi di Piatti; interrotti dopo circa 17 minuti, con stati pesanti saltati e `piatti-terminato` non rieseguito dopo la correzione. Rilievi in `docs/design/verifica/esiti/2026-10-17-V2/rilievi.md`: **6 P** (margine doppio, scheda mobile, aree di tocco, Categoria mostra l'identificativo, allergeni, icone e dettagli dei blocchi condivisi) e i difetti del lanciatore da correggere in V2 bis. Il passo diventa ✅ solo con V2 bis.
+> **Esito finale (2026-10-18)**: chiuso con **V2 quater** (`0c0f4e8`): 0 FALLITO su menu, shell e Orari, sei P corretti dopo F2, nessun P aperto (`docs/design/verifica/esiti/2026-10-18-V2quater/rilievi.md`). **Esito intermedio (2026-10-17)**: **incompleto**. Eseguiti la regressione della shell, la console di sviluppo e buona parte dei flussi di Piatti; interrotti dopo circa 17 minuti, con stati pesanti saltati e `piatti-terminato` non rieseguito dopo la correzione. Rilievi in `docs/design/verifica/esiti/2026-10-17-V2/rilievi.md`: **6 P** (margine doppio, scheda mobile, aree di tocco, Categoria mostra l'identificativo, allergeni, icone e dettagli dei blocchi condivisi) e i difetti del lanciatore da correggere in V2 bis. Il passo diventa ✅ solo con V2 bis.
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -902,6 +902,12 @@ A. Il lanciatore ha già il modulo scripts/ui-verify/lib/run-menu.mjs creato dal
 B. Implementa i tipi di controllo che mancano (elenco raggruppato per tipologia, foglio dei filtri con il filtro per origine a cascata (paese, regione, denominazione), select con la voce per svuotarlo, campo anno con la casella «Senza annata (NV)», avviso con «Mostra altri vini» con 101 voci di prova, flussi con dati «verify-ui-…»). Non cambiare nessun controllo, soglia o tolleranza dei
    file JSON; i testi attesi delle costanti si leggono da lib/, non si copiano. Se un controllo ti sembra sbagliato
    o impossibile, scrivilo come «controllo dubbio» e lascialo com'è.
+B2. Difetti noti del lanciatore da correggere (rilievi di V2 quater, docs/design/verifica/esiti/2026-10-18-V2quater/rilievi.md):
+   1. gli screenshot del confronto visivo (C10) vanno scattati con il contesto touch dei controlli C2 (oggi i
+      pulsanti risultano alti 35 px nello screenshot e 44 px nelle misure);
+   2. C2-mouse deve escludere la textarea (il JSON la esclude già: il selettore del lanciatore è fisso);
+   3. implementa i controlli nuovi di Piatti piatti-casella-misure e piatti-allergeni-selezione (il secondo seleziona
+      due allergeni e una caratteristica prima dello screenshot).
 C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica controlli-6.6.json e riconosce ogni
    id e tipo delle schermate indicate. Le schermate non ancora implementate (le fa la chat I3) danno NON PROVATO
    con l'evidenza «schermata non ancora implementata», senza errori del lanciatore. Non provare le schermate.

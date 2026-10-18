@@ -1182,6 +1182,45 @@
      "fonte": "piatti/spec.md §4 (Foglio), §9 punto 12"
     },
     {
+     "id": "piatti-casella-misure",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "per ogni casella del modulo («Senza glutine», «Senza latticini», «Vegano», «Senza uova», «Terminato per il servizio», «Disabilitato»): il rettangolo della radice (role=checkbox) è almeno 44 × 44 px con il tocco e il quadratino visibile (data-slot=checkbox-box) è 16 × 16 px (±1); con il mouse la radice è 16 × 16 px",
+     "fonte": "decisioni D6 (registro, riga checkbox rivista il 2026-10-17); rilievo P3 di V2",
+     "nota": "Aggiunto il 2026-10-18 dopo V2 quater: la misura dei due rettangoli non era un controllo e l'evidenza era solo C2."
+    },
+    {
+     "id": "piatti-allergeni-selezione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "apri «Nuovo piatto» e tocca due allergeni, poi spunta «Senza latticini»",
+      "leggi il conteggio e lo stato delle voci",
+      "salva lo screenshot del foglio in questo stato (per il confronto visivo con 390-modulo-allergeni-chiaro.png)"
+     ],
+     "atteso": [
+      "il conteggio dice «Selezionati: 2.»; i due allergeni hanno aria-pressed vero e il riempimento primario con testo chiaro (token del tema), gli altri hanno il bordo e nessun riempimento; la casella «Senza latticini» è spuntata",
+      "con il tocco ogni voce degli allergeni è alta almeno 44 px"
+     ],
+     "fonte": "docs/design/schermate/piatti/spec.md §6 (Modulo, Allergeni), §9; rilievo P5 di V2",
+     "nota": "Aggiunto il 2026-10-18: negli screenshot di V2 quater nessun allergene era selezionato, quindi lo stato selezionato non si poteva confrontare con il riferimento."
+    },
+    {
      "id": "piatti-tassonomie",
      "tipo": "flusso",
      "livello": 1,
