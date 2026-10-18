@@ -10,6 +10,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Fixed
+
+- **F-SEL — tendine facoltative Distillati, Bevande e Vini** — `OptionalSelectField` con segnaposto interno non persistito; corretti trigger che mostravano `__empty__` / `__no_country__`; capacità/grado/invecchiamento affiancati da `md` come nei Vini; scelta «Non indicata» sui Vini non salva più `__empty__`.
+
+### Tests
+
+- **F-SEL** — Unitari `lib/menu/catalog/optionalSelectValue.test.ts` (11 test). L0: `typecheck`, `lint` (0 errori), `ui:check`, `lib/**/*.test.ts` (100/100). L1 `locale-prod` livello 1 (`controlli-6.6.json`, `telefono-390`, `chiaro`): `distillati`, `bevande`, `vini` uscita 0; esiti in `docs/design/verifica/esiti/2026-10-18-locale-prod/` (es. `distillati-modulo-campi` / `bevande-modulo-campi` OK su telefono-390/chiaro).
+
 ### Added
 
 - **Fase 6.6 I4 (Menù fissi + Categorie, secondo commit)** — Rotte `/app/menu/fixed` e `/app/menu/fixed/categories` con schede come `Link` (A53); elenco menù raggruppato per categoria; scheda Categorie senza eliminazione; modulo menù a due viste (modulo + «Scegli piatti»), frecce ordine 44px, visibilità/precompilazione e avvisi in `lib/menu/fixedMenus/`; testi `lib/menu/fixed-menus/copy.ts`; azioni `fixed-menus-actions.ts` (`findByID` depth=2 per caricamento modulo, EN con riscrittura completa righe `dishes`, `overrideAccess: false`); `formatFixedMenuDeleteDescription` (date giorni speciali con `formatSpecialDayDateLong`); nav **Menù fissi** `enabled: true`; script `cleanup-verify-ui-menu-fixtures.ts` (special-days per relazione a menù `verify-ui-*`, non per `name`).

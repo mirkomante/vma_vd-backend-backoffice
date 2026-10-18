@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { loadWineOriginOptionsAction } from '@/app/(app)/app/(shell)/menu/wines-actions'
+import { OptionalSelectField } from '@/components/app/menu/catalog/optional-select-field'
 import { LocalizedTranslationCollapsible } from '@/components/app/menu/localized-translation-collapsible'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -311,44 +312,22 @@ export function WineFormSheet({
                 <FieldError>{fieldErrors.year}</FieldError>
               </Field>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor="wine-field-volume">{VINI_FORM_VOLUME}</FieldLabel>
-                  <Select
-                    items={volumeItems}
-                    value={values.volume || undefined}
-                    onValueChange={(v) => setValues((s) => ({ ...s, volume: v ?? '' }))}
-                  >
-                    <SelectTrigger id="wine-field-volume" className="w-full">
-                      <SelectValue placeholder={VINI_FORM_SELECT_PLACEHOLDER} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(volumeItems).map(([val, label]) => (
-                        <SelectItem key={val || 'empty'} value={val || '__empty__'}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor="wine-field-abv">{VINI_FORM_ABV}</FieldLabel>
-                  <Select
-                    items={abvItems}
-                    value={values.abv || undefined}
-                    onValueChange={(v) => setValues((s) => ({ ...s, abv: v ?? '' }))}
-                  >
-                    <SelectTrigger id="wine-field-abv" className="w-full">
-                      <SelectValue placeholder={VINI_FORM_SELECT_PLACEHOLDER} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(abvItems).map(([val, label]) => (
-                        <SelectItem key={val || 'empty'} value={val || '__empty__'}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
+                <OptionalSelectField
+                  id="wine-field-volume"
+                  label={VINI_FORM_VOLUME}
+                  items={volumeItems}
+                  value={values.volume}
+                  onChange={(volume) => setValues((s) => ({ ...s, volume }))}
+                  placeholder={VINI_FORM_SELECT_PLACEHOLDER}
+                />
+                <OptionalSelectField
+                  id="wine-field-abv"
+                  label={VINI_FORM_ABV}
+                  items={abvItems}
+                  value={values.abv}
+                  onChange={(abv) => setValues((s) => ({ ...s, abv }))}
+                  placeholder={VINI_FORM_SELECT_PLACEHOLDER}
+                />
               </div>
               <FieldDescription>
                 {VINI_FORM_FORMAT_HINT}

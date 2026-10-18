@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 
+import { OptionalSelectField } from '@/components/app/menu/catalog/optional-select-field'
 import { LocalizedTranslationCollapsible } from '@/components/app/menu/localized-translation-collapsible'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -66,9 +67,6 @@ import {
   BEVANDE_FORM_VOLUME_EMPTY,
 } from '@/lib/menu/drinks/copy'
 
-const EMPTY_SELECT = '__empty__'
-const NO_COUNTRY = '__no_country__'
-
 type DrinkFormSheetProps = {
   open: boolean
   mode: 'new' | 'edit'
@@ -114,18 +112,31 @@ export function DrinkFormSheet({
     [countries, initialValues.countryId, initialValues.savedCountryName],
   )
   const volumeItems = useMemo(
-    () => buildSelectItems(
-      DRINK_VOLUME_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
-      values.volume,
-    ),
+    () => ({
+      '': BEVANDE_FORM_VOLUME_EMPTY,
+      ...buildSelectItems(
+        DRINK_VOLUME_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
+        values.volume,
+      ),
+    }),
     [values.volume],
   )
   const abvItems = useMemo(
-    () => buildSelectItems(
-      DRINK_ABV_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
-      values.abv,
-    ),
+    () => ({
+      '': BEVANDE_FORM_ABV_EMPTY,
+      ...buildSelectItems(
+        DRINK_ABV_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
+        values.abv,
+      ),
+    }),
     [values.abv],
+  )
+  const countrySelectItems = useMemo(
+    () => ({
+      '': BEVANDE_FORM_COUNTRY_NONE,
+      ...countryItems,
+    }),
+    [countryItems],
   )
 
   const formatHint =
@@ -167,59 +178,27 @@ export function DrinkFormSheet({
                 <FieldError>{fieldErrors.name}</FieldError>
               </Field>
 
-              <Field>
-                <FieldLabel>{BEVANDE_FORM_VOLUME}</FieldLabel>
-                <Select
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <OptionalSelectField
+                  id={DRINK_FIELD_DOM_IDS.volume}
+                  label={BEVANDE_FORM_VOLUME}
                   items={volumeItems}
-                  value={values.volume || EMPTY_SELECT}
-                  onValueChange={(v) =>
-                    setValues((s) => ({ ...s, volume: v === EMPTY_SELECT ? '' : (v ?? '') }))
-                  }
-                >
-                  <SelectTrigger id={DRINK_FIELD_DOM_IDS.volume} className="w-full">
-                    <SelectValue placeholder={BEVANDE_FORM_SELECT_PLACEHOLDER} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={EMPTY_SELECT}>{BEVANDE_FORM_VOLUME_EMPTY}</SelectItem>
-                    {DRINK_VOLUME_SELECT_OPTIONS.map((opt) => (
-                      <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                    ))}
-                    {values.volume &&
-                    !DRINK_VOLUME_SELECT_OPTIONS.includes(
-                      values.volume as typeof DRINK_VOLUME_SELECT_OPTIONS[number],
-                    ) ? (
-                      <SelectItem value={values.volume}>{values.volume}</SelectItem>
-                    ) : null}
-                  </SelectContent>
-                </Select>
-                <FieldError>{fieldErrors.volume}</FieldError>
-              </Field>
-
-              <Field>
-                <FieldLabel>{BEVANDE_FORM_ABV}</FieldLabel>
-                <Select
+                  value={values.volume}
+                  onChange={(volume) => setValues((s) => ({ ...s, volume }))}
+                  placeholder={BEVANDE_FORM_SELECT_PLACEHOLDER}
+                  error={fieldErrors.volume}
+                />
+                <OptionalSelectField
+                  id={DRINK_FIELD_DOM_IDS.abv}
+                  label={BEVANDE_FORM_ABV}
                   items={abvItems}
-                  value={values.abv || EMPTY_SELECT}
-                  onValueChange={(v) =>
-                    setValues((s) => ({ ...s, abv: v === EMPTY_SELECT ? '' : (v ?? '') }))
-                  }
-                >
-                  <SelectTrigger id={DRINK_FIELD_DOM_IDS.abv} className="w-full">
-                    <SelectValue placeholder={BEVANDE_FORM_SELECT_PLACEHOLDER} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={EMPTY_SELECT}>{BEVANDE_FORM_ABV_EMPTY}</SelectItem>
-                    {DRINK_ABV_SELECT_OPTIONS.map((opt) => (
-                      <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                    ))}
-                    {values.abv && !DRINK_ABV_SELECT_OPTIONS.includes(values.abv) ? (
-                      <SelectItem value={values.abv}>{values.abv}</SelectItem>
-                    ) : null}
-                  </SelectContent>
-                </Select>
-                <FieldDescription>{formatHint}</FieldDescription>
-                <FieldError>{fieldErrors.abv}</FieldError>
-              </Field>
+                  value={values.abv}
+                  onChange={(abv) => setValues((s) => ({ ...s, abv }))}
+                  placeholder={BEVANDE_FORM_SELECT_PLACEHOLDER}
+                  error={fieldErrors.abv}
+                />
+              </div>
+              <FieldDescription>{formatHint}</FieldDescription>
 
               <Field>
                 <FieldLabel htmlFor="drink-field-description">{BEVANDE_FORM_DESCRIPTION}</FieldLabel>
@@ -277,31 +256,14 @@ export function DrinkFormSheet({
                 <FieldError>{fieldErrors.typeId}</FieldError>
               </Field>
 
-              <Field>
-                <FieldLabel htmlFor="drink-field-country">{BEVANDE_FORM_COUNTRY}</FieldLabel>
-                <Select
-                  items={countryItems}
-                  value={values.countryId || NO_COUNTRY}
-                  onValueChange={(v) =>
-                    setValues((s) => ({
-                      ...s,
-                      countryId: v === NO_COUNTRY ? '' : (v ?? ''),
-                    }))
-                  }
-                >
-                  <SelectTrigger id="drink-field-country" className="w-full">
-                    <SelectValue placeholder={BEVANDE_FORM_COUNTRY_OPTIONAL}>
-                      {values.countryId ? countryItems[values.countryId] : null}
-                    </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={NO_COUNTRY}>{BEVANDE_FORM_COUNTRY_NONE}</SelectItem>
-                    {Object.entries(countryItems).map(([id, label]) => (
-                      <SelectItem key={id} value={id}>{label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
+              <OptionalSelectField
+                id="drink-field-country"
+                label={BEVANDE_FORM_COUNTRY}
+                items={countrySelectItems}
+                value={values.countryId}
+                onChange={(countryId) => setValues((s) => ({ ...s, countryId }))}
+                placeholder={BEVANDE_FORM_COUNTRY_OPTIONAL}
+              />
             </FieldSet>
 
             <FieldSet>

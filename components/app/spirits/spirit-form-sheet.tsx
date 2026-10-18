@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 
+import { OptionalSelectField } from '@/components/app/menu/catalog/optional-select-field'
 import { LocalizedTranslationCollapsible } from '@/components/app/menu/localized-translation-collapsible'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -64,8 +65,6 @@ import {
   DISTILLATI_FORM_TYPE,
 } from '@/lib/menu/spirits/copy'
 
-const EMPTY_SELECT = '__empty__'
-
 type SpiritFormSheetProps = {
   open: boolean
   mode: 'new' | 'edit'
@@ -113,17 +112,23 @@ export function SpiritFormSheet({
     [countries, initialValues.countryId, initialValues.savedCountryName],
   )
   const agingItems = useMemo(
-    () => buildSelectItems(
-      SPIRIT_AGING_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
-      values.aging,
-    ),
+    () => ({
+      '': DISTILLATI_FORM_AGING_EMPTY,
+      ...buildSelectItems(
+        SPIRIT_AGING_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
+        values.aging,
+      ),
+    }),
     [values.aging],
   )
   const abvItems = useMemo(
-    () => buildSelectItems(
-      SPIRIT_ABV_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
-      values.abv,
-    ),
+    () => ({
+      '': DISTILLATI_FORM_ABV_EMPTY,
+      ...buildSelectItems(
+        SPIRIT_ABV_SELECT_OPTIONS.map((v) => ({ id: v, label: v })),
+        values.abv,
+      ),
+    }),
     [values.abv],
   )
 
@@ -165,57 +170,27 @@ export function SpiritFormSheet({
                 <FieldError>{fieldErrors.name}</FieldError>
               </Field>
 
-              <Field>
-                <FieldLabel>{DISTILLATI_FORM_AGING}</FieldLabel>
-                <Select
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <OptionalSelectField
+                  id={SPIRIT_FIELD_DOM_IDS.aging}
+                  label={DISTILLATI_FORM_AGING}
                   items={agingItems}
-                  value={values.aging || EMPTY_SELECT}
-                  onValueChange={(v) =>
-                    setValues((s) => ({ ...s, aging: v === EMPTY_SELECT ? '' : (v ?? '') }))
-                  }
-                >
-                  <SelectTrigger id={SPIRIT_FIELD_DOM_IDS.aging} className="w-full">
-                    <SelectValue placeholder={DISTILLATI_FORM_SELECT_PLACEHOLDER} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={EMPTY_SELECT}>{DISTILLATI_FORM_AGING_EMPTY}</SelectItem>
-                    {SPIRIT_AGING_SELECT_OPTIONS.map((opt) => (
-                      <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                    ))}
-                    {values.aging &&
-                    !SPIRIT_AGING_SELECT_OPTIONS.includes(values.aging as typeof SPIRIT_AGING_SELECT_OPTIONS[number]) ? (
-                      <SelectItem value={values.aging}>{values.aging}</SelectItem>
-                    ) : null}
-                  </SelectContent>
-                </Select>
-                <FieldError>{fieldErrors.aging}</FieldError>
-              </Field>
-
-              <Field>
-                <FieldLabel>{DISTILLATI_FORM_ABV}</FieldLabel>
-                <Select
+                  value={values.aging}
+                  onChange={(aging) => setValues((s) => ({ ...s, aging }))}
+                  placeholder={DISTILLATI_FORM_SELECT_PLACEHOLDER}
+                  error={fieldErrors.aging}
+                />
+                <OptionalSelectField
+                  id={SPIRIT_FIELD_DOM_IDS.abv}
+                  label={DISTILLATI_FORM_ABV}
                   items={abvItems}
-                  value={values.abv || EMPTY_SELECT}
-                  onValueChange={(v) =>
-                    setValues((s) => ({ ...s, abv: v === EMPTY_SELECT ? '' : (v ?? '') }))
-                  }
-                >
-                  <SelectTrigger id={SPIRIT_FIELD_DOM_IDS.abv} className="w-full">
-                    <SelectValue placeholder={DISTILLATI_FORM_SELECT_PLACEHOLDER} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={EMPTY_SELECT}>{DISTILLATI_FORM_ABV_EMPTY}</SelectItem>
-                    {SPIRIT_ABV_SELECT_OPTIONS.map((opt) => (
-                      <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                    ))}
-                    {values.abv && !SPIRIT_ABV_SELECT_OPTIONS.includes(values.abv) ? (
-                      <SelectItem value={values.abv}>{values.abv}</SelectItem>
-                    ) : null}
-                  </SelectContent>
-                </Select>
-                <FieldDescription>{formatHint}</FieldDescription>
-                <FieldError>{fieldErrors.abv}</FieldError>
-              </Field>
+                  value={values.abv}
+                  onChange={(abv) => setValues((s) => ({ ...s, abv }))}
+                  placeholder={DISTILLATI_FORM_SELECT_PLACEHOLDER}
+                  error={fieldErrors.abv}
+                />
+              </div>
+              <FieldDescription>{formatHint}</FieldDescription>
 
               <Field>
                 <FieldLabel htmlFor="spirit-field-description">{DISTILLATI_FORM_DESCRIPTION}</FieldLabel>
