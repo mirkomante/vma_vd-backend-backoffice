@@ -82,7 +82,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 15 | ✅ 1fdb2d9 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
 | 16 | ✅ 97a48b5 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
-| 18 | 🔲 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
+| 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | 🔲 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
 | 20 | 🔲 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
 | 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `e8716c6`). **Prossimi passi**: 18 (VC4: controlli di Servizi e Menù fissi; ora include anche i difetti noti del lanciatore dei cataloghi), poi 19 (I4).
+**Ultimo aggiornamento**: 2026-10-18 (commit `f76c347`). **Prossimi passi**: 18b (F-EN: salvare solo la traduzione inglese non deve fallire), poi 19 (I4).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1200,6 +1200,8 @@ Si fa in parallelo con la chat del passo 16 e deve essere pronto prima del passo
 
 ### Passo 18 — VC4: l'agente implementa i controlli di Servizi e Menù fissi
 
+> **Esito (2026-10-18)**: ✅ `f76c347` (lanciatore 3.6.0). 20 file, tutti in `scripts/ui-verify/**` e negli esiti; sintassi dei moduli nuovi verificata. Cablati i 23 controlli di Servizi e i 32 di Menù fissi (`run-menu-list.mjs`, `run-menu-list-flows.mjs`: schede come percorsi, «Scegli piatti», frecce, cascade, categoria vuota, visibilità); finché le schermate non esistono sono NON PROVATI. Delle cinque correzioni ai cataloghi: `vini-origine-cascata` OK, `distillati-paese-fuori-filtro` OK, `bevande-modulo-inglese` OK ma con una scoperta (vedi passo 18b), `bevande-paese-fuori-filtro` non rieseguito; **`vini-persistenza` e `vini-formati-ui` restano FALLITO per il lanciatore** (gli id dei campi esistono nell'app: timeout del flusso di creazione e riga di prova non raggiungibile in un elenco di oltre 100). Sono debito NON PROVATO, da riprendere in V6; la persistenza è coperta anche da `verify:menu-6_2` e dal giro L3.
+
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
@@ -1265,6 +1267,59 @@ sempre OK, FALLITO, AVVISO e NON PROVATO.
 **Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `test(ui-verify): controlli di Servizi e Menù fissi nel lanciatore (VC4)`
 
+
+### Passo 18b — F-EN: salvare solo la traduzione inglese non deve fallire
+
+**Perché**: VC4 ha provato dal modulo dell'app a scrivere SOLO la descrizione inglese di una bevanda: il salvataggio dà «Operazione non riuscita». Il nome (`name`) è un campo **obbligatorio e localizzato** (`required: true, localized: true`), e le azioni scrivono l'inglese con `fallbackLocale: false` e solo i campi compilati: se il nome inglese è vuoto, Payload rifiuta la scrittura in `en`. Ma la traduzione inglese è **facoltativa** in tutte le specifiche («Se resta vuota, il menù mostra il testo italiano»). Il difetto vale probabilmente anche per Piatti e per le altre collection con il nome obbligatorio e localizzato (menu-services, fixed-menus, fixed-menu-categories), che oggi nessun controllo prova con la sola descrizione. **Quando**: ora, prima di I4 (che costruisce Servizi e Menù fissi). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (è autonomo; non il Blocco comune).
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F-EN: correzione di un difetto emerso da VC4. Fai solo
+questo. Le regole di .cursor/rules si caricano da sole.
+
+PROBLEMA
+Dal modulo dell'app, scrivere SOLO la descrizione inglese (nome inglese vuoto) di una bevanda dà «Operazione non
+riuscita» (il lanciatore, create-catalog-items, vede «Il seguente campo non è valido: Nome»). Le collection hanno `name`
+con required: true e localized: true; le azioni scrivono l'inglese con locale 'en', fallbackLocale: false e solo i
+campi compilati (per esempio app/(app)/app/(shell)/menu/drinks-actions.ts, righe 204–219). La traduzione inglese è
+facoltativa nelle specifiche e il frontend ripiega sull'italiano quando l'inglese manca.
+
+LEGGI per intero
+- docs/design/verifica/esiti/2026-10-18-controlli/rapporto.md (esito di VC4 sulla traduzione inglese delle bevande)
+- docs/piano-sviluppo/ADR-108 (modello dati) e ADR-112 (contratto con il frontend, ripiego sulla lingua italiana)
+- collections/menu/menuContentCollections.ts (dishes, drinks, menu-services, fixed-menu-categories, fixed-menus),
+  le azioni dishes-actions.ts, drinks-actions.ts, wines-actions.ts, spirits-actions.ts e lib/app/menu/catalog/catalogActions.ts
+- scripts/verify-menu-6_2.ts (la matrice di prova delle collection)
+
+REGOLE
+1. PARTE A, solo proposta, nessuna modifica. (a) RIPRODUCI il difetto con uno script che usa la Local API sul database
+   di SVILUPPO (pnpm payload run, mai produzione): per ognuna delle collection con un nome obbligatorio e localizzato
+   (dishes, drinks, menu-services, fixed-menus, fixed-menu-categories), un update con locale 'en', fallbackLocale: false
+   e SOLO la descrizione (o solo un campo localizzato diverso dal nome) su un record che ha il nome inglese vuoto;
+   riporta per ognuna: riuscito o l'errore esatto. Cancella i record di prova (prefisso «verify-ui-»). (b) Spiega la
+   causa che trovi (come Payload valida `required` su un campo localizzato quando si scrive in un'altra lingua e il
+   valore è vuoto). (c) Proponi la correzione più piccola e sicura, scegliendo fra: 1) una `validate` sul campo `name`
+   che applica l'obbligo solo per la lingua italiana (la predefinita) e accetta l'inglese vuoto; 2) un cambio nelle
+   azioni dell'app. Spiega perché una è migliore per l'altra (in particolare cosa succede al ripiego sull'italiano
+   se si salvasse il nome italiano nel campo inglese: NON farlo). Indica i file e come provi che creare in italiano
+   senza nome resta rifiutato. Poi FERMATI e aspetta il mio «procedi».
+2. Dopo il «procedi»: implementa, SENZA migrazioni di schema (è solo una validazione) e senza nuove dipendenze. Se
+   modifichi collections/**, mantieni gli hook della disponibilità invariati. Aggiungi alla matrice di
+   scripts/verify-menu-6_2.ts: update in inglese con la sola descrizione riuscito per ognuna delle collection; create in
+   italiano senza nome ancora RIFIUTATO; lettura con locale 'en' di un record senza nome inglese ricade sull'italiano.
+3. Verifiche: L0 (pnpm typecheck, pnpm lint con 0 errori, pnpm ui:check, test unitari di lib/ con il caricatore),
+   pnpm verify:menu-6_2, pnpm verify:menu-6_3, pnpm verify:menu-6_4 (richiede pnpm dev con le variabili
+   dell'intestazione dello script; serve a escludere effetti sugli hook della disponibilità). NON fare giri di
+   pnpm ui:verify: la verifica dal modulo la rifà l'agente di verifica dopo, con --solo.
+4. Chiusura: voce in docs/piano-sviluppo/CHANGELOG.md (cosa era sbagliato e cosa è cambiato); una nota di
+   chiarimento in fondo a ADR-108 (data, decisione, effetto sul ripiego in italiano); commit locale (messaggio che
+   nomina F-EN); MAI git push. Non toccare docs/design/**, i controlli né scripts/ui-verify/**. Nella tabella degli
+   stati di docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md non toccare nulla (la aggiorna la chat di
+   design).
+5. RISPOSTA FINALE: tabella «Esiti reali» con, per ogni collection, il comportamento prima e dopo.
+```
+
+**Quando Cursor ha scritto la Parte A**: incollamela qui. **Quando ha finito**: commit, push, «push fatto». Dopo F-EN parte I4.
+
 ### Passo 19 — I4: Servizi e Menù fissi con Categorie
 
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
@@ -1302,6 +1357,11 @@ COSA FARE
    efficace (incrocio di menù e categoria), precompilazione, spostamento di un elemento, applicazione della scelta
    dei piatti (tolti, aggiunti in fondo, ordine e porzioni degli altri invariati).
 5. Accendi in navigazione Servizi e Menù fissi (enabled: true) e aggiorna scripts/verify-lib-app-8_2.ts con le voci abilitate.
+
+TRADUZIONE INGLESE (dal passo 18b): la traduzione è facoltativa in ogni modulo. Scrivere SOLO la descrizione, o solo il
+nome, in inglese deve riuscire; il nome inglese vuoto non deve far fallire il salvataggio e non va riempito con il nome
+italiano. Le azioni scrivono in inglese solo i campi compilati, con fallbackLocale: false. Dopo F-EN la collection lo
+consente: non aggirare il problema nelle azioni.
 
 NON FARE: Giorni speciali, «Ricompila» visibile, eliminazione delle categorie, modifiche allo schema.
 
