@@ -211,7 +211,7 @@ async function writeDrinkEnglish(
     collection: DRINKS_SLUG,
     context: appLocalApiContext().context,
     data: {
-      ...(nameEn ? { name: nameEn } : {}),
+      name: nameEn,
       ...(descriptionEn ? { description: descriptionEn } : {}),
     },
     depth: 0,

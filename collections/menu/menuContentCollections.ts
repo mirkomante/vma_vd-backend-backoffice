@@ -20,6 +20,7 @@ import {
 } from '@/lib/menu/constants'
 import { fixedMenuCategoryAccess, menuContentAccess, menuContentAdminMeta } from '@/lib/menu/contentCollection'
 import { menuContentCollectionHooks } from '@/lib/menu/menuContentCollectionHooks'
+import { validateLocalizedRequiredName } from '@/lib/menu/localizedNameField'
 import { menuVisibilityField } from '@/lib/menu/visibilityField'
 import {
   validateDrinkAbvField,
@@ -60,6 +61,7 @@ export const Dishes: CollectionConfig = {
       required: true,
       localized: true,
       label: 'Nome',
+      validate: validateLocalizedRequiredName,
     },
     {
       name: 'description',
@@ -303,6 +305,7 @@ export const Drinks: CollectionConfig = {
       required: true,
       localized: true,
       label: 'Nome',
+      validate: validateLocalizedRequiredName,
     },
     {
       name: 'description',
@@ -367,6 +370,7 @@ export const MenuServices: CollectionConfig = {
       required: true,
       localized: true,
       label: 'Nome',
+      validate: validateLocalizedRequiredName,
     },
     {
       name: 'price',
@@ -392,6 +396,7 @@ export const FixedMenuCategories: CollectionConfig = {
       required: true,
       localized: true,
       label: 'Nome',
+      validate: validateLocalizedRequiredName,
     },
     menuVisibilityField(true),
     disabledField,
@@ -413,6 +418,7 @@ export const FixedMenus: CollectionConfig = {
       required: true,
       localized: true,
       label: 'Nome',
+      validate: validateLocalizedRequiredName,
     },
     {
       name: 'description',

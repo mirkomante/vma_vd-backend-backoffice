@@ -1565,6 +1565,118 @@ async function main(): Promise<void> {
     )
     console.log('OK: fixed-menus locale name/description')
 
+    console.log('--- F-EN: update EN con nome vuoto e solo descrizione (o solo name "") ---')
+    const fenTag = `fen-6_2-${TEST_RUN_ID}`
+    const fenCases: {
+      slug: MenuContentSlug
+      id: number | string
+      itName: string
+      enData: Record<string, unknown>
+      createNoName: Record<string, unknown>
+    }[] = [
+      {
+        slug: DISHES_SLUG,
+        id: fixtureIds.dishId,
+        itName: `Piatto 6_2 ${TEST_RUN_ID}`,
+        enData: { name: '', description: `EN desc ${fenTag}` },
+        createNoName: {
+          price: 1,
+          category: asNumericId(fixtureIds.dishCategoryId),
+        },
+      },
+      {
+        slug: DRINKS_SLUG,
+        id: locDrink.id,
+        itName: `Loc drink ${TEST_RUN_ID}`,
+        enData: { name: '', description: `EN desc ${fenTag}` },
+        createNoName: {
+          price: 2,
+          type: asNumericId(fixtureIds.drinkTypeId),
+        },
+      },
+      {
+        slug: MENU_SERVICES_SLUG,
+        id: locService.id,
+        itName: `Loc servizio ${TEST_RUN_ID}`,
+        enData: { name: '' },
+        createNoName: { price: 1 },
+      },
+      {
+        slug: FIXED_MENU_CATEGORIES_SLUG,
+        id: locFixedCat.id,
+        itName: `Loc cat ${TEST_RUN_ID}`,
+        enData: { name: '' },
+        createNoName: { visibility: 'always' },
+      },
+      {
+        slug: FIXED_MENUS_SLUG,
+        id: locFixedMenu.id,
+        itName: `Loc menu ${TEST_RUN_ID}`,
+        enData: { name: '', description: `EN desc ${fenTag}` },
+        createNoName: {
+          price: 10,
+          category: asNumericId(fixtureIds.fixedCategoryId),
+          visibility: 'always',
+        },
+      },
+    ]
+
+    for (const row of fenCases) {
+      await payload.update({
+        collection: row.slug,
+        id: row.id,
+        overrideAccess: true,
+        depth: 0,
+        locale: 'en',
+        fallbackLocale: false,
+        data: row.enData,
+      })
+      const withFallback = await payload.findByID({
+        collection: row.slug,
+        id: row.id,
+        locale: 'en',
+        depth: 0,
+        overrideAccess: true,
+      })
+      if (withFallback.name !== row.itName) {
+        throw new Error(
+          `${row.slug} F-EN ripiego: atteso «${row.itName}», ottenuto «${String(withFallback.name)}»`,
+        )
+      }
+      const noFallback = await payload.findByID({
+        collection: row.slug,
+        id: row.id,
+        locale: 'en',
+        fallbackLocale: false,
+        depth: 0,
+        overrideAccess: true,
+      })
+      const enName = noFallback.name
+      if (enName != null && enName !== '') {
+        throw new Error(
+          `${row.slug} F-EN name senza ripiego: atteso vuoto, ottenuto «${String(enName)}»`,
+        )
+      }
+      try {
+        await payload.create({
+          collection: row.slug,
+          overrideAccess: true,
+          depth: 0,
+          locale: 'it',
+          data: row.createNoName as never,
+        })
+        throw new Error(`${row.slug} F-EN: create IT senza nome doveva essere rifiutata`)
+      } catch (error) {
+        if (!isValidationError(error)) {
+          if (error instanceof Error && error.message.includes('doveva essere rifiutata')) {
+            throw error
+          }
+          throw error
+        }
+      }
+      console.log(`OK: ${row.slug} F-EN update nome vuoto, ripiego IT, create IT senza nome rifiutata`)
+    }
+
     console.log('--- Cancellazione admin con riferimenti ---')
     try {
       await payload.delete({

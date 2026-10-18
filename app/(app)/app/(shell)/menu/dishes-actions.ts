@@ -234,8 +234,8 @@ async function writeEnglishLocale(
     collection: DISHES_SLUG,
     context: appLocalApiContext().context,
     data: {
-      name: nameEn || values.nameIt.trim(),
-      description: descriptionEn,
+      name: nameEn,
+      ...(descriptionEn ? { description: descriptionEn } : {}),
     },
     depth: 0,
     fallbackLocale: false,

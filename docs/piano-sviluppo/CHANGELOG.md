@@ -10,9 +10,13 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Fixed
+
+- **F-EN (passo 18b) — traduzione inglese solo descrizione / nome EN facoltativo** (2026-10-18): salvare dal modulo App solo la descrizione inglese (nome EN vuoto) falliva perché Payload applicava `required: true` su `name` localizzato nella locale `en`. **Causa aggiuntiva**: colonne `name` NOT NULL nelle tabelle `*_locales` (migrazione 6.2) — la traduzione assente è rappresentata con stringa vuota, non `NULL`. **Fix**: `validateLocalizedRequiredName` sui cinque `name` in `menuContentCollections.ts`; scrittura EN con `name: ''` quando il nome non è tradotto (`dishes-actions.ts`, `drinks-actions.ts`); niente copia del nome IT nel campo EN. **Nota dati dev**: i piatti già salvati con nome IT copiato in EN restano invariati (non produzione; nome uguale nelle due lingue può essere legittimo).
+
 ### Tests
 
-- **F-EN (passo 18b, Parte A)** — Script `scripts/verify-f-en-localized-name-repro.ts` (`pnpm payload run …`, solo DB dev): su **dishes, drinks, fixed-menus, menu-services, fixed-menu-categories** un `update` con `locale: 'en'`, `fallbackLocale: false` e solo descrizione (o `data: {}` dove non c’è altro campo localizzato) su record con nome inglese vuoto **fallisce** con `Nome: Questo campo è obbligatorio.` per tutte e cinque le collection; record `verify-ui-fen-*` eliminati a fine script. Fix collection/azioni non ancora applicato (attende «procedi»).
+- **F-EN (passo 18b)** — Prova decisiva `scripts/verify-f-en-localized-name-repro.ts`: (a)–(e) OK su tutte e cinque le collection (DB dev). Matrice in `scripts/verify-menu-6_2.ts` (blocco F-EN). L0: `typecheck`, `lint` (0 errori), `ui:check`, unitari `lib/**/*.test.ts` (69/69) OK. `pnpm verify:menu-6_2` OK. `pnpm verify:menu-6_3` **FALLITO**: conteggi `fixed-menus` prima/dopo verify non ripristinati (3→5, DB dev con residui). `pnpm verify:menu-6_4` **FALLITO**: conteggio `dishes` prima/dopo (47→12) con `pnpm dev` e variabili mirror/trace dell’intestazione script — da rivalutare su DB dev ripulito, non attribuito al fix F-EN.
 
 ### Changed
 
