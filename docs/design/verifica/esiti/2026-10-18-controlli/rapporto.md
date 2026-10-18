@@ -36,9 +36,18 @@
 
 ### B2. Correzioni lanciatore (V2 quater)
 
-1. **C10 / screenshot e contesto touch**: `touch-context.mjs` + `installPointerCoarseForTouchProfiles` in `newPage` (`run.mjs`) — `matchMedia(pointer: coarse)` coerente con C2 sugli screenshot a profilo tocco.
+1. **C10 / contesto touch (verifica numerica, stessa chat VC3)** — ambiente `locale-prod` (`http://localhost:3100`), stato Piatti `elenco`, profilo `telefono-390`, tema chiaro. Misura su `getBoundingClientRect().height` del pulsante «Nuovo piatto» (atteso **44 px CSS**; ≈132 px nel PNG a `deviceScaleFactor` 3). Script: `scripts/ui-verify/measure-touch-css.mjs`. Screenshot in questa cartella: `misura-touch-dopo-senza-override-piatti-elenco-telefono-390-chiaro.png`.
+
+   | Configurazione | Altezza CSS «Nuovo piatto» | `matchMedia('(pointer: coarse)')` | `matchMedia('(hover: hover)')` | Nota |
+   |---|---:|---|---|---|
+   | **Prima** — profilo JSON (`isMobile: true`, `hasTouch: true`) + override JS `window.matchMedia` | **44** | true | false | L’override JS **non** è necessario per il CSS: le classi `pointer-coarse:*` seguono l’emulazione Playwright. |
+   | **Dopo** — stesso profilo, **senza** override JS (`touch-context.mjs` rimosso da `run.mjs`) | **44** | true | false | Comportamento invariato; contesto touch reale = flag Playwright in `profileContextOptions`. |
+   | Controllo negativo (solo override JS, **senza** `isMobile`/`hasTouch`) | **36** | true (forzato in JS) | true | Conferma che l’override **non** attiva `@media (pointer: coarse)` nei fogli Tailwind (~35 px del bug C10). |
+
 2. **C2-mouse senza textarea**: selettore in `checkAltezzaMouse` (`engine.mjs`) — `textarea` esclusa come da JSON.
 3. **Controlli Piatti A3/A4**: vedi tabella sopra.
+
+**Regressione C2 (post-fix touch)** — `pnpm ui:verify locale-prod --livello 1 --schermata piatti --controlli controlli-6.6.json --profili telefono-390 --temi chiaro`: **C2** su `piatti/*` a `telefono-390/chiaro` → **15 OK**, **1 NON PROVATO** (`piatti/vuoto`, DB popolato). Esito completo in `docs/design/verifica/esiti/2026-10-17-locale-prod/risultati.json` (2 FALLITO su `piatti-allergeni-selezione`, non legati al touch).
 
 ## Controlli dubbi
 
@@ -66,6 +75,6 @@ Completare ed eseguire in `run-catalog.mjs` (policy-test.md §6):
 
 ## File toccati (solo `scripts/ui-verify/**` + questo rapporto)
 
-- `lib/touch-context.mjs`, `lib/controlli-handlers.mjs`, `lib/catalog-config.mjs`, `lib/catalog-ui-helpers.mjs`, `lib/run-catalog.mjs`
+- `lib/controlli-handlers.mjs`, `lib/catalog-config.mjs`, `lib/catalog-ui-helpers.mjs`, `lib/run-catalog.mjs`, `measure-touch-css.mjs`
 - `lib/run-menu.mjs`, `lib/run-piatti.mjs`, `lib/engine.mjs`, `lib/controlli-index.mjs`, `lib/menu-payload.mjs`
 - `menu-payload.ts`, `run.mjs`, `verify-controlli-wire.mjs`

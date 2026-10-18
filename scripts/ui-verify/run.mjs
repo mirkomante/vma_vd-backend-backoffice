@@ -86,7 +86,6 @@ import {
   buildShellHomeExpected,
 } from './lib/run-menu.mjs'
 import { loadNavExpectations } from './lib/lib-readers.mjs'
-import { installPointerCoarseForTouchProfiles } from './lib/touch-context.mjs'
 import { auditControlliWiring } from './lib/controlli-handlers.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
@@ -186,9 +185,6 @@ async function newPage(browser, profiloKey, temaKey, baseUrl) {
     baseURL: baseUrl,
   })
   await ctx.addCookies([{ name: 'app-theme', value: tema['cookie_app-theme'], url: baseUrl }])
-  if (CONTROLLI.profili[profiloKey]?.tocco) {
-    await installPointerCoarseForTouchProfiles(ctx)
-  }
   const page = await ctx.newPage()
   return { ctx, page, tema }
 }

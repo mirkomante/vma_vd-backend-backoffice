@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-17",
-    "commit": "22ad305f67f5",
+    "commit": "e080e666d752",
     "launcherVersion": "3.4.1",
-    "launcherHeader": "3.4.1 (L2)",
+    "launcherHeader": "3.4.1 (L1)",
     "browsers": "Chromium 140.0.7339.186",
-    "controlliBasename": "controlli-8.5.json",
-    "livelloEseguito": "L2",
-    "controlliVersion": 3,
-    "durataMs": 900861,
+    "controlliBasename": "controlli-6.6.json",
+    "livelloEseguito": "L1",
+    "controlliVersion": 1,
+    "durataMs": 278875,
     "invalidRun": false
   },
   "counts": {
-    "OK": 3153,
-    "FALLITO": 0,
-    "AVVISO": 9,
-    "NON PROVATO": 128
+    "OK": 3011,
+    "FALLITO": 2,
+    "AVVISO": 0,
+    "NON PROVATO": 113
   },
-  "distinctControls": 34,
+  "distinctControls": 30,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -1359,2456 +1359,6 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-casi",
-      "schermata": "home",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok",
-      "atteso": "conteggio e singolare/plurale come da specifica",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-altezza",
-      "schermata": "home/caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "skeleton=88px; con riga=88px",
-      "atteso": "altezza scheda uguale (±2px)",
-      "evidenza": "http://localhost:3100; skeleton da http://localhost:3200",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-altezza",
-      "schermata": "home/caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "skeleton=104px; con riga=104px",
-      "atteso": "altezza scheda uguale (±2px)",
-      "evidenza": "http://localhost:3100; skeleton da http://localhost:3200",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "attese 3; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-titoli-pagina",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "titoli ok",
-      "atteso": "{Pagina} · Area App",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "attese 3; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/wines, /app/menu/drinks, /app/menu/spirits, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/services, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-casi-unit",
-      "schermata": "navigazione",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-pannello-telefono",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "altezza pannello con 8 voci Menù",
-      "evidenza": "voci non ancora tutte accese",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-ASSENTE",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun pulsante né frase Ricompila negli avvisi",
-      "atteso": "assente in UI e avvisi solo titolo",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-testi",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "testi principali ok",
-      "atteso": "testi §6 piatti/spec",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-colonna-elenco",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "{\"tableVisible\":false,\"card\":true,\"colW\":358,\"nameW\":140}",
-      "atteso": "layout colonna/schede",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-colonna-elenco",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "col=976px; table=true",
-      "atteso": "layout colonna/schede",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-azioni-pagina",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "larghezza=358px, colonna=358px, altezza=44px",
-      "atteso": "larghezza colonna 358px (±2), altezza ≥44px",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-azioni-pagina",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "{\"h\":36,\"w\":125,\"colW\":976,\"inline\":true}",
-      "atteso": "pulsante in riga col titolo, altezza ≥28px",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-righe-azioni",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "{\"btn\":\"Modifica verify-ui-row\",\"btnSize\":\"0x0\",\"switchDisabled\":true,\"linkOnName\":false}",
-      "atteso": "tre icone, switch disabilitato su disabled",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-terminato",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "interruttore, avvisi, soldOut API, filtro Terminati nel foglio Filtri, ripristino",
-      "atteso": "flusso §9 punto 5 (terminato + filtro Stato Terminati)",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-disabilita",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "ok",
-      "atteso": "disabilita/abilita",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-elimina-libero",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "ok",
-      "atteso": "conferma elimina",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-elimina-registro",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "{\"found\":true,\"detail\":\"nome=verify-ui-libero; riferimenti=0\",\"expectedDetail\":\"nome=verify-ui-libero; riferimenti=0\",\"eventType\":\"delete\",\"area\":\"app\"}",
-      "atteso": "registro delete",
-      "evidenza": "Local API",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-elimina-bloccato",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "ok",
-      "atteso": "blocco menù fissi",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-elimina-concorrenza",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "finestra blocco o «Operazione non riuscita»; piatto verify-ui-corsa ancora in API",
-      "atteso": "«Non si può eliminare {nome}» con menù aggiornati oppure «Operazione non riuscita»; piatto resta",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-elimina-permessi",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "admin/super-admin API ok; utente senza ruolo: NON PROVATO (Users vieta record senza Admin/App role)",
-      "atteso": "manager/admin ok, norole no",
-      "evidenza": "payload",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-modulo-campi",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "campi modulo",
-      "atteso": "attributi modulo",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-modulo-campi",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "campi modulo",
-      "atteso": "attributi modulo",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-modulo-validazione",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "ok",
-      "atteso": "validazione",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-modulo-inglese",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "badge Manca/Presente ok; locale=en name=\"verify-ui-noen\" desc=\"Desc IT\"",
-      "atteso": "Manca/Presente; con inglese vuoto locale=en ricade su italiano per nome e descrizione",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-modulo-footer",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "{\"footerH\":44,\"maxH\":760,\"btnCount\":2}",
-      "atteso": "footer 44px, max 90vh",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-tassonomie",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "modulo categorie (6): Dolci | Involtini | Primi | Specialità carne | Specialità pesce | Specialità vegeteriane; filtro categorie (7): Tutte le categorie | Dolci | Involtini | Primi | Specialità carne | Specialità pesce; filtro UI categoria/stato: «Tutte le categorie» / «Tutti»; categorie API (6): Specialità vegeteriane, Specialità pesce, Specialità carne, Primi, Involtini, Dolci; crea categoria: ok=false motivo=access_denied; crea allergene: ok=false motivo=access_denied",
-      "atteso": "opzioni = collection; creazioni category/allergen rifiutate (overrideAccess false)",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-persistenza",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "ok; norole create: NON PROVATO (schema Users)",
-      "atteso": "persistenza",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-filtri-ricerca",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "ok",
-      "atteso": "ricerca/filtri",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-ordine-100",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "totale API=101 (prima=44, creati=57); righe tabella=100; banner100/101=true; sottoBanner=true; estratto=Mostrati 100 piatti su 101",
-      "atteso": "Mostrati 100 piatti su 101; Restringi l’elenco con la ricerca o i filtri per trovare gli altri.; 100 righe in tabella",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-nomi-accessibili",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun inglese",
-      "atteso": "italiano T1",
-      "evidenza": "/app/menu",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-accesso",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "stesso esito di /app/hours per utente senza ruolo",
-      "evidenza": "impossibile creare utente senza ruoli (validazione Users); controllo dubbio se la guardia è solo canAccessAppArea",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-confronto-visivo",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "AVVISO",
-      "misurato": "screenshot=72/76; saltati: vuoto/telefono-390/chiaro: DB con 44 piatti; vuoto/telefono-390/scuro: DB con 44 piatti; vuoto/notebook-1280/chiaro: DB con 44 piatti; vuoto/notebook-1280/scuro: DB con 44 piatti",
-      "atteso": "19 stati × 2 profili × 2 temi (sezione immagini JSON)",
-      "evidenza": "img/",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-stato-vuoto",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "database con 44 piatti (il lanciatore non svuota il DB)",
-      "atteso": "«Nessun piatto nel menù.» con pulsante Nuovo piatto",
-      "evidenza": "stato_prova JSON: giudizio nel confronto visivo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-ricompila",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "rinviato alla 6.5",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "piatti-disabilitato-ovunque",
-      "schermata": "piatti",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "rinviato alla 6.5",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elenco",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/elenco",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "elenco",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/filtri",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (145 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/filtri",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (145 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "filtri",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (14 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/filtri-attivi",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (14 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "filtri-attivi",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/modulo",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/modulo",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modulo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/modulo-allergeni",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modulo-allergeni",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/modulo-inglese-aperto",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "modulo-inglese-aperto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/nuovo",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "nuovo",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/nuovo-errori",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "nuovo-errori",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/elimina-libero",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "elimina-libero",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/elimina-bloccato",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (143 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "elimina-bloccato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/errore-azione",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "AVVISO",
-      "misurato": "fuori intervallo: 64 px",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "errore-azione",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (9 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/nessun-risultato",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (9 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "nessun-risultato",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (8 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/caricamento",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (8 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (9 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/errore-caricamento",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (9 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "errore-caricamento",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "scroll orizzontale",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "tocco ≥44px",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "classe tema",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "scroll orizzontale",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "classe tema",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "altezza mouse",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "scroll orizzontale",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "tocco ≥44px",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "classe tema",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "scroll orizzontale",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "classe tema",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/vuoto",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "NON PROVATO",
-      "misurato": "stato vuoto: DB con 44 piatti",
-      "atteso": "altezza mouse",
-      "evidenza": "vuoto",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "dark assente",
-      "atteso": "dark assente",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (308 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "390 vs innerWidth 390",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "nessun elemento",
-      "atteso": "nessun elemento sotto 44 px",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C1",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "1280 vs innerWidth 1280",
-      "atteso": "scrollWidth <= innerWidth",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "dark presente",
-      "atteso": "dark presente",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C2-mouse",
-      "schermata": "piatti/piu-di-100",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "tutte in [28,48] (308 elementi)",
-      "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
-      "evidenza": "piu-di-100",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "C3-no-lampo",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "NO-OVERRIDE",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "RICOMPILA-PRESENTE",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "home-riga-menu-stati",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "piatti-console",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "piatti-stati-ui",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
       "id": "C9",
@@ -32919,6 +30469,816 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun pulsante né frase Ricompila negli avvisi",
+      "atteso": "assente in UI e avvisi solo titolo",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-testi",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "testi principali ok",
+      "atteso": "testi §6 piatti/spec",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-colonna-elenco",
+      "schermata": "piatti/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"tableVisible\":false,\"card\":true,\"colW\":358,\"nameW\":140}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-colonna-elenco",
+      "schermata": "piatti/elenco",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "col=976px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-azioni-pagina",
+      "schermata": "piatti/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "larghezza=358px, colonna=358px, altezza=44px",
+      "atteso": "larghezza colonna 358px (±2), altezza ≥44px",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-azioni-pagina",
+      "schermata": "piatti/elenco",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":36,\"w\":125,\"colW\":976,\"inline\":true}",
+      "atteso": "pulsante in riga col titolo, altezza ≥28px",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-righe-azioni",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"btn\":\"Modifica verify-ui-row\",\"btnSize\":\"0x0\",\"switchDisabled\":true,\"linkOnName\":false}",
+      "atteso": "tre icone, switch disabilitato su disabled",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-terminato",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "interruttore, avvisi, soldOut API, filtro Terminati nel foglio Filtri, ripristino",
+      "atteso": "flusso §9 punto 5 (terminato + filtro Stato Terminati)",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-disabilita",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "disabilita/abilita",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-elimina-libero",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "conferma elimina",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-elimina-registro",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"found\":true,\"detail\":\"nome=verify-ui-libero; riferimenti=0\",\"expectedDetail\":\"nome=verify-ui-libero; riferimenti=0\",\"eventType\":\"delete\",\"area\":\"app\"}",
+      "atteso": "registro delete",
+      "evidenza": "Local API",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-elimina-bloccato",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "blocco menù fissi",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-elimina-permessi",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "admin/super-admin API ok; utente senza ruolo: NON PROVATO (Users vieta record senza Admin/App role)",
+      "atteso": "manager/admin ok, norole no",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-modulo-campi",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "attributi modulo",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-modulo-campi",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "attributi modulo",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-modulo-validazione",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "validazione",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-modulo-inglese",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge Manca/Presente ok; locale=en name=\"verify-ui-noen\" desc=\"Desc IT\"",
+      "atteso": "Manca/Presente; con inglese vuoto locale=en ricade su italiano per nome e descrizione",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-modulo-footer",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"footerH\":44,\"maxH\":760,\"btnCount\":2}",
+      "atteso": "footer 44px, max 90vh",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-tassonomie",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "modulo categorie (6): Dolci | Involtini | Primi | Specialità carne | Specialità pesce | Specialità vegeteriane; filtro categorie (7): Tutte le categorie | Dolci | Involtini | Primi | Specialità carne | Specialità pesce; filtro UI categoria/stato: «Tutte le categorie» / «Tutti»; categorie API (6): Specialità vegeteriane, Specialità pesce, Specialità carne, Primi, Involtini, Dolci; crea categoria: ok=false motivo=access_denied; crea allergene: ok=false motivo=access_denied",
+      "atteso": "opzioni = collection; creazioni category/allergen rifiutate (overrideAccess false)",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-persistenza",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok; norole create: NON PROVATO (schema Users)",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-filtri-ricerca",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "ricerca/filtri",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-nomi-accessibili",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun inglese",
+      "atteso": "italiano T1",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-casella-misure",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "[{\"name\":\"Senza glutine\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Senza latticini\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Vegano\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Senza uova\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Terminato per il servizio\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Disabilitato\",\"root\":\"—\",\"box\":\"—\"}]",
+      "atteso": "radice ≥44×44; box 16×16 (±1)",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-casella-misure",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "[{\"name\":\"Senza glutine\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Senza latticini\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Vegano\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Senza uova\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Terminato per il servizio\",\"root\":\"—\",\"box\":\"—\"},{\"name\":\"Disabilitato\",\"root\":\"—\",\"box\":\"—\"}]",
+      "atteso": "radice ≥44×44; box 16×16 (±1)",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-allergeni-selezione",
+      "schermata": "piatti/modulo-allergeni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "conteggio allergeni | aria-pressed=1",
+      "atteso": "Selezionati: 2.; stato selezionato visibile",
+      "evidenza": "img/",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "piatti-allergeni-selezione",
+      "schermata": "piatti/modulo-allergeni",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "FALLITO",
+      "misurato": "conteggio allergeni | aria-pressed=1",
+      "atteso": "Selezionati: 2.; stato selezionato visibile",
+      "evidenza": "img/",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/modulo-allergeni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-allergeni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/modulo-allergeni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-allergeni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/modulo-allergeni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-allergeni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/elimina-libero",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina-libero",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/elimina-libero",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina-libero",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/elimina-libero",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina-libero",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/elimina-bloccato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina-bloccato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/elimina-bloccato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina-bloccato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/elimina-bloccato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina-bloccato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 44 piatti",
+      "atteso": "scroll orizzontale",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 44 piatti",
+      "atteso": "tocco ≥44px",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 44 piatti",
+      "atteso": "classe tema",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "piatti/piu-di-100",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "piu-di-100",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "piatti/piu-di-100",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "piu-di-100",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "piatti/piu-di-100",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "piu-di-100",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "piatti-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
   "nonProvato": [
@@ -32931,141 +31291,19 @@
       "motivo": "NON PROVABILE con utente solo App (adminRole none)"
     },
     {
-      "id": "orari-errore-server",
-      "motivo": "simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)"
+      "id": "NO-OVERRIDE",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "orari-errore-caricamento",
-      "motivo": "simulazione APP_HOURS_DEV_SIMULATE_* solo su locale-dev (server separato porta 3200)"
+      "id": "piatti-console",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "orari-campi-dentro-scheda/WebKit",
-      "motivo": "locale-prod: login WebKit su http://localhost:3100 non affidabile (cookie Secure); WebKit eseguito in locale-dev L2"
-    },
-    {
-      "id": "P19-iPhone-campi-ora",
-      "motivo": "livello 3: Orari su iPhone reale (campi dentro scheda e selettore ora); a carico di Mirko — WebKit/Chromium Playwright non riproducono il difetto iOS"
-    },
-    {
-      "id": "orari-console",
+      "id": "piatti-stati-ui",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "anomalie": [
-    "Global iniziale (snapshot): weeklyClosedDays=[]; services=2; closures=3; bnb=presente",
-    "orari-stato-iniziale · avvisi main: 0",
-    "orari/iniziale · telefono-360/chiaro · avvisi main: 0",
-    "orari/iniziale · telefono-390/chiaro · avvisi main: 0",
-    "orari/iniziale · notebook-1280/chiaro · avvisi main: 0",
-    "orari/iniziale · tablet-820/chiaro · avvisi main: 0",
-    "orari/iniziale · telefono-360/scuro · avvisi main: 0",
-    "orari/iniziale · telefono-390/scuro · avvisi main: 0",
-    "orari/iniziale · notebook-1280/scuro · avvisi main: 0",
-    "orari/iniziale · tablet-820/scuro · avvisi main: 0",
-    "orari/iniziale · telefono-360/sistema-chiaro · avvisi main: 0",
-    "orari/iniziale · telefono-390/sistema-chiaro · avvisi main: 0",
-    "orari/iniziale · notebook-1280/sistema-chiaro · avvisi main: 0",
-    "orari/iniziale · tablet-820/sistema-chiaro · avvisi main: 0",
-    "orari/iniziale · telefono-360/sistema-scuro · avvisi main: 0",
-    "orari/iniziale · telefono-390/sistema-scuro · avvisi main: 0",
-    "orari/iniziale · notebook-1280/sistema-scuro · avvisi main: 0",
-    "orari/iniziale · tablet-820/sistema-scuro · avvisi main: 0",
-    "orari/modificato · telefono-360/chiaro · avvisi main: 0",
-    "orari/modificato · telefono-390/chiaro · avvisi main: 0",
-    "orari/modificato · notebook-1280/chiaro · avvisi main: 0",
-    "orari/modificato · tablet-820/chiaro · avvisi main: 0",
-    "orari/modificato · telefono-360/scuro · avvisi main: 0",
-    "orari/modificato · telefono-390/scuro · avvisi main: 0",
-    "orari/modificato · notebook-1280/scuro · avvisi main: 0",
-    "orari/modificato · tablet-820/scuro · avvisi main: 0",
-    "orari/modificato · telefono-360/sistema-chiaro · avvisi main: 0",
-    "orari/modificato · telefono-390/sistema-chiaro · avvisi main: 0",
-    "orari/modificato · notebook-1280/sistema-chiaro · avvisi main: 0",
-    "orari/modificato · tablet-820/sistema-chiaro · avvisi main: 0",
-    "orari/modificato · telefono-360/sistema-scuro · avvisi main: 0",
-    "orari/modificato · telefono-390/sistema-scuro · avvisi main: 0",
-    "orari/modificato · notebook-1280/sistema-scuro · avvisi main: 0",
-    "orari/modificato · tablet-820/sistema-scuro · avvisi main: 0",
-    "orari/errore-validazione · telefono-360/chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-390/chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · notebook-1280/chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · tablet-820/chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-360/scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-390/scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · notebook-1280/scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · tablet-820/scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-360/sistema-chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-390/sistema-chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · notebook-1280/sistema-chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · tablet-820/sistema-chiaro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-360/sistema-scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · telefono-390/sistema-scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · notebook-1280/sistema-scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/errore-validazione · tablet-820/sistema-scuro · avvisi main: 3 → Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Controlla i campi evidenziatiAlcuni orari non sono validi: non è stato salvato nulla. | Orario obbligatorio.",
-    "orari/salvato · telefono-360/chiaro · avvisi main: 0",
-    "orari/salvato · telefono-390/chiaro · avvisi main: 2 → Orari salvati | Orari salvati",
-    "orari/salvato · notebook-1280/chiaro · avvisi main: 0",
-    "orari/salvato · tablet-820/chiaro · avvisi main: 0",
-    "orari/salvato · telefono-360/scuro · avvisi main: 0",
-    "orari/salvato · telefono-390/scuro · avvisi main: 0",
-    "orari/salvato · notebook-1280/scuro · avvisi main: 0",
-    "orari/salvato · tablet-820/scuro · avvisi main: 0",
-    "orari/salvato · telefono-360/sistema-chiaro · avvisi main: 0",
-    "orari/salvato · telefono-390/sistema-chiaro · avvisi main: 0",
-    "orari/salvato · notebook-1280/sistema-chiaro · avvisi main: 0",
-    "orari/salvato · tablet-820/sistema-chiaro · avvisi main: 0",
-    "orari/salvato · telefono-360/sistema-scuro · avvisi main: 0",
-    "orari/salvato · telefono-390/sistema-scuro · avvisi main: 0",
-    "orari/salvato · notebook-1280/sistema-scuro · avvisi main: 0",
-    "orari/salvato · tablet-820/sistema-scuro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-360/chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-390/chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · notebook-1280/chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · tablet-820/chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-360/scuro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-390/scuro · avvisi main: 0",
-    "orari/foglio-chiusura · notebook-1280/scuro · avvisi main: 0",
-    "orari/foglio-chiusura · tablet-820/scuro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-360/sistema-chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-390/sistema-chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · notebook-1280/sistema-chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · tablet-820/sistema-chiaro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-360/sistema-scuro · avvisi main: 0",
-    "orari/foglio-chiusura · telefono-390/sistema-scuro · avvisi main: 0",
-    "orari/foglio-chiusura · notebook-1280/sistema-scuro · avvisi main: 0",
-    "orari/foglio-chiusura · tablet-820/sistema-scuro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-360/chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-390/chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · notebook-1280/chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · tablet-820/chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-360/scuro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-390/scuro · avvisi main: 0",
-    "orari/conferma-rimozione · notebook-1280/scuro · avvisi main: 0",
-    "orari/conferma-rimozione · tablet-820/scuro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-360/sistema-chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-390/sistema-chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · notebook-1280/sistema-chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · tablet-820/sistema-chiaro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-360/sistema-scuro · avvisi main: 0",
-    "orari/conferma-rimozione · telefono-390/sistema-scuro · avvisi main: 0",
-    "orari/conferma-rimozione · notebook-1280/sistema-scuro · avvisi main: 0",
-    "orari/conferma-rimozione · tablet-820/sistema-scuro · avvisi main: 0",
-    "Regressione shell 8.2 (L2) nella stessa esecuzione locale-prod",
-    "shell-menu trigger telefono-390: mountEvents=0 remounts=0 postHydration=0 (observe 2800ms, hydration 1200ms)",
-    "shell-percorso-voce-attiva diagnostica (Piatti @1280px): attributi={\"data-slot\":\"sidebar-menu-button\",\"data-sidebar\":\"menu-button\",\"data-size\":\"default\",\"data-active\":\"\",\"class\":\"peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 pointer-coarse:h-11 text-sm\",\"href\":\"/app/menu\"}; outerHTML=<a data-slot=\"sidebar-menu-button\" data-sidebar=\"menu-button\" data-size=\"default\" data-active=\"\" class=\"peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 [&amp;&gt;span:last-child]:truncate hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 pointer-coarse:h-11 text-sm\" href=\"/app/menu\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-utensils-crossed lucide-fork-knife-crossed\" aria-hidden=\"true\"><path d=\"m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8\"></path><path d=\"M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7\"></path><path d=\"m2.1 21.8 6.4-6.3\"></path><path d=\"m19 5-7 7\"></path></svg><span>Piatti</span></a>",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-telefono-390-scuro e orari-runtime-modificato-telefono-390-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-notebook-1280-scuro e orari-runtime-modificato-notebook-1280-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-telefono-390-scuro e orari-runtime-errore-validazione-telefono-390-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-notebook-1280-scuro e orari-runtime-errore-validazione-notebook-1280-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-telefono-390-scuro e orari-runtime-salvato-telefono-390-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-notebook-1280-scuro e orari-runtime-salvato-notebook-1280-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-telefono-390-scuro e orari-runtime-foglio-chiusura-telefono-390-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-notebook-1280-scuro e orari-runtime-foglio-chiusura-notebook-1280-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-telefono-390-scuro e orari-runtime-conferma-rimozione-telefono-390-chiaro",
-    "screenshot: hash identico tra temi diversi (scuro vs chiaro): orari-runtime-iniziale-notebook-1280-scuro e orari-runtime-conferma-rimozione-notebook-1280-chiaro",
-    "WebKit 26.0 su http://localhost:3100 (diagnosi login prod): URL finale=http://localhost:3100/app/login; payload-token: presente secure=true httpOnly=true sameSite=Lax; Set-Cookie login: (nessun Set-Cookie catturato sulla risposta login)",
-    "Regressione accesso 8.2 (L2) nella stessa esecuzione locale-prod"
-  ],
+  "anomalie": [],
   "screenshotHashes": [
     {
       "name": "shell-home-telefono-390-chiaro",
@@ -36636,6 +34874,16 @@
       "name": "verify-token-non-valido-notebook-1280-scuro",
       "temaKey": "scuro",
       "hash": "a960eabd100494b6908314a3fb9c79e4a602265fe8bbeedd620d70fbb846947b"
+    },
+    {
+      "name": "piatti-modulo-allergeni-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "66905c670e74c43dc0229bc58b4d035f051e276d40938523f10a237d785fbf5f"
+    },
+    {
+      "name": "piatti-modulo-allergeni-telefono-390-scuro",
+      "temaKey": "scuro",
+      "hash": "2428a1b74219b3db196afbadefdfb08f60cd1fdfa39b653ee485206dc89c7f64"
     }
   ]
 }
