@@ -1193,9 +1193,9 @@
       "scuro"
      ],
      "tolleranza_px": 1,
-     "atteso": "per ogni casella del modulo («Senza glutine», «Senza latticini», «Vegano», «Senza uova», «Terminato per il servizio», «Disabilitato»): il rettangolo della radice (role=checkbox) è almeno 44 × 44 px con il tocco e il quadratino visibile (data-slot=checkbox-box) è 16 × 16 px (±1); con il mouse la radice è 16 × 16 px",
+     "atteso": "quattro caselle («Senza glutine», «Senza latticini», «Vegano», «Senza uova»): il rettangolo della radice (role=checkbox) è almeno 44 × 44 px con il tocco e il quadratino visibile (data-slot=checkbox-box) è 16 × 16 px (±1); con il mouse la radice è 16 × 16 px. Due interruttori («Terminato per il servizio», «Disabilitato»): aspetto 32 × 18 px con il cursore (data-slot=switch-thumb) da 16 × 16 px; la loro area di tocco da 54 × 44 px (D6) si misura con C2, non con il rettangolo del nodo",
      "fonte": "decisioni D6 (registro, riga checkbox rivista il 2026-10-17); rilievo P3 di V2",
-     "nota": "Aggiunto il 2026-10-18 dopo V2 quater: la misura dei due rettangoli non era un controllo e l'evidenza era solo C2."
+     "nota": "Aggiunto il 2026-10-18 dopo V2 quater: la misura dei due rettangoli non era un controllo e l'evidenza era solo C2. Corretto il 2026-10-18 dopo VC3: «Terminato per il servizio» e «Disabilitato» sono interruttori (Switch), non caselle: la loro area di tocco è un'estensione invisibile misurata da C2."
     },
     {
      "id": "piatti-allergeni-selezione",

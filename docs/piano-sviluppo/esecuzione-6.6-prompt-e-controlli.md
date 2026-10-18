@@ -79,7 +79,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 12 | ✅ 6507cde | — | D3 | Design | Controlli per Vini, Distillati, Bevande, in parallelo con la chat I2 | — | file pronto prima del passo 15 |
 | 13 | ✅ 0c0f4e8 (con V2 quater) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
 | 14 | ✅ 2b53c00 | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
-| 15 | 🔲 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
+| 15 | ✅ 1fdb2d9 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
 | 16 | 🔲 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
 | 17 | 🔲 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | 🔲 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `0c0f4e8`). **Prossimi passi**: 15 (VC3).
+**Ultimo aggiornamento**: 2026-10-18 (commit `1fdb2d9`). **Prossimi passi**: 16 (I3) e 17 (D5), in parallelo.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -876,6 +876,8 @@ scrivilo come «controllo dubbio».
 **Quando Cursor ha finito**: incollami il suo resoconto finale. Fai tu `git add -A` e un commit con il messaggio `test(ui-verify): V2 quater — verifica di F2 su Piatti e lint pulito`, poi il push, e scrivimi «push fatto». Io confronto gli screenshot con i PNG di riferimento (C10), assegno i rilievi e ti do il prompt di stato. Il passo 13 diventa ✅ quando V2 quater è senza P aperti.
 
 ### Passo 15 — VC3: l'agente implementa i controlli di Vini, Distillati, Bevande
+
+> **Esito (2026-10-18)**: accettato, dopo due correzioni nella stessa chat (`ef5942c`, `1fdb2d9`). Cablaggio di Vini, Distillati e Bevande (`run-catalog.mjs`, 31 + 26 + 26 controlli riconosciuti); contesto touch degli screenshot C10 corretto con `isMobile` e `hasTouch` (misurato: pulsante 42–44 px contro 34 px senza tocco; l'override di `matchMedia` in JavaScript non cambia gli stili CSS `pointer-coarse:`); `C2-mouse` senza `textarea`; controlli nuovi `piatti-casella-misure` e `piatti-allergeni-selezione` ora con misure vere (radice 44×44 e quadratino 16×16 per le quattro caselle, interruttori 32×18); regola «misura vuota = NON PROVATO» (`measure-esito.mjs`). Tutti i controlli di Vini, Distillati e Bevande a runtime sono NON PROVATI finché non esistono le schermate (I3); i flussi in debito (bulk da 101, confronto visivo, SQL) li completa il passo V dopo I3. Rapporto: `docs/design/verifica/esiti/2026-10-18-controlli/rapporto.md`.
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
