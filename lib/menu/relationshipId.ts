@@ -14,3 +14,17 @@ export function relationshipId(value: unknown): number | string | null {
   }
   return null
 }
+
+/** Nome da relationship popolata (depth ≥ 1); stringa vuota se manca o non popolata. */
+export function relationshipName(value: unknown): string {
+  if (value == null || value === '') {
+    return ''
+  }
+  if (typeof value === 'object' && value !== null && 'name' in value) {
+    const name = Reflect.get(value, 'name')
+    if (typeof name === 'string') {
+      return name
+    }
+  }
+  return ''
+}

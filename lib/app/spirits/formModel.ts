@@ -1,7 +1,7 @@
 import type { Spirit } from '@/payload-types'
 
 import { parseMenuPriceInput } from '@/lib/menu/catalog/parseMenuPrice'
-import { relationshipId } from '@/lib/menu/relationshipId'
+import { relationshipId, relationshipName } from '@/lib/menu/relationshipId'
 import {
   DISTILLATI_ERROR_COUNTRY,
   DISTILLATI_ERROR_PRICE,
@@ -40,6 +40,7 @@ export function spiritFormValuesFromSpirit(spirit: Spirit): SpiritFormValues {
     descriptionEn: '',
     typeId: String(relationshipId(spirit.type) ?? ''),
     countryId: String(relationshipId(spirit.country) ?? ''),
+    savedCountryName: relationshipName(spirit.country),
     priceInput: spirit.price != null ? String(spirit.price).replace('.', ',') : '',
     disabled: Boolean(spirit.disabled),
     formatSnapshot: spiritFormatSnapshotFromSpirit(spirit),

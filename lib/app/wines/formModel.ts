@@ -1,7 +1,7 @@
 import type { Wine } from '@/payload-types'
 
 import { parseMenuPriceInput } from '@/lib/menu/catalog/parseMenuPrice'
-import { relationshipId } from '@/lib/menu/relationshipId'
+import { relationshipId, relationshipName } from '@/lib/menu/relationshipId'
 import {
   VINI_ERROR_COUNTRY,
   VINI_ERROR_GLASS_PRICE,
@@ -62,6 +62,10 @@ export function wineFormValuesFromWine(wine: Wine): WineFormValues {
     regionId: String(relationshipId(wine.region) ?? ''),
     appellationId: String(relationshipId(wine.appellation) ?? ''),
     classificationId: String(relationshipId(wine.classification) ?? ''),
+    savedCountryName: relationshipName(wine.country),
+    savedRegionName: relationshipName(wine.region),
+    savedAppellationName: relationshipName(wine.appellation),
+    savedClassificationName: relationshipName(wine.classification),
     priceInput: wine.price != null ? String(wine.price).replace('.', ',') : '',
     glassPriceInput:
       wine.glassPrice != null ? String(wine.glassPrice).replace('.', ',') : '',

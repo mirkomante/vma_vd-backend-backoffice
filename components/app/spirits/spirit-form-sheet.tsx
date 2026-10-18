@@ -104,8 +104,13 @@ export function SpiritFormSheet({
     [spiritTypes],
   )
   const countryItems = useMemo(
-    () => buildSelectItems(optionsFromTaxonomy(countries), values.countryId),
-    [countries, values.countryId],
+    () =>
+      buildSelectItems(
+        optionsFromTaxonomy(countries),
+        initialValues.countryId,
+        initialValues.savedCountryName,
+      ),
+    [countries, initialValues.countryId, initialValues.savedCountryName],
   )
   const agingItems = useMemo(
     () => buildSelectItems(
@@ -264,11 +269,13 @@ export function SpiritFormSheet({
                   onValueChange={(v) => setValues((s) => ({ ...s, countryId: v ?? '' }))}
                 >
                   <SelectTrigger id={SPIRIT_FIELD_DOM_IDS.countryId} className="w-full">
-                    <SelectValue placeholder={DISTILLATI_FORM_SELECT_PLACEHOLDER} />
+                    <SelectValue placeholder={DISTILLATI_FORM_SELECT_PLACEHOLDER}>
+                      {values.countryId ? countryItems[values.countryId] : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {countries.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    {Object.entries(countryItems).map(([id, label]) => (
+                      <SelectItem key={id} value={id}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

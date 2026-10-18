@@ -1,7 +1,7 @@
 import type { Drink } from '@/payload-types'
 
 import { parseMenuPriceInput } from '@/lib/menu/catalog/parseMenuPrice'
-import { relationshipId } from '@/lib/menu/relationshipId'
+import { relationshipId, relationshipName } from '@/lib/menu/relationshipId'
 import {
   BEVANDE_ERROR_PRICE,
   BEVANDE_ERROR_REQUIRED,
@@ -39,6 +39,7 @@ export function drinkFormValuesFromDrink(drink: Drink): DrinkFormValues {
     descriptionEn: '',
     typeId: String(relationshipId(drink.type) ?? ''),
     countryId: String(relationshipId(drink.country) ?? ''),
+    savedCountryName: relationshipName(drink.country),
     priceInput: drink.price != null ? String(drink.price).replace('.', ',') : '',
     disabled: Boolean(drink.disabled),
     formatSnapshot: drinkFormatSnapshotFromDrink(drink),

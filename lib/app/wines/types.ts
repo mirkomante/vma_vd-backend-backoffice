@@ -52,6 +52,11 @@ export type WineFormValues = {
   regionId: string
   appellationId: string
   classificationId: string
+  /** Nome al caricamento del record (relazione depth 1); per etichetta Select fuori elenco. */
+  savedCountryName: string
+  savedRegionName: string
+  savedAppellationName: string
+  savedClassificationName: string
   priceInput: string
   glassPriceInput: string
   disabled: boolean
@@ -73,6 +78,10 @@ export function emptyWineFormValues(): WineFormValues {
     regionId: '',
     appellationId: '',
     classificationId: '',
+    savedCountryName: '',
+    savedRegionName: '',
+    savedAppellationName: '',
+    savedClassificationName: '',
     priceInput: '',
     glassPriceInput: '',
     disabled: false,

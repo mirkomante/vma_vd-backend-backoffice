@@ -105,8 +105,13 @@ export function DrinkFormSheet({
     [drinkTypes],
   )
   const countryItems = useMemo(
-    () => buildSelectItems(optionsFromTaxonomy(countries), values.countryId),
-    [countries, values.countryId],
+    () =>
+      buildSelectItems(
+        optionsFromTaxonomy(countries),
+        initialValues.countryId,
+        initialValues.savedCountryName,
+      ),
+    [countries, initialValues.countryId, initialValues.savedCountryName],
   )
   const volumeItems = useMemo(
     () => buildSelectItems(
@@ -285,12 +290,14 @@ export function DrinkFormSheet({
                   }
                 >
                   <SelectTrigger id="drink-field-country" className="w-full">
-                    <SelectValue placeholder={BEVANDE_FORM_COUNTRY_OPTIONAL} />
+                    <SelectValue placeholder={BEVANDE_FORM_COUNTRY_OPTIONAL}>
+                      {values.countryId ? countryItems[values.countryId] : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={NO_COUNTRY}>{BEVANDE_FORM_COUNTRY_NONE}</SelectItem>
-                    {countries.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    {Object.entries(countryItems).map(([id, label]) => (
+                      <SelectItem key={id} value={id}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

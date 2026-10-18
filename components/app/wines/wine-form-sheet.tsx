@@ -116,10 +116,10 @@ export function WineFormSheet({
     void loadWineOriginOptionsAction({
       countryId: values.countryId || undefined,
       regionId: values.regionId || undefined,
-      savedCountryId: values.countryId,
-      savedRegionId: values.regionId,
-      savedAppellationId: values.appellationId,
-      savedClassificationId: values.classificationId,
+      savedCountryId: initialValues.countryId,
+      savedRegionId: initialValues.regionId,
+      savedAppellationId: initialValues.appellationId,
+      savedClassificationId: initialValues.classificationId,
     }).then((opts) => {
       if (!cancelled) {
         setOriginOptions(opts)
@@ -128,7 +128,17 @@ export function WineFormSheet({
     return () => {
       cancelled = true
     }
-  }, [open, values.countryId, values.regionId, values.appellationId, values.classificationId])
+  }, [
+    open,
+    values.countryId,
+    values.regionId,
+    values.appellationId,
+    values.classificationId,
+    initialValues.countryId,
+    initialValues.regionId,
+    initialValues.appellationId,
+    initialValues.classificationId,
+  ])
 
   const cascade = wineOriginCascadeMeta(
     values.countryId,
@@ -143,31 +153,48 @@ export function WineFormSheet({
     [wineTypes],
   )
   const countryItems = useMemo(
-    () => buildSelectItems(optionsFromTaxonomy(originOptions.countries), values.countryId),
-    [originOptions.countries, values.countryId],
+    () =>
+      buildSelectItems(
+        optionsFromTaxonomy(originOptions.countries),
+        initialValues.countryId,
+        initialValues.savedCountryName,
+      ),
+    [originOptions.countries, initialValues.countryId, initialValues.savedCountryName],
   )
   const regionItems = useMemo(
     () =>
-      buildSelectItems(optionsFromTaxonomy(originOptions.regions), values.regionId, values.regionId),
-    [originOptions.regions, values.regionId],
+      buildSelectItems(
+        optionsFromTaxonomy(originOptions.regions),
+        initialValues.regionId,
+        initialValues.savedRegionName,
+      ),
+    [originOptions.regions, initialValues.regionId, initialValues.savedRegionName],
   )
   const appellationItems = useMemo(
     () =>
       buildSelectItems(
         optionsFromTaxonomy(originOptions.appellations),
-        values.appellationId,
-        values.appellationId,
+        initialValues.appellationId,
+        initialValues.savedAppellationName,
       ),
-    [originOptions.appellations, values.appellationId],
+    [
+      originOptions.appellations,
+      initialValues.appellationId,
+      initialValues.savedAppellationName,
+    ],
   )
   const classificationItems = useMemo(
     () =>
       buildSelectItems(
         optionsFromTaxonomy(originOptions.classifications),
-        values.classificationId,
-        values.classificationId,
+        initialValues.classificationId,
+        initialValues.savedClassificationName,
       ),
-    [originOptions.classifications, values.classificationId],
+    [
+      originOptions.classifications,
+      initialValues.classificationId,
+      initialValues.savedClassificationName,
+    ],
   )
 
   const volumeItems = useMemo(() => {
@@ -388,7 +415,9 @@ export function WineFormSheet({
                     className="w-full"
                     aria-invalid={Boolean(fieldErrors.countryId)}
                   >
-                    <SelectValue placeholder={VINI_FORM_SELECT_PLACEHOLDER} />
+                    <SelectValue placeholder={VINI_FORM_SELECT_PLACEHOLDER}>
+                      {values.countryId ? countryItems[values.countryId] : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {Object.entries(countryItems).map(([id, label]) => (
@@ -411,12 +440,14 @@ export function WineFormSheet({
                     className="w-full"
                     aria-invalid={Boolean(fieldErrors.region)}
                   >
-                    <SelectValue placeholder={cascade.regionPlaceholder} />
+                    <SelectValue placeholder={cascade.regionPlaceholder}>
+                      {values.regionId ? regionItems[values.regionId] : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__empty__">{VINI_FORM_REGION_NONE}</SelectItem>
-                    {originOptions.regions.map((r) => (
-                      <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
+                    {Object.entries(regionItems).map(([id, label]) => (
+                      <SelectItem key={id} value={id}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -435,12 +466,14 @@ export function WineFormSheet({
                     className="w-full"
                     aria-invalid={Boolean(fieldErrors.appellation)}
                   >
-                    <SelectValue placeholder={cascade.appellationPlaceholder} />
+                    <SelectValue placeholder={cascade.appellationPlaceholder}>
+                      {values.appellationId ? appellationItems[values.appellationId] : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__empty__">{VINI_FORM_APPELLATION_NONE}</SelectItem>
-                    {originOptions.appellations.map((a) => (
-                      <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                    {Object.entries(appellationItems).map(([id, label]) => (
+                      <SelectItem key={id} value={id}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -455,12 +488,14 @@ export function WineFormSheet({
                   onValueChange={(v) => setOrigin('classificationId', v ?? '__empty__')}
                 >
                   <SelectTrigger id="wine-field-classification" className="w-full">
-                    <SelectValue placeholder={cascade.classificationPlaceholder} />
+                    <SelectValue placeholder={cascade.classificationPlaceholder}>
+                      {values.classificationId ? classificationItems[values.classificationId] : null}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__empty__">{VINI_FORM_CLASSIFICATION_NONE}</SelectItem>
-                    {originOptions.classifications.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
+                    {Object.entries(classificationItems).map(([id, label]) => (
+                      <SelectItem key={id} value={id}>{label}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

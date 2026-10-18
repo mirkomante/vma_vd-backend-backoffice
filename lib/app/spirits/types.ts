@@ -39,6 +39,8 @@ export type SpiritFormValues = {
   descriptionEn: string
   typeId: string
   countryId: string
+  /** Nome al caricamento del record (relazione depth 1); per etichetta Select fuori elenco. */
+  savedCountryName: string
   priceInput: string
   disabled: boolean
   formatSnapshot: SpiritFormatSnapshot | null
@@ -53,6 +55,7 @@ export function emptySpiritFormValues(): SpiritFormValues {
     descriptionEn: '',
     typeId: '',
     countryId: '',
+    savedCountryName: '',
     priceInput: '',
     disabled: false,
     formatSnapshot: null,

@@ -40,6 +40,8 @@ export type DrinkFormValues = {
   descriptionEn: string
   typeId: string
   countryId: string
+  /** Nome al caricamento del record (relazione depth 1); per etichetta Select fuori elenco. */
+  savedCountryName: string
   priceInput: string
   disabled: boolean
   formatSnapshot: DrinkFormatSnapshot | null
@@ -55,6 +57,7 @@ export function emptyDrinkFormValues(): DrinkFormValues {
     descriptionEn: '',
     typeId: '',
     countryId: '',
+    savedCountryName: '',
     priceInput: '',
     disabled: false,
     formatSnapshot: null,
