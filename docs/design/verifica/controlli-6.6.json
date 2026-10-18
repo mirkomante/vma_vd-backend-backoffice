@@ -1986,7 +1986,8 @@
       "apri il vino dal modulo"
      ],
      "atteso": "il modulo mostra comunque il paese salvato; cambiarlo lo toglie dalla scelta",
-     "fonte": "docs/design/schermate/vini/spec.md §7 punto 6, §9 punto 11"
+     "fonte": "docs/design/schermate/vini/spec.md §7 punto 6, §9 punto 11",
+     "nota": "Corretto il 2026-10-18 dopo V3 bis e la prova mirata su P1: il controllo deve aprire il record GIUSTO (sottotitolo del foglio uguale al nome), aspettare il caricamento e leggere il testo del trigger #wine-field-country (non l'innerText di tutto il foglio); il paese della Local API è un oggetto con il nome localizzato ({it: …}), non una stringa. F3 ha corretto P1: la prova con due vini (paese Filippine e Vietnam, entrambi disabilitati) mostra nel trigger il paese salvato."
     },
     {
      "id": "vini-coerenza-geografica",
@@ -2729,6 +2730,25 @@
      "fonte": "docs/design/schermate/distillati/spec.md §9 punto 12"
     },
     {
+     "id": "distillati-paese-fuori-filtro",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea un distillato di prova «verify-ui-distillati-off-filter» con un paese; disabilita quel paese con la Local API (poi ripristinalo in try/finally)",
+      "apri il modulo cliccando la riga di quel record; aspetta che il campo «Nome» abbia il valore e che il sottotitolo del foglio sia il nome",
+      "leggi il testo del trigger del campo Paese (scorri fino al campo e salva lo screenshot dell'elemento)"
+     ],
+     "atteso": "il trigger mostra il NOME del paese salvato (non l'identificativo e non un altro paese) e il record si può salvare senza cambiarlo",
+     "fonte": "docs/design/schermate/distillati/spec.md §7 (valore salvato fuori elenco); rilievo P1 di V3; F3",
+     "nota": "Aggiunto il 2026-10-18 dopo V3 bis: P1 valeva anche per il paese di Distillati e Bevande e non c'era un controllo."
+    },
+    {
      "id": "distillati-persistenza",
      "tipo": "flusso",
      "livello": 1,
@@ -3381,6 +3401,25 @@
       "un valore salvato fuori elenco (per esempio un paese poi disabilitato) resta visibile nel modulo"
      ],
      "fonte": "docs/design/schermate/bevande/spec.md §9 punto 13"
+    },
+    {
+     "id": "bevande-paese-fuori-filtro",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea un bevanda di prova «verify-ui-bevande-off-filter» con un paese; disabilita quel paese con la Local API (poi ripristinalo in try/finally)",
+      "apri il modulo cliccando la riga di quel record; aspetta che il campo «Nome» abbia il valore e che il sottotitolo del foglio sia il nome",
+      "leggi il testo del trigger del campo Paese (scorri fino al campo e salva lo screenshot dell'elemento)"
+     ],
+     "atteso": "il trigger mostra il NOME del paese salvato (non l'identificativo e non un altro paese) e il record si può salvare senza cambiarlo",
+     "fonte": "docs/design/schermate/bevande/spec.md §7 (valore salvato fuori elenco); rilievo P1 di V3; F3",
+     "nota": "Aggiunto il 2026-10-18 dopo V3 bis: P1 valeva anche per il paese di Distillati e Bevande e non c'era un controllo."
     },
     {
      "id": "bevande-persistenza",

@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `1d1bc00`). **Prossimi passi**: 16e (V3 bis: rilancio mirato con `--solo`, meno di 15 minuti), poi 18 (VC4).
+**Ultimo aggiornamento**: 2026-10-18 (commit `e8716c6`). **Prossimi passi**: 18 (VC4: controlli di Servizi e Menù fissi; ora include anche i difetti noti del lanciatore dei cataloghi), poi 19 (I4).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -977,6 +977,8 @@ prova e poi eliminali (dichiaralo nella risposta); mai dati di prova in produzio
 
 ### Passo 16b — V3: l'agente esegue L2 su Vini, Distillati e Bevande
 
+> **Chiuso (2026-10-18)**: ✅ con V3 bis (passi 16c, 16d, 16e). **P1 confermato corretto**: la prova mirata con due vini (paese Filippine e Vietnam, entrambi disabilitati) mostra nel trigger il paese salvato (Filippine, Vietnam), e il menu aperto lo marca come selezionato; il FALLITO di `vini-origine-fuori-filtro` era del lanciatore (il paese della Local API è un oggetto con il nome localizzato; apriva un record non verificato). Il C2 dell'eliminazione misura 288×44 in tutti e quattro i casi (la prima misura era durante l'animazione di apertura). **Debito del lanciatore dei cataloghi** (NON PROVATO, nessun difetto dell'app): `*-persistenza`, `vini-formati-ui`, `vini-origine-cascata`, `bevande-modulo-inglese`; si chiude nel passo 18 (VC4), con una prova breve `--solo`, e comunque prima di V6.
+
 > **Esito (2026-10-18)**: **incompleto**, circa due ore di esecuzione (non giustificate: vedi il passo 16d). Eseguiti i flussi veri dei tre cataloghi (200 screenshot), regressione veloce OK. Dei 33 FALLITO, un solo difetto dell'app è certo (**P1**: il modulo mostra l'identificativo di un valore salvato fuori dall'elenco, per esempio un paese poi disabilitato); gli altri sono difetti del lanciatore o misure troppo povere per classificare. Rilievi in `docs/design/verifica/esiti/2026-10-18-V3/rilievi.md`. Il passo si chiude con **16e (V3 bis)**.
 
 **Quando**: ora che I3 e la sua correzione sono nel repo (passo 16 ✅) e i controlli di Servizi e Menù fissi sono già nel file (passo 17 ✅). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Non** lanciare VC4 (passo 18) in parallelo: usano lo stesso lanciatore e lo stesso build.
@@ -1146,6 +1148,8 @@ verifica/esiti), né i controlli JSON. Rispondi in italiano con la tabella OK / 
 
 ### Passo 16e — V3 bis: rilancio mirato dei controlli di V3
 
+> **Esito (2026-10-18)**: ✅ (`54ed0d6`, `d48f3f5`, `e8716c6`). Due passate più una prova mirata su P1; durata complessiva circa un'ora (oltre l'obiettivo di 15 minuti: build rifatta e matrice C2 completa nel merge `--solo`, poi corretti con `--stati`). Esiti nel passo 16b.
+
 **Quando**: dopo F3 (16c) e VC-tempi (16d). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
 
 ```text
@@ -1228,8 +1232,30 @@ C. Prova il cablaggio: pnpm lint e pnpm typecheck verdi; il lanciatore carica co
    può senza la pagina (id, tipo, lettura degli attesi da lib/, dati di prova, funzioni di supporto) ed elenca nel
    rapporto, sotto «Debito», i flussi che restano da completare: li completa ed esegue l'agente di verifica del
    passo V successivo, dopo la chat di implementazione (policy-test.md §6, ultimo capoverso).
+C2. DIFETTI NOTI del lanciatore dei cataloghi (V3 bis, docs/design/verifica/esiti/2026-10-18-V3bis/rapporto.md): correggili
+   ora, con una prova breve --solo (una schermata per volta, --stati dove serve, meno di 10 minuti in tutto) e
+   riporta i valori misurati:
+   1. *-persistenza: la creazione dal modulo deve compilare TUTTI i campi obbligatori (nome, tipologia, paese dove
+      serve, PREZZO), verificare la chiusura del foglio e l'avviso, chiudere i listbox prima di cliccare il campo
+      successivo (select per id DOM, come #wine-field-country), poi leggere il record per id o per nome; se la
+      creazione non riesce, riporta il messaggio del foglio.
+   2. vini-formati-ui: il record di prova non si raggiunge in un elenco di oltre 100 vini: filtra con la ricerca
+      «verify-ui-» prima di aprire la riga; riporta le opzioni lette di Capacità (Non indicata, 25, 33, 37,5, 50, 75,
+      150 cl) e di Grado.
+   3. vini-origine-cascata: scegli le opzioni con la tastiera (apri il campo, digita l'inizio del nome, Invio) o
+      scorrendo finché l'opzione è visibile; riporta le regioni dell'Italia lette dal menu e quelle della collection.
+   4. bevande-modulo-inglese: l'errore «Il seguente campo non è valido: Nome» arriva da create-catalog-items; una
+      scrittura in locale en di un campo localizzato richiede anche il nome (campo obbligatorio): crea il record in
+      italiano con il nome, poi aggiorna l'inglese includendo il nome o usando i dati completi. IMPORTANTE: prova
+      anche DAL MODULO dell'app: apri una bevanda, scrivi SOLO la descrizione inglese e salva. Se fallisce con
+      un errore sul nome, è un difetto dell'APP: riportalo con il messaggio e non correggerlo.
+   5. Usa il parsing del paese della Local API per i controlli *-origine-fuori-filtro (il paese è un oggetto con il
+      nome localizzato, per esempio { it: "Filippine" }), apri il record GIUSTO (sottotitolo uguale al nome), aspetta
+      il caricamento e leggi il testo del trigger del campo Paese; gli id distillati-paese-fuori-filtro e
+      bevande-paese-fuori-filtro sono già nel file dei controlli. Puoi riusare scripts/ui-verify/probe-p1-vini-dual-country.mjs.
 D. Scrivi in docs/design/verifica/esiti/<AAAA-MM-GG>-controlli/ un breve rapporto: controlli già coperti, controlli
-   aggiunti, controlli dubbi, NON PROVATO (con il motivo).
+   aggiunti, controlli dubbi, NON PROVATO (con il motivo), e l'esito delle cinque correzioni del punto C2 con i valori
+   misurati.
 
 Non fare git (puoi leggere git status). Puoi modificare solo scripts/ui-verify/** e il rapporto; non toccare app/,
 components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in italiano, distinguendo
