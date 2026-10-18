@@ -12,6 +12,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- **VC-tempi accettato (passo 16d ✅)** (2026-10-18; solo documenti): controllato `1d1bc00` (lanciatore 3.5.0): 18 file, tutti dentro `scripts/ui-verify/**`, sintassi verificata; presenti `--solo`, il blocco contro i giri concorrenti (`.next/ui-verify.lock`), il rifiuto di più schermate a livello 2, la build riusata e i tempi massimi veri; timeout di locale-prod tornato a 25 minuti. Misure di accettazione riportate dall'agente: 40,8 s e 33,4 s per un rilancio mirato di tre controlli, rifiuto immediato di due schermate, secondo avvio rifiutato, nessun processo residuo. Prompt di V3 bis aggiornato per usare `--solo`. **Non verificato**: le prove sono riportate dall'agente, non rieseguite qui.
+
 - **VC-tempi — lanciatore `ui:verify` 3.5.0** (2026-10-18): `--solo` (rilancio mirato con merge esiti); cache build `.next/ui-verify-build.json`; lock `.next/ui-verify.lock` contro giri concorrenti; timeout stato matrice C1/C2/C3 (default 60 s, `UI_VERIFY_STATE_TIMEOUT_MS`), budget schermata 15 min + guardia +2 min (`UI_VERIFY_BUDGET_MS`); default timeout `locale-prod` ripristinato a **25 min** (non 45); L2 rifiuta più `--schermata`; esiti catalogo più leggibili (`*-elimina-registro-permessi`, tassonomie/persistenza/modulo-inglese/formati). **Tests**: F1 `--solo` piatti-testi+azioni+colonna **40,8 s** (build rifatta); F2 **33,4 s** (build riusata); F3 L2 due schermate rifiutato; F4 `UI_VERIFY_STATE_TIMEOUT_MS=1000` → NON PROVATO `tempo: <stato>`; F5/F6 `ps` pulito e lock con PID; `pnpm lint` 0 errori; rapporto `docs/design/verifica/esiti/2026-10-18-VCtempi/rapporto.md`.
 
 ### Fixed

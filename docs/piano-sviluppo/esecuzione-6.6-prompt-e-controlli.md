@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `a2d47fc`). **Prossimi passi**: 16d (VC-tempi), poi 16e (V3 bis: rilancio mirato) e solo dopo 18 (VC4). Niente giri lunghi né giri concorrenti finché 16d non è chiuso.
+**Ultimo aggiornamento**: 2026-10-18 (commit `1d1bc00`). **Prossimi passi**: 16e (V3 bis: rilancio mirato con `--solo`, meno di 15 minuti), poi 18 (VC4).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1080,6 +1080,8 @@ REGOLE
 
 ### Passo 16d — VC-tempi: il lanciatore veloce, mirato e senza blocchi
 
+> **Esito (2026-10-18)**: ✅ `1d1bc00` (lanciatore 3.5.0). Criteri di accettazione rispettati: rilancio mirato di tre controlli in **40,8 s** (build rifatta) e **33,4 s** (build riusata); L2 con due schermate rifiutato subito; stato forzato oltre il tempo: NON PROVATO «tempo» e prosecuzione; nessun listener residuo sulle porte; secondo avvio rifiutato con il PID del primo; lint a 0 errori. Controllato nel repo: 18 file, tutti in `scripts/ui-verify/**` e negli esiti; sintassi dei file verificata; presenti `--solo`, il blocco (`.next/ui-verify.lock`, messaggio «giro già in corso (PID …)»), il rifiuto di più schermate a livello 2, la build riusata e i tempi (`lib/timeouts.mjs`: 90 s per flusso, 60 s per cella; budget 15 min per schermata con guardia; timeout locale-prod di nuovo a 25 minuti). Opzioni nuove: `--solo <id,…>`, `UI_VERIFY_BUDGET_MS`, `UI_VERIFY_STATE_TIMEOUT_MS`, `UI_VERIFY_FLOW_TIMEOUT_MS`. Da qui ogni V si lancia **una schermata per volta**, o con `--solo`.
+
 **Perché**: V3 è durato circa due ore (V2 quater circa 26 minuti per giro). I blocchi e la lentezza vengono dal lanciatore, non dal modello: nessun tempo massimo vero, uscita non garantita, build rifatta a ogni giro, nessuna possibilità di rilanciare un solo controllo. **Quando**: dopo F3 (16c), prima di V3 bis e di qualunque altro giro lungo. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
 
 ```text
@@ -1158,8 +1160,11 @@ Poi:
 0. Riporta l'hash di HEAD e git status (solo lettura). PRECONDIZIONI: `git log --oneline 8acc58f..HEAD -- components
    lib app` deve elencare il commit di F3, e `git log --oneline 8acc58f..HEAD -- scripts/ui-verify` quello di
    VC-tempi. Se manca uno dei due, FERMATI e dimmelo.
-B. Rilancia SOLO questi controlli, una schermata per volta, con --solo (usa il minimo di profili e temi: telefono-390
-   chiaro, e notebook-1280 chiaro dove il controllo lo richiede):
+B. Rilancia SOLO questi controlli con `--solo <id,id,…>` (opzione di VC-tempi: un solo comando per schermata, con i
+   controlli elencati; lo stesso comando può essere ripetuto riusando la build). Il lanciatore ora rifiuta due
+   giri contemporanei e più schermate a livello 2, ha tempi massimi veri e chiude da solo browser e server: non
+   lanciare mai un secondo giro mentre uno è attivo. Profili e temi: il minimo (telefono-390 chiaro, e
+   notebook-1280 chiaro dove il controllo lo richiede):
    - vini: vini-origine-fuori-filtro, vini-origine-cascata, vini-tassonomie, vini-persistenza, vini-formati-ui,
      vini-modulo-inglese, vini-elimina-registro-permessi, C2 sullo stato «elimina»
    - distillati: distillati-origine-fuori-filtro se esiste, distillati-tassonomie, distillati-persistenza,
