@@ -80,8 +80,8 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 13 | ✅ 0c0f4e8 (con V2 quater) | Solo il prompt del passo 13 | V2 | Agente di verifica | **L2** su Piatti (primo elenco, primo modulo, primo foglio) più regressione shell e home | **L2** | rapporto scritto |
 | 14 | ✅ 2b53c00 | Solo il prompt del passo 14, se ci sono P | RL2/F2 | Design, Composer | Rilievi di V2 e correzione dei P. Con il primo elenco completo si ricalibrano i tempi, si rivedono i trigger e si segna «validata» la policy (`policy-test.md` §9, punto 4) | L0 + L1 dei falliti | nessun P aperto |
 | 15 | ✅ 1fdb2d9 | Solo il prompt del passo 15 | VC3 | Agente di verifica | Implementa i controlli di Vini, Distillati, Bevande | lint e typecheck | tu committi e pushi |
-| 16 | 🔶 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
-| 17 | 🔲 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
+| 16 | ✅ 97a48b5 | Blocco comune + prompt del passo 16 | I3 | Composer | **Vini, Distillati, Bevande** | L0 + **L1** `vini,distillati,bevande` | L1 verde; tu pushi |
+| 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | 🔲 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | 🔲 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
 | 20 | 🔲 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `1fdb2d9`). **Prossimi passi**: 16 (I3) e 17 (D5), in parallelo.
+**Ultimo aggiornamento**: 2026-10-18 (commit `97a48b5`). **Prossimi passi**: 16b (V3: L2 su Vini, Distillati e Bevande), poi 18 (VC4). Non in parallelo: i due agenti usano lo stesso lanciatore e lo stesso build.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -930,6 +930,8 @@ sempre OK, FALLITO, AVVISO e NON PROVATO.
 
 ### Passo 16 — I3: Vini, Distillati, Bevande
 
+> **Esito (2026-10-18)**: accettato dopo una correzione (`97a48b5`). Tre schermate in un commit (`7bdfa5b`, 62 file; nessun file in `collections/`, nessuna dipendenza; 66 test unitari su 66 nel mio ambiente). Il primo rapporto dava il lint a 6 errori `react-hooks/set-state-in-effect`, descritti a torto come «preesistenti»: corretti (lint 0 errori) togliendo gli effetti di sincronizzazione e azzerando il modulo con la `key`. **Debito**: Distillati e Bevande restano molto simili (pagina elenco 79 %, azioni 67 %, foglio del modulo 68 %); l'estrazione si valuta alla chiusura della 6.6 (I6), non prima. **Nota di processo**: Composer ha toccato una riga del lanciatore (`run-catalog.mjs`: l'opzione «Tutti i paesi» al posto di «—»), cosa che le regole non gli consentono; la modifica è giusta (era un «controllo dubbio» di VC3, allineato alla specifica §6) e la tengo. I flussi veri di Vini, Distillati e Bevande (cascata, anno e NV, «Mostra altri», bulk da 101, eliminazione, validazione) non sono ancora stati eseguiti: li esegue il passo 16b (V3).
+
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
 ```text
@@ -971,6 +973,65 @@ prova e poi eliminali (dichiaralo nella risposta); mai dati di prova in produzio
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
 **Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
+
+
+### Passo 16b — V3: l'agente esegue L2 su Vini, Distillati e Bevande
+
+**Quando**: ora che I3 e la sua correzione sono nel repo (passo 16 ✅) e i controlli di Servizi e Menù fissi sono già nel file (passo 17 ✅). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Non** lanciare VC4 (passo 18) in parallelo: usano lo stesso lanciatore e lo stesso build.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi l'app. Istanza: V3, dopo la
+chat I3 (schermate Vini, Distillati e Bevande) e la sua correzione. I commit di I3 sono 7bdfa5b e 97a48b5.
+
+Leggi nell'ordine, per intero:
+1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
+2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
+3. docs/design/verifica/controlli-6.6.json (schermate vini, distillati, bevande; comuni) e
+   docs/design/verifica/controlli-8.2.json (shell, per la regressione)
+4. docs/design/verifica/misura-tocco.md
+5. docs/design/verifica/esiti/2026-10-18-controlli/rapporto.md, sezione «Debito» (i flussi che VC3 ha lasciato da
+   completare dopo I3)
+6. Le specifiche, solo per capire i controlli: docs/design/schermate/vini/spec.md, distillati/spec.md,
+   bevande/spec.md
+
+Poi, in quest'ordine:
+0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status
+   --short). Se git status non è pulito, fermati e dimmelo.
+   PRECONDIZIONE: `git log --oneline 7f87ecb..HEAD -- components/app/wines components/app/spirits
+   components/app/drinks` deve elencare i commit di I3. Se non c'è nessun commit che li tocchi, FERMATI subito e
+   dimmi che I3 non è nel repo: non eseguire nessun giro.
+A. LANCIATORE (modifichi solo scripts/ui-verify/**, mai i controlli JSON). Completa ed esegui i flussi in debito:
+   bulk da 101 record con «Mostra altri …» (porta il TOTALE a 101: crea 101 meno quelli già presenti; poi pulisci),
+   formati dal server (Local API e, se pnpm dev è avviato, REST), eliminazione con registro e permessi, persistenza,
+   filtri a cascata dell'origine dei vini, anno e NV, coerenza geografica, opzioni dell'origine filtrate nella
+   query (Libano e Sicilia assenti), capacità non gestita dei distillati, paese facoltativo delle bevande, confronto
+   visivo (salva TUTTI gli stati con riferimento a 390 e 1280 px, chiaro e scuro, nel contesto touch dei profili con
+   tocco). Se un controllo non riesce a misurare, scrivi NON PROVATO con il motivo, mai OK. Se trovi difetti del
+   lanciatore, correggili e riportali uno per uno. pnpm lint a 0 errori.
+B. Esegui, su locale-dev (solo il controllo CONSOLE e le simulazioni) e su locale-prod (tutti gli altri), UNA
+   schermata per volta, per non superare il tempo massimo:
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata vini
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata distillati
+   pnpm ui:verify --livello 2 --controlli controlli-6.6.json --schermata bevande
+   Regressione veloce (livello 1): --schermata piatti,home,navigazione con controlli-6.6.json e
+   --schermata shell con controlli-8.2.json (I3 ha toccato blocchi condivisi: avvisi, stato vuoto, nav).
+   Ogni giro può durare più di 15 minuti: è normale. Non interromperlo e non dichiarare fatto ciò che non è girato.
+C. Non eseguire i controlli «online-senza-credenziali»: si fanno in V6. Scrivili NON PROVATO con il motivo.
+D. Scrivi gli esiti in docs/design/verifica/esiti/2026-10-18-locale-prod/ e 2026-10-18-locale-dev/ come da README,
+   sezione 7, e un riepilogo in docs/design/verifica/esiti/2026-10-18-V3/rapporto.md con, per OGNI schermata: i
+   controlli OK, FALLITO e AVVISO con il valore misurato e quello atteso (mai «—»); per ogni FALLITO la tua
+   classificazione («difetto dell'app», «difetto del lanciatore», «controllo dubbio»); i NON PROVATO con il motivo;
+   il numero di screenshot salvati.
+E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti (anche i record del bulk), e verifica con git status che
+   i file nuovi siano solo quelli attesi.
+
+Non fare git (puoi leggere git status e git log). Non toccare app/, components/, lib/, docs/design (fuori da
+verifica/esiti), né i controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il
+valore misurato e quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo:
+scrivilo come «controllo dubbio».
+```
+
+**Quando Cursor ha finito**: incollami il suo resoconto finale. Fai tu `git add -A` e un commit con il messaggio `test(ui-verify): V3 — L2 su Vini, Distillati e Bevande`, poi il push, e scrivimi «push fatto». Io confronto gli screenshot con i PNG di riferimento (C10), assegno i rilievi P e A e, se ci sono P, ti do il prompt di correzione.
 
 ### Passo 17 — D5: controlli per Servizi e Menù fissi
 
