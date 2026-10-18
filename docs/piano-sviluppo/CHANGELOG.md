@@ -16,7 +16,11 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
-- **F-EN (passo 18b)** — Prova decisiva `scripts/verify-f-en-localized-name-repro.ts`: (a)–(e) OK su tutte e cinque le collection (DB dev). Matrice in `scripts/verify-menu-6_2.ts` (blocco F-EN). L0: `typecheck`, `lint` (0 errori), `ui:check`, unitari `lib/**/*.test.ts` (69/69) OK. `pnpm verify:menu-6_2` OK. `pnpm verify:menu-6_3` **FALLITO**: conteggi `fixed-menus` prima/dopo verify non ripristinati (3→5, DB dev con residui). `pnpm verify:menu-6_4` **FALLITO**: conteggio `dishes` prima/dopo (47→12) con `pnpm dev` e variabili mirror/trace dell’intestazione script — da rivalutare su DB dev ripulito, non attribuito al fix F-EN.
+- **F-EN (passo 18b)** — Prova decisiva `scripts/verify-f-en-localized-name-repro.ts`: (a)–(e) OK su tutte e cinque le collection (DB dev). Matrice in `scripts/verify-menu-6_2.ts` (blocco F-EN). L0: `typecheck`, `lint` (0 errori), `ui:check`, unitari `lib/**/*.test.ts` (69/69) OK. `pnpm verify:menu-6_2` OK. Primo giro `verify:menu-6_3` / `verify:menu-6_4` su DB dev sporco (residui `verify-ui-fen-*`, menù fissi, 12 piatti): **FALLITO** (fixed-menus 3→5; dishes 47→12 — assert conteggi in `verify-menu-6_4.ts` vs roundtrip wipe in riga ~470). Dopo checklist 6.8 (`wipe-menu-import-dev` + import snapshot; se FK su piatti → `prep-wipe-clear-nonimport.ts` prima del wipe): `verify:menu-6_3` e `verify:menu-6_4` **OK** (dishes 44→44). Fingerprint content post-import stabile `COMBINED_SHA256=d2cd0cc60c974fc6e6ebcfded2e02a41fe4a1ba29bf30ed95d15383a6f00b4f3` (il riferimento `18cf7298…` in fase-6 va riallineato in documentazione).
+
+### Added
+
+- **Script dev (F-EN / ripristino 6.8)** — `scripts/audit-dev-db-snapshot.ts` (conteggi collection menù + `COMBINED_SHA256` + record `verify-*`); `scripts/prep-wipe-clear-nonimport.ts` (svuota menù fissi/categorie/giorni speciali prima di `wipe-menu-import-dev` quando il delete piatti fallisce per FK).
 
 ### Changed
 
