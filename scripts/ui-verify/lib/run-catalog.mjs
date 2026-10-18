@@ -16,6 +16,7 @@ import {
 import { catalogCopyConst } from './catalog-copy.mjs'
 import { menuCountCatalog, menuCreateCatalogItems, menuDeleteVerifyPrefix } from './menu-payload.mjs'
 import { SIM_PORT, waitForPortFree } from './ensure-ports.mjs'
+import { runWithStateTimeout } from './timeouts.mjs'
 
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
 const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
@@ -28,8 +29,6 @@ const HEAVY_STATES = new Set([
   'errore-caricamento',
   'vuoto',
 ])
-
-const HEAVY_STATE_TIMEOUT_MS = 4 * 60 * 1000
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
@@ -297,10 +296,12 @@ export async function runCatalogC1C2Matrix(ctx, config) {
   const temiAll = runCtx.temiKeys().filter((t) => ['chiaro', 'scuro'].includes(t))
   const profiliL1 = runCtx.profiliAccess().filter((p) => ['telefono-390', 'notebook-1280'].includes(p))
   const bulkId = bulkStateId(config)
-  const lightStates = stati.filter((id) => !HEAVY_STATES.has(id) && id !== bulkId)
-  const heavyStates = [...new Set([...stati.filter((id) => HEAVY_STATES.has(id)), bulkId].filter(Boolean))]
+  const matrixStateIds = [
+    ...stati.filter((id) => !HEAVY_STATES.has(id) && id !== bulkId),
+    ...new Set([...stati.filter((id) => HEAVY_STATES.has(id)), bulkId].filter(Boolean)),
+  ]
 
-  async function runMatrix(statoId, { heavy = false } = {}) {
+  async function runMatrix(statoId) {
     for (const temaKey of temiAll) {
       for (const profiloKey of profiliL1) {
         if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820') continue
@@ -326,6 +327,8 @@ export async function runCatalogC1C2Matrix(ctx, config) {
           }
         }
 
+        let activeCtx = null
+        let activeSim = null
         const runOne = async () => {
           let simChild = null
           let pageBase = baseUrl
@@ -338,6 +341,7 @@ export async function runCatalogC1C2Matrix(ctx, config) {
                     ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
                     : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
                 simChild = startMenuDevServer(SIM_PORT, env)
+                activeSim = simChild
                 pageBase = `http://localhost:${SIM_PORT}`
                 await waitForUrl(pageBase)
               }
@@ -350,6 +354,7 @@ export async function runCatalogC1C2Matrix(ctx, config) {
               }
             }
             const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
+            activeCtx = sctx
             await loginApp(sp, pageBase, testUser.email, testPassword)
             try {
               if (statoId === 'caricamento') {
@@ -385,39 +390,41 @@ export async function runCatalogC1C2Matrix(ctx, config) {
               addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
             }
             await sctx.close()
+            activeCtx = null
           } finally {
             if (simChild) {
               simChild.kill('SIGTERM')
+              activeSim = null
               await waitForPortFree(SIM_PORT)
             }
             menuDeleteVerifyPrefix()
           }
         }
 
-        if (heavy) {
-          try {
-            await Promise.race([
-              runOne(),
-              sleep(HEAVY_STATE_TIMEOUT_MS).then(() => {
-                throw new Error(`timeout ${HEAVY_STATE_TIMEOUT_MS / 1000}s per stato ${statoId}`)
-              }),
-            ])
-          } catch (e) {
-            addNonProvato(e.message)
-            report.anomalie.push(`${config.id} C1/C2 pesante ${statoId}: ${e.message}`)
+        try {
+          await runWithStateTimeout(() => runOne(), statoId)
+        } catch (e) {
+          if (activeCtx) {
+            await activeCtx.close().catch(() => {})
+            activeCtx = null
           }
-        } else {
-          await runOne()
+          if (activeSim) {
+            activeSim.kill('SIGTERM')
+            activeSim = null
+            await waitForPortFree(SIM_PORT).catch(() => {})
+          }
+          const motivo = e.code === 'UI_VERIFY_TIMEOUT' || String(e.message).startsWith('tempo:')
+            ? `tempo: ${statoId}`
+            : e.message
+          addNonProvato(motivo)
+          report.anomalie.push(`${config.id} C1/C2 ${statoId} ${profiloKey}/${temaKey}: ${motivo}`)
         }
       }
     }
   }
 
-  for (const statoId of lightStates) {
+  for (const statoId of matrixStateIds) {
     await runMatrix(statoId)
-  }
-  for (const statoId of heavyStates) {
-    await runMatrix(statoId, { heavy: true })
   }
 }
 
@@ -437,7 +444,10 @@ export async function runCatalogScreens(ctx) {
       continue
     }
     await runCatalogFlowControls(ctx, config)
-    await runCatalogC1C2Matrix(ctx, config)
+    const matrixControlIds = ['C1', 'C2', 'C3', 'C2-mouse']
+    if (matrixControlIds.some((id) => ctx.runCtx.shouldRun(id))) {
+      await runCatalogC1C2Matrix(ctx, config)
+    }
   }
 }
 

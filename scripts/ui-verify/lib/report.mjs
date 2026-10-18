@@ -109,6 +109,10 @@ export function initReport({
       })
     },
     prepareMenuPackageRerun(runCtx) {
+      if (runCtx?.solo?.size) {
+        this.replaceControlIds([...runCtx.solo])
+        return
+      }
       const scoped = menuScreensInRun(runCtx)
       if (scoped?.length) {
         this.replaceMenuScreens(scoped)
@@ -116,6 +120,12 @@ export function initReport({
       }
       this.replacePacchetto('menu')
       this.replaceMenuScreens(['vini', 'distillati', 'bevande'])
+    },
+    /** Rimuove le righe dei controlli indicati (merge --solo). */
+    replaceControlIds(controlIds) {
+      if (!controlIds?.length) return
+      const set = new Set(controlIds)
+      this.rows = this.rows.filter((r) => !set.has(r.id))
     },
     add(row) {
       const pacchetto = row.pacchetto ?? this.pacchettoDefault ?? inferPacchettoFromRow(row)

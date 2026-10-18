@@ -11,7 +11,7 @@ import { chromium, webkit } from '@playwright/test'
 import { loadAuthMessages } from './lib/messages.mjs'
 import { auditScreenshotThemeHashes, initReport } from './lib/report.mjs'
 import { DEV_PORT, PROD_PORT, devBaseUrl, prodBaseUrl } from './lib/ports.mjs'
-import { ensurePortsFree, SIM_PORT } from './lib/ensure-ports.mjs'
+import { ensurePortsFree, SIM_PORT, waitForPortFree } from './lib/ensure-ports.mjs'
 import {
   parseCli,
   loadControlli,
@@ -20,6 +20,15 @@ import {
   RunTimeoutError,
   logProgress,
 } from './lib/cli.mjs'
+import { resolveBuildReuse, markBuildSuccess } from './lib/build-cache.mjs'
+import { acquireUiVerifyLock, releaseUiVerifyLock } from './lib/lock.mjs'
+import {
+  auditResidualProcesses,
+  closeAllBrowsers,
+  stopServers,
+  trackBrowser,
+} from './lib/cleanup.mjs'
+import { guardExtraMs, screenBudgetMs } from './lib/timeouts.mjs'
 import { createRunContext } from './lib/perimeter.mjs'
 import {
   LAUNCHER_VERSION,
@@ -98,6 +107,11 @@ let CONTROLLI
 /** @type {RunBudget | null} */
 let budget = null
 let controlliBasename = 'controlli-8.2.json'
+let guardTimer = null
+/** @type {import('node:child_process').ChildProcess | null} */
+let devChildGlobal = null
+/** @type {import('node:child_process').ChildProcess | null} */
+let prodChildGlobal = null
 const ONLINE_BASE = (process.env.BASE_URL ?? 'https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app').replace(
   /\/$/,
   '',
@@ -307,6 +321,7 @@ function consoleEsito(bag) {
 async function runConsoleClean(baseUrl, report, browserVersion) {
   if (!runCtx.shouldRun('CONSOLE')) return
   const browser = await chromium.launch()
+  trackBrowser(browser)
   const profiles = runCtx.profiliConsole()
   const accessPaths = [
     ...new Set(visitableAccessStates().map((s) => s.path)),
@@ -487,6 +502,7 @@ async function runAccessScreenChecks(page, report, screenId, statoId, sch, pt, p
 
 async function runAmbienteCheck(baseUrl, report, browserVersion) {
   const browser = await chromium.launch()
+  trackBrowser(browser)
   const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
   await page.goto('/app/login', { waitUntil: 'networkidle' })
   const r = await checkAmbiente(page)
@@ -512,13 +528,15 @@ async function runAmbienteCheck(baseUrl, report, browserVersion) {
 
 async function runLocaleProd(baseUrl, report, opts = {}) {
   const browser = await chromium.launch()
+  trackBrowser(browser)
   const browserVersion = await browser.version()
   report.meta.browsers = `Chromium ${browserVersion}`
 
-  if (!opts.skipAmbienteCheck) {
+  if (!opts.skipAmbienteCheck && runCtx.shouldRun('AMBIENTE')) {
     await runAmbienteCheck(baseUrl, report, browserVersion)
   }
 
+  if (runCtx.shouldRun('C9')) {
   const c9 = spawnSync('pnpm', ['ui:check'], { cwd: ROOT, encoding: 'utf8' })
   addRow(report, {
     id: 'C9',
@@ -529,6 +547,7 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
     atteso: 'exit 0',
     evidenza: c9.status === 0 ? 'pnpm ui:check' : (c9.stdout || c9.stderr).slice(0, 200),
   })
+  }
 
   if (runCtx.shouldRun('verify-link-valido')) {
     report.addNonProvato('verify-link-valido', 'facoltativo: token reale monouso non ottenuto')
@@ -980,6 +999,7 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
 
 async function probeWebKitProdLoginCookies(baseUrl, report) {
   const wk = await webkit.launch()
+  trackBrowser(wk)
   const wkVer = await wk.version()
   const setCookies = []
   try {
@@ -1016,6 +1036,7 @@ async function runWebkitEssential(baseUrl, report) {
   if (!runCtx.runWebkitEssential || !runCtx.shouldRun('webkit-giro-essenziale')) return null
   progressStep('shell', 'webkit-essenziale', 'telefono-390', 'chiaro')
   const wk = await webkit.launch()
+  trackBrowser(wk)
   const wkVer = await wk.version()
   const { ctx, page } = await newPage(wk, 'telefono-390', 'chiaro', baseUrl)
   let wkOk = false
@@ -1047,6 +1068,7 @@ async function runWebkitEssential(baseUrl, report) {
 
 async function runOnline(report) {
   const browser = await chromium.launch()
+  trackBrowser(browser)
   const browserVersion = await browser.version()
   await runAmbienteCheck(ONLINE_BASE, report, browserVersion)
   await browser.close()
@@ -1137,13 +1159,55 @@ function makeReport(ambiente, commit) {
       livello: runCtx.livello,
       schermate: runCtx.schermate,
       levels: runCtx.levels,
+      solo: runCtx.solo,
     },
   })
+}
+
+async function closeBrowsersAndAudit(report, { logResidual = true } = {}) {
+  await closeAllBrowsers()
+  if (logResidual) {
+    const residual = auditResidualProcesses()
+    if (residual.length) {
+      const line = `Processi residui dopo chiusura: ${residual.join('; ')}`
+      if (report) report.anomalie.push(line)
+      process.stderr.write(`[ui:verify] ${line}\n`)
+    } else {
+      process.stderr.write('[ui:verify] ps porte 3000/3100/3200: nessun listener residuo\n')
+    }
+  }
+}
+
+async function forceGuardShutdown(report) {
+  await closeBrowsersAndAudit(report)
+  stopServers(devChildGlobal, prodChildGlobal)
+  devChildGlobal = null
+  prodChildGlobal = null
+  if (guardTimer) {
+    clearTimeout(guardTimer)
+    guardTimer = null
+  }
+  releaseUiVerifyLock(ROOT)
+}
+
+function armGuardTimer(report) {
+  const ms = screenBudgetMs() + guardExtraMs()
+  guardTimer = setTimeout(async () => {
+    report.anomalie.push(
+      `Timer di guardia scaduto (${Math.round(ms / 1000)}s = UI_VERIFY_BUDGET_MS + 2 min): chiusura forzata.`,
+    )
+    await forceGuardShutdown(report)
+    if (report.meta) report.meta.durataMs = report.meta.durataMs ?? 0
+    process.stderr.write('\n')
+    console.log(`Esiti ${report.meta.ambiente}: ${report.write()}`)
+    process.exit(0)
+  }, ms)
 }
 
 async function runAmbienteWithBudget(ambiente, fn) {
   const report = makeReport(ambiente, gitCommit())
   budget = new RunBudget(timeoutMsForAmbiente(ambiente), report)
+  armGuardTimer(report)
   const t0 = Date.now()
   try {
     report.anomalie = []
@@ -1151,8 +1215,13 @@ async function runAmbienteWithBudget(ambiente, fn) {
   } catch (e) {
     if (!(e instanceof RunTimeoutError)) throw e
   } finally {
+    if (guardTimer) {
+      clearTimeout(guardTimer)
+      guardTimer = null
+    }
     report.meta.durataMs = Date.now() - t0
     budget = null
+    await closeAllBrowsers()
     process.stderr.write('\n')
     console.log(`Esiti ${ambiente}: ${report.write()}`)
   }
@@ -1160,6 +1229,7 @@ async function runAmbienteWithBudget(ambiente, fn) {
 }
 
 async function main() {
+  acquireUiVerifyLock(ROOT)
   const cli = parseCli(process.argv)
   const loaded = loadControlli(cli.controlliFile)
   CONTROLLI = loaded.controlli
@@ -1201,12 +1271,15 @@ async function main() {
 
     if (mode === 'all' || mode === 'locale-dev') {
       devChild = startProcess('pnpm', ['dev'], { PORT: String(DEV_PORT) })
+      devChildGlobal = devChild
       await waitForUrl(devBaseUrl())
       const browser = await chromium.launch()
+      trackBrowser(browser)
       const browserVersion = await browser.version()
       await browser.close()
       await runAmbienteWithBudget('locale-dev', async (report) => {
         const devBrowser = await chromium.launch()
+        trackBrowser(devBrowser)
         const devL2Combined =
           runCtx.livello === 2 && controlliBasename.includes('8.5') && !runCtx.schermate?.size
 
@@ -1323,13 +1396,22 @@ async function main() {
       })
       devChild.kill('SIGTERM')
       devChild = null
+      devChildGlobal = null
       await sleep(2000)
     }
 
     if (mode === 'all' || mode === 'locale-prod') {
-      const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
-      if (build.status !== 0) throw new Error('pnpm build fallito')
+      const buildDecision = resolveBuildReuse(ROOT)
+      if (buildDecision.reuse) {
+        process.stderr.write(`[ui:verify] build riusata (${buildDecision.reason}, hash ${buildDecision.fingerprint.hash.slice(0, 12)}…)\n`)
+      } else {
+        process.stderr.write(`[ui:verify] build rifatta (${buildDecision.reason})\n`)
+        const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
+        if (build.status !== 0) throw new Error('pnpm build fallito')
+        markBuildSuccess(ROOT, buildDecision.fingerprint)
+      }
       prodChild = startProcess('pnpm', ['start'], { PORT: String(PROD_PORT) })
+      prodChildGlobal = prodChild
       await waitForUrl(prodBaseUrl())
       await runAmbienteWithBudget('locale-prod', async (report) => {
         await runLocaleProd(prodBaseUrl(), report)
@@ -1361,6 +1443,9 @@ async function main() {
       })
       prodChild.kill('SIGTERM')
       prodChild = null
+      prodChildGlobal = null
+      await sleep(1500)
+      await waitForPortFree(PROD_PORT, 20000).catch(() => {})
     }
 
     if (mode === 'all' || mode === 'online') {
@@ -1371,6 +1456,18 @@ async function main() {
   } finally {
     if (devChild) devChild.kill('SIGTERM')
     if (prodChild) prodChild.kill('SIGTERM')
+    devChildGlobal = devChild
+    prodChildGlobal = prodChild
+    await closeAllBrowsers()
+    stopServers(devChild, prodChild)
+    await sleep(1500)
+    const residual = auditResidualProcesses()
+    if (residual.length) {
+      process.stderr.write(`[ui:verify] finally — processi residui: ${residual.join('; ')}\n`)
+    } else {
+      process.stderr.write('[ui:verify] ps porte 3000/3100/3200: nessun listener residuo\n')
+    }
+    releaseUiVerifyLock(ROOT)
     await deleteUser()
   }
 }

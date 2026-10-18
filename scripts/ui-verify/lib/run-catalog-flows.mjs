@@ -405,7 +405,7 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         docId = menuFindCatalogItem(testUser.email, config.collection, permName).doc?.id ?? null
         const staffAdmin = menuFindStaffUser('admin')
         const staffSuper = menuFindStaffUser('super-admin')
-        notes.push('norole: NON PROVATO (schema Users)')
+        notes.push('norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)')
         if (staffAdmin.email) {
           const d = menuTryDeleteCatalog(staffAdmin.email, config.collection, permName)
           if (!d.ok) failures.push(`admin: ${d.reason}`)
@@ -423,11 +423,14 @@ export async function runCatalogFlowControlsFull(ctx, config) {
       } finally {
         menuDeleteVerifyPrefix()
       }
+      const misuratoPerm =
+        [...failures, ...notes].filter(Boolean).join('; ') ||
+        'registro delete manager; norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)'
       add(
         `${sid}-elimina-registro-permessi`,
         failures.length ? 'FALLITO' : 'OK',
-        `${failures.join(' | ') || 'permessi ok'}; ${notes.join('; ')}`,
-        'registro e permessi staff',
+        misuratoPerm,
+        'registro e permessi staff (norole coperto da verify-roles-8_3)',
         'payload',
       )
     }
@@ -480,6 +483,7 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (runCtx.shouldRun(`${sid}-modulo-inglese`)) {
       const failures = []
+      let misuratoEn = 'badge/en ok'
       const badgeMissing = copy(sid, 'BADGE_MISSING') ?? 'Manca'
       const badgePresent = copy(sid, 'BADGE_PRESENT') ?? 'Presente'
       try {
@@ -496,20 +500,26 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         await gotoCatalog(page, config)
         await clickRowAction(page, `verify-ui-${sid}-noen`, 'edit')
         let sheet = await page.locator('[data-slot=sheet-content]').innerText()
-        if (!sheet.includes(badgeMissing)) failures.push('badge Manca')
+        if (!sheet.includes(badgeMissing)) failures.push(`badge: atteso «${badgeMissing}» nel foglio`)
         await page.keyboard.press('Escape')
         await clickRowAction(page, `verify-ui-${sid}-yesen`, 'edit')
         sheet = await page.locator('[data-slot=sheet-content]').innerText()
-        if (!sheet.includes(badgePresent) && !sheet.includes('Presente')) failures.push('badge Presente')
+        if (!sheet.includes(badgePresent)) failures.push(`badge: atteso «${badgePresent}» nel foglio`)
         const en = menuReadCatalogEn(testUser.email, config.collection, `verify-ui-${sid}-noen`)
         if (en.description == null && en.name == null) failures.push('read en')
+        misuratoEn =
+          failures.length > 0
+            ? `${failures.join(' | ')}; foglio noen=${sheet.includes(badgeMissing) ? 'Manca ok' : 'Manca assente'}`
+            : `badge «${badgeMissing}»/«${badgePresent}»; locale=en name=${JSON.stringify(en.name)} desc=${JSON.stringify(en.description)}`
         await pctx.close()
       } catch (e) {
         failures.push(e.message)
       } finally {
         menuDeleteVerifyPrefix()
       }
-      add(`${sid}-modulo-inglese`, failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'badge/en ok', 'inglese', config.path)
+      const misuratoInglese =
+        failures.length > 0 ? failures.join(' | ') : misuratoEn ?? 'badge/en ok'
+      add(`${sid}-modulo-inglese`, failures.length ? 'FALLITO' : 'OK', misuratoInglese, 'inglese', config.path)
     }
 
     if (runCtx.shouldRun(`${sid}-modulo-footer`)) {
@@ -558,6 +568,9 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (sid === 'vini' && runCtx.shouldRun('vini-formati-ui')) {
       const failures = []
+      let volMisurato = 'volume non letto'
+      let abvText = ''
+      let saved = null
       try {
         menuDeleteVerifyPrefix()
         menuCreateWineWithGradeSql(testUser.email, 'verify-ui-grade-fmt')
@@ -568,22 +581,26 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         const volTrigger = page.locator('#wine-field-volume')
         await volTrigger.click()
         const volOpts = (await page.getByRole('option').allTextContents()).map((t) => t.trim())
+        volMisurato = `volume opzioni (${volOpts.length}): ${volOpts.join(' | ')}`
         for (const need of ['Non indicata', '75 cl', '150 cl']) {
-          if (!volOpts.some((o) => o.includes(need))) failures.push(`volume ${need}`)
+          if (!volOpts.some((o) => o.includes(need))) failures.push(`volume ${need} non in [${volOpts.join(', ')}]`)
         }
         await page.keyboard.press('Escape')
         await clickRowAction(page, 'verify-ui-grade-fmt', 'edit')
-        const abvText = await page.locator('#wine-field-abv').innerText().catch(() => '')
-        if (!abvText.includes('12,8')) failures.push('grado 12,8%')
+        abvText = await page.locator('#wine-field-abv').innerText().catch(() => '')
+        if (!abvText.includes('12,8')) failures.push(`grado UI atteso 12,8%, letto «${abvText}»`)
         await page.getByRole('button', { name: copy('vini', 'FORM_SAVE') ?? 'Salva' }).click()
         await page.waitForTimeout(800)
-        const saved = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-grade-fmt')
-        if (saved.doc?.abv !== '12,8%') failures.push('abv API dopo save')
+        saved = menuFindCatalogItem(testUser.email, config.collection, 'verify-ui-grade-fmt')
+        if (saved.doc?.abv !== '12,8%') failures.push(`abv API dopo save=${saved.doc?.abv ?? 'n/a'}`)
         await pctx.close()
       } finally {
         menuDeleteVerifyPrefix()
       }
-      add('vini-formati-ui', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'formati UI', 'capacità/grado', config.path)
+      const misuratoFmt = failures.length
+        ? `${volMisurato ?? 'volume non letto'}; grado UI=${abvText ?? 'n/a'}; ${failures.join(' | ')}`
+        : `${volMisurato}; grado UI=${abvText}; abv API=${saved?.doc?.abv ?? 'n/a'}`
+      add('vini-formati-ui', failures.length ? 'FALLITO' : 'OK', misuratoFmt, 'capacità/grado', config.path)
     }
 
     if (sid === 'vini' && runCtx.shouldRun('vini-formati-server')) {
@@ -836,6 +853,7 @@ export async function runCatalogFlowControlsFull(ctx, config) {
 
     if (runCtx.shouldRun(`${sid}-tassonomie`)) {
       const failures = []
+      let misuratoTax = 'tipologie non lette'
       try {
         if (sid === 'vini') {
           const denied = menuTryCreateWineTaxonomy(testUser.email, 'wine-types')
@@ -847,18 +865,29 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         await page.getByRole('button', { name: config.newButton }).click()
         const typeField = copy(sid, 'FORM_TYPE') ?? 'Tipologia'
         await page.getByRole('combobox', { name: typeField }).click()
-        const opts = (await page.getByRole('option').allTextContents()).map((t) => t.trim()).filter(Boolean)
+        const listbox = page.getByRole('listbox')
+        await listbox.waitFor({ state: 'visible', timeout: 12000 })
+        await listbox.getByRole('option').first().waitFor({ timeout: 12000 })
+        const opts = (await listbox.getByRole('option').allTextContents()).map((t) => t.trim()).filter(Boolean)
+        misuratoTax = `tipologie (${opts.length}): ${opts.slice(0, 12).join(' | ')}${opts.length > 12 ? '…' : ''}`
         if (opts.length < 1) failures.push('tipologie vuote')
-        if (opts.some((o) => /^\d+$/.test(o))) failures.push('id al posto del nome')
+        if (opts.some((o) => /^\d+$/.test(o))) failures.push(`id al posto del nome: ${opts.filter((o) => /^\d+$/.test(o)).join(', ')}`)
         await pctx.close()
       } catch (e) {
         failures.push(e.message)
       }
-      add(`${sid}-tassonomie`, failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'tipologie ok', 'tassonomie', config.path)
+      add(
+        `${sid}-tassonomie`,
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? `${misuratoTax}; ${failures.join(' | ')}` : misuratoTax,
+        'tassonomie',
+        config.path,
+      )
     }
 
     if (runCtx.shouldRun(`${sid}-persistenza`)) {
       const failures = []
+      let misuratoPers = 'create non verificato'
       const fieldIds = sid === 'vini' ? WINE_FIELD_IDS : sid === 'distillati' ? SPIRIT_FIELD_IDS : DRINK_FIELD_IDS
       try {
         menuDeleteVerifyPrefix()
@@ -868,21 +897,39 @@ export async function runCatalogFlowControlsFull(ctx, config) {
         await page.getByRole('button', { name: config.newButton }).click()
         await page.locator(`#${fieldIds.name}`).fill(`verify-ui-${sid}-nuovo`)
         await page.locator(`#${fieldIds.price}`).fill('12,50')
-        await page.getByRole('combobox', { name: copy(sid, 'FORM_TYPE') ?? 'Tipologia' }).click()
-        await page.getByRole('option').first().click()
+        const typeField = copy(sid, 'FORM_TYPE') ?? 'Tipologia'
+        await page.getByRole('combobox', { name: typeField }).click()
+        const typeList = page.getByRole('listbox')
+        await typeList.waitFor({ state: 'visible', timeout: 12000 })
+        const typeOpts = (await typeList.getByRole('option').allTextContents()).map((t) => t.trim())
+        const chosenType = typeOpts[0] ?? '(nessuna)'
+        await typeList.getByRole('option').first().click()
+        let chosenCountry = '—'
         if (sid !== 'bevande') {
-          await page.getByRole('combobox', { name: copy(sid, 'FORM_COUNTRY') ?? 'Paese' }).click().catch(() => {})
-          await page.getByRole('option').first().click().catch(() => {})
+          const countryField = copy(sid, 'FORM_COUNTRY') ?? 'Paese'
+          await page.getByRole('combobox', { name: countryField }).click()
+          const countryList = page.getByRole('listbox')
+          await countryList.waitFor({ state: 'visible', timeout: 12000 })
+          const countryOpts = (await countryList.getByRole('option').allTextContents()).map((t) => t.trim())
+          chosenCountry = countryOpts[0] ?? '(nessuno)'
+          await countryList.getByRole('option').first().click()
         }
         await page.getByRole('button', { name: copy(sid, 'FORM_SAVE') ?? 'Salva' }).click()
         await page.waitForTimeout(900)
         const saved = menuFindCatalogItem(testUser.email, config.collection, `verify-ui-${sid}-nuovo`)
         if (!saved.found) failures.push('create read')
+        misuratoPers = `tipologia=${chosenType}; paese=${chosenCountry}; API found=${saved.found} price=${saved.doc?.price ?? 'n/a'}`
         await pctx.close()
       } finally {
         menuDeleteVerifyPrefix()
       }
-      add(`${sid}-persistenza`, failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'ok', 'persistenza', config.path)
+      add(
+        `${sid}-persistenza`,
+        failures.length ? 'FALLITO' : 'OK',
+        failures.length ? `${misuratoPers}; ${failures.join(' | ')}` : misuratoPers,
+        'persistenza',
+        config.path,
+      )
     }
 
     if (runCtx.shouldRun(`${sid}-filtri-ricerca`)) {

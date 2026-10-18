@@ -10,6 +10,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Changed
+
+- **VC-tempi — lanciatore `ui:verify` 3.5.0** (2026-10-18): `--solo` (rilancio mirato con merge esiti); cache build `.next/ui-verify-build.json`; lock `.next/ui-verify.lock` contro giri concorrenti; timeout stato matrice C1/C2/C3 (default 60 s, `UI_VERIFY_STATE_TIMEOUT_MS`), budget schermata 15 min + guardia +2 min (`UI_VERIFY_BUDGET_MS`); default timeout `locale-prod` ripristinato a **25 min** (non 45); L2 rifiuta più `--schermata`; esiti catalogo più leggibili (`*-elimina-registro-permessi`, tassonomie/persistenza/modulo-inglese/formati). **Tests**: F1 `--solo` piatti-testi+azioni+colonna **40,8 s** (build rifatta); F2 **33,4 s** (build riusata); F3 L2 due schermate rifiutato; F4 `UI_VERIFY_STATE_TIMEOUT_MS=1000` → NON PROVATO `tempo: <stato>`; F5/F6 `ps` pulito e lock con PID; `pnpm lint` 0 errori; rapporto `docs/design/verifica/esiti/2026-10-18-VCtempi/rapporto.md`.
+
 ### Fixed
 
 - **Fase 6.6 F3 (chat Vini/Distillati/Bevande, rilievo P1 V3)** — Nei moduli catalogo, un paese (e per i vini regione, denominazione, classificazione) salvato ma fuori elenco filtrato mostrava l’identificativo o restava vuoto: `buildSelectItems` ora riceve l’id e il nome **al caricamento** (`initialValues` + `saved*Name` da `relationshipName` su relazioni `depth: 1` in `wineFormValuesFromWine` / analoghi distillati e bevande); `SelectValue` e le voci del menu usano la mappa così il nome compare nel DOM anche prima del fetch delle opzioni. **Tests**: L0 `typecheck`, `lint` (0 errori), `ui:check` OK; unitari `lib/menu/catalog/selectItems.test.ts` 5/5 (`node --import ./scripts/node-test-resolve-hook.mjs --experimental-strip-types --test`); L1 `locale-prod` livello 1 `vini,distillati,bevande` (`controlli-6.6.json`, `telefono-390`, chiaro) completato (~13 min): **`vini-origine-fuori-filtro` ancora FALLITO** (`paese salvato non visibile`) prima del fix `SelectValue`; secondo giro L1 interrotto (browser chiuso). Conferma P1 su quel controllo in **V3 bis**. I sei punti «da verificare» di `rilievi.md` non toccati (lanciatore).

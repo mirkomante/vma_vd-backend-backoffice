@@ -5,8 +5,7 @@ const ROOT = join(import.meta.dirname, '../../..')
 const CONTROLLI_DIR = join(ROOT, 'docs/design/verifica')
 
 const DEFAULT_TIMEOUT_MS = {
-  // L2 catalogo (3 schermate) + confronto visivo supera 25 min; override con UI_VERIFY_TIMEOUT_LOCALE_PROD_MS.
-  'locale-prod': 45 * 60 * 1000,
+  'locale-prod': 25 * 60 * 1000,
   'locale-dev': 10 * 60 * 1000,
   online: 3 * 60 * 1000,
 }
@@ -58,11 +57,26 @@ export function parseCli(argv) {
   const controlliFile =
     flags.controlli && flags.controlli !== true ? String(flags.controlli) : null
 
-  if (livello === 1 && !schermate?.size) {
-    throw new Error('Con --livello 1 serve --schermata <id>[,<id>] (perimetro livello 1 nel JSON)')
+  const soloRaw = flags.solo && flags.solo !== true ? String(flags.solo) : null
+  const solo = soloRaw
+    ? new Set(
+        soloRaw
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+      )
+    : null
+
+  if (livello === 2 && schermate && schermate.size > 1 && !solo?.size) {
+    console.error('a livello 2 lancia una schermata per volta, oppure usa --solo')
+    process.exit(1)
   }
 
-  return { mode, livello, schermate, profili, temi, controlliFile }
+  if (livello === 1 && !schermate?.size && !solo?.size) {
+    throw new Error('Con --livello 1 serve --schermata <id>[,<id>] oppure --solo <id,...>')
+  }
+
+  return { mode, livello, schermate, profili, temi, controlliFile, solo }
 }
 
 export function loadControlli(controlliFileArg) {

@@ -1,6 +1,9 @@
 /** Elenco degli id controllo attesi nel rapporto, per ambiente e perimetro opzionale. */
 export function allControlIds(controlli, ambiente, opts = {}) {
-  const { livello = null, schermate = null, levels = null } = opts
+  const { livello = null, schermate = null, levels = null, solo = null } = opts
+  if (solo?.size) {
+    return [...solo].sort()
+  }
   const levelMap = levels ?? buildLevelMapInline(controlli)
 
   function levelOk(id) {

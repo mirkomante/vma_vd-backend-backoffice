@@ -30,6 +30,7 @@ import {
 import { CATALOG_SCREENS, CATALOG_SCREEN_IDS } from './catalog-config.mjs'
 import { runCatalogScreens } from './run-catalog.mjs'
 import { runCatalogConsoleForScreen, runCatalogStatiUi } from './run-catalog-flows.mjs'
+import { runWithStateTimeout } from './timeouts.mjs'
 
 const ROOT_MENU = join(import.meta.dirname, '../../..')
 
@@ -65,7 +66,6 @@ const NAV_FLOW_CASES = [
 ]
 
 const HEAVY_PIATTI_C1_STATES = new Set(['piu-di-100', 'caricamento', 'errore-caricamento', 'vuoto'])
-const HEAVY_PIATTI_STATE_TIMEOUT_MS = 4 * 60 * 1000
 
 const PIATTI_CONTROL_IDS = [
   'piatti-testi',
@@ -839,10 +839,17 @@ export async function runMenuChecks(ctx) {
     }
 
     if (ready && piattiScreen?.stati_c1_c2) {
-      const lightStates = piattiScreen.stati_c1_c2.filter((id) => !HEAVY_PIATTI_C1_STATES.has(id))
-      const heavyStates = [...new Set([...piattiScreen.stati_c1_c2.filter((id) => HEAVY_PIATTI_C1_STATES.has(id)), 'piu-di-100'])]
+      const matrixStateIds = [
+        ...piattiScreen.stati_c1_c2.filter((id) => !HEAVY_PIATTI_C1_STATES.has(id)),
+        ...new Set([
+          ...piattiScreen.stati_c1_c2.filter((id) => HEAVY_PIATTI_C1_STATES.has(id)),
+          'piu-di-100',
+        ]),
+      ]
+      const matrixControlIds = ['C1', 'C2', 'C3', 'C2-mouse']
+      const runMatrix = matrixControlIds.some((id) => runCtx.shouldRun(id))
 
-      async function runPiattiC1C2Matrix(statoId, { heavy = false } = {}) {
+      async function runPiattiC1C2Matrix(statoId) {
         for (const temaKey of temiAll) {
           for (const profiloKey of profiliL1) {
             if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820') continue
@@ -867,6 +874,8 @@ export async function runMenuChecks(ctx) {
               }
             }
 
+            let activeCtx = null
+            let activeSim = null
             const runOne = async () => {
               let simChild = null
               let pageBase = baseUrl
@@ -878,6 +887,7 @@ export async function runMenuChecks(ctx) {
                       ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
                       : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
                   simChild = startMenuDevServer(SIM_PORT, env)
+                  activeSim = simChild
                   pageBase = `http://localhost:${SIM_PORT}`
                   await waitForUrl(pageBase)
                 }
@@ -889,6 +899,7 @@ export async function runMenuChecks(ctx) {
                   }
                 }
                 const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
+                activeCtx = sctx
                 await loginApp(sp, pageBase, testUser.email, testPassword)
                 try {
                   if (statoId === 'caricamento') {
@@ -927,39 +938,44 @@ export async function runMenuChecks(ctx) {
                   addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
                 }
                 await sctx.close()
+                activeCtx = null
               } finally {
                 if (simChild) {
                   simChild.kill('SIGTERM')
+                  activeSim = null
                   await waitForPortFree(SIM_PORT)
                 }
                 menuDeleteVerifyPrefix()
               }
             }
 
-            if (heavy) {
-              try {
-                await Promise.race([
-                  runOne(),
-                  sleep(HEAVY_PIATTI_STATE_TIMEOUT_MS).then(() => {
-                    throw new Error(`timeout ${HEAVY_PIATTI_STATE_TIMEOUT_MS / 1000}s per stato ${statoId}`)
-                  }),
-                ])
-              } catch (e) {
-                addNonProvato(e.message)
-                report.anomalie.push(`piatti C1/C2 pesante ${statoId} ${profiloKey}/${temaKey}: ${e.message}`)
+            try {
+              await runWithStateTimeout(() => runOne(), statoId)
+            } catch (e) {
+              if (activeCtx) {
+                await activeCtx.close().catch(() => {})
+                activeCtx = null
               }
-            } else {
-              await runOne()
+              if (activeSim) {
+                activeSim.kill('SIGTERM')
+                activeSim = null
+                await waitForPortFree(SIM_PORT).catch(() => {})
+              }
+              const motivo =
+                e.code === 'UI_VERIFY_TIMEOUT' || String(e.message).startsWith('tempo:')
+                  ? `tempo: ${statoId}`
+                  : e.message
+              addNonProvato(motivo)
+              report.anomalie.push(`piatti C1/C2 ${statoId} ${profiloKey}/${temaKey}: ${motivo}`)
             }
           }
         }
       }
 
-      for (const statoId of lightStates) {
-        await runPiattiC1C2Matrix(statoId)
-      }
-      for (const statoId of heavyStates) {
-        await runPiattiC1C2Matrix(statoId, { heavy: true })
+      if (runMatrix) {
+        for (const statoId of matrixStateIds) {
+          await runPiattiC1C2Matrix(statoId)
+        }
       }
     }
   }

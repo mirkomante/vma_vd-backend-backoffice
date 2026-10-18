@@ -1,3 +1,5 @@
+import { SOLO_DEFAULT_PROFILI, SOLO_DEFAULT_TEMI, inferScreensFromSolo } from './solo.mjs'
+
 /** Mappa id controllo → livello minimo (default 1). */
 export function buildLevelMap(controlli) {
   const map = new Map()
@@ -37,16 +39,26 @@ function resolveListFromLivello(controlli, livello, key, cliOverride) {
 export function createRunContext(controlli, cli) {
   const levels = buildLevelMap(controlli)
   const livello = cli.livello
-  const schermate = cli.schermate
+  const solo = cli.solo?.size ? cli.solo : null
+  let schermate = cli.schermate
+  if (solo && !schermate?.size) {
+    schermate = inferScreensFromSolo(solo, controlli)
+    if (!schermate.size) schermate = null
+  }
 
-  const temiFromLivello = resolveListFromLivello(controlli, livello, 'temi', cli.temi)
-  const profiliFromLivello = resolveListFromLivello(controlli, livello, 'profili', cli.profili)
+  const temiFromLivello = solo
+    ? cli.temi ?? SOLO_DEFAULT_TEMI
+    : resolveListFromLivello(controlli, livello, 'temi', cli.temi)
+  const profiliFromLivello = solo
+    ? cli.profili ?? SOLO_DEFAULT_PROFILI
+    : resolveListFromLivello(controlli, livello, 'profili', cli.profili)
 
   const livelloBlock = livello != null ? controlli.livelli?.[String(livello)] : null
   const runWebkitEssential =
     livello == null ? true : livelloBlock?.webkit === true
 
   function shouldRun(controlId) {
+    if (solo) return solo.has(controlId)
     if (livello == null) return true
     const minLevel = levels.get(controlId) ?? 1
     return minLevel <= livello
@@ -93,6 +105,7 @@ export function createRunContext(controlli, cli) {
   return {
     livello,
     schermate,
+    solo,
     levels,
     shouldRun,
     screenIncluded,
