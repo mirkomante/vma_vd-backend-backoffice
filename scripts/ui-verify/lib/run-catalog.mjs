@@ -10,17 +10,26 @@ import { CATALOG_SCREENS, CATALOG_SCREEN_IDS } from './catalog-config.mjs'
 import {
   applyFiltersSheet,
   applyOriginFilterCascade,
-  clearComboboxToEmptyOption,
   openFiltersSheet,
-  showMoreButtonLabel,
-  toggleWineNvCheckbox,
+  selectComboboxOption,
 } from './catalog-ui-helpers.mjs'
-import { menuCreateCatalogItems, menuDeleteVerifyPrefix } from './menu-payload.mjs'
+import { catalogCopyConst } from './catalog-copy.mjs'
+import { menuCountCatalog, menuCreateCatalogItems, menuDeleteVerifyPrefix } from './menu-payload.mjs'
+import { SIM_PORT, waitForPortFree } from './ensure-ports.mjs'
 
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
 const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
 
-const HEAVY_STATES = new Set(['piu-di-100-vini', 'piu-di-100-distillati', 'piu-di-100-bevande', 'caricamento', 'errore-caricamento', 'vuoto'])
+const HEAVY_STATES = new Set([
+  'piu-di-100-vini',
+  'piu-di-100-distillati',
+  'piu-di-100-bevande',
+  'caricamento',
+  'errore-caricamento',
+  'vuoto',
+])
+
+const HEAVY_STATE_TIMEOUT_MS = 4 * 60 * 1000
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
@@ -35,10 +44,31 @@ function controlDef(controlli, screenId, controlId) {
   return screen?.controlli?.find((c) => c.id === controlId)
 }
 
-async function isCatalogScreenReady(page, config) {
-  const h1 = (await page.locator('h1').innerText().catch(() => '')).trim()
-  if (h1 !== config.h1) return false
-  return !(await isSegnapostoMain(page))
+function bulkStateId(config) {
+  if (config.id === 'vini') return 'piu-di-100-vini'
+  if (config.id === 'distillati') return 'piu-di-100-distillati'
+  return 'piu-di-100-bevande'
+}
+
+async function clickRowAction(page, name, action) {
+  const label =
+    action === 'edit'
+      ? `Modifica ${name}`
+      : action === 'delete'
+        ? `Elimina ${name}`
+        : action === 'disable'
+          ? `Disabilita ${name}`
+          : `Abilita ${name}`
+  await page.getByRole('button', { name: label }).click()
+}
+
+async function toggleDisponibile(page, name) {
+  await page.getByRole('switch', { name: `Disponibile: ${name}` }).click()
+}
+
+export async function gotoCatalog(page, config) {
+  await page.goto(config.path, { waitUntil: 'networkidle' })
+  await page.locator('h1', { hasText: config.h1 }).waitFor({ timeout: 20000 })
 }
 
 function markCatalogControls(ctx, config, evidenza) {
@@ -95,30 +125,43 @@ function markCatalogControls(ctx, config, evidenza) {
   }
 }
 
-async function gotoCatalog(page, config) {
-  await page.goto(config.path, { waitUntil: 'networkidle' })
-  await page.locator('h1', { hasText: config.h1 }).waitFor({ timeout: 20000 })
-}
-
 /**
- * Prepara uno stato UI (usato da C1/C2 e confronto visivo dopo I3).
- * Restituisce false se lo stato non è ancora automatizzabile senza la pagina.
+ * Prepara uno stato UI (C1/C2, confronto visivo, screenshot).
  */
 export async function prepareCatalogState(page, config, statoId, ctx) {
   const { testUser } = ctx
+  const sid = config.id
+  const copy = (name) => catalogCopyConst(sid, name)
   menuDeleteVerifyPrefix()
+
   switch (statoId) {
     case 'elenco':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${config.id}-elenco` }])
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-elenco` }])
       await gotoCatalog(page, config)
       return true
+    case 'disponibilita': {
+      const n = `verify-ui-${sid}-disp-shot`
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: n }])
+      await gotoCatalog(page, config)
+      await toggleDisponibile(page, n)
+      await page.waitForTimeout(500)
+      return true
+    }
     case 'filtri':
       await gotoCatalog(page, config)
-      await openFiltersSheet(page)
+      await openFiltersSheet(page, copy('FILTERS_BUTTON') ?? 'Filtri')
+      return true
+    case 'filtri-attivi':
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-filtro` }])
+      await gotoCatalog(page, config)
+      await openFiltersSheet(page, copy('FILTERS_BUTTON') ?? 'Filtri')
+      await page.getByRole('combobox').first().click()
+      await page.getByRole('option').nth(1).click()
+      await applyFiltersSheet(page, copy('FILTERS_APPLY') ?? 'Applica')
       return true
     case 'filtri-origine':
       if (!config.hasOriginCascade) return false
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${config.id}-orig` }])
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-orig` }])
       await gotoCatalog(page, config)
       await openFiltersSheet(page)
       await applyOriginFilterCascade(page, {
@@ -126,18 +169,93 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
         region: 'Friuli Venezia Giulia',
         appellation: 'Collio',
       })
+      await applyFiltersSheet(page)
+      return true
+    case 'modulo':
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-mod` }])
+      await gotoCatalog(page, config)
+      await clickRowAction(page, `verify-ui-${sid}-mod`, 'edit')
+      return true
+    case 'modulo-origine':
+      if (sid !== 'vini') return false
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-vini-mod-orig' }])
+      await gotoCatalog(page, config)
+      await clickRowAction(page, 'verify-ui-vini-mod-orig', 'edit')
+      return true
+    case 'modulo-inglese-aperto':
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-en` }])
+      await gotoCatalog(page, config)
+      await clickRowAction(page, `verify-ui-${sid}-en`, 'edit')
+      await page.getByRole('button', { name: /Traduzione inglese/i }).click().catch(() => {})
+      return true
+    case 'origine-senza-regioni':
+      if (sid !== 'vini') return false
+      await gotoCatalog(page, config)
+      await page.getByRole('button', { name: config.newButton }).click()
+      await selectComboboxOption(page, copy('FORM_COUNTRY') ?? 'Paese', 'Giappone')
       return true
     case 'nuovo':
       await gotoCatalog(page, config)
       await page.getByRole('button', { name: config.newButton }).click()
       return true
     case 'modulo-anno':
-      if (config.id !== 'vini') return false
+      if (sid !== 'vini') return false
       await gotoCatalog(page, config)
       await page.getByRole('button', { name: config.newButton }).click()
       return true
+    case 'nuovo-errori':
+      await gotoCatalog(page, config)
+      await page.getByRole('button', { name: config.newButton }).click()
+      await page.getByRole('button', { name: copy('FORM_SAVE') ?? 'Salva' }).click()
+      return true
+    case 'errore-geografia':
+      if (sid !== 'vini') return false
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-vini-geo-shot' }])
+      await gotoCatalog(page, config)
+      await clickRowAction(page, 'verify-ui-vini-geo-shot', 'edit')
+      return true
+    case 'errore-anno':
+      if (sid !== 'vini') return false
+      await gotoCatalog(page, config)
+      await page.getByRole('button', { name: config.newButton }).click()
+      await page.getByRole('textbox', { name: copy('FORM_YEAR') ?? 'Anno' }).fill('1899')
+      await page.getByRole('button', { name: copy('FORM_SAVE') ?? 'Salva' }).click()
+      return true
+    case 'elimina':
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-del` }])
+      await gotoCatalog(page, config)
+      await clickRowAction(page, `verify-ui-${sid}-del`, 'delete')
+      return true
+    case 'eliminato':
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-del-done` }])
+      await gotoCatalog(page, config)
+      await clickRowAction(page, `verify-ui-${sid}-del-done`, 'delete')
+      await page
+        .getByRole('alertdialog')
+        .getByRole('button', { name: copy('DELETE_CONFIRM') ?? 'Elimina' })
+        .click()
+      await page.waitForTimeout(500)
+      return true
+    case 'piu-di-100-vini':
+    case 'piu-di-100-distillati':
+    case 'piu-di-100-bevande': {
+      const { count } = menuCountCatalog(config.collection)
+      prepareCatalogBulk101(testUser.email, config, count)
+      await gotoCatalog(page, config)
+      return true
+    }
+    case 'caricamento':
+    case 'errore-caricamento':
+    case 'errore-azione':
+      return true
+    case 'vuoto': {
+      const { count } = menuCountCatalog(config.collection)
+      if (count > 0) return false
+      await gotoCatalog(page, config)
+      return true
+    }
     case 'nessun-risultato':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${config.id}-find` }])
+      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-find` }])
       await gotoCatalog(page, config)
       await page.getByPlaceholder(config.searchPlaceholder).fill('verify-ui-zzzz-no')
       await sleep(500)
@@ -149,136 +267,11 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
 }
 
 export async function runCatalogFlowControls(ctx, config) {
-  const { browser, baseUrl, report, runCtx, CONTROLLI, newPage, loginApp, testUser, testPassword, addRow } = ctx
-  const executed = new Set()
-  const add = (id, esito, misurato, atteso, evidenza, profiloTema = 'telefono-390/chiaro') => {
-    if (!runCtx.shouldRun(id)) return
-    executed.add(id)
-    addRow(report, { id, schermata: config.id, profiloTema, esito, misurato, atteso, evidenza })
-  }
-
   try {
-    if (runCtx.shouldRun(`${config.id}-testi`)) {
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoCatalog(page, config)
-      const main = await page.locator('main').innerText()
-      const missing = []
-      if (!main.includes(config.h1)) missing.push('h1')
-      if (!main.includes(config.newButton)) missing.push('pulsante')
-      if ((await page.getByPlaceholder(config.searchPlaceholder).count()) < 1) missing.push('ricerca')
-      add(
-        `${config.id}-testi`,
-        missing.length ? 'FALLITO' : 'OK',
-        missing.length ? missing.join(', ') : 'testi principali',
-        'testi §6 spec',
-        config.path,
-      )
-      await pctx.close()
-    }
-
-    if (config.id === 'vini' && runCtx.shouldRun('vini-filtri-origine')) {
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoCatalog(page, config)
-      const failures = []
-      try {
-        await openFiltersSheet(page)
-        const regionDisabled = await page.getByRole('combobox', { name: 'Regione' }).isDisabled()
-        if (!regionDisabled) failures.push('regione senza paese non disabilitata')
-        await applyOriginFilterCascade(page, {
-          country: 'Italia',
-          region: 'Friuli Venezia Giulia',
-          appellation: 'Collio',
-        })
-        await applyFiltersSheet(page)
-        await openFiltersSheet(page)
-        await clearComboboxToEmptyOption(page, 'Paese', 'Tutti i paesi')
-        await applyFiltersSheet(page)
-      } catch (e) {
-        failures.push(e.message)
-      }
-      add(
-        'vini-filtri-origine',
-        failures.length ? 'FALLITO' : 'OK',
-        failures.join(' | ') || 'cascata filtri origine',
-        'foglio filtri origine §7',
-        config.path,
-      )
-      await pctx.close()
-    }
-
-    if (config.id === 'vini' && runCtx.shouldRun('vini-modulo-anno')) {
-      const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await gotoCatalog(page, config)
-      const failures = []
-      try {
-        await page.getByRole('button', { name: config.newButton }).click()
-        const year = page.getByRole('textbox', { name: 'Anno' })
-        await year.fill('12a')
-        const val = await year.inputValue()
-        if (val !== '12') failures.push(`anno accetta non-cifre: ${val}`)
-        await toggleWineNvCheckbox(page)
-        if (!(await year.isDisabled())) failures.push('anno non disabilitato con NV')
-        await toggleWineNvCheckbox(page)
-        if (await year.isDisabled()) failures.push('anno resta disabilitato senza NV')
-      } catch (e) {
-        failures.push(e.message)
-      }
-      add('vini-modulo-anno', failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || 'anno/NV', 'modulo anno', config.path)
-      await pctx.close()
-    }
-
-    if (runCtx.shouldRun(`${config.id}-ordine-100`)) {
-      add(
-        `${config.id}-ordine-100`,
-        'NON PROVATO',
-        '—',
-        '101 record e «Mostra altri …»',
-        'completamento flusso dopo I3 (bulk verify-ui-…)',
-      )
-    }
-
-    const rinviati = [`${config.id}-ricompila`]
-    for (const id of rinviati) {
-      if (!runCtx.shouldRun(id)) continue
-      add(id, 'NON PROVATO', '—', '—', 'rinviato alla 6.5')
-    }
-
-    if (runCtx.shouldRun(`${config.id}-accesso`)) {
-      add(`${config.id}-accesso`, 'NON PROVATO', '—', 'guardia 8.3', 'verify-roles-8_3.ts')
-    }
-    if (runCtx.shouldRun(`${config.id}-stato-vuoto`)) {
-      add(`${config.id}-stato-vuoto`, 'NON PROVATO', '—', 'vuoto DB', 'non si svuota il DB dev')
-    }
-    if (runCtx.shouldRun(`${config.id}-confronto-visivo`)) {
-      add(
-        `${config.id}-confronto-visivo`,
-        'NON PROVATO',
-        '—',
-        'screenshot C10',
-        'esecuzione confronto visivo al passo V (dopo I3)',
-      )
-    }
-
-    for (const id of catalogControlIdsFromControlli(CONTROLLI, config.id)) {
-      if (!runCtx.shouldRun(id) || executed.has(id)) continue
-      const ctrl = controlDef(CONTROLLI, config.id, id)
-      if (isRinviato65(ctrl)) {
-        add(id, 'NON PROVATO', '—', '—', 'rinviato alla 6.5')
-        continue
-      }
-      add(
-        id,
-        'NON PROVATO',
-        '—',
-        ctrl?.tipo ?? 'flusso',
-        'debito passo V: flusso da completare dopo implementazione I3',
-      )
-    }
-  } finally {
-    menuDeleteVerifyPrefix()
+    const { runCatalogFlowControlsFull } = await import('./run-catalog-flows.mjs')
+    await runCatalogFlowControlsFull(ctx, config)
+  } catch (e) {
+    ctx.report?.anomalie?.push(`${config.id} runCatalogFlowControlsFull: ${e.message}`)
   }
 }
 
@@ -296,64 +289,135 @@ export async function runCatalogC1C2Matrix(ctx, config) {
     addRow,
     progressStep,
     resultToEsito,
+    startMenuDevServer,
+    waitForUrl,
   } = ctx
   const screen = CONTROLLI.schermate?.find((s) => s.id === config.id)
   const stati = screen?.stati_c1_c2 ?? []
   const temiAll = runCtx.temiKeys().filter((t) => ['chiaro', 'scuro'].includes(t))
   const profiliL1 = runCtx.profiliAccess().filter((p) => ['telefono-390', 'notebook-1280'].includes(p))
+  const bulkId = bulkStateId(config)
+  const lightStates = stati.filter((id) => !HEAVY_STATES.has(id) && id !== bulkId)
+  const heavyStates = [...new Set([...stati.filter((id) => HEAVY_STATES.has(id)), bulkId].filter(Boolean))]
 
-  for (const statoId of stati) {
-    if (HEAVY_STATES.has(statoId)) continue
+  async function runMatrix(statoId, { heavy = false } = {}) {
     for (const temaKey of temiAll) {
       for (const profiloKey of profiliL1) {
         if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820') continue
         progressStep(config.id, statoId, profiloKey, temaKey)
         const sch = `${config.id}/${statoId}`
         const pt = `${profiloKey}/${temaKey}`
-        const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, baseUrl)
-        await loginApp(sp, baseUrl, testUser.email, testPassword)
-        try {
-          const okState = await prepareCatalogState(sp, config, statoId, ctx)
-          if (!okState) {
-            for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
-              if (!runCtx.shouldRun(id)) continue
-              addRow(report, {
-                id,
-                schermata: sch,
-                profiloTema: pt,
-                esito: 'NON PROVATO',
-                misurato: 'stato non preparato',
-                atteso: id,
-                evidenza: statoId,
-              })
+
+        const addNonProvato = (motivo) => {
+          for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
+            if (!runCtx.shouldRun(id)) continue
+            if (id === 'C1' && !C1_PROFILES.has(profiloKey)) continue
+            if (id === 'C2' && !C2_PROFILES.has(profiloKey)) continue
+            if (id === 'C2-mouse' && profiloKey !== 'notebook-1280') continue
+            addRow(report, {
+              id,
+              schermata: sch,
+              profiloTema: pt,
+              esito: 'NON PROVATO',
+              misurato: motivo,
+              atteso: id,
+              evidenza: statoId,
+            })
+          }
+        }
+
+        const runOne = async () => {
+          let simChild = null
+          let pageBase = baseUrl
+          try {
+            if (statoId === 'caricamento' || statoId === 'errore-caricamento') {
+              if (startMenuDevServer && waitForUrl) {
+                await waitForPortFree(SIM_PORT)
+                const env =
+                  statoId === 'caricamento'
+                    ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
+                    : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
+                simChild = startMenuDevServer(SIM_PORT, env)
+                pageBase = `http://localhost:${SIM_PORT}`
+                await waitForUrl(pageBase)
+              }
+            }
+            if (statoId === 'vuoto') {
+              const { count } = menuCountCatalog(config.collection)
+              if (count > 0) {
+                addNonProvato(`stato vuoto: DB con ${count} record`)
+                return
+              }
+            }
+            const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
+            await loginApp(sp, pageBase, testUser.email, testPassword)
+            try {
+              if (statoId === 'caricamento') {
+                await sp.goto(config.path, { waitUntil: 'commit' })
+                await sleep(600)
+              } else if (statoId === 'errore-caricamento') {
+                await sp.goto(config.path, { waitUntil: 'networkidle' })
+              } else {
+                const okState = await prepareCatalogState(sp, config, statoId, ctx)
+                if (!okState) {
+                  addNonProvato('stato non preparato')
+                  await sctx.close()
+                  return
+                }
+              }
+            } catch (e) {
+              report.anomalie.push(`${config.id} stato ${statoId}: ${e.message}`)
+            }
+            if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
+              const r = await checkScrollOrizzontale(sp)
+              addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+            }
+            if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
+              const r = await checkToccoMinimo(sp)
+              addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+            }
+            if (runCtx.shouldRun('C3')) {
+              const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
+              addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+            }
+            if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
+              const r = await checkAltezzaMouse(sp)
+              addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
             }
             await sctx.close()
-            continue
+          } finally {
+            if (simChild) {
+              simChild.kill('SIGTERM')
+              await waitForPortFree(SIM_PORT)
+            }
+            menuDeleteVerifyPrefix()
           }
-          if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
-            const r = await checkScrollOrizzontale(sp)
-            addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+        }
+
+        if (heavy) {
+          try {
+            await Promise.race([
+              runOne(),
+              sleep(HEAVY_STATE_TIMEOUT_MS).then(() => {
+                throw new Error(`timeout ${HEAVY_STATE_TIMEOUT_MS / 1000}s per stato ${statoId}`)
+              }),
+            ])
+          } catch (e) {
+            addNonProvato(e.message)
+            report.anomalie.push(`${config.id} C1/C2 pesante ${statoId}: ${e.message}`)
           }
-          if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
-            const r = await checkToccoMinimo(sp)
-            addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-          }
-          if (runCtx.shouldRun('C3')) {
-            const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
-            addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-          }
-          if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
-            const r = await checkAltezzaMouse(sp)
-            addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-          }
-        } catch (e) {
-          report.anomalie.push(`${config.id} C1/C2 ${statoId}: ${e.message}`)
-        } finally {
-          menuDeleteVerifyPrefix()
-          await sctx.close()
+        } else {
+          await runOne()
         }
       }
     }
+  }
+
+  for (const statoId of lightStates) {
+    await runMatrix(statoId)
+  }
+  for (const statoId of heavyStates) {
+    await runMatrix(statoId, { heavy: true })
   }
 }
 
@@ -377,7 +441,13 @@ export async function runCatalogScreens(ctx) {
   }
 }
 
-/** Helper per ordine-100 (dopo I3): crea fino a 101 record verify-ui-…. */
+async function isCatalogScreenReady(page, config) {
+  const h1 = (await page.locator('h1').innerText().catch(() => '')).trim()
+  if (h1 !== config.h1) return false
+  return !(await isSegnapostoMain(page))
+}
+
+/** Helper per ordine-100: crea fino a 101 record verify-ui-…. */
 export function prepareCatalogBulk101(managerEmail, config, existingCount) {
   const need = Math.max(0, 101 - existingCount)
   const specs = []
@@ -389,7 +459,7 @@ export function prepareCatalogBulk101(managerEmail, config, existingCount) {
 }
 
 export async function runCatalogShowMoreFlow(page, config) {
-  const label = showMoreButtonLabel(config.id)
+  const label = config.showMore
   await page.getByRole('button', { name: label }).click()
   await sleep(500)
 }

@@ -57,6 +57,15 @@ export async function clickShowMoreCatalog(page, buttonLabel) {
   await page.waitForTimeout(600)
 }
 
+/** Ultimo combobox nel foglio Filtri = Stato (tipologia/paese/… prima). */
+export async function selectFiltersStateOption(page, stateLabel) {
+  const sheet = page.locator('[data-slot=sheet-content]')
+  await sheet.waitFor({ state: 'visible', timeout: 15000 })
+  const combo = sheet.getByRole('combobox').last()
+  await combo.click()
+  await page.getByRole('option', { name: stateLabel, exact: true }).click()
+}
+
 export function showMoreButtonLabel(screenId) {
   if (screenId === 'vini') return 'Mostra altri vini'
   if (screenId === 'distillati') return 'Mostra altri distillati'

@@ -109,3 +109,59 @@ export function menuTryDeleteCatalog(managerEmail, collectionSlug, name) {
 export function menuFindCatalogDeleteLog(managerEmail, collectionSlug, docId, itemName) {
   return menuPayloadRun('find-catalog-delete-log', [managerEmail, collectionSlug, String(docId), itemName ?? ''])
 }
+
+export function menuTryCreateCatalogDoc(managerEmail, collectionSlug, dataPatch) {
+  return menuPayloadRun('try-create-catalog-doc', [managerEmail, collectionSlug, JSON.stringify(dataPatch)])
+}
+
+export function menuReadCatalogEn(managerEmail, collectionSlug, name) {
+  return menuPayloadRun('read-catalog-en', [managerEmail, collectionSlug, name])
+}
+
+export function menuListWineOriginTaxonomies() {
+  return menuPayloadRun('list-wine-origin-taxonomies')
+}
+
+export function menuSetCountryEnabled(name, enabled) {
+  return menuPayloadRun('set-country-enabled', [name, enabled ? 'true' : 'false'])
+}
+
+export function menuPatchCatalogDoc(managerEmail, collectionSlug, name, patch) {
+  return menuPayloadRun('patch-catalog-doc', [managerEmail, collectionSlug, name, JSON.stringify(patch)])
+}
+
+export function menuTryCreateWineTaxonomy(managerEmail, kind) {
+  return menuPayloadRun('try-create-wine-taxonomy', [managerEmail, kind])
+}
+
+export function menuCreateWineWithGradeSql(managerEmail, wineName) {
+  return menuPayloadRun('create-wine-with-grade-sql', [managerEmail, wineName ?? 'verify-ui-grade-fmt'])
+}
+
+export function menuTryUpdateCatalogDisabledOnly(managerEmail, collectionSlug, name) {
+  return menuPayloadRun('try-update-catalog-disabled-only', [managerEmail, collectionSlug, name])
+}
+
+export function menuAdminSetSpiritVolume(name, volume = '75 cl') {
+  return menuPayloadRun('admin-set-spirit-volume', [name, volume])
+}
+
+export function menuAdminSetSpiritAbv(name, abv = '12,8%') {
+  return menuPayloadRun('admin-set-spirit-abv', [name, abv])
+}
+
+export function menuMisalignWineGeography(managerEmail, wineName) {
+  return menuPayloadRun('misalign-wine-geography', [managerEmail, wineName])
+}
+
+export function menuValidateWineFormatsProbe(managerEmail) {
+  return menuPayloadRun('validate-wine-formats-probe', [managerEmail])
+}
+
+export function menuValidateSpiritFormatsProbe(managerEmail) {
+  return menuPayloadRun('validate-spirit-formats-probe', [managerEmail])
+}
+
+export function menuValidateDrinkFormatsProbe(managerEmail) {
+  return menuPayloadRun('validate-drink-formats-probe', [managerEmail])
+}

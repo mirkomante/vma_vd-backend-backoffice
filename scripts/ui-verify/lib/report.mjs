@@ -5,6 +5,28 @@ import { allControlIds } from './controlli-index.mjs'
 
 const PACCHETTO_ORDER = ['accesso', 'shell', 'menu', 'orari', 'online', 'completo']
 
+const MENU_SCREEN_IDS = ['home', 'navigazione', 'piatti', 'vini', 'distillati', 'bevande']
+
+/** Schermata menù/catalogo associata a una riga (per merge parziale tra esecuzioni). */
+export function menuScreenForRow(row) {
+  const sch = row.schermata ?? ''
+  if (MENU_SCREEN_IDS.includes(sch)) return sch
+  const id = row.id ?? ''
+  if (id.startsWith('home-riga-')) return 'home'
+  if (id.startsWith('nav-')) return 'navigazione'
+  if (id.startsWith('piatti-')) return 'piatti'
+  for (const s of ['vini', 'distillati', 'bevande']) {
+    if (id.startsWith(`${s}-`) || id === `${s}-console`) return s
+  }
+  if (['C1', 'C2', 'C3', 'C2-mouse'].includes(id) && MENU_SCREEN_IDS.includes(sch)) return sch
+  return null
+}
+
+export function menuScreensInRun(runCtx) {
+  if (!runCtx?.schermate) return null
+  return MENU_SCREEN_IDS.filter((id) => runCtx.screenIncluded(id))
+}
+
 export function initReport({
   ambiente,
   data,
@@ -77,6 +99,24 @@ export function initReport({
       if (!pacchetto) return
       this.rows = this.rows.filter((r) => (r.pacchetto ?? inferPacchettoFromRow(r)) !== pacchetto)
     },
+    /** Rimuove le righe delle schermate menù/catalogo indicate (merge tra giri parziali). */
+    replaceMenuScreens(screenIds) {
+      if (!screenIds?.length) return
+      const set = new Set(screenIds)
+      this.rows = this.rows.filter((r) => {
+        const ms = menuScreenForRow(r)
+        return !ms || !set.has(ms)
+      })
+    },
+    prepareMenuPackageRerun(runCtx) {
+      const scoped = menuScreensInRun(runCtx)
+      if (scoped?.length) {
+        this.replaceMenuScreens(scoped)
+        return
+      }
+      this.replacePacchetto('menu')
+      this.replaceMenuScreens(['vini', 'distillati', 'bevande'])
+    },
     add(row) {
       const pacchetto = row.pacchetto ?? this.pacchettoDefault ?? inferPacchettoFromRow(row)
       this.rows.push({ ...row, pacchetto })
@@ -97,11 +137,21 @@ export function initReport({
     },
     write() {
       const recordedIds = new Set(this.rows.map((r) => r.id))
+      const placeholderMotivo = 'controllo non eseguito dal lanciatore in questa esecuzione'
       for (const id of expectedIds) {
-        if (!recordedIds.has(id)) {
-          this.addNonProvato(id, 'controllo non eseguito dal lanciatore in questa esecuzione')
-        }
+        if (recordedIds.has(id)) continue
+        this.addNonProvato(id, placeholderMotivo)
       }
+      // Rimuove placeholder duplicati se un giro parziale ha già registrato il controllo in un run precedente (merge preserveEsiti).
+      const realIds = new Set(
+        this.rows
+          .filter((r) => r.evidenza !== placeholderMotivo && r.schermata !== '—')
+          .map((r) => r.id),
+      )
+      this.rows = this.rows.filter(
+        (r) => !(r.evidenza === placeholderMotivo && r.schermata === '—' && realIds.has(r.id)),
+      )
+      this.nonProvato = this.nonProvato.filter((n) => !realIds.has(n.id))
 
       const counts = { OK: 0, FALLITO: 0, AVVISO: 0, 'NON PROVATO': 0 }
       for (const r of this.rows) counts[r.esito] = (counts[r.esito] ?? 0) + 1
@@ -234,10 +284,19 @@ function inferPacchettoFromRow(row) {
     id.startsWith('home-riga-') ||
     id.startsWith('nav-') ||
     id.startsWith('piatti-') ||
+    id.startsWith('vini-') ||
+    id.startsWith('distillati-') ||
+    id.startsWith('bevande-') ||
     sch.startsWith('home') ||
     sch.startsWith('navigazione') ||
-    sch.startsWith('piatti')
+    sch.startsWith('piatti') ||
+    sch === 'vini' ||
+    sch === 'distillati' ||
+    sch === 'bevande'
   ) {
+    return 'menu'
+  }
+  if (['C1', 'C2', 'C3', 'C2-mouse'].includes(id) && ['vini', 'distillati', 'bevande'].includes(sch)) {
     return 'menu'
   }
   if (id === 'NO-OVERRIDE' || id.startsWith('RICOMPILA-')) return 'menu'

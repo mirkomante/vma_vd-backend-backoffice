@@ -1,0 +1,362 @@
+{
+  "meta": {
+    "ambiente": "locale-dev",
+    "data": "2026-10-18",
+    "commit": "853fbe18929d",
+    "launcherVersion": "3.4.1",
+    "launcherHeader": "3.4.1 (L2)",
+    "browsers": "Chromium 140.0.7339.186; WebKit 26.0",
+    "controlliBasename": "controlli-6.6.json",
+    "livelloEseguito": "L2",
+    "controlliVersion": 1,
+    "durataMs": 101081,
+    "invalidRun": false
+  },
+  "counts": {
+    "OK": 18,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 11
+  },
+  "distinctControls": 15,
+  "rows": [
+    {
+      "id": "piatti-stati-ui",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "simulazioni caricamento ed errore caricamento ok",
+      "atteso": "skeleton caricamento; avviso errore caricamento (stato vuoto in piatti-stato-vuoto)",
+      "evidenza": "localhost:3200",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-stati-ui",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "simulazioni ok",
+      "atteso": "skeleton caricamento; avviso errore caricamento",
+      "evidenza": "localhost:3200",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-stati-ui",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "simulazioni ok",
+      "atteso": "skeleton caricamento; avviso errore caricamento",
+      "evidenza": "localhost:3200",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-stati-ui",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "simulazioni ok",
+      "atteso": "skeleton caricamento; avviso errore caricamento",
+      "evidenza": "localhost:3200",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-stati",
+      "schermata": "home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "stati simulati ok",
+      "atteso": "Skeleton in attesa; con errore nessuna riga e link ok",
+      "evidenza": "localhost:3200",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-console",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0",
+      "atteso": "zero error/warning",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-console",
+      "schermata": "vini",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0",
+      "atteso": "zero error/warning",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-console",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0",
+      "atteso": "zero error/warning",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-console",
+      "schermata": "distillati",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0",
+      "atteso": "zero error/warning",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-console",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0",
+      "atteso": "zero error/warning",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-console",
+      "schermata": "bevande",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0",
+      "atteso": "zero error/warning",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu/wines",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu/spirits",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu/drinks",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu/wines",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu/spirits",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "CONSOLE",
+      "schermata": "/app/menu/drinks",
+      "profiloTema": "telefono-390/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror/richieste fallite",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "webkit-giro-essenziale",
+      "schermata": "shell/home",
+      "profiloTema": "telefono-390/chiaro/WebKit 26.0",
+      "esito": "OK",
+      "misurato": "login→/app OK (http://localhost:3000/app)",
+      "atteso": "login, home, menu, menu utente (locale-dev)",
+      "evidenza": "26.0",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-elimina-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-formati-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-capacita-non-gestita",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-elimina-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-formati-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-coerenza-geografica",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-elimina-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-formati-server",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "nonProvato": [
+    {
+      "id": "bevande-elimina-registro-permessi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-formati-server",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-persistenza",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-capacita-non-gestita",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-elimina-registro-permessi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-formati-server",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-persistenza",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-coerenza-geografica",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-elimina-registro-permessi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-formati-server",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-persistenza",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "anomalie": [],
+  "screenshotHashes": []
+}

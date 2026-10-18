@@ -89,7 +89,7 @@ import { loadNavExpectations } from './lib/lib-readers.mjs'
 import { auditControlliWiring } from './lib/controlli-handlers.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
-const DATA = '2026-10-17'
+const DATA = '2026-10-18'
 
 /** @type {import('./lib/perimeter.mjs').ReturnType<typeof createRunContext>} */
 let runCtx
@@ -640,7 +640,7 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
   }
 
   if (menuScreensInScope()) {
-    report.replacePacchetto('menu')
+    report.prepareMenuPackageRerun(runCtx)
     report.pacchettoDefault = 'menu'
     const nav = ensureNavExpectations()
     await runMenuChecks({
@@ -1230,7 +1230,7 @@ async function main() {
         }
 
         if (menuScreensInScope()) {
-          report.replacePacchetto('menu')
+          report.prepareMenuPackageRerun(runCtx)
           report.pacchettoDefault = 'menu'
           await runMenuDevSimulations({
             report,

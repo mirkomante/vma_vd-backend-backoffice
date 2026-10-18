@@ -24,6 +24,11 @@ export function allControlIds(controlli, ambiente, opts = {}) {
       for (const c of controlli.comuni ?? []) {
         if (c.id === 'CONSOLE' && schermate?.has('piatti') && levelOk('CONSOLE')) ids.push('CONSOLE')
       }
+      for (const screenId of ['vini', 'distillati', 'bevande']) {
+        if (schermate && !schermate.has(screenId)) continue
+        const consoleId = `${screenId}-console`
+        if (levelOk(consoleId)) ids.push(consoleId)
+      }
       if (livello != null && livello >= 2 && levelOk('webkit-giro-essenziale')) {
         ids.push('webkit-giro-essenziale')
       }

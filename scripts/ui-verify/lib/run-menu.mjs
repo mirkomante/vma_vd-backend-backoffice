@@ -27,7 +27,9 @@ import {
   runPiattiStatiUi,
   runRicompilaAssenteCheck,
 } from './run-piatti.mjs'
+import { CATALOG_SCREENS, CATALOG_SCREEN_IDS } from './catalog-config.mjs'
 import { runCatalogScreens } from './run-catalog.mjs'
+import { runCatalogConsoleForScreen, runCatalogStatiUi } from './run-catalog-flows.mjs'
 
 const ROOT_MENU = join(import.meta.dirname, '../../..')
 
@@ -702,7 +704,7 @@ export async function runMenuChecks(ctx) {
   const temiAll = runCtx.temiKeys().filter((t) => ['chiaro', 'scuro'].includes(t))
   const profiliL1 = runCtx.profiliAccess().filter((p) => ['telefono-390', 'notebook-1280'].includes(p))
 
-  report.replacePacchetto?.('menu')
+  report.prepareMenuPackageRerun?.(runCtx)
 
   if (runCtx.screenIncluded('home')) {
     const homeIds = [
@@ -979,6 +981,8 @@ export async function runMenuChecks(ctx) {
     SHOT_PROFILES,
     SHOT_TEMI,
     ambiente,
+    startMenuDevServer,
+    waitForUrl,
   })
 }
 
@@ -1000,6 +1004,18 @@ export async function runMenuDevSimulations(ctx) {
     startMenuDevServer,
     waitForUrl,
   })
+
+  for (const screenId of CATALOG_SCREEN_IDS) {
+    if (!runCtx.screenIncluded(screenId)) continue
+    await runCatalogStatiUi(
+      {
+        ...ctx,
+        startMenuDevServer,
+        waitForUrl,
+      },
+      CATALOG_SCREENS[screenId],
+    )
+  }
 
   if (!runCtx.shouldRun('home-riga-menu-stati')) return
 
@@ -1112,6 +1128,14 @@ function consoleEsito(bag) {
   }
 }
 
+export async function runCatalogConsole(ctx) {
+  const base = { ...ctx }
+  for (const screenId of CATALOG_SCREEN_IDS) {
+    if (!ctx.runCtx.screenIncluded(screenId)) continue
+    await runCatalogConsoleForScreen(base, CATALOG_SCREENS[screenId])
+  }
+}
+
 export async function runMenuConsole(ctx) {
   const {
     browser,
@@ -1126,6 +1150,7 @@ export async function runMenuConsole(ctx) {
     progressStep,
     browserVersion,
   } = ctx
+  await runCatalogConsole(ctx)
   if (!runCtx.shouldRun('piatti-console')) return
   if (!runCtx.screenIncluded('piatti')) return
 
