@@ -11,6 +11,7 @@ import { APIError, getPayload, ValidationError } from 'payload'
 
 import { ACTIVITY_LOG_SLUG } from '@/lib/activityLog/constants'
 import { formatMenuContentDeleteDetail } from '@/lib/menu/menuContentDeleteLog'
+import { relationshipId } from '@/lib/menu/relationshipId'
 import {
   ALLERGENS_SLUG,
   COUNTRIES_SLUG,
@@ -138,27 +139,482 @@ async function main() {
   if (action === 'delete-prefix') {
     const prefix = args[1] ?? 'verify-ui-'
     let deleted = 0
+
+    const fixtureMenuIds = new Set<string>()
+    const fixtureMenus = await payload.find({
+      collection: FIXED_MENUS_SLUG,
+      where: { name: { like: `${prefix}%` } },
+      limit: 500,
+      depth: 0,
+      overrideAccess: true,
+    })
+    for (const doc of fixtureMenus.docs) {
+      fixtureMenuIds.add(String(doc.id))
+    }
+
+    for (;;) {
+      const specialDays = await payload.find({
+        collection: SPECIAL_DAYS_SLUG,
+        limit: 100,
+        depth: 0,
+        overrideAccess: true,
+      })
+      let removed = 0
+      for (const doc of specialDays.docs) {
+        const menuIds =
+          (doc as { content?: { fixedMenus?: unknown[] } }).content?.fixedMenus
+            ?.map((m) => relationshipId(m))
+            .filter((id): id is number | string => id != null)
+            .map(String) ?? []
+        if (menuIds.some((id) => fixtureMenuIds.has(id))) {
+          await payload.delete({ collection: SPECIAL_DAYS_SLUG, id: doc.id, overrideAccess: true })
+          deleted += 1
+          removed += 1
+        }
+      }
+      if (removed === 0) break
+    }
+
     for (const slug of [
       FIXED_MENUS_SLUG,
-      DISHES_SLUG,
       FIXED_MENU_CATEGORIES_SLUG,
+      MENU_SERVICES_SLUG,
+      DISHES_SLUG,
       WINES_SLUG,
       SPIRITS_SLUG,
       DRINKS_SLUG,
     ] as const) {
-      const found = await payload.find({
-        collection: slug,
-        where: { name: { like: prefix } },
-        limit: 500,
-        depth: 0,
-        overrideAccess: true,
-      })
-      for (const doc of found.docs) {
-        await payload.delete({ collection: slug, id: doc.id, overrideAccess: true })
-        deleted += 1
+      for (let guard = 0; guard < 50; guard += 1) {
+        const found = await payload.find({
+          collection: slug,
+          where: { name: { like: `${prefix}%` } },
+          limit: 100,
+          depth: 0,
+          overrideAccess: true,
+        })
+        if (found.docs.length === 0) break
+        for (const doc of found.docs) {
+          await payload.delete({ collection: slug, id: doc.id, overrideAccess: true })
+          deleted += 1
+        }
       }
     }
     console.log(JSON.stringify({ deleted }))
+    return
+  }
+
+  if (action === 'ensure-menu-list-fixtures') {
+    const email = args[1]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user) throw new Error('ensure-menu-list-fixtures: email richiesto')
+    const catDish = await payload.find({
+      collection: DISH_CATEGORIES_SLUG,
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const dishCategoryId = catDish.docs[0]?.id
+    if (dishCategoryId == null) {
+      console.log(JSON.stringify({ ok: false, reason: 'no_dish_category' }))
+      return
+    }
+    const dishNames = ['verify-ui-p1', 'verify-ui-p2', 'verify-ui-p3', 'verify-ui-p4']
+    for (const name of dishNames) {
+      const found = await payload.find({
+        collection: DISHES_SLUG,
+        where: { name: { equals: name } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      if (!found.docs[0]) {
+        await payload.create({
+          collection: DISHES_SLUG,
+          data: {
+            name,
+            description: 'verify-ui',
+            price: 10,
+            category: dishCategoryId,
+          },
+          overrideAccess: false,
+          user,
+        })
+      }
+    }
+    for (const seed of [
+      { name: 'verify-ui-pranzo', visibility: 'lunch_only' as const },
+      { name: 'verify-ui-sempre', visibility: 'always' as const },
+      { name: 'verify-ui-cat', visibility: 'always' as const },
+    ]) {
+      const found = await payload.find({
+        collection: FIXED_MENU_CATEGORIES_SLUG,
+        where: { name: { equals: seed.name } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      if (!found.docs[0]) {
+        await payload.create({
+          collection: FIXED_MENU_CATEGORIES_SLUG,
+          data: { name: seed.name, visibility: seed.visibility },
+          overrideAccess: false,
+          user,
+        })
+      }
+    }
+    for (const svc of ['verify-ui-servizio-a', 'verify-ui-servizio-b']) {
+      const found = await payload.find({
+        collection: MENU_SERVICES_SLUG,
+        where: { name: { equals: svc } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      if (!found.docs[0]) {
+        await payload.create({
+          collection: MENU_SERVICES_SLUG,
+          data: { name: svc, price: 2 },
+          overrideAccess: false,
+          user,
+        })
+      }
+    }
+    console.log(JSON.stringify({ ok: true }))
+    return
+  }
+
+  if (action === 'find-menu-service') {
+    const email = args[1]
+    const name = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name) throw new Error('find-menu-service: parametri mancanti')
+    const found = await payload.find({
+      collection: MENU_SERVICES_SLUG,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 1,
+      locale: 'all',
+      overrideAccess: false,
+      user,
+    })
+    const doc = found.docs[0]
+    console.log(JSON.stringify({ found: Boolean(doc), id: doc?.id ?? null, doc: doc ?? null }))
+    return
+  }
+
+  if (action === 'find-fixed-menu') {
+    const email = args[1]
+    const name = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name) throw new Error('find-fixed-menu: parametri mancanti')
+    const found = await payload.find({
+      collection: FIXED_MENUS_SLUG,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 2,
+      locale: 'all',
+      overrideAccess: false,
+      user,
+    })
+    const doc = found.docs[0]
+    console.log(JSON.stringify({ found: Boolean(doc), id: doc?.id ?? null, doc: doc ?? null }))
+    return
+  }
+
+  if (action === 'read-fixed-menu-en') {
+    const email = args[1]
+    const name = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name) throw new Error('read-fixed-menu-en: parametri mancanti')
+    const foundIt = await payload.find({
+      collection: FIXED_MENUS_SLUG,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 0,
+      locale: 'it',
+      overrideAccess: false,
+      user,
+    })
+    const docIt = foundIt.docs[0]
+    if (!docIt) {
+      console.log(JSON.stringify({ name: null, description: null }))
+      return
+    }
+    const foundEn = await payload.find({
+      collection: FIXED_MENUS_SLUG,
+      where: { id: { equals: docIt.id } },
+      limit: 1,
+      depth: 0,
+      locale: 'en',
+      overrideAccess: false,
+      user,
+    })
+    const doc = foundEn.docs[0]
+    console.log(
+      JSON.stringify({
+        name: doc?.name ?? null,
+        description: doc?.description ?? null,
+      }),
+    )
+    return
+  }
+
+  if (action === 'create-fixed-menu-with-services') {
+    const email = args[1]
+    const json = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !json) throw new Error('create-fixed-menu-with-services: parametri mancanti')
+    const spec = JSON.parse(json) as {
+      menuName: string
+      categoryName: string
+      dishName: string
+      serviceNames: string[]
+    }
+    const cat = await payload.find({
+      collection: FIXED_MENU_CATEGORIES_SLUG,
+      where: { name: { equals: spec.categoryName } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const categoryId = cat.docs[0]?.id
+    const dish = await payload.find({
+      collection: DISHES_SLUG,
+      where: { name: { equals: spec.dishName } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const dishId = dish.docs[0]?.id
+    const serviceIds: Array<number | string> = []
+    for (const svcName of spec.serviceNames) {
+      const svc = await payload.find({
+        collection: MENU_SERVICES_SLUG,
+        where: { name: { equals: svcName } },
+        limit: 1,
+        overrideAccess: true,
+      })
+      if (svc.docs[0]?.id != null) serviceIds.push(svc.docs[0].id)
+    }
+    if (categoryId == null || dishId == null) {
+      console.log(JSON.stringify({ ok: false, reason: 'missing_refs' }))
+      return
+    }
+    const doc = await payload.create({
+      collection: FIXED_MENUS_SLUG,
+      data: {
+        name: spec.menuName,
+        description: 'verify-ui',
+        price: 30,
+        category: asNumericId(categoryId),
+        visibility: 'always',
+        dishes: [{ dish: asNumericId(dishId) }],
+        services: serviceIds.map((id) => asNumericId(id)),
+      },
+      overrideAccess: false,
+      user,
+    })
+    console.log(JSON.stringify({ ok: true, id: doc.id }))
+    return
+  }
+
+  if (action === 'try-delete-fixed-menu-category') {
+    const email = args[1]
+    const name = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name) throw new Error('try-delete-fixed-menu-category: parametri mancanti')
+    const found = await payload.find({
+      collection: FIXED_MENU_CATEGORIES_SLUG,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const doc = found.docs[0]
+    if (!doc) {
+      console.log(JSON.stringify({ ok: false, reason: 'not_found' }))
+      return
+    }
+    try {
+      await payload.delete({
+        collection: FIXED_MENU_CATEGORIES_SLUG,
+        id: doc.id,
+        overrideAccess: false,
+        user,
+        context: { activityArea: 'app' },
+      })
+      console.log(JSON.stringify({ ok: true }))
+    } catch (e) {
+      if (isAccessDenied(e)) {
+        console.log(JSON.stringify({ ok: false, reason: 'access_denied' }))
+        return
+      }
+      throw e
+    }
+    return
+  }
+
+  if (action === 'try-create-fixed-menu-duplicate-dishes') {
+    const email = args[1]
+    const menuName = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !menuName) throw new Error('try-create-fixed-menu-duplicate-dishes: parametri mancanti')
+    const menu = await payload.find({
+      collection: FIXED_MENUS_SLUG,
+      where: { name: { equals: menuName } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: true,
+    })
+    const menuDoc = menu.docs[0]
+    const dishId = (menuDoc as { dishes?: Array<{ dish?: unknown }> })?.dishes?.[0]?.dish
+    const dishRef = relationshipId(dishId)
+    if (!menuDoc || dishRef == null) {
+      console.log(JSON.stringify({ ok: false, reason: 'menu_missing' }))
+      return
+    }
+    try {
+      await payload.update({
+        collection: FIXED_MENUS_SLUG,
+        id: menuDoc.id,
+        data: {
+          dishes: [{ dish: asNumericId(dishRef) }, { dish: asNumericId(dishRef) }],
+        },
+        overrideAccess: false,
+        user,
+      })
+      console.log(JSON.stringify({ ok: true }))
+    } catch (e) {
+      if (e instanceof ValidationError) {
+        const msg = e.data.errors.map((err: { message?: string }) => err.message).join('; ')
+        console.log(JSON.stringify({ ok: false, reason: 'validation', message: msg }))
+        return
+      }
+      throw e
+    }
+    return
+  }
+
+  if (action === 'find-menu-service-delete-log') {
+    const email = args[1]
+    const docId = args[2]
+    const itemName = args[3]
+    const refCount = args[4] ?? '0'
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !docId) throw new Error('find-menu-service-delete-log: parametri mancanti')
+    const logs = await payload.find({
+      collection: ACTIVITY_LOG_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      limit: 10,
+      sort: '-createdAt',
+      where: {
+        and: [
+          { user: { equals: user.id } },
+          { eventType: { equals: 'delete' } },
+          { area: { equals: 'app' } },
+          { collection: { equals: MENU_SERVICES_SLUG } },
+          { documentId: { equals: String(docId) } },
+        ],
+      },
+    })
+    const row = logs.docs[0]
+    const expectedDetail = formatMenuContentDeleteDetail(itemName ?? '?', Number(refCount))
+    console.log(
+      JSON.stringify({
+        found: Boolean(row),
+        detail: row?.detail ?? null,
+        expectedDetail,
+      }),
+    )
+    return
+  }
+
+  if (action === 'find-fixed-menu-delete-log') {
+    const email = args[1]
+    const docId = args[2]
+    const itemName = args[3]
+    const refCount = args[4] ?? '0'
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !docId) throw new Error('find-fixed-menu-delete-log: parametri mancanti')
+    const logs = await payload.find({
+      collection: ACTIVITY_LOG_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      limit: 10,
+      sort: '-createdAt',
+      where: {
+        and: [
+          { user: { equals: user.id } },
+          { eventType: { equals: 'delete' } },
+          { area: { equals: 'app' } },
+          { collection: { equals: FIXED_MENUS_SLUG } },
+          { documentId: { equals: String(docId) } },
+        ],
+      },
+    })
+    const row = logs.docs[0]
+    const expectedDetail = formatMenuContentDeleteDetail(itemName ?? '?', Number(refCount))
+    console.log(
+      JSON.stringify({
+        found: Boolean(row),
+        detail: row?.detail ?? null,
+        expectedDetail,
+      }),
+    )
+    return
+  }
+
+  if (action === 'try-delete-menu-service') {
+    const email = args[1]
+    const name = args[2]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name) throw new Error('try-delete-menu-service: parametri mancanti')
+    const found = await payload.find({
+      collection: MENU_SERVICES_SLUG,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const doc = found.docs[0]
+    if (!doc) {
+      console.log(JSON.stringify({ ok: false, reason: 'not_found' }))
+      return
+    }
+    try {
+      await payload.delete({
+        collection: MENU_SERVICES_SLUG,
+        id: doc.id,
+        overrideAccess: false,
+        user,
+        context: { activityArea: 'app' },
+      })
+      console.log(JSON.stringify({ ok: true }))
+    } catch (e) {
+      if (isAccessDenied(e)) {
+        console.log(JSON.stringify({ ok: false, reason: 'access_denied' }))
+        return
+      }
+      throw e
+    }
+    return
+  }
+
+  if (action === 'try-create-menu-service') {
+    const email = args[1]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user) throw new Error('try-create-menu-service: email richiesto')
+    try {
+      await payload.create({
+        collection: MENU_SERVICES_SLUG,
+        data: { name: 'verify-ui-api-probe', price: 1 },
+        overrideAccess: false,
+        user,
+      })
+      console.log(JSON.stringify({ ok: true }))
+    } catch (e) {
+      if (isAccessDenied(e)) {
+        console.log(JSON.stringify({ ok: false, reason: 'access_denied' }))
+        return
+      }
+      throw e
+    }
     return
   }
 

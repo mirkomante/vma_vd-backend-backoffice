@@ -1216,6 +1216,38 @@ export async function runMenuConsole(ctx) {
     browserVersion,
   } = ctx
   await runCatalogConsole(ctx)
+
+  const menuListConsoleScreens = [
+    { id: 'servizi', path: '/app/menu/services', newBtn: 'Nuovo servizio', controlId: 'servizi-console' },
+    { id: 'menu-fissi', path: '/app/menu/fixed', newBtn: 'Nuovo menù fisso', controlId: 'menu-fissi-console' },
+  ]
+  for (const screen of menuListConsoleScreens) {
+    if (!runCtx.shouldRun(screen.controlId) || !runCtx.screenIncluded(screen.id)) continue
+    for (const profiloKey of ['telefono-390', 'notebook-1280']) {
+      progressStep(screen.id, 'console', profiloKey, 'chiaro')
+      const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
+      const bag = attachConsoleListeners(page)
+      await loginApp(page, baseUrl, testUser.email, testPassword)
+      await page.goto(screen.path, { waitUntil: 'networkidle' })
+      await page.getByRole('button', { name: screen.newBtn }).click().catch(() => {})
+      await page.keyboard.press('Escape')
+      await openUserMenu(page, { mobilePanelFirst: profiloKey === 'telefono-390' })
+      await page.keyboard.press('Escape')
+      await sleep(300)
+      const c = consoleEsito(bag)
+      addRow(report, {
+        id: screen.controlId,
+        schermata: screen.id,
+        profiloTema: `${profiloKey}/chiaro/Chromium ${browserVersion ?? ''}`.trim(),
+        esito: c.ok ? 'OK' : 'FALLITO',
+        misurato: c.misurato,
+        atteso: 'zero error/warning/pageerror',
+        evidenza: c.evidenza,
+      })
+      await pctx.close()
+    }
+  }
+
   if (!runCtx.shouldRun('piatti-console')) return
   if (!runCtx.screenIncluded('piatti')) return
 

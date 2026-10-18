@@ -22,11 +22,11 @@ export async function clickRowAction(page, name, action) {
 }
 
 export async function toggleDisponibile(page, name) {
-  await page.getByRole('switch', { name: `Disponibile: ${name}` }).click()
+  await page.getByRole('switch', { name: `Disponibile: ${name}`, exact: true }).click()
 }
 
 export async function toggleCategoriaAttiva(page, name) {
-  await page.getByRole('switch', { name: `Attiva: ${name}` }).click()
+  await page.getByRole('switch', { name: `Attiva: ${name}`, exact: true }).click()
 }
 
 export async function waitForSheetReady(page, nameFieldSelector = 'input') {

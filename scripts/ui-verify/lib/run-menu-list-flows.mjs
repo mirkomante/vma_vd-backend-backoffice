@@ -12,7 +12,9 @@ import {
   menuCreateMenuService,
   menuCreateSpecialDayForMenu,
   menuDeleteVerifyPrefix,
+  menuEnsureMenuListFixtures,
 } from './menu-payload.mjs'
+import { runMenuListSupplementaryFlows } from './run-menu-list-supplementary-flows.mjs'
 import { selectComboboxOptionByKeyboard } from './catalog-ui-helpers.mjs'
 
 const ENGLISH_BANNED = ['Close', 'Edit', 'Delete', 'Remove', 'Save', 'Cancel', 'Add', 'Toggle', 'Move']
@@ -123,43 +125,7 @@ async function runServiziFlows(ctx, config) {
     await pctx.close()
   })
 
-  const genericIds = [
-    'servizi-testi',
-    'servizi-colonna-elenco',
-    'servizi-colonne-fisse',
-    'servizi-azioni-pagina',
-    'servizi-righe-azioni',
-    'servizi-disponibilita',
-    'servizi-elimina-usato',
-    'servizi-elimina-cascade-registro-permessi',
-    'servizi-modulo-campi',
-    'servizi-modulo-inglese',
-    'servizi-modulo-footer',
-    'servizi-persistenza',
-    'servizi-ordine',
-    'servizi-stati-ui',
-    'servizi-stato-vuoto',
-    'servizi-accesso',
-    'servizi-confronto-visivo',
-    'servizi-ricompila',
-  ]
-  for (const id of genericIds) {
-    if (!runCtx.shouldRun(id)) continue
-    const ctrl = controlDef(CONTROLLI, sid, id)
-    if (isRinviato65(ctrl)) {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', '—', 'rinviato alla 6.5')
-      continue
-    }
-    if (id === 'servizi-stato-vuoto' || id === 'servizi-accesso') {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', '—', ctrl?.stato_prova ?? 'NON PROVABILE')
-      continue
-    }
-    if (id === 'servizi-confronto-visivo') {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', 'screenshot C10', 'eseguito in L2 / agente V')
-      continue
-    }
-    addRow(ctx, id, sid, 'NON PROVATO', '—', 'flusso servizi', 'debito: runner dedicato da completare in passo V (schermata assente in VC4)')
-  }
+  await runMenuListSupplementaryFlows(ctx, config)
 }
 
 async function runMenuFissiFlows(ctx, config) {
@@ -187,10 +153,16 @@ async function runMenuFissiFlows(ctx, config) {
     const catHref = await tabCat.getAttribute('href')
     if (menuHref !== '/app/menu/fixed') failures.push(`href menu=${menuHref}`)
     if (catHref !== '/app/menu/fixed/categories') failures.push(`href cat=${catHref}`)
-    await tabCat.click()
+    await page.evaluate(() => {
+      window.__v4 = 1
+    })
+    const docReloadedMarker = await page.evaluate(() => window.__v4 === 1)
+    await Promise.all([page.waitForURL(/\/fixed\/categories/, { timeout: 20000 }), tabCat.click()])
+    const docReloadedAfter = await page.evaluate(() => window.__v4 !== 1)
+    const documentReloaded = docReloadedMarker && docReloadedAfter
     if (!page.url().includes('/categories')) failures.push(`url dopo tab=${page.url()}`)
-    await page.goBack()
-    if (!page.url().endsWith('/fixed')) failures.push(`back url=${page.url()}`)
+    await page.goBack({ waitUntil: 'networkidle' })
+    if (!page.url().includes('/menu/fixed') || page.url().includes('/categories')) failures.push(`back url=${page.url()}`)
     await page.goto(`${baseUrl}/app/menu/fixed/categories`, { waitUntil: 'networkidle' })
     const current = await tabCat.getAttribute('aria-current')
     if (current !== 'page') failures.push(`aria-current categorie=${current}`)
@@ -199,7 +171,7 @@ async function runMenuFissiFlows(ctx, config) {
       'menu-fissi-schede-percorsi',
       sid,
       failures.length ? 'FALLITO' : 'OK',
-      failures.join(' | ') || `href menu=${menuHref}; cat=${catHref}`,
+      `${failures.join(' | ') || `href menu=${menuHref}; cat=${catHref}`}; documentReloaded=${documentReloaded}`,
       'schede come percorsi',
       config.path,
     )
@@ -242,6 +214,7 @@ async function runMenuFissiFlows(ctx, config) {
     const failures = []
     try {
       menuDeleteVerifyPrefix()
+      menuEnsureMenuListFixtures(testUser.email)
       menuCreateFixedMenuFixture(testUser.email, {
         dishName: 'verify-ui-p1',
         categoryName: 'verify-ui-cat',
@@ -271,6 +244,7 @@ async function runMenuFissiFlows(ctx, config) {
     const failures = []
     try {
       menuDeleteVerifyPrefix()
+      menuEnsureMenuListFixtures(testUser.email)
       menuCreateFixedMenuFixture(testUser.email, {
         dishName: 'verify-ui-p1',
         categoryName: 'verify-ui-cat-ord',
@@ -301,6 +275,12 @@ async function runMenuFissiFlows(ctx, config) {
 
   await runIf('menu-fissi-visibilita-categoria', async () => {
     const failures = []
+    try {
+      menuDeleteVerifyPrefix()
+      menuEnsureMenuListFixtures(testUser.email)
+    } catch {
+      failures.push('fixture seed')
+    }
     const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
     await loginApp(page, baseUrl, testUser.email, testPassword)
     await gotoMenuList(page, config)
@@ -360,53 +340,7 @@ async function runMenuFissiFlows(ctx, config) {
     }
   })
 
-  const genericIds = [
-    'menu-fissi-testi',
-    'menu-fissi-colonna-elenco',
-    'menu-fissi-colonne-fisse',
-    'menu-fissi-azioni-pagina',
-    'menu-fissi-righe-azioni',
-    'menu-fissi-disponibilita',
-    'menu-fissi-categorie-elenco',
-    'menu-fissi-categorie-niente-eliminazione',
-    'menu-fissi-modulo-campi',
-    'menu-fissi-doppioni',
-    'menu-fissi-porzione-traduzione',
-    'menu-fissi-nessuna-categoria',
-    'menu-fissi-servizi-piatti',
-    'menu-fissi-tassonomie',
-    'menu-fissi-elimina-cascade-registro-permessi',
-    'menu-fissi-persistenza',
-    'menu-fissi-ordine-liste',
-    'menu-fissi-stati-ui',
-    'menu-fissi-stato-vuoto',
-    'menu-fissi-nomi-accessibili',
-    'menu-fissi-accesso',
-    'menu-fissi-console',
-    'menu-fissi-confronto-visivo',
-    'menu-fissi-ricompila',
-  ]
-  for (const id of genericIds) {
-    if (!runCtx.shouldRun(id)) continue
-    const ctrl = controlDef(CONTROLLI, sid, id)
-    if (isRinviato65(ctrl)) {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', '—', 'rinviato alla 6.5')
-      continue
-    }
-    if (id === 'menu-fissi-nessuna-categoria' || id === 'menu-fissi-stato-vuoto' || id === 'menu-fissi-accesso') {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', '—', ctrl?.stato_prova ?? 'NON PROVABILE')
-      continue
-    }
-    if (id === 'menu-fissi-console') {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', 'locale-dev', 'runMenuListConsole')
-      continue
-    }
-    if (id === 'menu-fissi-confronto-visivo') {
-      addRow(ctx, id, sid, 'NON PROVATO', '—', 'C10', 'agente V')
-      continue
-    }
-    addRow(ctx, id, sid, 'NON PROVATO', '—', 'flusso menu-fissi', 'debito: runner dedicato da completare in passo V (schermata assente in VC4)')
-  }
+  await runMenuListSupplementaryFlows(ctx, config)
 }
 
 export async function runMenuListFlowControls(ctx, config) {

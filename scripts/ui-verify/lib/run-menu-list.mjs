@@ -9,6 +9,7 @@ import { catalogControlIdsFromControlli } from './controlli-handlers.mjs'
 import { MENU_LIST_SCREENS, MENU_LIST_SCREEN_IDS } from './menu-list-config.mjs'
 import { gotoMenuList } from './menu-list-ui-helpers.mjs'
 import { runMenuListFlowControls } from './run-menu-list-flows.mjs'
+import { runMenuListStatiUiForScreen } from './run-menu-list-supplementary-flows.mjs'
 
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
 const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
@@ -167,7 +168,8 @@ export async function runMenuListScreens(ctx) {
 }
 
 export async function runMenuListStatiUi(ctx) {
-  const { runCtx, addRow, report, browser, newPage, loginApp, testUser, testPassword, baseUrl } = ctx
+  const { runCtx, addRow, report, browser, newPage, loginApp, testUser, testPassword, baseUrl, startMenuDevServer, waitForUrl } =
+    ctx
   for (const screenId of MENU_LIST_SCREEN_IDS) {
     const ctrlId = `${screenId}-stati-ui`
     if (!runCtx.shouldRun(ctrlId) || !runCtx.screenIncluded(screenId)) continue
@@ -187,15 +189,7 @@ export async function runMenuListStatiUi(ctx) {
         evidenza: 'schermata non ancora implementata',
       })
     } else {
-      addRow(report, {
-        id: ctrlId,
-        schermata: screenId,
-        profiloTema: '—',
-        esito: 'NON PROVATO',
-        misurato: '—',
-        atteso: 'simulazioni',
-        evidenza: 'debito: stati UI (passo V)',
-      })
+      await runMenuListStatiUiForScreen({ ...ctx, addRow, report, waitForUrl, startMenuDevServer }, config)
     }
   }
 }

@@ -5,7 +5,7 @@ import { allControlIds } from './controlli-index.mjs'
 
 const PACCHETTO_ORDER = ['accesso', 'shell', 'menu', 'orari', 'online', 'completo']
 
-const MENU_SCREEN_IDS = ['home', 'navigazione', 'piatti', 'vini', 'distillati', 'bevande']
+const MENU_SCREEN_IDS = ['home', 'navigazione', 'piatti', 'vini', 'distillati', 'bevande', 'servizi', 'menu-fissi']
 
 /** Schermata menù/catalogo associata a una riga (per merge parziale tra esecuzioni). */
 export function menuScreenForRow(row) {
@@ -15,9 +15,11 @@ export function menuScreenForRow(row) {
   if (id.startsWith('home-riga-')) return 'home'
   if (id.startsWith('nav-')) return 'navigazione'
   if (id.startsWith('piatti-')) return 'piatti'
-  for (const s of ['vini', 'distillati', 'bevande']) {
+  for (const s of ['vini', 'distillati', 'bevande', 'servizi', 'menu-fissi']) {
     if (id.startsWith(`${s}-`) || id === `${s}-console`) return s
   }
+  if (sch === 'servizi' || sch.startsWith('servizi/')) return 'servizi'
+  if (sch === 'menu-fissi' || sch.startsWith('menu-fissi/')) return 'menu-fissi'
   if (['C1', 'C2', 'C3', 'C2-mouse'].includes(id) && MENU_SCREEN_IDS.includes(sch)) return sch
   return null
 }
@@ -130,7 +132,7 @@ export function initReport({
         return
       }
       this.replacePacchetto('menu')
-      this.replaceMenuScreens(['vini', 'distillati', 'bevande'])
+      this.replaceMenuScreens(['vini', 'distillati', 'bevande', 'servizi', 'menu-fissi'])
     },
     /** Rimuove le righe C1/C2/C3 limitate a schermata+stato del giro (--solo C2 --stati …). */
     replaceMatrixControlRows(controlId, runCtx) {

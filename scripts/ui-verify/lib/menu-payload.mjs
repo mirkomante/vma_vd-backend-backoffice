@@ -86,6 +86,60 @@ export function menuCreateSpecialDayForMenu(managerEmail, menuName, dateIso) {
   return menuPayloadRun('create-special-day-for-menu', [managerEmail, menuName, dateIso])
 }
 
+export function menuEnsureMenuListFixtures(managerEmail) {
+  return menuPayloadRun('ensure-menu-list-fixtures', [managerEmail])
+}
+
+export function menuFindMenuService(managerEmail, name) {
+  return menuPayloadRun('find-menu-service', [managerEmail, name])
+}
+
+export function menuFindFixedMenu(managerEmail, name) {
+  return menuPayloadRun('find-fixed-menu', [managerEmail, name])
+}
+
+export function menuReadFixedMenuEn(managerEmail, name) {
+  return menuPayloadRun('read-fixed-menu-en', [managerEmail, name])
+}
+
+export function menuCreateFixedMenuWithServices(managerEmail, spec) {
+  return menuPayloadRun('create-fixed-menu-with-services', [managerEmail, JSON.stringify(spec)])
+}
+
+export function menuTryDeleteFixedMenuCategory(managerEmail, name) {
+  return menuPayloadRun('try-delete-fixed-menu-category', [managerEmail, name])
+}
+
+export function menuTryCreateFixedMenuDuplicateDishes(managerEmail, menuName) {
+  return menuPayloadRun('try-create-fixed-menu-duplicate-dishes', [managerEmail, menuName])
+}
+
+export function menuFindMenuServiceDeleteLog(managerEmail, docId, itemName, refCount) {
+  return menuPayloadRun('find-menu-service-delete-log', [
+    managerEmail,
+    String(docId),
+    itemName ?? '',
+    String(refCount ?? 0),
+  ])
+}
+
+export function menuFindFixedMenuDeleteLog(managerEmail, docId, itemName, refCount) {
+  return menuPayloadRun('find-fixed-menu-delete-log', [
+    managerEmail,
+    String(docId),
+    itemName ?? '',
+    String(refCount ?? 0),
+  ])
+}
+
+export function menuTryCreateMenuService(managerEmail) {
+  return menuPayloadRun('try-create-menu-service', [managerEmail])
+}
+
+export function menuTryDeleteMenuService(managerEmail, name) {
+  return menuPayloadRun('try-delete-menu-service', [managerEmail, name])
+}
+
 export function menuFindStaffUser(role) {
   return menuPayloadRun('find-staff-user', [role])
 }
