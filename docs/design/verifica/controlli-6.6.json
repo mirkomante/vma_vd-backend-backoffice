@@ -1,7 +1,7 @@
 {
  "versione": 1,
  "fase": "6.6",
- "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande}/spec.md (le altre schermate si aggiungono una alla volta) e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
+ "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande,servizi,menu-fissi}/spec.md (le altre schermate si aggiungono una alla volta) e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
  "fonti": [
   "docs/design/schermate/integrazione/spec.md",
   "docs/design/schermate/piatti/spec.md",
@@ -10,7 +10,9 @@
   "docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md",
   "docs/design/schermate/vini/spec.md",
   "docs/design/schermate/distillati/spec.md",
-  "docs/design/schermate/bevande/spec.md"
+  "docs/design/schermate/bevande/spec.md",
+  "docs/design/schermate/servizi/spec.md",
+  "docs/design/schermate/menu-fissi/spec.md"
  ],
  "ambienti": {
   "locale-dev": {
@@ -3607,6 +3609,1374 @@
      ]
     }
    }
+  },
+  {
+   "id": "servizi",
+   "percorso": "/app/menu/services",
+   "auth": "manager di prova",
+   "nota": "Servizi non ha ricerca né filtri né elenco parziale. I controlli sul pulsante «Ricompila» sono NON PROVATI, rinviati alla 6.5; gli avvisi di salvataggio e di eliminazione hanno solo il titolo finché la bandiera è spenta. Dati di prova: servizi e menù fissi «verify-ui-…» (con la categoria «verify-ui-cat»), creati e cancellati in try/finally.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "servizi per nome, righe disabilitate attenuate"
+    },
+    {
+     "id": "disponibilita",
+     "come": "interruttore «Disponibile»"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su un servizio"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuovo servizio»"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "errore-azione",
+     "come": "errore del server simulato"
+    },
+    {
+     "id": "elimina",
+     "come": "cestino su un servizio usato"
+    },
+    {
+     "id": "elimina-senza-uso",
+     "come": "cestino su un servizio non usato"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessun servizio"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "modulo",
+    "modulo-inglese-aperto",
+    "nuovo",
+    "nuovo-errori",
+    "elimina",
+    "elimina-senza-uso",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento"
+   ],
+   "controlli": [
+    {
+     "id": "servizi-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Servizi",
+      "descrizione": "Voci accessorie: coperto, diritto di dolce, diritto di tappo.",
+      "pulsante_principale": "Nuovo servizio",
+      "conteggio": "{1 servizio | N servizi} sopra le righe",
+      "colonne_tabella": [
+       "Nome",
+       "Prezzo",
+       "Disponibile"
+      ],
+      "riga": "prezzo «2,00 €»; badge «Disabilitato» accanto al nome sulle righe disabilitate"
+     },
+     "fonte": "docs/design/schermate/servizi/spec.md §6, §9 punto 12"
+    },
+    {
+     "id": "servizi-senza-ricerca-filtri",
+     "tipo": "assenza",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nessun campo di ricerca, nessun pulsante «Filtri», nessuna etichetta di filtro e nessun avviso di elenco parziale: la schermata ha tre voci e non ne ha bisogno",
+     "fonte": "docs/design/schermate/servizi/spec.md §5 (ultimo paragrafo), decisioni A45"
+    },
+    {
+     "id": "servizi-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px (mai più di 1024); tabella, non schede",
+      "telefono-390": "schede, non tabella; nome della scheda circa 172 px su 358 (avviso se fuori di 10 px; FALLITO se sotto 130 px)",
+      "soglia-767": "schede",
+      "soglia-768": "tabella"
+     },
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 3"
+    },
+    {
+     "id": "servizi-colonne-fisse",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "notebook-1280": "Prezzo 7 rem (112 px), Disponibile 7 rem (112 px), azioni 6 rem (96 px); il resto al nome; stesso bordo sinistro per ogni colonna in tutte le righe"
+     },
+     "fonte": "docs/design/schermate/servizi/spec.md §4"
+    },
+    {
+     "id": "servizi-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuovo servizio» largo quanto la colonna del contenuto (358 px a 390 px), alto almeno 44 px",
+      "notebook-1280": "«Nuovo servizio» a destra del titolo, in riga"
+     },
+     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
+     "fonte": "docs/design/schermate/servizi/spec.md §4"
+    },
+    {
+     "id": "servizi-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "interruttore": "«Disponibile: {nome}», etichetta visibile «Disponibile» su telefono; resta attivo sulle righe disabilitate",
+      "matita": "«Modifica {nome}»",
+      "cestino": "«Elimina {nome}»",
+      "aree_di_tocco": "44 px con il tocco",
+      "assenti": "collegamento sul nome, scheda tappabile, menu «⋯», testo visibile nei pulsanti icona",
+      "riga_disabilitata": "attenuata, badge «Disabilitato»"
+     },
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 4"
+    },
+    {
+     "id": "servizi-disponibilita",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-servizio» abilitato e un menù fisso di prova che lo contiene (categoria «verify-ui-cat»)",
+      "tocca l'interruttore «Disponibile» del servizio usato",
+      "tocca di nuovo l'interruttore"
+     ],
+     "atteso": [
+      "avviso «Servizio disabilitato» con «Il menù pubblico si aggiorna entro pochi minuti.»; la riga si attenua e compare il badge «Disabilitato»; disabled vero con la Local API; NESSUN avviso o conferma perché il servizio è usato dai menù fissi (è reversibile)",
+      "avviso «Servizio abilitato», riga normale"
+     ],
+     "nota": "Il file di disponibilità non è leggibile dal lanciatore (storage in memoria): lo coprono verify:menu-6_4 e il controllo sul file in produzione (passi 27 e 30).",
+     "fonte": "docs/design/schermate/servizi/spec.md §7 punto 1, §9 punto 5"
+    },
+    {
+     "id": "servizi-elimina-usato",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "crea «verify-ui-servizio-usato» e un menù fisso di prova «verify-ui-menu-1» che lo contiene",
+      "tocca il cestino della riga",
+      "chiudi; aggiungi il servizio ad altri tre menù di prova («verify-ui-menu-2», «-3», «-4») e riapri la finestra",
+      "premi «Indietro», poi di nuovo il cestino e «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare verify-ui-servizio-usato?» con «Verrà tolto anche da 1 menù fisso: verify-ui-menu-1. Non si può annullare.» e «Indietro» / «Elimina»; nessun testo suggerisce di disabilitare",
+      "con quattro menù: «Verrà tolto anche da 4 menù fissi: …» con i primi tre nomi in ordine e «e altri 1» (i separatori sono quelli della costante di lib/, testo_da)",
+      "dopo «Elimina»: finestra chiusa, riga tolta, avviso «Servizio eliminato» (con la bandiera spenta solo il titolo); mentre elimina i pulsanti sono disabilitati con lo Spinner"
+     ],
+     "fonte": "docs/design/schermate/servizi/spec.md §6 (Elimina), §7 punto 3, §9 punto 9"
+    },
+    {
+     "id": "servizi-elimina-senza-uso",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-servizio-libero» non usato",
+      "tocca il cestino"
+     ],
+     "atteso": "finestra «Eliminare verify-ui-servizio-libero?» con la sola «Non si può annullare.» (nessuna frase sul cascade)",
+     "fonte": "docs/design/schermate/servizi/spec.md §5, §9 punto 9"
+    },
+    {
+     "id": "servizi-elimina-cascade-registro-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione del servizio usato leggi i menù fissi di prova con la Local API (depth 2) e il registro attività",
+      "manager: elimina dalla pagina; admin e super-admin: con la Local API passando il documento utente; utente senza ruolo: con la Local API (overrideAccess false)"
+     ],
+     "atteso": [
+      "il servizio non è più in nessun menù fisso che lo conteneva (cascade verificato sul database)",
+      "esiste una riga con eventType delete, area app, collection menu-services, documentId, user il manager, e nel detail «nome=…; riferimenti=N» con N il numero dei menù fissi che lo usavano",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato e il servizio resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 9; ADR-115"
+    },
+    {
+     "id": "servizi-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuovo servizio / Il servizio compare nel menù pubblico dopo la ricompilazione.",
+      "campi_in_ordine": [
+       "Nome",
+       "«Traduzione inglese (facoltativa)» con badge «Manca» o «Presente», Name (segnaposto: il nome italiano; «Facoltativa. Se resta vuota, il menù mostra il testo italiano.»)",
+       "Prezzo (€)",
+       "«Disabilitato» («Assente a tempo indefinito: il servizio non compare nel menù.»)"
+      ],
+      "pulsanti": [
+       "Salva",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica servizio» con il nome come sottotitolo"
+     },
+     "fonte": "docs/design/schermate/servizi/spec.md §6 (Modulo)"
+    },
+    {
+     "id": "servizi-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo servizio» e premi «Salva» a modulo vuoto",
+      "inserisci nel prezzo «2», «2,5», «2,50», «2.50» e «0», poi «abc» e «2,555»"
+     ],
+     "atteso": [
+      "nessuna richiesta; un modulo vuoto dà DUE errori: «Campo obbligatorio.» sotto il nome e «Campo obbligatorio.» sotto il prezzo; il primo campo non valido ha il focus",
+      "«2», «2,5», «2,50», «2.50» e «0» sono accettati; «abc» e «2,555» danno «Inserisci un prezzo valido (es. 2,50).»"
+     ],
+     "fonte": "docs/design/schermate/servizi/spec.md §6 (Errori del modulo), §7 punto 5, §9 punto 7"
+    },
+    {
+     "id": "servizi-modulo-inglese",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri un servizio senza nome inglese",
+      "apri un servizio con il nome inglese",
+      "leggi il servizio senza inglese con locale=en (cercalo per id, oppure per nome con locale it)"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano"
+     ],
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 8; decisioni D10"
+    },
+    {
+     "id": "servizi-modulo-footer",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "«Salva» e «Annulla» restano agganciati al fondo scorrendo, affiancati e alti 44 px; la finestra non supera il 90 % dello schermo",
+     "fonte": "docs/design/schermate/servizi/spec.md §4 (Foglio)"
+    },
+    {
+     "id": "servizi-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-servizio-nuovo» con nome, nome inglese, prezzo e disabilitato",
+      "rileggilo con la Local API (utente manager, overrideAccess false)",
+      "modificalo dalla pagina e rileggilo",
+      "admin e super-admin leggono e scrivono un servizio di prova con la Local API; utente senza ruolo prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori letti coincidono con quelli inseriti",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 10"
+    },
+    {
+     "id": "servizi-ordine",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "i servizi sono in ordine per nome, senza distinzione di maiuscole e con le regole dell'italiano (per esempio «Coperto» prima di «Diritto di tappo»); l'ordine arriva dalla richiesta (sort della Local API), non dal browser",
+     "fonte": "docs/design/schermate/servizi/spec.md §7 punto 7, §9 punto 11"
+    },
+    {
+     "id": "servizi-stati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: tre blocchi Skeleton",
+      "errore di caricamento: solo l'avviso «Impossibile caricare i servizi» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita / Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia"
+     ],
+     "fonte": "docs/design/schermate/servizi/spec.md §5, §6"
+    },
+    {
+     "id": "servizi-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "con nessun servizio: «Nessun servizio.» e il pulsante «Nuovo servizio»",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con 390-vuoto-chiaro.png",
+     "fonte": "docs/design/schermate/servizi/spec.md §5, §6"
+    },
+    {
+     "id": "servizi-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle",
+     "fonte": "docs/design/schermate/servizi/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "servizi-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/services",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3)",
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 13",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "servizi-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri il modulo (anche con la traduzione aperta), la finestra di eliminazione (usato e non usato), tocca l'interruttore, apri il menu utente; zero error e warning, compresi quelli di Base UI",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "servizi-ricompila",
+     "tipo": "presenza",
+     "livello": 2,
+     "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
+     "fonte": "docs/design/schermate/servizi/spec.md §5 e §9 punto 6",
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
+     "rinviato_a": "6.5"
+    },
+    {
+     "id": "servizi-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, scattati con il contesto touch dei profili con tocco: la chat di design li confronta con i PNG (C10)",
+     "fonte": "docs/design/schermate/servizi/spec.md §9 punto 14"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome servizi-<stato>-<profilo>-<tema>.png",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "disponibilita": [
+      "390-disponibilita-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "elimina": [
+      "390-elimina-chiaro.png"
+     ],
+     "elimina-senza-uso": [
+      "390-elimina-senza-uso-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ]
+    }
+   }
+  },
+  {
+   "id": "menu-fissi",
+   "percorso": "/app/menu/fixed",
+   "percorsi": [
+    "/app/menu/fixed",
+    "/app/menu/fixed/categories"
+   ],
+   "auth": "manager di prova",
+   "nota": "Due rotte per le due schede (collegamenti, non stato): /app/menu/fixed (menù) e /app/menu/fixed/categories (categorie, senza cestino). I controlli sul pulsante «Ricompila» sono NON PROVATI, rinviati alla 6.5; gli avvisi di salvataggio e di eliminazione hanno solo il titolo finché la bandiera è spenta. Dati di prova «verify-ui-…»: categorie, menù fissi, servizi e giorni speciali (date future e diverse tra loro, per non violare la regola di sovrapposizione), creati e cancellati in try/finally. Non ci sono filtri, ricerca né elenco parziale.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "gruppi per categoria con conteggio e visibilità"
+    },
+    {
+     "id": "categorie",
+     "come": "scheda Categorie"
+    },
+    {
+     "id": "categorie-vuoto",
+     "come": "nessuna categoria"
+    },
+    {
+     "id": "categoria-modulo",
+     "come": "matita su una categoria"
+    },
+    {
+     "id": "categoria-nuova-errori",
+     "come": "«Salva» a modulo categoria vuoto"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su un menù"
+    },
+    {
+     "id": "modulo-piatti",
+     "come": "sezione Piatti del modulo"
+    },
+    {
+     "id": "modulo-servizi",
+     "come": "sezione Servizi del modulo"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta con le porzioni"
+    },
+    {
+     "id": "scegli-piatti",
+     "come": "vista «Scegli piatti»"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuovo menù fisso»"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "nuovo-senza-categorie",
+     "come": "nuovo menù senza categorie"
+    },
+    {
+     "id": "visibilita-categoria",
+     "come": "visibilità precompilata dalla categoria"
+    },
+    {
+     "id": "visibilita-avviso",
+     "come": "avviso «non comparirà mai»"
+    },
+    {
+     "id": "disponibilita",
+     "come": "interruttore «Disponibile»"
+    },
+    {
+     "id": "elimina",
+     "come": "cestino su un menù usato dai giorni speciali"
+    },
+    {
+     "id": "elimina-senza-uso",
+     "come": "cestino su un menù non usato"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "errore-azione",
+     "come": "errore del server simulato"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessun menù fisso"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "categorie",
+    "categoria-modulo",
+    "categoria-nuova-errori",
+    "modulo",
+    "modulo-piatti",
+    "modulo-servizi",
+    "modulo-inglese-aperto",
+    "scegli-piatti",
+    "nuovo",
+    "nuovo-errori",
+    "visibilita-categoria",
+    "visibilita-avviso",
+    "elimina",
+    "elimina-senza-uso",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento"
+   ],
+   "controlli": [
+    {
+     "id": "menu-fissi-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "percorso": "/app/menu/fixed",
+     "atteso": {
+      "h1": "Menù fissi",
+      "descrizione": "I menù a prezzo fisso e le loro categorie.",
+      "schede": [
+       "Menù fissi",
+       "Categorie"
+      ],
+      "scheda_menu_fissi": "«{1 menù fisso | N menù fissi}, raggruppati per categoria.» (senza menù la frase non compare) e «Nuovo menù fisso»",
+      "gruppo": "«{Categoria}» e, accanto, «{1 menù | N menù} · {Sempre | Solo pranzo | Solo cena}»; con la categoria disabilitata si aggiunge «· categoria disabilitata»",
+      "colonne_tabella": [
+       "Nome",
+       "Visibilità",
+       "Prezzo",
+       "Disponibile"
+      ],
+      "riga": "sotto il nome «{1 piatto | N piatti}»; badge «Solo giorni speciali» e «Disabilitato»; prezzo «18,00 €»; su telefono «{prezzo} · {visibilità} · {N piatti}»"
+     },
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6, §9 punto 19"
+    },
+    {
+     "id": "menu-fissi-schede-percorsi",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri /app/menu/fixed",
+      "tocca la scheda «Categorie»",
+      "premi «indietro» del browser",
+      "apri direttamente /app/menu/fixed/categories con l'indirizzo"
+     ],
+     "atteso": [
+      "le schede sono collegamenti (non stato): «Menù fissi» punta a /app/menu/fixed e «Categorie» a /app/menu/fixed/categories; la scheda attiva è quella del percorso (aria-current)",
+      "dopo il tocco l'indirizzo è /app/menu/fixed/categories e le briciole sono «Menù › Menù fissi › Categorie» (con «Menù fissi» collegamento a /app/menu/fixed); in navigazione laterale resta evidenziato «Menù fissi» e non «Piatti»",
+      "il tasto indietro del browser torna alla scheda «Menù fissi»",
+      "l'apertura diretta mostra la scheda «Categorie» già attiva; il titolo del documento è «Menù fissi · Area App» in entrambe; su telefono la riga delle schede scorre in orizzontale solo se non entra"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §4, §6 (Schede), decisioni A53; integrazione/spec.md §2"
+    },
+    {
+     "id": "menu-fissi-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px; tabella, non schede",
+      "telefono-390": "schede, non tabella; nome della scheda circa 172 px su 358 (avviso se fuori di 10 px; FALLITO se sotto 130 px)",
+      "soglia-767": "schede",
+      "soglia-768": "tabella"
+     },
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 3"
+    },
+    {
+     "id": "menu-fissi-colonne-fisse",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "notebook-1280": "Visibilità 8 rem (128 px), Prezzo 7 rem (112 px), Disponibile 7 rem (112 px), azioni 6 rem (96 px); il resto al nome; stesso bordo sinistro in tutti i gruppi"
+     },
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §4"
+    },
+    {
+     "id": "menu-fissi-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuovo menù fisso» e «Nuova categoria» dentro la scheda, a tutta larghezza (358 px), alti almeno 44 px",
+      "notebook-1280": "«Nuovo …» a destra nella scheda"
+     },
+     "rinviato": "«Ricompila il menù pubblico» (a tutta larghezza su telefono, a destra del titolo a 1280 px) è NON PROVATO, rinviato alla 6.5",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §4"
+    },
+    {
+     "id": "menu-fissi-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "menu": "interruttore «Disponibile: {nome}» (etichetta visibile «Disponibile»), matita «Modifica {nome}», cestino «Elimina {nome}»",
+      "categorie": "interruttore «Attiva: {nome}» (etichetta «Attiva») e matita «Modifica {nome}», e NESSUN cestino (0 cestini)",
+      "aree_di_tocco": "44 px con il tocco",
+      "assenti": "collegamento sul nome, scheda tappabile, menu «⋯»"
+     },
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 4"
+    },
+    {
+     "id": "menu-fissi-disponibilita",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-cat» e «verify-ui-menu-disp» (un piatto); tocca l'interruttore «Disponibile» del menù",
+      "nella scheda «Categorie» tocca l'interruttore «Attiva» di «verify-ui-cat»",
+      "riabilita entrambi"
+     ],
+     "atteso": [
+      "avviso «Menù fisso disabilitato» con «Il menù pubblico si aggiorna entro pochi minuti.»; riga attenuata e badge «Disabilitato»; poi «Menù fisso abilitato»",
+      "avviso «Categoria disabilitata» (poi «Categoria abilitata»); i menù della categoria restano collegati e non compare alcun avviso sull'effetto"
+     ],
+     "nota": "Il file di disponibilità non è leggibile dal lanciatore: lo coprono verify:menu-6_4 e il controllo sul file in produzione (passi 27 e 30).",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punti 1 e 13, §9 punto 5"
+    },
+    {
+     "id": "menu-fissi-categorie-elenco",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "percorso": "/app/menu/fixed/categories",
+     "atteso": [
+      "frase «{1 categoria | N categorie}, in ordine per nome.» e pulsante «Nuova categoria»",
+      "riga: «{visibilità} · {1 menù | N menù}» (il numero è corretto: confrontato con i menù letti con la Local API), badge «Disabilitata» sulle disabilitate, interruttore «Attiva: {nome}» con etichetta «Attiva», matita, nessun cestino",
+      "categorie in ordine per nome, senza distinzione di maiuscole, dalla richiesta"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6 (Scheda Categorie), §9 punti 13 e 18"
+    },
+    {
+     "id": "menu-fissi-categoria-modulo",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "percorso": "/app/menu/fixed/categories",
+     "passi": [
+      "apri «Nuova categoria» e premi «Salva» a modulo vuoto",
+      "compila «verify-ui-cat-nuova» con visibilità «Solo pranzo» e salva",
+      "modifica il nome e salva; poi disabilita dal modulo"
+     ],
+     "atteso": [
+      "titolo «Nuova categoria» / «Raggruppa i menù fissi nel menù pubblico.»; campi: Nome, «Traduzione inglese (facoltativa)» con «Manca» o «Presente», Name, Visibilità («Quando la categoria compare nelle pagine del menù pubblico.») con Sempre, Solo pranzo, Solo cena, «Disabilitata» («Assente a tempo indefinito: la categoria non compare nel menù.»); Salva e Annulla",
+      "modulo vuoto: «Campo obbligatorio.» sotto il nome e nessun altro errore",
+      "avvisi «Categoria aggiunta» e «Categoria salvata» (solo titolo con la bandiera spenta); la rilettura con la Local API coincide"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6 (Modulo della categoria), §7 punto 10, §9 punto 13"
+    },
+    {
+     "id": "menu-fissi-categorie-niente-eliminazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "manager: prova a eliminare una categoria di prova con la Local API (overrideAccess false) e, se pnpm dev è avviato, via REST",
+      "admin e super-admin: eliminano con la Local API passando il documento utente",
+      "utente senza ruolo: prova a eliminare"
+     ],
+     "atteso": [
+      "il manager è RIFIUTATO (la cancellazione delle categorie è riservata allo staff Admin) e la categoria resta",
+      "admin e super-admin riescono",
+      "l'utente senza ruolo è rifiutato; nella pagina nessun cestino sulle categorie"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punto 3, §9 punto 13; ADR-113"
+    },
+    {
+     "id": "menu-fissi-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuovo menù fisso / Il menù compare nel menù pubblico dopo la ricompilazione.",
+      "sezioni_in_ordine": [
+       "Dati: Nome, Descrizione, Prezzo (€)",
+       "Categoria (segnaposto «Scegli») e Visibilità («Quando compare nel menù pubblico. Vale insieme alla visibilità della categoria.») con Sempre, Solo pranzo, Solo cena; «Solo giorni speciali» («Se attivo, il menù non compare nelle pagine normali del menù pubblico, solo tramite i giorni speciali.»)",
+       "Piatti: «Piatti» e, a elenco vuoto, «Nessun piatto nel menù.» e «Aggiungi piatti»; per ogni piatto «{N}. {nome}» con badge «Disabilitato» o «Terminato», «Sposta su {nome}», «Sposta giù {nome}», «Togli {nome} dal menù» e Porzione («Facoltativa, per esempio «2 pezzi».»); «La porzione serve solo se la quantità nel menù è diversa da quella alla carta.»",
+       "Servizi: una casella per servizio, «{nome} · {prezzo} €»",
+       "«Traduzione inglese (facoltativa)» con «Manca» o «Presente»",
+       "«Disabilitato» («Assente a tempo indefinito: il menù fisso non compare nel menù.»)"
+      ],
+      "pulsanti": [
+       "Salva",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica menù fisso» con il nome come sottotitolo"
+     },
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6 (Modulo del menù)"
+    },
+    {
+     "id": "menu-fissi-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo menù fisso» e premi «Salva» a modulo vuoto",
+      "prova nel prezzo «18», «18,5», «18,50», «18.50», poi «abc» e «18,555»"
+     ],
+     "atteso": [
+      "nessuna richiesta; QUATTRO errori sotto i campi: «Campo obbligatorio.» (nome), «Campo obbligatorio.» (prezzo), «Scegli una categoria.», «Aggiungi almeno un piatto.»; il primo campo non valido ha il focus",
+      "le quattro forme del prezzo sono accettate; «abc» e «18,555» danno «Inserisci un prezzo valido (es. 18,00).»"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6 (Errori del modulo), §9 punto 9"
+    },
+    {
+     "id": "menu-fissi-composizione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea con la Local API un menù di prova con quattro piatti (porzione sul secondo)",
+      "apri il suo modulo e tocca «Aggiungi o togli piatti»",
+      "nella vista «Scegli piatti» cerca «pho» e poi togli un piatto già scelto e spunta due nuovi; tocca «Fatto (N)»",
+      "riapri la vista e tocca «Annulla»; poi riaprila e tocca la freccia «Indietro al modulo»"
+     ],
+     "atteso": [
+      "la vista «Scegli piatti» sostituisce il modulo nello stesso foglio (nessuna finestra sopra un'altra) e il foglio torna in cima; titolo «Scegli piatti» con la freccia («Indietro al modulo»), «Spunta i piatti del menù. Quelli già scelti sono spuntati.», ricerca «Cerca un piatto», piatti per categoria con casella e badge, «Nessun piatto trovato.» se la ricerca non trova",
+      "«Fatto (N)» applica la scelta: il piatto tolto esce, i due aggiunti stanno in FONDO, gli altri mantengono ordine e porzioni; tornando al modulo si rivede la sezione «Piatti»",
+      "«Annulla» e la freccia tornano al modulo senza cambiare nulla",
+      "le caselle sono ≥ 44 px con il tocco"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punto 4, §9 punti 2 e 6"
+    },
+    {
+     "id": "menu-fissi-ordine-piatti",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "nel modulo del menù di prova con quattro piatti guarda le frecce del primo e dell'ultimo",
+      "tocca «Sposta giù» sul primo e «Sposta su» sul terzo; salva",
+      "rileggi il menù con la Local API (depth 2)",
+      "tocca «Togli» su un piatto"
+     ],
+     "atteso": [
+      "«Sposta su» è disabilitata sul primo piatto e «Sposta giù» sull'ultimo; frecce e «Togli» alti 44 px",
+      "ogni spostamento scambia due piatti vicini; l'ordine salvato è quello letto dopo la rilettura",
+      "«Togli» toglie il piatto dal menù SENZA conferma e senza eliminarlo dai piatti (esiste ancora nella collection); «Aggiungi piatti» lo rimette"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punto 5, §9 punti 7 e 2"
+    },
+    {
+     "id": "menu-fissi-doppioni",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "nella vista di scelta lo stesso piatto non si può spuntare due volte",
+      "con la Local API (manager, overrideAccess false) salva un menù con lo stesso piatto due volte"
+     ],
+     "atteso": [
+      "la scelta non permette doppioni",
+      "la richiesta torna con «Lo stesso piatto non può comparire più di una volta in questo menu fisso.» (testo_da validateFixedMenuDishesField); un elenco vuoto è ammesso dal modello per Admin e REST"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punti 8 e 9"
+    },
+    {
+     "id": "menu-fissi-porzione-traduzione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "nel menù di prova imposta la porzione italiana di un solo piatto e salva",
+      "apri la traduzione inglese",
+      "leggi il menù con la Local API e locale=en senza inglese (cercalo per id)"
+     ],
+     "atteso": [
+      "la porzione si salva per piatto",
+      "nella traduzione compaiono Name, Description e «Porzioni» con un campo SOLO per il piatto che ha la porzione italiana (segnaposto: la porzione italiana); la traduzione si apre se esiste un nome, una descrizione o una porzione inglese",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano per nome, descrizione e porzioni"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punti 7 e 11, §9 punto 10"
+    },
+    {
+     "id": "menu-fissi-visibilita-categoria",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea le categorie «verify-ui-pranzo» (Solo pranzo) e «verify-ui-sempre» (Sempre); apri «Nuovo menù fisso»",
+      "scegli «verify-ui-pranzo»",
+      "cambia a mano la visibilità in «Solo cena»",
+      "scegli «verify-ui-sempre»",
+      "apri un menù esistente"
+     ],
+     "atteso": [
+      "la visibilità si precompila: «Solo pranzo»; con la visibilità del menù «Sempre» e categoria limitata compare l'avviso informativo «La categoria «verify-ui-pranzo» compare solo a pranzo: anche questo menù compare solo a pranzo.»",
+      "con «Solo cena» e categoria «Solo pranzo» compare l'avviso rosso «La categoria «verify-ui-pranzo» compare solo a pranzo e il menù solo a cena: non comparirà mai.» e il salvataggio RESTA possibile",
+      "scegliendo un'altra categoria la scelta manuale NON viene sovrascritta; nessun avviso se le visibilità coincidono",
+      "aprendo un menù esistente la visibilità non cambia"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6 (Avvisi di visibilità), §7 punto 8, §9 punto 11"
+    },
+    {
+     "id": "menu-fissi-nessuna-categoria",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "senza categorie: il campo Categoria è disabilitato con «Nessuna categoria: creane una nella scheda Categorie», «Nuovo menù fisso» è attivo e il salvataggio dà «Scegli una categoria.»; nella scheda Categorie «Nessuna categoria. Creane una per poter comporre i menù fissi.» e «Nuova categoria»",
+     "stato_prova": "NON PROVABILE con categorie presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo (390-nuovo-senza-categorie-chiaro.png, 390-categorie-vuoto-chiaro.png)",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §5, §7 punto 9, §9 punto 12"
+    },
+    {
+     "id": "menu-fissi-servizi-piatti",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "nel modulo spunta due servizi e salva",
+      "rileggi con la Local API (depth 2)",
+      "apri la vista di scelta con un piatto disabilitato e uno terminato"
+     ],
+     "atteso": [
+      "i servizi spuntati si salvano come relazione molti-a-molti",
+      "i piatti compaiono con il loro stato («Disabilitato», «Terminato») in elenco e nella vista di scelta; sono comunque scegliibili e un piatto disabilitato già nel menù non viene tolto in automatico"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punto 6, §9 punto 14"
+    },
+    {
+     "id": "menu-fissi-tassonomie",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": [
+      "la scelta della categoria offre le categorie esistenti NON disabilitate, più quella già salvata nel menù che si modifica",
+      "nessun pulsante per creare piatti o servizi dal modulo",
+      "i Select mostrano le etichette (nomi), non i valori interni"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 17"
+    },
+    {
+     "id": "menu-fissi-elimina-usato",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "crea «verify-ui-menu-usato» e un giorno speciale di prova che lo contiene (data futura)",
+      "tocca il cestino della riga",
+      "chiudi; aggiungi il menù ad altri tre giorni speciali di prova con date diverse e riapri la finestra",
+      "«Indietro», poi cestino e «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare verify-ui-menu-usato?» con «Verrà tolto anche da 1 giorno speciale: {data}. Non si può annullare.»; nessun testo suggerisce di disabilitare",
+      "con quattro giorni speciali: «Verrà tolto anche da 4 giorni speciali: …» con le prime tre date (in lettere, per esempio «giovedì 31 dicembre 2026») e «e altri 1»",
+      "dopo «Elimina»: riga tolta, avviso «Menù fisso eliminato» (solo titolo con la bandiera spenta); i pulsanti sono disabilitati con lo Spinner mentre elimina"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6 (Elimina), §7 punto 3, §9 punto 15"
+    },
+    {
+     "id": "menu-fissi-elimina-senza-uso",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea «verify-ui-menu-libero» non usato dai giorni speciali",
+      "tocca il cestino"
+     ],
+     "atteso": "finestra «Eliminare verify-ui-menu-libero?» con la sola «Non si può annullare.»",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §5, §9 punto 15"
+    },
+    {
+     "id": "menu-fissi-elimina-cascade-registro-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione del menù usato leggi i giorni speciali di prova con la Local API e il registro attività",
+      "manager: elimina dalla pagina; admin e super-admin: con la Local API; utente senza ruolo: con la Local API (overrideAccess false)"
+     ],
+     "atteso": [
+      "il menù non è più in nessun giorno speciale che lo conteneva (cascade verificato sul database)",
+      "esiste una riga con eventType delete, area app, collection fixed-menus, e nel detail «nome=…; riferimenti=N» con N il numero dei giorni speciali che lo usavano",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato e il menù resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 15; ADR-115"
+    },
+    {
+     "id": "menu-fissi-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-menu-nuovo» con tutti i campi, tre piatti in un ordine preciso, porzione e due servizi",
+      "rileggilo con la Local API (utente manager, overrideAccess false, depth 2)",
+      "modificalo e rileggilo",
+      "admin e super-admin leggono e scrivono un menù di prova; utente senza ruolo prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori coincidono (nome, descrizione, prezzo, categoria, visibilità, «Solo giorni speciali», piatti con ordine e porzioni, servizi, disabled) e l'ordine dei piatti è lo stesso",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 16"
+    },
+    {
+     "id": "menu-fissi-ordine-liste",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "categorie e menù per nome, senza distinzione di maiuscole e con le regole dell'italiano; l'ordine arriva dalla richiesta (sort della Local API); i piatti dentro un menù seguono l'ordine scelto",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §7 punto 14, §9 punto 18"
+    },
+    {
+     "id": "menu-fissi-stati-ui",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: come le altre liste (blocchi Skeleton)",
+      "errore di caricamento: solo l'avviso «Impossibile caricare i menù fissi» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita / Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio che l'ha avviata; nulla cambia"
+     ],
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §5, §6"
+    },
+    {
+     "id": "menu-fissi-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "con nessun menù fisso: «Nessun menù fisso.» e il pulsante «Nuovo menù fisso»",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con 390-vuoto-chiaro.png",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §5, §6"
+    },
+    {
+     "id": "menu-fissi-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano per righe, interruttori, frecce, «Togli», caselle e finestre; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle, Move",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "menu-fissi-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/fixed",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3), anche per /app/menu/fixed/categories",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 20",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "menu-fissi-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri la scheda Categorie, il modulo del menù (anche con la traduzione aperta), la vista «Scegli piatti», le frecce e «Togli», la finestra di eliminazione, il modulo della categoria; zero error e warning, compresi quelli di Base UI",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "menu-fissi-ricompila",
+     "tipo": "presenza",
+     "livello": 2,
+     "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione di entrambe le schede (anche in «Categorie»), conferma e esiti come in Piatti",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §5 e §9, integrazione §5",
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
+     "rinviato_a": "6.5"
+    },
+    {
+     "id": "menu-fissi-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, con il contesto touch dei profili con tocco: la chat di design li confronta con i PNG (C10)",
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §9 punto 21"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome menu-fissi-<stato>-<profilo>-<tema>.png",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "categorie": [
+      "390-categorie-chiaro.png"
+     ],
+     "categorie-vuoto": [
+      "390-categorie-vuoto-chiaro.png"
+     ],
+     "categoria-modulo": [
+      "390-categoria-modulo-chiaro.png"
+     ],
+     "categoria-nuova-errori": [
+      "390-categoria-nuova-errori-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-piatti": [
+      "390-modulo-piatti-chiaro.png"
+     ],
+     "modulo-servizi": [
+      "390-modulo-servizi-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "scegli-piatti": [
+      "390-scegli-piatti-chiaro.png",
+      "1280-scegli-piatti-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "nuovo-senza-categorie": [
+      "390-nuovo-senza-categorie-chiaro.png"
+     ],
+     "visibilita-categoria": [
+      "390-visibilita-categoria-chiaro.png"
+     ],
+     "visibilita-avviso": [
+      "390-visibilita-avviso-chiaro.png"
+     ],
+     "disponibilita": [
+      "390-disponibilita-chiaro.png"
+     ],
+     "elimina": [
+      "390-elimina-chiaro.png"
+     ],
+     "elimina-senza-uso": [
+      "390-elimina-senza-uso-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ]
+    }
+   }
   }
  ],
  "livello_3": [
@@ -3616,6 +4986,8 @@
   "Registro attività su Cloud Run: dopo l'eliminazione di un piatto di prova compare la riga delete (la chat di design, col browser di Mirko)",
   "Vini su iPhone: i menu a tendina di Capacità e Grado, l'anno con la tastiera numerica e la casella NV, la cascata dell'origine (Paese, Regione, Denominazione) e i filtri per origine",
   "Distillati e Bevande su iPhone: i menu a tendina di Invecchiamento, Grado e Capacità con «Non indicato», il paese facoltativo delle bevande",
-  "Elenchi con tabella: a 768 px e oltre la tabella a colonne fisse, a telefono le schede con l'interruttore «Disponibile» comodo da toccare"
+  "Elenchi con tabella: a 768 px e oltre la tabella a colonne fisse, a telefono le schede con l'interruttore «Disponibile» comodo da toccare",
+  "Menù fissi su iPhone: la vista «Scegli piatti» (scorrimento, caselle, ricerca con la tastiera), le frecce «Sposta su/giù» e «Togli», il tasto indietro del browser tra le schede «Menù fissi» e «Categorie»",
+  "Servizi su iPhone: interruttore «Disponibile» e finestra di eliminazione con l'elenco dei menù fissi (testo leggibile, pulsanti raggiungibili)"
  ]
 }
