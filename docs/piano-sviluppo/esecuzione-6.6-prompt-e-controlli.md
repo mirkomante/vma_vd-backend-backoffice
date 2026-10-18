@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `8acc58f`). **Prossimi passi**: 16c (F3: correzione di P1 su Vini, Distillati e Bevande), poi 16d (VC-tempi: lanciatore veloce e senza blocchi), 16e (V3 bis: rilancio mirato) e solo dopo 18 (VC4). Niente giri lunghi finché 16d non è chiuso.
+**Ultimo aggiornamento**: 2026-10-18 (commit `a2d47fc`). **Prossimi passi**: 16d (VC-tempi), poi 16e (V3 bis: rilancio mirato) e solo dopo 18 (VC4). Niente giri lunghi né giri concorrenti finché 16d non è chiuso.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1038,6 +1038,8 @@ scrivilo come «controllo dubbio».
 
 ### Passo 16c — F3: correzione di P1 su Vini, Distillati e Bevande
 
+> **Esito (2026-10-18)**: ✅ `8336553`. P1 corretto nel codice: il nome del valore salvato arriva dalle relazioni già caricate (`relationshipName`) ed è abbinato all'identificativo **salvato** (`initialValues.*Id`) per paese, regione, denominazione e classificazione nei vini e per il paese nei distillati e nelle bevande; 69 test unitari su 69 nel mio ambiente (casi: fuori elenco, valore cambiato, opzioni non ancora caricate, dentro elenco). L'effetto non è ancora confermato da un L1: il primo L1 di Composer ha dato `vini-origine-fuori-filtro` FALLITO prima di un ultimo ritocco (`SelectValue`) e il secondo è stato interrotto: lo conferma V3 bis. Composer ha lanciato **due L1 insieme** (stessi server, stessa porta, stessi dati di prova): per questo VC-tempi aggiunge un blocco contro i giri concorrenti. I sei punti «da verificare» sono stati letti nel codice: nessuna evidenza di difetto dell'app (probabile lanciatore).
+
 **Quando**: ora. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (è autonomo; **non** il Blocco comune).
 
 ```text
@@ -1082,7 +1084,7 @@ REGOLE
 
 ```text
 Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui MIGLIORI IL LANCIATORE (scripts/ui-verify/**):
-non verifichi nessuna schermata nuova. Istanza: VC-tempi. Obiettivo: giri più veloci, mirati e che non si bloccano.
+non verifichi nessuna schermata nuova. Istanza: VC-tempi. Obiettivo: giri più veloci, mirati, che non si bloccano e che non si sovrappongono.
 
 Leggi nell'ordine, per intero:
 1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
@@ -1120,11 +1122,17 @@ E. Esiti onesti: ogni FALLITO e ogni AVVISO riporta i valori REALI misurati e at
       stato letto (opzioni, valori, conteggi), e per le opzioni dei Select aspettano che si carichino aprendo il menu
       prima di leggerle (come già in piatti-tassonomie);
    3. la creazione di un record dal modulo sceglie davvero la tipologia (e il paese dove serve) prima di salvare.
+E2. Blocco contro i giri concorrenti: all'avvio il lanciatore crea un file di blocco (per esempio .next/ui-verify.lock,
+   o nella cartella temporanea) con PID e ora di avvio; se un altro giro è vivo (il PID esiste ancora) esce SUBITO
+   con il messaggio «giro già in corso (PID …, avviato alle …): attendi o ferma quel processo»; un blocco con PID
+   morto si ignora e si sovrascrive; il blocco si toglie nel finally e anche nel timer di guardia. Vale per ogni
+   livello (anche L1) e per ogni schermata.
 F. Prova, con numeri: (1) `--solo piatti-testi,piatti-azioni-pagina,piatti-colonna-elenco` su locale-prod: riporta il
    tempo totale (atteso meno di 4 minuti) e se ha riusato la build; (2) lo stesso comando subito dopo: atteso build
    riusata e meno di 2 minuti; (3) un L2 con due schermate: atteso il messaggio di rifiuto; (4) uno stato forzato a
    superare il tempo (per esempio con UI_VERIFY_STATE_TIMEOUT_MS=1000): atteso NON PROVATO «tempo» e prosecuzione;
-   (5) `ps` a fine giro senza processi residui. pnpm lint a 0 errori.
+   (5) `ps` a fine giro senza processi residui; (6) un secondo avvio mentre il primo gira: atteso il rifiuto con il
+   PID del primo, e nessun processo del secondo rimasto vivo. pnpm lint a 0 errori.
 G. Scrivi un breve rapporto in docs/design/verifica/esiti/2026-10-18-VCtempi/rapporto.md con le cinque misure e le
    opzioni nuove (--solo, UI_VERIFY_BUDGET_MS, UI_VERIFY_STATE_TIMEOUT_MS).
 
