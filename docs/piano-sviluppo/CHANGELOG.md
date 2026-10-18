@@ -10,6 +10,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Tests
+
+- **F-EN (passo 18b, Parte A)** — Script `scripts/verify-f-en-localized-name-repro.ts` (`pnpm payload run …`, solo DB dev): su **dishes, drinks, fixed-menus, menu-services, fixed-menu-categories** un `update` con `locale: 'en'`, `fallbackLocale: false` e solo descrizione (o `data: {}` dove non c’è altro campo localizzato) su record con nome inglese vuoto **fallisce** con `Nome: Questo campo è obbligatorio.` per tutte e cinque le collection; record `verify-ui-fen-*` eliminati a fine script. Fix collection/azioni non ancora applicato (attende «procedi»).
+
 ### Changed
 
 - **VC4 accettato (passo 18 ✅); difetto vero: la traduzione inglese solo-descrizione non si salva (nuovo passo 18b)** (2026-10-18; solo documenti): controllato `f76c347` (lanciatore 3.6.0): 20 file in `scripts/ui-verify/**` e negli esiti, sintassi verificata, cablati i 23 controlli di Servizi e i 32 di Menù fissi (NON PROVATI fino a I4). VC4 ha provato dal modulo dell'app a salvare SOLO la descrizione inglese di una bevanda: «Operazione non riuscita». Causa probabile (da riprodurre nel passo 18b): `name` è `required: true, localized: true` e le azioni scrivono in inglese con `fallbackLocale: false` e solo i campi compilati, quindi un nome inglese vuoto viene rifiutato; la traduzione è invece facoltativa nelle specifiche. Probabilmente vale anche per Piatti, Servizi, Menù fissi e Categorie. Passo 18b (F-EN) prima di I4, con riproduzione sul database di sviluppo; il prompt di I4 dice di non aggirare il problema. `vini-persistenza` e `vini-formati-ui` restano FALLITO per il lanciatore (gli id dei campi esistono): debito NON PROVATO per V6. **Non verificato**: le prove di VC4 sono riportate dall'agente; la causa del difetto è un'ipotesi da confermare.
