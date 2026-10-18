@@ -86,6 +86,8 @@ import {
   buildShellHomeExpected,
 } from './lib/run-menu.mjs'
 import { loadNavExpectations } from './lib/lib-readers.mjs'
+import { installPointerCoarseForTouchProfiles } from './lib/touch-context.mjs'
+import { auditControlliWiring } from './lib/controlli-handlers.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
 const DATA = '2026-10-17'
@@ -117,7 +119,10 @@ function menuScreensInScope() {
   return (
     runCtx.screenIncluded('home') ||
     runCtx.screenIncluded('navigazione') ||
-    runCtx.screenIncluded('piatti')
+    runCtx.screenIncluded('piatti') ||
+    runCtx.screenIncluded('vini') ||
+    runCtx.screenIncluded('distillati') ||
+    runCtx.screenIncluded('bevande')
   )
 }
 
@@ -181,6 +186,9 @@ async function newPage(browser, profiloKey, temaKey, baseUrl) {
     baseURL: baseUrl,
   })
   await ctx.addCookies([{ name: 'app-theme', value: tema['cookie_app-theme'], url: baseUrl }])
+  if (CONTROLLI.profili[profiloKey]?.tocco) {
+    await installPointerCoarseForTouchProfiles(ctx)
+  }
   const page = await ctx.newPage()
   return { ctx, page, tema }
 }
@@ -1161,6 +1169,17 @@ async function main() {
   CONTROLLI = loaded.controlli
   controlliBasename = loaded.controlliBasename
   runCtx = createRunContext(CONTROLLI, cli)
+
+  if (controlliBasename.includes('6.6')) {
+    const wiringIssues = auditControlliWiring(CONTROLLI, {
+      screenIds: new Set(['vini', 'distillati', 'bevande', 'piatti']),
+    })
+    if (wiringIssues.length) {
+      console.error('[ui:verify] cablaggio controlli incompleto:')
+      for (const line of wiringIssues) console.error(`  - ${line}`)
+      process.exit(1)
+    }
+  }
 
   const mode = cli.mode
   const hasShellInControlli = CONTROLLI.schermate?.some((s) => s.id === 'shell')

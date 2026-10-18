@@ -10,13 +10,16 @@ export function allControlIds(controlli, ambiente, opts = {}) {
 
   if (ambiente === 'locale-dev') {
     const ids = []
-    const menuScreenIds = ['home', 'navigazione', 'piatti']
+    const menuScreenIds = ['home', 'navigazione', 'piatti', 'vini', 'distillati', 'bevande']
     const menuInScope = schermate && menuScreenIds.some((id) => schermate.has(id))
     if (menuInScope) {
-      const piatti = controlli.schermate?.find((s) => s.id === 'piatti')
-      for (const c of piatti?.controlli ?? []) {
-        if (!levelOk(c.id)) continue
-        if (c.ambienti?.includes('locale-dev')) ids.push(c.id)
+      for (const screenId of ['piatti', 'vini', 'distillati', 'bevande']) {
+        if (schermate && !schermate.has(screenId)) continue
+        const screen = controlli.schermate?.find((s) => s.id === screenId)
+        for (const c of screen?.controlli ?? []) {
+          if (!levelOk(c.id)) continue
+          if (c.ambienti?.includes('locale-dev')) ids.push(c.id)
+        }
       }
       for (const c of controlli.comuni ?? []) {
         if (c.id === 'CONSOLE' && schermate?.has('piatti') && levelOk('CONSOLE')) ids.push('CONSOLE')

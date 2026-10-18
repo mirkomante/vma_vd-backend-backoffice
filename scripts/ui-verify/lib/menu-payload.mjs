@@ -89,3 +89,23 @@ export function menuEnsureNoroleUser() {
 export function menuDeleteUserEmail(email) {
   return menuPayloadRun('delete-user-email', [email])
 }
+
+export function menuCountCatalog(collectionSlug) {
+  return menuPayloadRun('count-catalog', [collectionSlug])
+}
+
+export function menuCreateCatalogItems(managerEmail, collectionSlug, specs) {
+  return menuPayloadRun('create-catalog-items', [managerEmail, collectionSlug, JSON.stringify(specs)])
+}
+
+export function menuFindCatalogItem(managerEmail, collectionSlug, name) {
+  return menuPayloadRun('find-catalog-item', [managerEmail, collectionSlug, name])
+}
+
+export function menuTryDeleteCatalog(managerEmail, collectionSlug, name) {
+  return menuPayloadRun('try-delete-catalog', [managerEmail, collectionSlug, name])
+}
+
+export function menuFindCatalogDeleteLog(managerEmail, collectionSlug, docId, itemName) {
+  return menuPayloadRun('find-catalog-delete-log', [managerEmail, collectionSlug, String(docId), itemName ?? ''])
+}

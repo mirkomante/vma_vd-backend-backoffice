@@ -27,6 +27,7 @@ import {
   runPiattiStatiUi,
   runRicompilaAssenteCheck,
 } from './run-piatti.mjs'
+import { runCatalogScreens } from './run-catalog.mjs'
 
 const ROOT_MENU = join(import.meta.dirname, '../../..')
 
@@ -90,6 +91,8 @@ const PIATTI_CONTROL_IDS = [
   'piatti-ricompila',
   'piatti-disabilitato-ovunque',
   'piatti-confronto-visivo',
+  'piatti-casella-misure',
+  'piatti-allergeni-selezione',
 ]
 
 function controlDef(controlli, screenId, controlId) {
@@ -243,11 +246,12 @@ export function runMenuComuniChecks(report, runCtx, addRow, { ambiente } = {}) {
     })
   }
 
-  if (
-    runCtx.shouldRun('RICOMPILA-ASSENTE') &&
-    ambiente === 'locale-prod' &&
-    !runCtx.screenIncluded('piatti')
-  ) {
+  const ricompilaViaMenuScreen =
+    runCtx.screenIncluded('piatti') ||
+    runCtx.screenIncluded('vini') ||
+    runCtx.screenIncluded('distillati') ||
+    runCtx.screenIncluded('bevande')
+  if (runCtx.shouldRun('RICOMPILA-ASSENTE') && ambiente === 'locale-prod' && !ricompilaViaMenuScreen) {
     addRow(report, {
       id: 'RICOMPILA-ASSENTE',
       schermata: 'comuni',
@@ -957,6 +961,25 @@ export async function runMenuChecks(ctx) {
       }
     }
   }
+
+  await runCatalogScreens({
+    browser,
+    baseUrl,
+    report,
+    runCtx,
+    CONTROLLI,
+    newPage,
+    loginApp,
+    testUser,
+    testPassword,
+    addRow,
+    progressStep,
+    resultToEsito,
+    screenshot,
+    SHOT_PROFILES,
+    SHOT_TEMI,
+    ambiente,
+  })
 }
 
 export async function runMenuDevSimulations(ctx) {

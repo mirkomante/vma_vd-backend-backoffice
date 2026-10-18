@@ -12,10 +12,17 @@ import { ACTIVITY_LOG_SLUG } from '@/lib/activityLog/constants'
 import { formatMenuContentDeleteDetail } from '@/lib/menu/menuContentDeleteLog'
 import {
   ALLERGENS_SLUG,
+  COUNTRIES_SLUG,
   DISH_CATEGORIES_SLUG,
   DISHES_SLUG,
+  DRINK_TYPES_SLUG,
+  DRINKS_SLUG,
   FIXED_MENU_CATEGORIES_SLUG,
   FIXED_MENUS_SLUG,
+  SPIRIT_TYPES_SLUG,
+  SPIRITS_SLUG,
+  WINE_TYPES_SLUG,
+  WINES_SLUG,
 } from '@/lib/menu/constants'
 import type { User } from '@/payload-types'
 
@@ -31,6 +38,13 @@ if (!action) {
 
 function isAccessDenied(error: unknown): boolean {
   return error instanceof APIError && error.status === 403
+}
+
+type CatalogContentSlug = typeof WINES_SLUG | typeof SPIRITS_SLUG | typeof DRINKS_SLUG
+
+function parseCatalogSlug(raw: string): CatalogContentSlug | null {
+  if (raw === WINES_SLUG || raw === SPIRITS_SLUG || raw === DRINKS_SLUG) return raw
+  return null
 }
 
 async function findUserByEmail(payload: Awaited<ReturnType<typeof getPayload>>, email: string) {
@@ -70,7 +84,14 @@ async function main() {
   if (action === 'delete-prefix') {
     const prefix = args[1] ?? 'verify-ui-'
     let deleted = 0
-    for (const slug of [FIXED_MENUS_SLUG, DISHES_SLUG, FIXED_MENU_CATEGORIES_SLUG] as const) {
+    for (const slug of [
+      FIXED_MENUS_SLUG,
+      DISHES_SLUG,
+      FIXED_MENU_CATEGORIES_SLUG,
+      WINES_SLUG,
+      SPIRITS_SLUG,
+      DRINKS_SLUG,
+    ] as const) {
       const found = await payload.find({
         collection: slug,
         where: { name: { like: prefix } },
@@ -90,6 +111,161 @@ async function main() {
   if (action === 'count-dishes') {
     const res = await payload.count({ collection: DISHES_SLUG, overrideAccess: true })
     console.log(JSON.stringify({ count: res.totalDocs }))
+    return
+  }
+
+  if (action === 'count-catalog') {
+    const slug = args[1]
+    if (slug !== WINES_SLUG && slug !== SPIRITS_SLUG && slug !== DRINKS_SLUG) {
+      throw new Error('count-catalog: wines | spirits | drinks')
+    }
+    const res = await payload.count({ collection: slug, overrideAccess: true })
+    console.log(JSON.stringify({ count: res.totalDocs }))
+    return
+  }
+
+  if (action === 'create-catalog-items') {
+    const email = args[1]
+    const slug = args[2]
+    const json = args[3]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !json) throw new Error('create-catalog-items: email, slug e json richiesti')
+    if (slug !== WINES_SLUG && slug !== SPIRITS_SLUG && slug !== DRINKS_SLUG) {
+      throw new Error('create-catalog-items: slug non valido')
+    }
+    const specs = JSON.parse(json) as Array<{ name: string; disabled?: boolean; description?: string }>
+    const typeSlug =
+      slug === WINES_SLUG ? WINE_TYPES_SLUG : slug === SPIRITS_SLUG ? SPIRIT_TYPES_SLUG : DRINK_TYPES_SLUG
+    const typeRes = await payload.find({ collection: typeSlug, limit: 1, depth: 0, overrideAccess: true })
+    const typeId = typeRes.docs[0]?.id
+    let countryId: number | string | undefined
+    if (slug === WINES_SLUG || slug === SPIRITS_SLUG) {
+      const countryRes = await payload.find({
+        collection: COUNTRIES_SLUG,
+        where: { enabled: { equals: true } },
+        limit: 1,
+        depth: 0,
+        overrideAccess: true,
+      })
+      countryId = countryRes.docs[0]?.id
+    }
+    if (typeId == null || ((slug === WINES_SLUG || slug === SPIRITS_SLUG) && countryId == null)) {
+      console.log(JSON.stringify({ ok: false, reason: 'missing_taxonomy' }))
+      return
+    }
+    const ids: Array<number | string> = []
+    for (const spec of specs) {
+      const data: Record<string, unknown> = {
+        name: spec.name,
+        description: spec.description ?? 'verify-ui',
+        price: 9.5,
+        type: typeId,
+        disabled: spec.disabled ?? false,
+      }
+      if (slug === WINES_SLUG || slug === SPIRITS_SLUG) {
+        data.country = countryId
+      }
+      const doc = await payload.create({
+        collection: slug,
+        data: data as never,
+        overrideAccess: false,
+        user,
+      })
+      ids.push(doc.id)
+    }
+    console.log(JSON.stringify({ ok: true, ids }))
+    return
+  }
+
+  if (action === 'find-catalog-item') {
+    const email = args[1]
+    const slug = parseCatalogSlug(args[2] ?? '')
+    const name = args[3]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name || !slug) throw new Error('find-catalog-item: parametri mancanti')
+    const found = await payload.find({
+      collection: slug,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 1,
+      locale: 'all',
+      overrideAccess: false,
+      user,
+    })
+    const doc = found.docs[0]
+    console.log(JSON.stringify({ found: Boolean(doc), id: doc?.id ?? null, doc: doc ?? null }))
+    return
+  }
+
+  if (action === 'try-delete-catalog') {
+    const email = args[1]
+    const slug = parseCatalogSlug(args[2] ?? '')
+    const name = args[3]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !name || !slug) throw new Error('try-delete-catalog: parametri mancanti')
+    const found = await payload.find({
+      collection: slug,
+      where: { name: { equals: name } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+    })
+    const doc = found.docs[0]
+    if (!doc) {
+      console.log(JSON.stringify({ ok: false, reason: 'not_found' }))
+      return
+    }
+    try {
+      await payload.delete({
+        collection: slug,
+        id: doc.id,
+        overrideAccess: false,
+        user,
+        context: { activityArea: 'app' },
+      })
+      console.log(JSON.stringify({ ok: true }))
+    } catch (e) {
+      if (isAccessDenied(e)) {
+        console.log(JSON.stringify({ ok: false, reason: 'access_denied' }))
+        return
+      }
+      throw e
+    }
+    return
+  }
+
+  if (action === 'find-catalog-delete-log') {
+    const email = args[1]
+    const collectionSlug = args[2]
+    const docId = args[3]
+    const itemName = args[4]
+    const user = email ? await findUserByEmail(payload, email) : null
+    if (!user || !docId) throw new Error('find-catalog-delete-log: parametri mancanti')
+    const logs = await payload.find({
+      collection: ACTIVITY_LOG_SLUG,
+      overrideAccess: true,
+      depth: 0,
+      limit: 10,
+      sort: '-createdAt',
+      where: {
+        and: [
+          { user: { equals: user.id } },
+          { eventType: { equals: 'delete' } },
+          { area: { equals: 'app' } },
+          { collection: { equals: collectionSlug } },
+          { documentId: { equals: String(docId) } },
+        ],
+      },
+    })
+    const row = logs.docs[0]
+    const expectedDetail = formatMenuContentDeleteDetail(itemName ?? '?', 0)
+    console.log(
+      JSON.stringify({
+        found: Boolean(row),
+        detail: row?.detail ?? null,
+        expectedDetail,
+      }),
+    )
     return
   }
 

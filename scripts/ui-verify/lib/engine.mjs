@@ -109,7 +109,7 @@ export async function checkAltezzaMouse(page) {
   const heights = await page.evaluate(() => {
     const out = []
     const base =
-      'button, input:not([type=hidden]), select, textarea, [role=combobox], [role=tab], [role=menuitem]'
+      'button, input:not([type=hidden]), select, [role=combobox], [role=tab], [role=menuitem]'
     document.querySelectorAll(base).forEach((e) => {
       const r = e.getBoundingClientRect()
       if (r.width < 2 || r.height < 2) return

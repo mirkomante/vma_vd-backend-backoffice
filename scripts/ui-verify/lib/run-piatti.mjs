@@ -1017,6 +1017,92 @@ export async function runPiattiFlowControls(ctx) {
       )
     }
 
+    if (runCtx.shouldRun('piatti-casella-misure')) {
+      for (const temaKey of ['chiaro', 'scuro']) {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoPiatti(page)
+        await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
+        const labels = [
+          copyConst('PIATTI_FORM_GLUTEN_FREE') ?? 'Senza glutine',
+          copyConst('PIATTI_FORM_DAIRY_FREE') ?? 'Senza latticini',
+          copyConst('PIATTI_FORM_VEGAN') ?? 'Vegano',
+          copyConst('PIATTI_FORM_EGG_FREE') ?? 'Senza uova',
+          copyConst('PIATTI_FORM_SOLD_OUT_LABEL') ?? 'Terminato per il servizio',
+          copyConst('PIATTI_FORM_DISABLED_LABEL') ?? 'Disabilitato',
+        ]
+        const m = await page.evaluate((names) => {
+          const out = []
+          for (const name of names) {
+            const root = document.querySelector(`[role=checkbox][aria-label="${name}"]`)
+            const box = root?.querySelector('[data-slot=checkbox-box]')
+            const rr = root?.getBoundingClientRect()
+            const br = box?.getBoundingClientRect()
+            out.push({
+              name,
+              root: rr ? `${Math.round(rr.width)}x${Math.round(rr.height)}` : '—',
+              box: br ? `${Math.round(br.width)}x${Math.round(br.height)}` : '—',
+            })
+          }
+          return out
+        }, labels)
+        const failures = []
+        for (const row of m) {
+          const [rw, rh] = (row.root || '0x0').split('x').map(Number)
+          const [bw, bh] = (row.box || '0x0').split('x').map(Number)
+          if (rw < 43 || rh < 43) failures.push(`${row.name} root ${row.root}`)
+          if (bw < 15 || bw > 17 || bh < 15 || bh > 17) failures.push(`${row.name} box ${row.box}`)
+        }
+        add(
+          'piatti-casella-misure',
+          failures.length ? 'FALLITO' : 'OK',
+          failures.length ? failures.join('; ') : JSON.stringify(m),
+          'radice ≥44×44; box 16×16 (±1)',
+          '/app/menu',
+          'piatti/modulo',
+          `telefono-390/${temaKey}`,
+        )
+        await pctx.close()
+      }
+    }
+
+    if (runCtx.shouldRun('piatti-allergeni-selezione')) {
+      for (const temaKey of ['chiaro', 'scuro']) {
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', temaKey, baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoPiatti(page)
+        await page.getByRole('button', { name: copyConst('PIATTI_NEW_BUTTON') ?? 'Nuovo piatto' }).click()
+        const allergenButtons = page.locator('[data-slot=sheet-content] [role=group] button')
+        const count = await allergenButtons.count()
+        const failures = []
+        if (count < 2) failures.push('meno di due allergeni nel modulo')
+        else {
+          await allergenButtons.nth(0).click()
+          await allergenButtons.nth(1).click()
+        }
+        await page.getByRole('checkbox', { name: copyConst('PIATTI_FORM_DAIRY_FREE') ?? 'Senza latticini' }).click()
+        const hint = await page.locator('[data-slot=sheet-content]').innerText()
+        if (!hint.includes('Selezionati: 2.')) failures.push('conteggio allergeni')
+        const pressed = await page.evaluate(() =>
+          [...document.querySelectorAll('[data-slot=sheet-content] button[aria-pressed=true]')].length,
+        )
+        if (pressed < 2) failures.push(`aria-pressed=${pressed}`)
+        if (screenshot) {
+          await screenshot(page, report, `piatti-modulo-allergeni-telefono-390-${temaKey}`, temaKey)
+        }
+        add(
+          'piatti-allergeni-selezione',
+          failures.length ? 'FALLITO' : 'OK',
+          failures.join(' | ') || '2 allergeni + Senza latticini; screenshot modulo-allergeni',
+          'Selezionati: 2.; stato selezionato visibile',
+          'img/',
+          'piatti/modulo-allergeni',
+          `telefono-390/${temaKey}`,
+        )
+        await pctx.close()
+      }
+    }
+
     if (runCtx.shouldRun('piatti-confronto-visivo')) {
       const expectedShots = PIATTI_CONFRONTO_STATI.length * SHOT_PROFILES.length * SHOT_TEMI.length
       let shotCount = 0
