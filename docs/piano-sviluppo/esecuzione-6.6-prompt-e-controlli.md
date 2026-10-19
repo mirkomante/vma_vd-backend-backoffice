@@ -84,7 +84,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | 🔲 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
+| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
 | 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
 | 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale | lint e typecheck | tu committi e pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-18 (commit `2f3f932`). **Prossimi passi**: 20 (V4: L2 su Servizi e Menù fissi, una schermata per volta; completa i flussi in debito del lanciatore), poi 21 (correzione dei rilievi).
+**Ultimo aggiornamento**: 2026-10-19 (commit `e0e85da`). **Prossimi passi**: 20d (V4 bis: helper persistente, completamento dei flussi di Servizi e Menù fissi; in esecuzione).
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1383,6 +1383,8 @@ apre la scheda giusta e le briciole sono corrette.
 
 ### Passo 20 — V4: l'agente esegue L2 mirato sui tipi nuovi
 
+> **Esito (2026-10-18)**: 🔶 incompleto (`f0bdd6b`). **Nessun difetto nuovo dell'app.** Servizi L2 completo; composizione dei menù OK; traduzione inglese dal modulo di Bevande e Piatti OK (F-EN funziona dall'app); `menu-fissi-schede-percorsi` misura `documentReloaded = true` (le schede ricaricano il documento: rilievo A, vedi 20c). I quattro FALLITO sono del lanciatore: `servizi-righe-azioni` (l'aspettativa è invertita: il controllo dice che lo switch **resta attivo** sulle righe disabilitate), `servizi-elimina-cascade-registro-permessi` (la cascata è già provata da `verify-menu-6_3.ts`; la misura è prematura o interrotta da `ensure-norole-user`), `menu-fissi-ordine-piatti` (fixture mancante) e `menu-fissi-visibilita-categoria` (non esegue tutti i passi: con la categoria «Solo pranzo» la visibilità si precompila uguale, l'avviso arriva solo dopo il cambio manuale). Il giro L2 di Menù fissi si è interrotto a circa 80 s e 32 controlli sono NON PROVATI. **Causa dei tempi lunghi**: ogni operazione sui dati di prova lancia `pnpm payload run scripts/ui-verify/menu-payload.ts`, cioè un processo Payload nuovo per operazione; un loop sull'elenco degli id ha bloccato il payload per più di 2 minuti. Si chiude con il passo 20d.
+
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
 ```text
@@ -1444,6 +1446,98 @@ quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibil
 
 **Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
 **Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V4 (Menù fissi, Servizi)`
+
+
+### Passo 20b — F-SEL: tendine facoltative di Distillati, Bevande e Vini
+
+> **Esito (2026-10-18)**: ✅ `ed64db5` (esiti L1 in `16dd08c`). Difetti segnalati dall'utente con degli screenshot: Distillati (Invecchiamento, Grado) e Bevande (Capacità, Grado) mostravano il testo grezzo `__empty__`, il Paese delle Bevande `__no_country__`, e le coppie erano su due righe invece che affiancate come nei Vini. Causa: `value={x || EMPTY_SELECT}` con `items` senza la chiave segnaposto, e `SelectValue` con `null` come testo per il paese vuoto. Correzione: componente condiviso `OptionalSelectField` (`components/app/menu/catalog/optional-select-field.tsx`, con `lib/menu/catalog/optionalSelectValue.ts`): valore vuoto → `undefined` → segnaposto («Scegli», «Facoltativo» per il paese delle Bevande); la voce vuota dell'elenco svuota il campo; il segnaposto interno non arriva mai nello stato. Corretto anche un problema latente nei Vini: scegliere «Non indicata» salvava `__empty__`. Layout `grid-cols-1 md:grid-cols-2`. Controllato io: `tsc` sull'intero repo 0 errori, ESLint sui file toccati senza errori, 100 test unitari su 100 (11 nuovi), L1 di distillati, bevande e vini OK secondo il rapporto di Composer.
+
+### Passo 20c — F-TAB: le schede di Menù fissi navigano senza ricaricare il documento
+
+> **Esito (2026-10-19)**: ✅ `6ae1f34` (esiti L1 in `e0e85da`). Le due schede diventano `Link` di `next/link` con `aria-selected` coerente con la scheda attiva; il commit tocca solo `fixed-menus-shell.tsx` e il CHANGELOG. Controllato io: `tsc` sull'intero repo 0 errori, ESLint senza errori, 100 test unitari su 100. L1 di Composer: `menu-fissi-schede-percorsi` con `documentReloaded = false`.
+
+**Perché**: V4 misura `documentReloaded = true`: le due schede sono `<a href>` semplici e ogni cambio scheda ricarica tutto il documento. **Quando**: ora, prima di V4 bis. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (autonomo).
+
+```text
+Sei Composer nel repository VMA VD. Chat F-TAB: le schede di Menù fissi devono navigare senza ricaricare il documento.
+Fai solo questo, direttamente. Le regole di .cursor/rules si caricano da sole.
+
+PRECONDIZIONE: nessun giro del lanciatore attivo (ps e .next/ui-verify.lock); altrimenti FERMATI.
+
+PROBLEMA: in components/app/fixed-menus/fixed-menus-shell.tsx le due schede «Menù fissi» e «Categorie» sono <a href>
+semplici: ogni cambio scheda ricarica tutto il documento (V4: documentReloaded = true). Il resto dell'app usa la
+navigazione di Next. Le schede restano collegamenti (percorsi /app/menu/fixed e /app/menu/fixed/categories), non stato.
+
+FAI
+1. Sostituisci i due <a> con Link di next/link, mantenendo href, classi, role="tab"/"tablist", aria-current e il
+   comportamento del tasto indietro; aggiungi aria-selected coerente con la scheda attiva. Non cambiare altro
+   dell'aspetto.
+2. Cerca nel resto di app/ e components/ altri <a href="/app...> per navigazione interna dell'area App (stessa classe di
+   difetto) e correggili solo se sono link interni; riporta l'elenco di cosa hai trovato.
+3. PRIMA DEL COMMIT pnpm typecheck e pnpm lint sull'INTERO repo, pnpm ui:check, test unitari di lib/. L1 breve, un solo
+   giro: pnpm ui:verify locale-prod --livello 1 --schermata menu-fissi --controlli controlli-6.6.json --solo
+   menu-fissi-schede-percorsi (il lanciatore riporta documentReloaded: atteso FALSE).
+4. CHANGELOG sotto [Unreleased]; commit locale che nomina F-TAB; MAI git push. Non toccare docs/design/**, i controlli,
+   scripts/ui-verify/**, collections/**, dipendenze, migrazioni.
+RISPOSTA FINALE: tabella «Esiti reali» (comando, esito, evidenza), file toccati e l'elenco dei <a> interni trovati.
+```
+
+**Quando Cursor ha finito**: incollami la tabella; io eseguo `tsc`, ESLint e i test prima del via libera al push.
+
+### Passo 20d — V4 bis: helper persistente e completamento di Servizi e Menù fissi
+
+**Quando**: dopo F-TAB (20c). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi l'app. Istanza: V4 bis, dopo V4,
+F-SEL (tendine facoltative) e F-TAB (schede con Link).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/README.md e
+policy-test.md; docs/design/verifica/controlli-6.6.json (schermate servizi e menu-fissi); docs/design/verifica/esiti/
+2026-10-18-locale-prod/rapporto-v4-agente.md; docs/design/verifica/esiti/2026-10-18-VCtempi/rapporto.md.
+
+0. Riporta HEAD e git status (solo lettura). PRECONDIZIONI: git log deve elencare F-SEL e F-TAB su components/app; se
+   mancano, FERMATI. Controlla porte e processi residui: `lsof -nP -iTCP:3000,3100,3200 -sTCP:LISTEN` e
+   `.next/ui-verify.lock`; un blocco con PID morto si ignora.
+A. VELOCITÀ (la causa dei giri lunghi): oggi ogni operazione sui dati di prova lancia `pnpm payload run
+   scripts/ui-verify/menu-payload.ts`, cioè un processo Payload nuovo per operazione (secondi ciascuna). Sostituiscilo
+   con un helper PERSISTENTE: un solo processo Payload avviato una volta per giro, che esegue le operazioni inviate come
+   righe JSON (o su una porta locale), chiuso nel finally e dal timer di guardia. Mantieni le stesse operazioni e la
+   protezione del database di sviluppo (assertDevDatabaseFromEnv). Misura il tempo medio di una creazione e di una
+   lettura PRIMA e DOPO (atteso: sotto 1 secondo) e riportalo.
+B. Correggi in scripts/ui-verify/** (mai i controlli JSON) i difetti del lanciatore emersi in V4:
+   1. servizi-righe-azioni: il controllo dice che lo switch RESTA ATTIVO sulle righe disabilitate (riga attenuata e
+      badge «Disabilitato»); il lanciatore aspetta il contrario.
+   2. servizi-elimina-cascade-registro-permessi: dopo l'eliminazione dalla pagina leggi con la Local API (depth 0) i
+      servizi del menù fisso di prova e il registro; riporta i valori prima e dopo. Se «utente senza ruolo» non è
+      provabile è NON PROVATO per quella parte (coperta da verify-roles-8_3), non FALLITO per tutto. La cascata è già
+      provata da verify:menu-6_3: se la misura non la conferma, riportala come difetto del lanciatore o come anomalia
+      da indagare con i valori reali.
+   3. menu-fissi-ordine-piatti: crea PRIMA i piatti verify-ui-p1…p4 e il menù di prova; esegui i passi del controllo
+      (frecce, ordine salvato, «Togli») e riporta i valori.
+   4. menu-fissi-visibilita-categoria: esegui TUTTI i passi: scegli la categoria «verify-ui-pranzo» (la visibilità si
+      precompila «Solo pranzo»), cambia a mano in «Sempre» (atteso: avviso informativo), poi in «Solo cena» (atteso:
+      avviso rosso «non comparirà mai»), poi scegli «verify-ui-sempre» (la scelta manuale non viene sovrascritta), e
+      riporta i testi letti.
+   5. Timeout: il giro menu-fissi si è interrotto a circa 80 secondi con TimeoutError nella preparazione degli stati e
+      degli screenshot: individua quale stato e correggi (attese, dati di prova mancanti).
+C. Esegui UNA schermata per volta, a gruppi di stati (--stati), con meno di 5 minuti ciascuno; budget per schermata 15
+   minuti; se un giro supera 5 minuti senza produrre file, fermati e riportalo:
+   - locale-prod L2 servizi; locale-prod L2 menu-fissi (a gruppi di stati);
+   - locale-dev solo il controllo CONSOLE per servizi e menu-fissi;
+   - regressione L1 (uno alla volta): navigazione,home,piatti con controlli-6.6.json, e shell con controlli-8.2.json.
+   Controlla anche che menu-fissi-schede-percorsi riporti documentReloaded FALSE dopo F-TAB.
+D. Scrivi gli esiti in docs/design/verifica/esiti/2026-10-18-locale-prod/ e 2026-10-18-locale-dev/ e un riepilogo in
+   docs/design/verifica/esiti/2026-10-18-V4bis/rapporto.md con, per OGNI controllo di servizi e menu-fissi, OK / FALLITO /
+   AVVISO / NON PROVATO, il valore misurato e quello atteso (mai «—»), la tua classificazione per ogni FALLITO e il
+   tempo di ogni giro. Chiudi processi e porte, cancella i dati «verify-ui-…» e l'utente di prova, e verifica con git
+   status i file nuovi.
+
+Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in
+italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; commit `test(ui-verify): V4 bis — helper persistente e completamento di Servizi e Menù fissi`, push, «push fatto».
 
 ### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
 
