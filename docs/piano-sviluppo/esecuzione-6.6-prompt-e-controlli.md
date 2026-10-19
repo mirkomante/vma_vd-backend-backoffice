@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-19 (commit `e0e85da`). **Prossimi passi**: 20d (V4 bis: helper persistente, completamento dei flussi di Servizi e Menù fissi; in esecuzione).
+**Ultimo aggiornamento**: 2026-10-19 (commit `e0824bb`). **Prossimi passi**: 20e (VC-parallelo: matrice in parallelo, `progress.log`, avvio senza blocchi, regressione L1), poi 20f (V4 ter: Menù fissi L2 a gruppi, screenshot, confronto visivo). Un passo alla volta.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1486,6 +1486,8 @@ RISPOSTA FINALE: tabella «Esiti reali» (comando, esito, evidenza), file toccat
 
 ### Passo 20d — V4 bis: helper persistente e completamento di Servizi e Menù fissi
 
+> **Esito (2026-10-19)**: ✅ parziale, `a7114d8` (lanciatore 3.7.0). **Nessun FALLITO** su Servizi e Menù fissi, **22 controlli OK**: Servizi (righe con lo switch attivo sulle righe disabilitate, cascata con registro `riferimenti=1` e menù senza il servizio, disponibilità, eliminazione, modulo, persistenza, ordine, console) e Menù fissi (schede con `documentReloaded = false`, ordine con frecce a 44 px, visibilità con i due avvisi, composizione, categoria, validazione, console): i quattro FALLITO di V4 erano davvero del lanciatore. **Helper Payload persistente** (daemon TCP su `127.0.0.1:31997`, protetto da `assertDevDatabaseFromEnv`): creazione da 1956 a 874 ms, lettura da 1962 a 132 ms. **Non fatto** (passa a 20e e 20f): la matrice C1/C2/C3 di Servizi (il giro è stato interrotto dopo circa 21 minuti: celle stato × profilo × tema eseguite una dopo l'altra), Menù fissi L2 a gruppi, la regressione L1 (l'avvio di `ui:verify` è rimasto senza output per oltre 4 minuti) e gli screenshot per il confronto visivo. **Durata del passo**: circa 2 ore e mezza, di cui circa 85 minuti di programmazione del lanciatore: un prompt che mette insieme sviluppo e giri lunghi non sta in 45 minuti; da qui in avanti ogni passo che modifica il lanciatore ha un tetto di 30 minuti di programmazione e un `progress.log`.
+
 **Quando**: dopo F-TAB (20c). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
 
 ```text
@@ -1538,6 +1540,94 @@ italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
 ```
 
 **Quando Cursor ha finito**: incollami il resoconto; commit `test(ui-verify): V4 bis — helper persistente e completamento di Servizi e Menù fissi`, push, «push fatto».
+
+
+### Passo 20e — VC-parallelo: matrice in parallelo, avanzamento leggibile, avvio senza blocchi
+
+**Perché**: V4 bis ha dimostrato che i controlli veri di Servizi e Menù fissi funzionano, ma la **matrice C1/C2/C3** (celle stato × profilo × tema) gira una cella dopo l'altra: per Servizi supera i 20 minuti. In più, da fuori non si capisce se un giro lavora o è appeso, e l'avvio di `ui:verify` è rimasto muto per oltre 4 minuti. **Quando**: ora. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Tetto**: 30 minuti di programmazione; se lo superi, fermati e riporta.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui MIGLIORI IL LANCIATORE (scripts/ui-verify/**): non
+verifichi schermate nuove. Istanza: VC-parallelo. Obiettivo: giri più brevi, leggibili da fuori e senza blocchi.
+
+TETTO: 30 minuti di programmazione. Se li superi, FERMATI e riporta a che punto sei: non continuare.
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/README.md e
+policy-test.md; docs/design/verifica/esiti/2026-10-18-V4bis/rapporto.md; docs/design/verifica/esiti/2026-10-18-VCtempi/
+rapporto.md; scripts/ui-verify/run.mjs e scripts/ui-verify/lib/ (engine.mjs, run-menu-list.mjs, run-catalog.mjs,
+run-piatti.mjs, report.mjs, timeouts.mjs, menu-payload.mjs).
+
+Poi, in quest'ordine (modifichi SOLO scripts/ui-verify/**, mai i controlli JSON):
+A. AVANZAMENTO LEGGIBILE. Scrivi in .next/ui-verify-progress.log (non versionato) una riga all'avvio di ogni fase e di
+   ogni controllo o stato, e un battito ogni 30 secondi, nel formato: `HH:MM:SS | schermata | fase | controllo o stato |
+   n/N | secondi trascorsi`. Stampa le stesse righe su stdout. Scrivi nel rapporto il comando per seguirlo
+   (`tail -f .next/ui-verify-progress.log`).
+B. AVVIO SENZA BLOCCHI. Nei giri di regressione L1 (navigazione, home, piatti, shell) l'avvio di ui:verify è rimasto muto
+   per oltre 4 minuti. Individua la causa (attesa del blocco, build, avvio del server, porta occupata, daemon Payload,
+   cache della build) e fai in modo che ogni fase di avvio stampi subito una riga e che, se una fase supera 60
+   secondi senza progressi, il giro esca con un messaggio che dice quale fase e perché. Riporta la causa trovata.
+C. MATRICE IN PARALLELO. Le celle C1/C2/C3 (stato × profilo × tema) di Servizi, Menù fissi e dei cataloghi devono
+   girare in parallelo in N contesti del browser (UI_VERIFY_PARALLEL, default 4), ciascuno con la sua pagina. Le
+   fixture si preparano UNA volta per stato prima delle celle; i flussi che modificano i dati (eliminazioni, interruttori,
+   salvataggi) restano seriali e fuori dalla matrice. L'ordine dei risultati nel rapporto resta deterministico. Il
+   tempo massimo per cella resta 60 secondi (NON PROVATO «tempo» e si prosegue); il budget per schermata resta 15
+   minuti con la guardia.
+D. CHIUSURA PULITA. Il daemon Payload (porta 31997), il server dell'app, il browser e il blocco si chiudono sempre,
+   anche con SIGINT, SIGTERM, errore o timer di guardia. A fine giro controlla con `ps` e `lsof` che non resti nulla e
+   scrivilo nel log.
+E. PROVE CON NUMERI: (1) L2 di servizi su locale-prod: tempo totale, numero di celle, parallelismo (atteso circa 6
+   minuti; se non basta, riporta dove va il tempo). (2) Un giro L1 `--schermata navigazione`, uno `home`, uno `piatti`
+   e uno `shell` con controlli-8.2.json, UNO ALLA VOLTA: tempo di ognuno (atteso meno di 3 minuti ciascuno) e con il
+   log che avanza. (3) Un secondo avvio mentre uno è attivo: rifiutato con il PID. (4) `ps` e `lsof` finali puliti.
+   (5) pnpm typecheck e pnpm lint sull'INTERO repo.
+F. Scrivi docs/design/verifica/esiti/2026-10-19-VCparallelo/rapporto.md con le misure, le opzioni nuove e la causa
+   dell'avvio muto.
+
+Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli JSON. Rispondi
+in italiano con la tabella OK / FALLITO / NON PROVATO delle prove e i numeri.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto. Prima del via libera al push eseguo io `tsc` e ESLint. Commit `test(ui-verify): VC-parallelo — matrice in parallelo, progress.log, avvio senza blocchi`, push, «push fatto». Accettazione: Servizi L2 sotto i 10 minuti e i quattro giri di regressione sotto i 3 minuti ciascuno.
+
+### Passo 20f — V4 ter: Menù fissi L2, regressione e screenshot per il confronto visivo
+
+**Quando**: dopo 20e. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi l'app. Istanza: V4 ter, dopo V4 bis
+e VC-parallelo (matrice in parallelo, progress.log, avvio senza blocchi).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/README.md e
+policy-test.md; docs/design/verifica/controlli-6.6.json (schermate servizi e menu-fissi); docs/design/verifica/esiti/
+2026-10-18-V4bis/rapporto.md; docs/design/verifica/esiti/2026-10-19-VCparallelo/rapporto.md.
+
+0. Riporta HEAD e git status (solo lettura). PRECONDIZIONI: `git log --oneline` deve elencare il commit di VC-parallelo
+   su scripts/ui-verify; se manca, FERMATI. Controlla `lsof -nP -iTCP:3000,3100,3200,31997 -sTCP:LISTEN` e il blocco.
+   Segui i giri con `tail -f .next/ui-verify-progress.log`.
+A. Esegui, UNA schermata per volta (il lanciatore lo impone), con meno di 10 minuti ciascuna:
+   1. locale-prod L2 `--schermata servizi` (con la matrice C1/C2/C3 completa e TUTTI gli screenshot degli stati);
+   2. locale-prod L2 `--schermata menu-fissi`, a gruppi di stati con --stati se serve (elenco e categorie; moduli
+      e vista «Scegli piatti»; conferme di eliminazione e stati UI), con la matrice completa e TUTTI gli screenshot;
+   3. locale-dev: solo i controlli CONSOLE di servizi e menu-fissi e le simulazioni (errore di caricamento,
+      errore del server, caricamento lento) per `servizi-stati-ui` e `menu-fissi-stati-ui`;
+   4. regressione L1, uno alla volta: `navigazione`, `home`, `piatti` (controlli-6.6.json) e `shell` (controlli-8.2.json).
+   Se un giro supera 10 minuti senza avanzare nel progress.log, fermati e riportalo.
+B. Gli screenshot (a 390 e 1280 px, chiaro e scuro, con il contesto touch dei profili con tocco) di TUTTI gli stati di
+   riferimento di servizi e menu-fissi vanno in docs/design/verifica/esiti/2026-10-19-locale-prod/img/ con il nome
+   <schermata>-<stato>-<profilo>-<tema>.png: li confronta la chat di design (C10) con i PNG di docs/design/schermate/.
+   Riporta il numero di screenshot per schermata e quelli mancanti con il motivo.
+C. NON PROVATO con il motivo: stati «vuoto» (database popolato), `*-accesso` (coperto da verify-roles-8_3),
+   `*-ricompila` (rinviato alla 6.5), online (V6).
+D. Scrivi gli esiti in docs/design/verifica/esiti/2026-10-19-locale-prod/ e 2026-10-19-locale-dev/ e un riepilogo in
+   docs/design/verifica/esiti/2026-10-19-V4ter/rapporto.md con, per OGNI controllo di servizi e menu-fissi, OK / FALLITO /
+   AVVISO / NON PROVATO, il valore misurato e quello atteso (mai «—»), la tua classificazione per ogni FALLITO e il
+   tempo di ogni giro. Chiudi processi e porte, cancella i dati «verify-ui-…» e l'utente di prova, verifica con git status.
+
+Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli. Rispondi in
+italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; commit `test(ui-verify): V4 ter — L2 di Servizi e Menù fissi, regressione e screenshot`, push, «push fatto». Poi confronto gli screenshot con i riferimenti (C10) e assegno i rilievi.
 
 ### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
 
