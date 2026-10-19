@@ -1,6 +1,8 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
+import { logProgressParts } from './progress.mjs'
+
 const ROOT = join(import.meta.dirname, '../../..')
 const CONTROLLI_DIR = join(ROOT, 'docs/design/verifica')
 
@@ -148,6 +150,5 @@ export class RunBudget {
 }
 
 export function logProgress(parts) {
-  const line = `[ui:verify] ${parts.filter(Boolean).join(' · ')}`
-  process.stderr.write(`\r${line.padEnd(100)}`)
+  logProgressParts(parts)
 }

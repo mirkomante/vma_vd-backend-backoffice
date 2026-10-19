@@ -254,6 +254,8 @@ export function initReport({
       const header = `# Esito verifica — ${ambiente} — ${data}
 Commit: ${commit} · Lanciatore: ${this.meta.launcherHeader ?? launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: ${this.meta.controlliBasename ?? controlliBasename} v${controlliVersion}${durata}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}
 
+Avanzamento live: \`tail -f .next/ui-verify-progress.log\`
+
 ## Riepilogo (tutti i pacchetti in cartella)
 OK: ${counts.OK} · FALLITO: ${counts.FALLITO} · AVVISO: ${counts.AVVISO} · NON PROVATO: ${counts['NON PROVATO']} · Controlli distinti nel JSON corrente: ${distinctControls}
 

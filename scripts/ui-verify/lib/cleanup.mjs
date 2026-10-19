@@ -3,6 +3,8 @@ import { execSync } from 'node:child_process'
 import { DEV_PORT, PROD_PORT } from './ports.mjs'
 import { SIM_PORT } from './ensure-ports.mjs'
 
+const MENU_PAYLOAD_PORT = Number(process.env.UI_VERIFY_MENU_PAYLOAD_PORT ?? '31997')
+
 /** @type {import('@playwright/test').Browser[]} */
 const openBrowsers = []
 
@@ -53,7 +55,7 @@ function listenPids(port) {
 /** Restituisce righe di log sui processi ancora in ascolto sulle porte ui:verify. */
 export function auditResidualProcesses() {
   const lines = []
-  for (const port of [DEV_PORT, PROD_PORT, SIM_PORT]) {
+  for (const port of [DEV_PORT, PROD_PORT, SIM_PORT, MENU_PAYLOAD_PORT]) {
     const pids = listenPids(port)
     if (pids.length) lines.push(`porta ${port}: PID ${pids.join(', ')}`)
   }

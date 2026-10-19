@@ -97,9 +97,11 @@ import {
 } from './lib/run-menu.mjs'
 import { loadNavExpectations } from './lib/lib-readers.mjs'
 import { auditControlliWiring } from './lib/controlli-handlers.mjs'
+import { initVerifyProgress, stopVerifyProgress, writeProgress } from './lib/progress.mjs'
+import { runStartupPhase } from './lib/startup-phase.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
-const DATA = '2026-10-18'
+const DATA = '2026-10-19'
 
 /** @type {import('./lib/perimeter.mjs').ReturnType<typeof createRunContext>} */
 let runCtx
@@ -113,6 +115,29 @@ let guardTimer = null
 let devChildGlobal = null
 /** @type {import('node:child_process').ChildProcess | null} */
 let prodChildGlobal = null
+let shutdownInProgress = false
+
+function logStartupPhase(label, stato) {
+  writeProgress({ schermata: 'avvio', fase: label, stato })
+}
+
+async function shutdownAll(signal, report) {
+  if (shutdownInProgress) return
+  shutdownInProgress = true
+  writeProgress({ schermata: '—', fase: 'chiusura', stato: signal ?? 'uscita' })
+  await forceGuardShutdown(report ?? null)
+  stopMenuPayloadSession()
+  stopServers(devChildGlobal, prodChildGlobal)
+  devChildGlobal = null
+  prodChildGlobal = null
+  stopVerifyProgress()
+  const residual = auditResidualProcesses()
+  const line = residual.length
+    ? `ps/lsof residui: ${residual.join('; ')}`
+    : 'ps/lsof porte 3000/3100/3200/31997: nessun listener residuo'
+  process.stderr.write(`[ui:verify] ${line}\n`)
+  releaseUiVerifyLock(ROOT)
+}
 const ONLINE_BASE = (process.env.BASE_URL ?? 'https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app').replace(
   /\/$/,
   '',
@@ -1232,7 +1257,18 @@ async function runAmbienteWithBudget(ambiente, fn) {
 }
 
 async function main() {
-  acquireUiVerifyLock(ROOT)
+  initVerifyProgress(ROOT)
+  process.on('SIGINT', () => {
+    shutdownAll('SIGINT').finally(() => process.exit(130))
+  })
+  process.on('SIGTERM', () => {
+    shutdownAll('SIGTERM').finally(() => process.exit(143))
+  })
+
+  await runStartupPhase('lock', async () => {
+    acquireUiVerifyLock(ROOT)
+  }, logStartupPhase)
+
   const cli = parseCli(process.argv)
   const loaded = loadControlli(cli.controlliFile)
   CONTROLLI = loaded.controlli
@@ -1263,23 +1299,27 @@ async function main() {
 
   try {
     if (mode === 'all' || mode === 'locale-prod' || mode === 'locale-dev') {
-      await provisionUser()
+      await runStartupPhase('provision-user', () => provisionUser(), logStartupPhase)
     }
 
     const portsToFree = []
     if (mode === 'all' || mode === 'locale-dev') portsToFree.push(DEV_PORT, SIM_PORT)
     if (mode === 'all' || mode === 'locale-prod') portsToFree.push(PROD_PORT)
     if (portsToFree.length) {
-      const freed = await ensurePortsFree([...new Set(portsToFree)])
-      if (freed.length) {
-        process.stderr.write(`[ui:verify] porte liberate: ${freed.join(', ')}\n`)
-      }
+      await runStartupPhase('porte-libere', async () => {
+        const freed = await ensurePortsFree([...new Set(portsToFree)])
+        if (freed.length) {
+          process.stderr.write(`[ui:verify] porte liberate: ${freed.join(', ')}\n`)
+        }
+      }, logStartupPhase)
     }
 
     if (mode === 'all' || mode === 'locale-dev') {
-      devChild = startProcess('pnpm', ['dev'], { PORT: String(DEV_PORT) })
-      devChildGlobal = devChild
-      await waitForUrl(devBaseUrl())
+      await runStartupPhase('dev-server', async () => {
+        devChild = startProcess('pnpm', ['dev'], { PORT: String(DEV_PORT) })
+        devChildGlobal = devChild
+        await waitForUrl(devBaseUrl())
+      }, logStartupPhase)
       const browser = await chromium.launch()
       trackBrowser(browser)
       const browserVersion = await browser.version()
@@ -1408,18 +1448,24 @@ async function main() {
     }
 
     if (mode === 'all' || mode === 'locale-prod') {
-      const buildDecision = resolveBuildReuse(ROOT)
-      if (buildDecision.reuse) {
-        process.stderr.write(`[ui:verify] build riusata (${buildDecision.reason}, hash ${buildDecision.fingerprint.hash.slice(0, 12)}…)\n`)
-      } else {
-        process.stderr.write(`[ui:verify] build rifatta (${buildDecision.reason})\n`)
-        const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
-        if (build.status !== 0) throw new Error('pnpm build fallito')
-        markBuildSuccess(ROOT, buildDecision.fingerprint)
-      }
-      prodChild = startProcess('pnpm', ['start'], { PORT: String(PROD_PORT) })
-      prodChildGlobal = prodChild
-      await waitForUrl(prodBaseUrl())
+      await runStartupPhase('build', async () => {
+        const buildDecision = resolveBuildReuse(ROOT)
+        if (buildDecision.reuse) {
+          process.stderr.write(
+            `[ui:verify] build riusata (${buildDecision.reason}, hash ${buildDecision.fingerprint.hash.slice(0, 12)}…)\n`,
+          )
+        } else {
+          process.stderr.write(`[ui:verify] build rifatta (${buildDecision.reason})\n`)
+          const build = spawnSync('pnpm', ['build'], { cwd: ROOT, stdio: 'inherit' })
+          if (build.status !== 0) throw new Error('pnpm build fallito')
+          markBuildSuccess(ROOT, buildDecision.fingerprint)
+        }
+      }, logStartupPhase)
+      await runStartupPhase('prod-server', async () => {
+        prodChild = startProcess('pnpm', ['start'], { PORT: String(PROD_PORT) })
+        prodChildGlobal = prodChild
+        await waitForUrl(prodBaseUrl())
+      }, logStartupPhase)
       await runAmbienteWithBudget('locale-prod', async (report) => {
         await runLocaleProd(prodBaseUrl(), report)
         if (needsShellRegression) {
@@ -1472,8 +1518,9 @@ async function main() {
     if (residual.length) {
       process.stderr.write(`[ui:verify] finally — processi residui: ${residual.join('; ')}\n`)
     } else {
-      process.stderr.write('[ui:verify] ps porte 3000/3100/3200: nessun listener residuo\n')
+      process.stderr.write('[ui:verify] ps/lsof porte 3000/3100/3200/31997: nessun listener residuo\n')
     }
+    stopVerifyProgress()
     releaseUiVerifyLock(ROOT)
     stopMenuPayloadSession()
     try {
@@ -1485,7 +1532,8 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error(err)
-  process.exit(1)
+  await shutdownAll('errore').catch(() => {})
+  process.exit(err.code === 'UI_VERIFY_STARTUP_TIMEOUT' ? 1 : 1)
 })

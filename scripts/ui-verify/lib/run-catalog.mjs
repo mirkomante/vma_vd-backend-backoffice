@@ -19,6 +19,8 @@ import { catalogCopyConst } from './catalog-copy.mjs'
 import { menuCountCatalog, menuCreateCatalogItems, menuDeleteVerifyPrefix } from './menu-payload.mjs'
 import { SIM_PORT, waitForPortFree } from './ensure-ports.mjs'
 import { runWithStateTimeout } from './timeouts.mjs'
+import { applyCatalogFixtures, catalogItemNameForState } from './catalog-fixtures.mjs'
+import { MATRIX_SERIAL_STATES, runMatrixCellsParallel, matrixParallelism } from './matrix-parallel.mjs'
 
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
 const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
@@ -129,22 +131,25 @@ function markCatalogControls(ctx, config, evidenza) {
 /**
  * Prepara uno stato UI (C1/C2, confronto visivo, screenshot).
  */
-export async function prepareCatalogState(page, config, statoId, ctx) {
-  const { testUser } = ctx
+export async function prepareCatalogState(page, config, statoId, ctx, options = {}) {
+  const { skipFixture = false } = options
   const sid = config.id
   const copy = (name) => catalogCopyConst(sid, name)
-  menuDeleteVerifyPrefix()
+
+  if (!skipFixture) {
+    const fx = applyCatalogFixtures(config, statoId, ctx)
+    if (!fx.ok) return false
+  }
+
+  const itemName = catalogItemNameForState(config, statoId)
 
   switch (statoId) {
     case 'elenco':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-elenco` }])
       await gotoCatalog(page, config)
       return true
     case 'disponibilita': {
-      const n = `verify-ui-${sid}-disp-shot`
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: n }])
       await gotoCatalog(page, config)
-      await toggleDisponibile(page, n)
+      await toggleDisponibile(page, itemName)
       await page.waitForTimeout(500)
       return true
     }
@@ -153,7 +158,6 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       await openFiltersSheet(page, copy('FILTERS_BUTTON') ?? 'Filtri')
       return true
     case 'filtri-attivi':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-filtro` }])
       await gotoCatalog(page, config)
       await openFiltersSheet(page, copy('FILTERS_BUTTON') ?? 'Filtri')
       await page.getByRole('combobox').first().click()
@@ -162,7 +166,6 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       return true
     case 'filtri-origine':
       if (!config.hasOriginCascade) return false
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-orig` }])
       await gotoCatalog(page, config)
       await openFiltersSheet(page)
       await applyOriginFilterCascade(page, {
@@ -173,20 +176,17 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       await applyFiltersSheet(page)
       return true
     case 'modulo':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-mod` }])
       await gotoCatalog(page, config)
-      await clickRowAction(page, `verify-ui-${sid}-mod`, 'edit')
+      await clickRowAction(page, itemName, 'edit')
       return true
     case 'modulo-origine':
       if (sid !== 'vini') return false
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-vini-mod-orig' }])
       await gotoCatalog(page, config)
-      await clickRowAction(page, 'verify-ui-vini-mod-orig', 'edit')
+      await clickRowAction(page, itemName, 'edit')
       return true
     case 'modulo-inglese-aperto':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-en` }])
       await gotoCatalog(page, config)
-      await clickRowAction(page, `verify-ui-${sid}-en`, 'edit')
+      await clickRowAction(page, itemName, 'edit')
       await page.getByRole('button', { name: /Traduzione inglese/i }).click().catch(() => {})
       return true
     case 'origine-senza-regioni':
@@ -211,9 +211,8 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       return true
     case 'errore-geografia':
       if (sid !== 'vini') return false
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: 'verify-ui-vini-geo-shot' }])
       await gotoCatalog(page, config)
-      await clickRowAction(page, 'verify-ui-vini-geo-shot', 'edit')
+      await clickRowAction(page, itemName, 'edit')
       return true
     case 'errore-anno':
       if (sid !== 'vini') return false
@@ -223,16 +222,14 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       await page.getByRole('button', { name: copy('FORM_SAVE') ?? 'Salva' }).click()
       return true
     case 'elimina':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-del` }])
       await gotoCatalog(page, config)
-      await clickRowAction(page, `verify-ui-${sid}-del`, 'delete')
+      await clickRowAction(page, itemName, 'delete')
       await page.locator('[role=alertdialog]').waitFor({ timeout: 10000 })
       await waitForAnimationsSettled(page, { rootSelector: '[role=alertdialog]' })
       return true
     case 'eliminato':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-del-done` }])
       await gotoCatalog(page, config)
-      await clickRowAction(page, `verify-ui-${sid}-del-done`, 'delete')
+      await clickRowAction(page, itemName, 'delete')
       await page
         .getByRole('alertdialog')
         .getByRole('button', { name: copy('DELETE_CONFIRM') ?? 'Elimina' })
@@ -241,24 +238,17 @@ export async function prepareCatalogState(page, config, statoId, ctx) {
       return true
     case 'piu-di-100-vini':
     case 'piu-di-100-distillati':
-    case 'piu-di-100-bevande': {
-      const { count } = menuCountCatalog(config.collection)
-      prepareCatalogBulk101(testUser.email, config, count)
+    case 'piu-di-100-bevande':
       await gotoCatalog(page, config)
       return true
-    }
     case 'caricamento':
     case 'errore-caricamento':
     case 'errore-azione':
       return true
-    case 'vuoto': {
-      const { count } = menuCountCatalog(config.collection)
-      if (count > 0) return false
+    case 'vuoto':
       await gotoCatalog(page, config)
       return true
-    }
     case 'nessun-risultato':
-      menuCreateCatalogItems(testUser.email, config.collection, [{ name: `verify-ui-${sid}-find` }])
       await gotoCatalog(page, config)
       await page.getByPlaceholder(config.searchPlaceholder).fill('verify-ui-zzzz-no')
       await sleep(500)
@@ -308,141 +298,182 @@ export async function runCatalogC1C2Matrix(ctx, config) {
     matrixStateIds = matrixStateIds.filter((id) => runCtx.matrixStateIncluded(id))
   }
 
-  async function runMatrix(statoId) {
+  function buildCellsForState(statoId) {
+    const cells = []
     for (const temaKey of temiAll) {
       for (const profiloKey of profiliL1) {
         if (!C1_PROFILES.has(profiloKey) && profiloKey !== 'tablet-820') continue
-        progressStep(config.id, statoId, profiloKey, temaKey)
-        const sch = `${config.id}/${statoId}`
-        const pt = `${profiloKey}/${temaKey}`
+        cells.push({
+          statoId,
+          temaKey,
+          profiloKey,
+          sortKey: `${statoId}\0${temaKey}\0${profiloKey}`,
+        })
+      }
+    }
+    return cells
+  }
 
-        const addNonProvato = (motivo) => {
-          for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
-            if (!runCtx.shouldRun(id)) continue
-            if (id === 'C1' && !C1_PROFILES.has(profiloKey)) continue
-            if (id === 'C2' && !C2_PROFILES.has(profiloKey)) continue
-            if (id === 'C2-mouse' && profiloKey !== 'notebook-1280') continue
-            addRow(report, {
-              id,
-              schermata: sch,
-              profiloTema: pt,
-              esito: 'NON PROVATO',
-              misurato: motivo,
-              atteso: id,
-              evidenza: statoId,
-            })
+  function nonProvatoRows(sch, pt, motivo) {
+    const rows = []
+    for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
+      if (!runCtx.shouldRun(id)) continue
+      const profiloOnly = pt.split('/')[0]
+      if (id === 'C1' && !C1_PROFILES.has(profiloOnly)) continue
+      if (id === 'C2' && !C2_PROFILES.has(profiloOnly)) continue
+      if (id === 'C2-mouse' && profiloOnly !== 'notebook-1280') continue
+      rows.push({
+        id,
+        schermata: sch,
+        profiloTema: pt,
+        esito: 'NON PROVATO',
+        misurato: motivo,
+        atteso: id,
+        evidenza: sch.split('/')[1] ?? '—',
+      })
+    }
+    return rows
+  }
+
+  async function runMatrixCell(statoId, profiloKey, temaKey) {
+    const sch = `${config.id}/${statoId}`
+    const pt = `${profiloKey}/${temaKey}`
+    progressStep(config.id, statoId, profiloKey, temaKey)
+
+    const addNonProvato = (motivo) => nonProvatoRows(sch, pt, motivo)
+
+    let activeCtx = null
+    let activeSim = null
+    const outRows = []
+
+    const runOne = async () => {
+      let simChild = null
+      let pageBase = baseUrl
+      try {
+        if (MATRIX_SERIAL_STATES.has(statoId)) {
+          if (startMenuDevServer && waitForUrl) {
+            await waitForPortFree(SIM_PORT)
+            const env =
+              statoId === 'caricamento'
+                ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
+                : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
+            simChild = startMenuDevServer(SIM_PORT, env)
+            activeSim = simChild
+            pageBase = `http://localhost:${SIM_PORT}`
+            await waitForUrl(pageBase)
           }
         }
-
-        let activeCtx = null
-        let activeSim = null
-        const runOne = async () => {
-          let simChild = null
-          let pageBase = baseUrl
-          try {
-            if (statoId === 'caricamento' || statoId === 'errore-caricamento') {
-              if (startMenuDevServer && waitForUrl) {
-                await waitForPortFree(SIM_PORT)
-                const env =
-                  statoId === 'caricamento'
-                    ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
-                    : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
-                simChild = startMenuDevServer(SIM_PORT, env)
-                activeSim = simChild
-                pageBase = `http://localhost:${SIM_PORT}`
-                await waitForUrl(pageBase)
-              }
-            }
-            if (statoId === 'vuoto') {
-              const { count } = menuCountCatalog(config.collection)
-              if (count > 0) {
-                addNonProvato(`stato vuoto: DB con ${count} record`)
-                return
-              }
-            }
-            const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
-            activeCtx = sctx
-            await loginApp(sp, pageBase, testUser.email, testPassword)
-            try {
-              if (statoId === 'caricamento') {
-                await sp.goto(config.path, { waitUntil: 'commit' })
-                await sleep(600)
-              } else if (statoId === 'errore-caricamento') {
-                await sp.goto(config.path, { waitUntil: 'networkidle' })
-              } else {
-                const okState = await prepareCatalogState(sp, config, statoId, ctx)
-                if (!okState) {
-                  addNonProvato('stato non preparato')
-                  await sctx.close()
-                  return
-                }
-              }
-            } catch (e) {
-              report.anomalie.push(`${config.id} stato ${statoId}: ${e.message}`)
-            }
-            if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
-              const r = await checkScrollOrizzontale(sp)
-              addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-            }
-            if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
-              const r = await checkToccoMinimo(sp)
-              let misuratoC2 = r.misurato
-              if (statoId === 'elimina') {
-                const dims = await measureDeleteDialogButtons(sp)
-                if (dims?.indietro && dims?.elimina) {
-                  misuratoC2 = `Indietro ${dims.indietro}; Elimina ${dims.elimina}${r.ok ? '' : `; violazioni C2: ${r.misurato}`}`
-                }
-              }
-              addRow(report, {
-                id: 'C2',
-                schermata: sch,
-                profiloTema: pt,
-                esito: resultToEsito(r),
-                misurato: misuratoC2,
-                atteso: r.atteso,
-                evidenza: statoId,
-              })
-            }
-            if (runCtx.shouldRun('C3')) {
-              const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
-              addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-            }
-            if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
-              const r = await checkAltezzaMouse(sp)
-              addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-            }
-            await sctx.close()
-            activeCtx = null
-          } finally {
-            if (simChild) {
-              simChild.kill('SIGTERM')
-              activeSim = null
-              await waitForPortFree(SIM_PORT)
-            }
-            menuDeleteVerifyPrefix()
-          }
-        }
-
+        const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
+        activeCtx = sctx
+        await loginApp(sp, pageBase, testUser.email, testPassword)
         try {
-          await runWithStateTimeout(() => runOne(), statoId)
+          if (statoId === 'caricamento') {
+            await sp.goto(config.path, { waitUntil: 'commit' })
+            await sleep(600)
+          } else if (statoId === 'errore-caricamento') {
+            await sp.goto(config.path, { waitUntil: 'networkidle' })
+          } else {
+            const okState = await prepareCatalogState(sp, config, statoId, ctx, { skipFixture: true })
+            if (!okState) {
+              outRows.push(...addNonProvato('stato non preparato'))
+              await sctx.close()
+              return
+            }
+          }
         } catch (e) {
-          if (activeCtx) {
-            await activeCtx.close().catch(() => {})
-            activeCtx = null
+          report.anomalie.push(`${config.id} stato ${statoId}: ${e.message}`)
+        }
+        if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
+          const r = await checkScrollOrizzontale(sp)
+          outRows.push({ id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+        }
+        if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
+          const r = await checkToccoMinimo(sp)
+          let misuratoC2 = r.misurato
+          if (statoId === 'elimina') {
+            const dims = await measureDeleteDialogButtons(sp)
+            if (dims?.indietro && dims?.elimina) {
+              misuratoC2 = `Indietro ${dims.indietro}; Elimina ${dims.elimina}${r.ok ? '' : `; violazioni C2: ${r.misurato}`}`
+            }
           }
-          if (activeSim) {
-            activeSim.kill('SIGTERM')
-            activeSim = null
-            await waitForPortFree(SIM_PORT).catch(() => {})
-          }
-          const motivo = e.code === 'UI_VERIFY_TIMEOUT' || String(e.message).startsWith('tempo:')
-            ? `tempo: ${statoId}`
-            : e.message
-          addNonProvato(motivo)
-          report.anomalie.push(`${config.id} C1/C2 ${statoId} ${profiloKey}/${temaKey}: ${motivo}`)
+          outRows.push({
+            id: 'C2',
+            schermata: sch,
+            profiloTema: pt,
+            esito: resultToEsito(r),
+            misurato: misuratoC2,
+            atteso: r.atteso,
+            evidenza: statoId,
+          })
+        }
+        if (runCtx.shouldRun('C3')) {
+          const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
+          outRows.push({ id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+        }
+        if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
+          const r = await checkAltezzaMouse(sp)
+          outRows.push({ id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+        }
+        await sctx.close()
+        activeCtx = null
+      } finally {
+        if (simChild) {
+          simChild.kill('SIGTERM')
+          activeSim = null
+          await waitForPortFree(SIM_PORT)
         }
       }
     }
+
+    try {
+      await runWithStateTimeout(() => runOne(), statoId)
+    } catch (e) {
+      if (activeCtx) await activeCtx.close().catch(() => {})
+      if (activeSim) {
+        activeSim.kill('SIGTERM')
+        await waitForPortFree(SIM_PORT).catch(() => {})
+      }
+      const motivo =
+        e.code === 'UI_VERIFY_TIMEOUT' || String(e.message).startsWith('tempo:') ? `tempo: ${statoId}` : e.message
+      outRows.push(...addNonProvato(motivo))
+      report.anomalie.push(`${config.id} C1/C2 ${statoId} ${profiloKey}/${temaKey}: ${motivo}`)
+    }
+    return outRows
+  }
+
+  async function runMatrix(statoId) {
+    progressStep(config.id, 'matrice', statoId, `parallelo×${matrixParallelism()}`)
+    if (!MATRIX_SERIAL_STATES.has(statoId)) {
+      const fx = applyCatalogFixtures(config, statoId, ctx)
+      if (!fx.ok) {
+        const cells = buildCellsForState(statoId)
+        for (const cell of cells) {
+          const sch = `${config.id}/${statoId}`
+          const pt = `${cell.profiloKey}/${cell.temaKey}`
+          for (const row of nonProvatoRows(sch, pt, fx.reason ?? 'stato non preparato')) addRow(report, row)
+        }
+        return
+      }
+    }
+
+    const cells = buildCellsForState(statoId)
+    if (MATRIX_SERIAL_STATES.has(statoId)) {
+      for (const cell of cells) {
+        const rows = await runMatrixCell(cell.statoId, cell.profiloKey, cell.temaKey)
+        for (const row of rows) addRow(report, row)
+      }
+      menuDeleteVerifyPrefix()
+      return
+    }
+
+    const parallelResults = await runMatrixCellsParallel(cells, async (cell) => {
+      const rows = await runMatrixCell(cell.statoId, cell.profiloKey, cell.temaKey)
+      return { sortKey: cell.sortKey, rows }
+    })
+    for (const pack of parallelResults) {
+      for (const row of pack.rows) addRow(report, row)
+    }
+    menuDeleteVerifyPrefix()
   }
 
   for (const statoId of matrixStateIds) {
