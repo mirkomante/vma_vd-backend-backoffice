@@ -84,25 +84,45 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade | **L2** mirato | rapporto scritto |
+| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(dal 2026-10-19 si chiude con 20g e T1c/T2a: vedi 2.1)** | **L2** mirato | rapporto scritto |
 | 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
-| 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale | lint e typecheck | tu committi e pushi |
+| 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(dal 2026-10-19 sostituito da T2d: i controlli si scrivono nel nuovo framework)** | lint e typecheck | tu committi e pushi |
 | 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
 | 25 | 🔲 | — | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
 | 26 | 🔲 | Blocco comune + prompt del passo 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
 | 27 | 🔲 | — (istruzioni del passo) | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
-| 28 | 🔲 | Solo il prompt del passo 28 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali | **L2** | rapporto scritto |
+| 28 | 🔲 | Solo il prompt del passo 28 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali **(dal 2026-10-19: esegue la suite e2e completa più i controlli online)** | **L2** | rapporto scritto |
 | 29 | 🔲 | Solo il prompt del passo 29, se ci sono P | RL6/F6 | Design, Composer | Rilievi di V6 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 30 | 🔲 | — (istruzioni del passo) | M3/D9 | Tu, Design | **L3**: sessione reale su Cloud Run (io col tuo browser) e giro su iPhone vero (tu), §6 | **L3** | esito scritto; rilievi P chiusi |
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-19 (commit `a35f8fe`). **Prossimi passi**: 20f (V4 ter: prima una prova di sanità del lanciatore con L1 `navigazione`, poi Servizi e Menù fissi L2, screenshot, regressione). Da seguire con il guardiano `scripts/ui-verify/watch.sh`.
+**Ultimo aggiornamento**: 2026-10-19 (commit `25fa77c`). **Percorso di test v2** (vedi `docs/design/verifica/percorso-test-v2.md` e la sezione 2.1): stasera **20g** (ultima manutenzione del vecchio lanciatore: screenshot di Servizi e Menù fissi, blocchi), poi **T0** (spike e scheletro Playwright Test), **T1a–T1c** (controlli comuni e screenshot), **T2a–T2c** (flussi). Il vecchio lanciatore è congelato dopo 20g.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
 ---
+
+### 2.1 Percorso di test v2 (dal 2026-10-19)
+
+La verifica resta completa e i controlli dei file JSON restano la fonte di verità: cambia il motore (Playwright Test al posto del vecchio `ui:verify`). Descrizione, regole anti-blocco, esiti e criteri di accettazione: **`docs/design/verifica/percorso-test-v2.md`**. Il vecchio lanciatore si congela dopo 20g (regola R9).
+
+| Passo | Chi | Cosa | Stima | Accettazione |
+|---|---|---|---|---|
+| **20g** | Agente di verifica | Ultima manutenzione del vecchio lanciatore: nessuna chiamata sincrona, screenshot di Servizi e Menù fissi, rilancio dei controlli con falsi FALLITO | 80 min | screenshot presenti; controlli ripetuti con esito leggibile |
+| **T0** | Agente di verifica | Spike (Local API nello stesso processo, o REST) e scheletro `e2e/` con suite di fumo | 90 min | fumo sotto 60 s; test bloccato ucciso; fixture ripulita; reporter |
+| **T1a** | Agente di verifica | C1–C3, console e screenshot: home, navigazione, Piatti | 60 min | sotto 10 min; screenshot completi; 0 ERRORE-STRUMENTO |
+| **T1b** | Agente di verifica | Idem: Vini, Distillati, Bevande | 60 min | idem |
+| **T1c** | Agente di verifica | Idem: Servizi, Menù fissi (chiude V4) | 60 min | idem; poi confronto visivo (C10) a cura della chat di design |
+| **T2a** | Agente di verifica | Flussi di Servizi e Menù fissi | 90 min | 0 ERRORE-STRUMENTO; i controlli già corretti tornano OK |
+| **T2b** | Agente di verifica | Flussi dei cataloghi (Vini, Distillati, Bevande) | 90 min | idem |
+| **T2c** | Agente di verifica | Flussi di Piatti e home | 90 min | idem |
+| **T2d** | Agente di verifica | Flussi di Giorni speciali e Messaggio globale (dopo il passo 24) | 90 min | idem |
+| **T3** | Design (e chiave API, se la si usa) | Confronto visivo (C10) di tutti gli stati | 60 min | nessun P aperto |
+| **T4** | Agente di verifica | Pensionamento del vecchio lanciatore, `ui:verify` come alias di `pnpm e2e` | 60 min | parità con il vecchio, docs aggiornate |
+
+**Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine consigliato**: 20g → (C10 di Servizi e Menù fissi, a cura mia) → T0 → T1a → T1b → T1c → T2a → passo 21 (se ci sono P) → T2b → T2c → passi 22–26 con T2d al posto del 23 → V6 con la suite completa.
 
 ## 3. Blocco comune (da incollare PRIMA del prompt di ogni chat di implementazione)
 
@@ -1636,6 +1656,369 @@ italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
 ```
 
 **Quando Cursor ha finito**: incollami il resoconto; commit `test(ui-verify): V4 ter — L2 di Servizi e Menù fissi, regressione e screenshot`, push, «push fatto». Poi confronto gli screenshot con i riferimenti (C10) e assegno i rilievi.
+
+### Passo 20g — VC-sync: ultima manutenzione del vecchio lanciatore
+
+**Perché**: V4 ter ha mostrato che il vecchio lanciatore (3.9.0) non ha il codice che salva gli screenshot di Servizi e Menù fissi (0 su 40 e 0 su 72), blocca il thread principale con chiamate sincrone senza tempo massimo e, in modalità legacy, produce falsi FALLITO. Questo è l'ultimo intervento sul vecchio motore (regola R9): serve a ottenere gli screenshot per il confronto visivo di Servizi e Menù fissi. **Quando**: ora (sera del 2026-10-19). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto**. **Stima**: 80 minuti (programmazione 40, prove 40). **Per seguirlo**: in un terminale a parte `zsh scripts/ui-verify/watch.sh 150` (solo avviso, niente `kill`).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui MIGLIORI IL LANCIATORE (scripts/ui-verify/**), non verifichi
+schermate nuove. Istanza: VC-sync. TETTO: 40 minuti di programmazione; fai un checkpoint dopo le parti 1 e 2: se superi il
+tetto, FERMATI e riporta. Esegui i comandi del lanciatore FUORI dalla sandbox di Cursor (tutte le autorizzazioni). NON usare
+UI_VERIFY_MENU_PAYLOAD_LEGACY: il percorso legacy non è mantenuto (restituisce undefined: ha prodotto in V4 ter falsi
+FALLITO su Piatti, Home, Servizi e Menù fissi).
+
+Leggi docs/design/verifica/esiti/2026-10-19-V4ter/rapporto.md e .cursor/rules/ui/02-ui-verifica-agente.mdc.
+
+1. NIENTE CHIAMATE SINCRONE CHE BLOCCANO. Il progress.log si ferma e il battito sparisce quando il thread principale è
+   bloccato da una chiamata sincrona senza tempo massimo. In scripts/ui-verify/lib/menu-payload.mjs callClient() usa
+   spawnSync SENZA timeout (righe ~229-240) e isDaemonPortOpen, listenPids, processCommand usano spawnSync senza
+   limite (processCommand può restituire stdout nullo: TypeError in isOrphanMenuPayloadDaemonPid). Altre: build-cache.mjs,
+   cleanup.mjs (execSync lsof), hours-payload.mjs, lib-readers.mjs, run-menu.mjs (~238, ~470). Sostituisci il client del
+   daemon con uno ASINCRONO nello stesso processo (net.connect, una richiesta JSON per riga, tempo massimo 20 secondi con
+   errore che nomina l'operazione) e rendi asincrone, o con `timeout` ≤ 10 s e gestione di `error` e di stdout nullo, tutte
+   le altre. Cerca con grep le rimaste (spawnSync, execSync, execFileSync, Atomics.wait, readSync) e riportale.
+   Il battito va in un WORKER THREAD: ogni 30 secondi scrive «heartbeat» con l'ultimo passo e se il thread principale
+   risponde (ping ogni secondo); se il principale non risponde da 45 secondi scrive «PRINCIPALE BLOCCATO da Ns (ultimo passo:
+   …)» e uccide i processi FIGLI diretti (pkill -P <pid>, che sblocca una spawnSync) senza uccidere il giro; dopo altri 60
+   secondi esce con SIGTERM scrivendo i risultati parziali. Togli del tutto la modalità legacy (variabile compresa).
+2. SCREENSHOT PER IL CONFRONTO VISIVO (C10), oggi ASSENTI per servizi e menu-fissi (0/40 e 0/72). Salva uno screenshot per OGNI
+   cella della matrice (stato × profilo × tema) già visitata per C1/C2/C3, in
+   docs/design/verifica/esiti/<data>-locale-prod/img/<schermata>-<stato>-<profilo>-<tema>.png, con il contesto touch dei
+   profili con tocco (isMobile e hasTouch). Gli stati sono quelli di `stati` del JSON di servizi (13) e menu-fissi (23); per
+   «vuoto» e «nuovo-senza-categorie» (database popolato) niente file, NON PROVATO con il motivo. Riporta il numero di file.
+3. DIFETTI NOTI: (a) stati-ui su locale-dev: addCookies richiede url o domain (errore cookie in newPage); (b) servizi e
+   menu-fissi: le eliminazioni dalla pagina vanno in timeout sul pulsante «Elimina …»: apri la pagina con la fixture creata e
+   riporta se il pulsante esiste (aria-label «Elimina {nome}») e se la riga c'è: se manca o ha un altro nome, è un difetto
+   dell'app e va riportato, non aggirato; (c) crash `ensure-norole-user` (promise senza await): se «utente senza ruolo» non è
+   creabile, NON PROVATO per quella parte; (d) le fixture dell'elenco (menù fissi, categorie verify-ui-pranzo e verify-ui-sempre,
+   piatti verify-ui-p1…p4, servizi) si creano DOPO la pulizia e PRIMA di misurare colonna-elenco.
+4. PROVE, uno alla volta, con il progress.log che avanza: L1 `navigazione`, `home`, `piatti` (controlli-6.6.json) e `shell`
+   (controlli-8.2.json), meno di 3 minuti ciascuno; poi, con --solo, i controlli che in V4 ter hanno dato falsi FALLITO:
+   piatti-terminato, piatti-disabilita, piatti-modulo-inglese, piatti-tassonomie, piatti-persistenza, home-riga-menu-testo,
+   home-riga-menu-casi, servizi-disponibilita, servizi-persistenza, menu-fissi-ordine-piatti, menu-fissi-porzione-traduzione,
+   menu-fissi-servizi-piatti, menu-fissi-colonna-elenco, menu-fissi-elimina-usato, menu-fissi-elimina-senza-uso. Per ognuno: OK o
+   FALLITO con il valore misurato e quello atteso (mai «—»). Test del worker: un blocco sincrono di 60 secondi provocato di
+   proposito (variabile di debug) deve mostrare nel log «PRINCIPALE BLOCCATO» e lo sblocco. Poi L2 `servizi` completo con
+   screenshot (meno di 10 minuti), poi L2 `menu-fissi` con screenshot (meno di 10 minuti). `ps` e `lsof` finali puliti;
+   pnpm typecheck e pnpm lint sull'INTERO repo.
+5. Scrivi docs/design/verifica/esiti/2026-10-19-VCsync/rapporto.md: chiamate sincrone trovate e corrette, tempi, numero di
+   screenshot, esito di ogni controllo ripetuto.
+Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli JSON.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto. Prima del via libera eseguo io `tsc`, ESLint e la ricerca delle chiamate sincrone rimaste. Poi commit `test(ui-verify): VC-sync — client asincrono, battito in un worker, screenshot di Servizi e Menù fissi`, push, «push fatto». Dopo di me, il confronto visivo (C10) di Servizi e Menù fissi.
+
+### Passo T0 — Spike e scheletro del nuovo test runner (Playwright Test)
+
+**Quando**: dopo 20g. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti, con un checkpoint dopo lo spike (15 minuti): l'agente si ferma e aspetta il tuo «continua».
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T0 (spike e scheletro del nuovo test runner). Costruisci lo scheletro di e2e/ con Playwright Test. NON verifichi schermate nuove e NON tocchi il vecchio lanciatore.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json (solo la struttura) e scripts/ui-verify/provision-user.ts (come si crea l'utente di prova).
+
+AUTORIZZAZIONE ESPLICITA PER QUESTO PASSO (estende la regola 02, che oggi consente solo scripts/ui-verify/**): puoi creare e2e/**,
+aggiungere a package.json gli script e2e, e2e:smoke e e2e:wire (e portare `typecheck` a eseguire anche
+`tsc --noEmit -p e2e/tsconfig.json`), aggiungere a tsconfig.json solo l'esclusione di e2e, aggiungere a .gitignore
+/test-results/ e .next/e2e-*, e aggiornare .cursor/rules/ui/02-ui-verifica-agente.mdc (campo globs e sezione «Cosa puoi
+modificare») includendo e2e/**. Non modificare altro. @playwright/test è già una dipendenza: nessuna dipendenza nuova.
+
+STIMA 90 MINUTI. Dopo lo SPIKE (parte A) FERMATI e riporta GO o NO-GO: aspetta il mio «continua».
+
+A. SPIKE (15 minuti, esito scritto). Scegli come i test creano e leggono i dati di prova:
+   Opzione A: la Local API di Payload nello stesso processo di un test (nessun processo figlio, nessun daemon): un test crea
+   un piatto «verify-ui-spike», lo rilegge con depth, lo cancella in afterEach; protetto da assertDevDatabaseFromEnv
+   (scripts/import-menu-vtn-backend/databaseUrl); meno di 15 secondi. Possibili ostacoli: alias dei percorsi, ESM/CJS,
+   server-only. Opzione B (solo se A non funziona in 15 minuti): le stesse operazioni via REST di Payload con un utente di
+   prova di ruolo admin creato una volta in global-setup, con la richiesta autenticata di Playwright (`request`).
+   NON riusare il vecchio daemon TCP e NON usare mai spawnSync nei test. Riporta quale opzione hai scelto, perché, e il tempo.
+B. SCHELETRO in e2e/: playwright.config.ts (progetti telefono-390 con isMobile, hasTouch e scala 3, notebook-1280,
+   soglia-767 e soglia-768, ciascuno in chiaro e scuro con colorScheme; timeout 60 s; actionTimeout 15 s;
+   navigationTimeout 30 s; globalTimeout 25 minuti; webServer che avvia pnpm start sulla porta 3100 e riusa la build se
+   .next/BUILD_ID corrisponde all'hash del codice; reporter personalizzato), global-setup.ts (blocco di un solo giro con PID,
+   id del giro, utente di prova, login una volta con storageState), global-teardown.ts (pulizia dei record
+   verify-ui-<giro> nell'ordine giorni speciali, menù fissi, categorie, servizi, vini, distillati, bevande, piatti; chiusura
+   del blocco), fixtures/ (payload con crea(collection, dati) che registra e cancella in afterEach anche dopo un errore,
+   loggedPage, consoleWatcher, touch con la misura del tocco di docs/design/verifica/misura-tocco.md), reporter/ (scrive
+   risultati.json e rapporto.md nel formato del README §7 con l'esito ERRORE-STRUMENTO separato dai conteggi dei difetti, e
+   .next/e2e-progress.log con una riga per test), smoke/, README.md con i comandi, e uno script e2e:wire che verifica
+   che ogni id di controllo dei JSON abbia un test o un motivo di NON PROVATO (per ora solo la struttura).
+C. SUITE DI FUMO (e2e/smoke) con questi test: login una volta; apertura di /app con titolo e voci della barra laterale;
+   misura del tocco a 390 px sulla home (nessun elemento interattivo sotto 44×44); console pulita; uno screenshot; UN TEST
+   VOLUTAMENTE BLOCCATO (non risolve mai) che il runner deve uccidere al tempo massimo senza fermare il giro; UN TEST CHE CREA
+   «verify-ui-fix-<giro>» e poi lancia un'eccezione; una prova automatica che in e2e/ non compaiono spawnSync, execSync,
+   execFileSync, Atomics.wait, readSync.
+D. ACCETTAZIONE (riporta ogni punto con il numero misurato): (1) pnpm e2e:smoke passa in meno di 60 secondi con la build
+   riusata; (2) il test bloccato è ERRORE-STRUMENTO «tempo» e gli altri test sono eseguiti; (3) a fine giro i record
+   verify-ui- sono ZERO anche dopo il test che lancia l'eccezione; (4) risultati.json e rapporto.md con ERRORE-STRUMENTO a
+   parte; (5) un secondo avvio mentre uno è attivo viene rifiutato con il PID; (6) pnpm typecheck (compreso e2e) e pnpm lint
+   sull'INTERO repo passano; (7) nessuna modifica a app/, components/, lib/, collections/ e scripts/ui-verify.
+E. Scrivi docs/design/verifica/esiti/2026-10-19-T0/rapporto.md con lo spike, le misure e le scelte.
+Non fare git. Rispondi in italiano con la tabella OK / FALLITO / NON PROVATO delle prove di accettazione.
+```
+
+**Quando Cursor ha scritto lo spike**: incollamelo; ti rispondo con «continua» (o con le correzioni). **Quando ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test prima del via libera. Commit `test(e2e): T0 — scheletro di Playwright Test, fixture, reporter e suite di fumo`, push, «push fatto».
+
+### Passo T1a — Controlli comuni, console e screenshot: home, navigazione e Piatti
+
+**Quando**: dopo T0. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1a (controlli comuni, console e screenshot). Estendi e2e/ con i controlli comuni e gli screenshot di alcune schermate.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json e controlli-8.2.json.
+
+STIMA 60 MINUTI. Precondizione: T0 accettato (git log mostra il commit di T0 su e2e/ e `pnpm e2e:smoke` passa in meno di 60
+secondi); se manca, FERMATI. Modifichi SOLO e2e/** e i rapporti sotto docs/design/verifica/esiti/.
+
+FAI: per le schermate home, navigazione e Piatti, per OGNI stato di `stati` e `stati_c1_c2` dei JSON e in TUTTI i progetti (profili e temi):
+C1 (aspetto e testi), C2 e C2-mouse (aree di tocco), C3 (nessun lampo, cambio di sistema), console pulita e uno SCREENSHOT
+<schermata>-<stato>-<profilo>-<tema>.png in docs/design/verifica/esiti/<data>-e2e/img/. Ogni test ha come titolo l'id del
+controllo del JSON. La preparazione di uno stato (aprire un foglio, una conferma, un errore o un caricamento simulati) è una
+funzione del test con UN'ASSERZIONE DI CONFERMA (l'elemento atteso è visibile); se non si può preparare, NON PROVATO con il
+motivo. Gli stati con il database popolato («vuoto», «nuovo-senza-categorie») sono NON PROVATI con il motivo. Riusa, come
+riferimento e non come copia, le logiche già verificate del vecchio lanciatore (fixture, selettori delle tendine con
+`items`, attese di animazione). Misura il tocco con fixtures/touch; per taratura i risultati di C2 su Piatti devono
+coincidere con quelli già noti (nessun FALLITO nuovo su Piatti).
+ACCETTAZIONE (riporta i numeri): (1) la parte di suite di queste schermate finisce in meno di 10 minuti con 4 worker; (2) il
+numero di screenshot è uguale a quello atteso, calcolato dal JSON; (3) zero ERRORE-STRUMENTO; (4) la suite di fumo passa in
+meno di 60 secondi; (5) pnpm typecheck e pnpm lint sull'INTERO repo; (6) `ps` e `lsof` finali puliti e zero record verify-ui-.
+Scrivi docs/design/verifica/esiti/<data>-T1a/rapporto.md con, per ogni controllo, OK / FALLITO / AVVISO / NON PROVATO /
+ERRORE-STRUMENTO, il valore misurato e quello atteso (mai «—»), e il numero di screenshot per schermata.
+Non fare git. Non toccare app/, components/, lib/, collections/, docs/design (fuori da verifica/esiti), i controlli JSON né
+scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1a — controlli comuni e screenshot di home, navigazione e Piatti`, push, «push fatto». 
+
+### Passo T1b — Controlli comuni, console e screenshot: Vini, Distillati e Bevande
+
+**Quando**: dopo T1a. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1b (controlli comuni, console e screenshot). Estendi e2e/ con i controlli comuni e gli screenshot di alcune schermate.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json e controlli-8.2.json.
+
+STIMA 60 MINUTI. Precondizione: T0 accettato (git log mostra il commit di T0 su e2e/ e `pnpm e2e:smoke` passa in meno di 60
+secondi); se manca, FERMATI. Modifichi SOLO e2e/** e i rapporti sotto docs/design/verifica/esiti/.
+
+FAI: per le schermate Vini, Distillati e Bevande, per OGNI stato di `stati` e `stati_c1_c2` dei JSON e in TUTTI i progetti (profili e temi):
+C1 (aspetto e testi), C2 e C2-mouse (aree di tocco), C3 (nessun lampo, cambio di sistema), console pulita e uno SCREENSHOT
+<schermata>-<stato>-<profilo>-<tema>.png in docs/design/verifica/esiti/<data>-e2e/img/. Ogni test ha come titolo l'id del
+controllo del JSON. La preparazione di uno stato (aprire un foglio, una conferma, un errore o un caricamento simulati) è una
+funzione del test con UN'ASSERZIONE DI CONFERMA (l'elemento atteso è visibile); se non si può preparare, NON PROVATO con il
+motivo. Gli stati con il database popolato («vuoto», «nuovo-senza-categorie») sono NON PROVATI con il motivo. Riusa, come
+riferimento e non come copia, le logiche già verificate del vecchio lanciatore (fixture, selettori delle tendine con
+`items`, attese di animazione). Misura il tocco con fixtures/touch; per taratura i risultati di C2 su Piatti devono
+coincidere con quelli già noti (nessun FALLITO nuovo su Piatti).
+ACCETTAZIONE (riporta i numeri): (1) la parte di suite di queste schermate finisce in meno di 10 minuti con 4 worker; (2) il
+numero di screenshot è uguale a quello atteso, calcolato dal JSON; (3) zero ERRORE-STRUMENTO; (4) la suite di fumo passa in
+meno di 60 secondi; (5) pnpm typecheck e pnpm lint sull'INTERO repo; (6) `ps` e `lsof` finali puliti e zero record verify-ui-.
+Scrivi docs/design/verifica/esiti/<data>-T1b/rapporto.md con, per ogni controllo, OK / FALLITO / AVVISO / NON PROVATO /
+ERRORE-STRUMENTO, il valore misurato e quello atteso (mai «—»), e il numero di screenshot per schermata.
+Non fare git. Non toccare app/, components/, lib/, collections/, docs/design (fuori da verifica/esiti), i controlli JSON né
+scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1b — controlli comuni e screenshot di Vini, Distillati e Bevande`, push, «push fatto». 
+
+### Passo T1c — Controlli comuni, console e screenshot: Servizi e Menù fissi
+
+**Quando**: dopo T1b. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti. **Chiude V4** (passo 20).
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1c (controlli comuni, console e screenshot). Estendi e2e/ con i controlli comuni e gli screenshot di alcune schermate.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json e controlli-8.2.json.
+
+STIMA 60 MINUTI. Precondizione: T0 accettato (git log mostra il commit di T0 su e2e/ e `pnpm e2e:smoke` passa in meno di 60
+secondi); se manca, FERMATI. Modifichi SOLO e2e/** e i rapporti sotto docs/design/verifica/esiti/.
+
+FAI: per le schermate Servizi e Menù fissi, per OGNI stato di `stati` e `stati_c1_c2` dei JSON e in TUTTI i progetti (profili e temi):
+C1 (aspetto e testi), C2 e C2-mouse (aree di tocco), C3 (nessun lampo, cambio di sistema), console pulita e uno SCREENSHOT
+<schermata>-<stato>-<profilo>-<tema>.png in docs/design/verifica/esiti/<data>-e2e/img/. Ogni test ha come titolo l'id del
+controllo del JSON. La preparazione di uno stato (aprire un foglio, una conferma, un errore o un caricamento simulati) è una
+funzione del test con UN'ASSERZIONE DI CONFERMA (l'elemento atteso è visibile); se non si può preparare, NON PROVATO con il
+motivo. Gli stati con il database popolato («vuoto», «nuovo-senza-categorie») sono NON PROVATI con il motivo. Riusa, come
+riferimento e non come copia, le logiche già verificate del vecchio lanciatore (fixture, selettori delle tendine con
+`items`, attese di animazione). Misura il tocco con fixtures/touch; per taratura i risultati di C2 su Piatti devono
+coincidere con quelli già noti (nessun FALLITO nuovo su Piatti).
+ACCETTAZIONE (riporta i numeri): (1) la parte di suite di queste schermate finisce in meno di 10 minuti con 4 worker; (2) il
+numero di screenshot è uguale a quello atteso, calcolato dal JSON; (3) zero ERRORE-STRUMENTO; (4) la suite di fumo passa in
+meno di 60 secondi; (5) pnpm typecheck e pnpm lint sull'INTERO repo; (6) `ps` e `lsof` finali puliti e zero record verify-ui-.
+Scrivi docs/design/verifica/esiti/<data>-T1c/rapporto.md con, per ogni controllo, OK / FALLITO / AVVISO / NON PROVATO /
+ERRORE-STRUMENTO, il valore misurato e quello atteso (mai «—»), e il numero di screenshot per schermata.
+Non fare git. Non toccare app/, components/, lib/, collections/, docs/design (fuori da verifica/esiti), i controlli JSON né
+scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1c — controlli comuni e screenshot di Servizi e Menu fissi`, push, «push fatto». Poi faccio io il confronto visivo (C10) degli screenshot.
+
+### Passo T2a — Flussi per schermata: Servizi e Menù fissi
+
+**Quando**: dopo T1c. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T2a (flussi: Servizi e Menù fissi). Estendi e2e/ con i flussi di alcune schermate.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json e controlli-8.2.json.
+
+STIMA 90 MINUTI. Precondizione: T1 delle stesse schermate accettato (rapporto con zero ERRORE-STRUMENTO); se manca, FERMATI.
+Modifichi SOLO e2e/** e i rapporti sotto docs/design/verifica/esiti/.
+
+FAI: per le schermate Servizi e Menù fissi, ogni controllo di tipo `flusso`, `attributi`, `testo`, `misura`, `assenza`, `presenza` e
+`reindirizzamento` del JSON diventa un test con l'id del controllo come titolo. Il test legge `passi` e `atteso` del JSON,
+ESEGUE L'AZIONE DALL'INTERFACCIA e poi CONTROLLA IL DATABASE con la fixture payload: persistenza (valori scritti uguali a
+quelli letti, ordine, porzioni), cascata sulle eliminazioni e riga del registro con `riferimenti=N`, permessi (manager,
+admin, super-admin; «utente senza ruolo» è NON PROVATO «coperto da scripts/verify-roles-8_3.ts», senza far fallire il
+resto), formati dal server, traduzione inglese (con fallbackLocale: false e con ripiego). Riusa come riferimento, non come
+copia, le logiche già verificate nel vecchio lanciatore. Tempo massimo di 60 secondi per test: oltre, ERRORE-STRUMENTO e
+si prosegue. I test che modificano lo stato globale (conteggi della home) hanno il tag @esclusivo e girano per ultimi con un
+solo worker. Un FALLITO ha SEMPRE valori misurati e attesi leggibili; se manca uno dei due è ERRORE-STRUMENTO.
+ACCETTAZIONE (riporta i numeri): (1) zero ERRORE-STRUMENTO; (2) i controlli già noti come corretti tornano OK (servizi-righe-azioni, servizi-elimina-cascade-registro-permessi, menu-fissi-schede-percorsi, menu-fissi-ordine-piatti, menu-fissi-visibilita-categoria);
+(3) ogni FALLITO ha misurato e atteso; (4) la parte di suite finisce in meno di 15 minuti con 4 worker; (5) la suite di fumo
+passa in meno di 60 secondi; (6) pnpm typecheck e pnpm lint sull'INTERO repo; (7) `ps`, `lsof` e record verify-ui- puliti.
+Scrivi docs/design/verifica/esiti/<data>-T2a/rapporto.md. Non fare git. Non toccare app/, components/, lib/, collections/,
+docs/design (fuori da verifica/esiti), i controlli JSON né scripts/ui-verify. Rispondi in italiano con la tabella dei
+risultati e, per ogni FALLITO, la tua classificazione (difetto dell'app o controllo dubbio).
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T2a — flussi di Servizi e Menu fissi`, push, «push fatto».
+
+### Passo T2b — Flussi per schermata: Vini, Distillati e Bevande
+
+**Quando**: dopo T1c e T2a. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T2b (flussi: Vini, Distillati e Bevande). Estendi e2e/ con i flussi di alcune schermate.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json e controlli-8.2.json.
+
+STIMA 90 MINUTI. Precondizione: T1 delle stesse schermate accettato (rapporto con zero ERRORE-STRUMENTO); se manca, FERMATI.
+Modifichi SOLO e2e/** e i rapporti sotto docs/design/verifica/esiti/.
+
+FAI: per le schermate Vini, Distillati e Bevande, ogni controllo di tipo `flusso`, `attributi`, `testo`, `misura`, `assenza`, `presenza` e
+`reindirizzamento` del JSON diventa un test con l'id del controllo come titolo. Il test legge `passi` e `atteso` del JSON,
+ESEGUE L'AZIONE DALL'INTERFACCIA e poi CONTROLLA IL DATABASE con la fixture payload: persistenza (valori scritti uguali a
+quelli letti, ordine, porzioni), cascata sulle eliminazioni e riga del registro con `riferimenti=N`, permessi (manager,
+admin, super-admin; «utente senza ruolo» è NON PROVATO «coperto da scripts/verify-roles-8_3.ts», senza far fallire il
+resto), formati dal server, traduzione inglese (con fallbackLocale: false e con ripiego). Riusa come riferimento, non come
+copia, le logiche già verificate nel vecchio lanciatore. Tempo massimo di 60 secondi per test: oltre, ERRORE-STRUMENTO e
+si prosegue. I test che modificano lo stato globale (conteggi della home) hanno il tag @esclusivo e girano per ultimi con un
+solo worker. Un FALLITO ha SEMPRE valori misurati e attesi leggibili; se manca uno dei due è ERRORE-STRUMENTO.
+ACCETTAZIONE (riporta i numeri): (1) zero ERRORE-STRUMENTO; (2) i controlli già noti come corretti tornano OK (vini-origine-cascata, distillati-paese-fuori-filtro, vini-elimina, bevande-modulo-inglese);
+(3) ogni FALLITO ha misurato e atteso; (4) la parte di suite finisce in meno di 15 minuti con 4 worker; (5) la suite di fumo
+passa in meno di 60 secondi; (6) pnpm typecheck e pnpm lint sull'INTERO repo; (7) `ps`, `lsof` e record verify-ui- puliti.
+Scrivi docs/design/verifica/esiti/<data>-T2b/rapporto.md. Non fare git. Non toccare app/, components/, lib/, collections/,
+docs/design (fuori da verifica/esiti), i controlli JSON né scripts/ui-verify. Rispondi in italiano con la tabella dei
+risultati e, per ogni FALLITO, la tua classificazione (difetto dell'app o controllo dubbio).
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T2b — flussi di Vini, Distillati e Bevande`, push, «push fatto».
+
+### Passo T2c — Flussi per schermata: Piatti e home
+
+**Quando**: dopo T1c e T2a. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T2c (flussi: Piatti e home). Estendi e2e/ con i flussi di alcune schermate.
+
+REGOLE DEL PERCORSO DI TEST v2 (valgono sempre; leggile per intero in docs/design/verifica/percorso-test-v2.md):
+nessuna chiamata sincrona che possa bloccare (R1), ogni attesa con tempo massimo e nessun waitForTimeout come attesa di
+stato (R2), un test bloccato viene ucciso e il giro continua (R3), un'eccezione fuori da un'asserzione è ERRORE-STRUMENTO e
+non FALLITO (R4), dati di prova con nome univoco creati e cancellati dalla fixture (R5), avanzamento in
+.next/e2e-progress.log (R6), un solo giro alla volta (R7), la suite di fumo sotto 60 secondi dopo ogni modifica a e2e/ (R8),
+una sola chat modifica e2e/ alla volta e NESSUNA modifica al vecchio lanciatore scripts/ui-verify (R9), un passo che supera
+il doppio della stima si ferma e riporta (R10). Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi nell'ordine, per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md;
+docs/design/verifica/README.md, policy-test.md e misura-tocco.md; docs/design/verifica/controlli-6.6.json e controlli-8.2.json.
+
+STIMA 90 MINUTI. Precondizione: T1 delle stesse schermate accettato (rapporto con zero ERRORE-STRUMENTO); se manca, FERMATI.
+Modifichi SOLO e2e/** e i rapporti sotto docs/design/verifica/esiti/.
+
+FAI: per le schermate Piatti e home, ogni controllo di tipo `flusso`, `attributi`, `testo`, `misura`, `assenza`, `presenza` e
+`reindirizzamento` del JSON diventa un test con l'id del controllo come titolo. Il test legge `passi` e `atteso` del JSON,
+ESEGUE L'AZIONE DALL'INTERFACCIA e poi CONTROLLA IL DATABASE con la fixture payload: persistenza (valori scritti uguali a
+quelli letti, ordine, porzioni), cascata sulle eliminazioni e riga del registro con `riferimenti=N`, permessi (manager,
+admin, super-admin; «utente senza ruolo» è NON PROVATO «coperto da scripts/verify-roles-8_3.ts», senza far fallire il
+resto), formati dal server, traduzione inglese (con fallbackLocale: false e con ripiego). Riusa come riferimento, non come
+copia, le logiche già verificate nel vecchio lanciatore. Tempo massimo di 60 secondi per test: oltre, ERRORE-STRUMENTO e
+si prosegue. I test che modificano lo stato globale (conteggi della home) hanno il tag @esclusivo e girano per ultimi con un
+solo worker. Un FALLITO ha SEMPRE valori misurati e attesi leggibili; se manca uno dei due è ERRORE-STRUMENTO.
+ACCETTAZIONE (riporta i numeri): (1) zero ERRORE-STRUMENTO; (2) i controlli già noti come corretti tornano OK (i controlli di Piatti tutti OK in V2 quater);
+(3) ogni FALLITO ha misurato e atteso; (4) la parte di suite finisce in meno di 15 minuti con 4 worker; (5) la suite di fumo
+passa in meno di 60 secondi; (6) pnpm typecheck e pnpm lint sull'INTERO repo; (7) `ps`, `lsof` e record verify-ui- puliti.
+Scrivi docs/design/verifica/esiti/<data>-T2c/rapporto.md. Non fare git. Non toccare app/, components/, lib/, collections/,
+docs/design (fuori da verifica/esiti), i controlli JSON né scripts/ui-verify. Rispondi in italiano con la tabella dei
+risultati e, per ogni FALLITO, la tua classificazione (difetto dell'app o controllo dubbio).
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T2c — flussi di Piatti e home`, push, «push fatto».
+
+### Passo T3 — Confronto visivo (C10) di tutti gli stati
+
+**Quando**: dopo T1c (Servizi e Menù fissi) e poi dopo T1a e T1b per le altre schermate. **Chi**: la chat di design (io). **Cosa**: confronto degli screenshot di `docs/design/verifica/esiti/<data>-e2e/img/` con i PNG di `docs/design/schermate/`, a 390 e 1280 px, in chiaro e scuro; ne esce un file `rilievi.md` con i P e gli A, e se ci sono P un prompt di correzione per Composer. **Alternativa da decidere** (non ora): automatizzare il confronto con un modello e una scheda di controllo fissa (struttura, testi, ordine, icone, aree di tocco); richiede una chiave API. **Per te**: committa gli screenshot (`git add docs/design/verifica/esiti`) e scrivimi «push fatto».
+
+### Passo T4 — Pensionamento del vecchio lanciatore
+
+**Quando**: dopo T2c e quando `pnpm e2e` eguaglia i controlli del vecchio lanciatore. **Incolla in Cursor**, in una chat nuova, un prompt che chiede: `pnpm ui:verify` come alias di `pnpm e2e`; rimozione di `scripts/ui-verify` tranne ciò che serve (`provision-user.ts`, `watch.sh` se ancora utile); aggiornamento di `README.md` e `policy-test.md` di docs/design/verifica e delle regole 02; prova che `pnpm e2e` passa; `pnpm typecheck` e `pnpm lint` sull'INTERO repo; nessuna modifica a `app/`, `components/`, `lib/`, `collections/`. **Stima**: 60 minuti; lo scrivo quando serve.
 
 ### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
 
