@@ -84,7 +84,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(dal 2026-10-19 si chiude con 20g e T1c/T2a: vedi 2.1)** | **L2** mirato | rapporto scritto |
+| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(dal 2026-10-19 si chiude con T1c e T2a: vedi 2.1 e 2.2)** | **L2** mirato | rapporto scritto |
 | 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
 | 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(dal 2026-10-19 sostituito da T2d: i controlli si scrivono nel nuovo framework)** | lint e typecheck | tu committi e pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-19 (commit `25fa77c`). **Percorso di test v2** (vedi `docs/design/verifica/percorso-test-v2.md` e la sezione 2.1): stasera **20g** (ultima manutenzione del vecchio lanciatore: screenshot di Servizi e Menù fissi, blocchi), poi **T0** (spike e scheletro Playwright Test), **T1a–T1c** (controlli comuni e screenshot), **T2a–T2c** (flussi). Il vecchio lanciatore è congelato dopo 20g.
+**Ultimo aggiornamento**: 2026-10-19 (commit `25fa77c`). **Percorso di test v2** (vedi `docs/design/verifica/percorso-test-v2.md` e le sezioni 2.1 e 2.2). **Prossimo passo: T0** (spike e scheletro di Playwright Test), poi **T1c** (Servizi e Menù fissi: controlli comuni e screenshot), T1b, T1a, T2a–T2c. Il vecchio lanciatore è **congelato**: il passo 20g è annullato.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -106,15 +106,14 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 
 ### 2.1 Percorso di test v2 (dal 2026-10-19)
 
-La verifica resta completa e i controlli dei file JSON restano la fonte di verità: cambia il motore (Playwright Test al posto del vecchio `ui:verify`). Descrizione, regole anti-blocco, esiti e criteri di accettazione: **`docs/design/verifica/percorso-test-v2.md`**. Il vecchio lanciatore si congela dopo 20g (regola R9).
+La verifica resta completa e i controlli dei file JSON restano la fonte di verità: cambia il motore (Playwright Test al posto del vecchio `ui:verify`). Descrizione, regole anti-blocco, esiti e criteri di accettazione: **`docs/design/verifica/percorso-test-v2.md`**. Il vecchio lanciatore è **congelato da subito** (regola R9): il passo 20g è stato annullato (vedi 2.2).
 
 | Passo | Chi | Cosa | Stima | Accettazione |
 |---|---|---|---|---|
-| **20g** | Agente di verifica | Ultima manutenzione del vecchio lanciatore: nessuna chiamata sincrona, screenshot di Servizi e Menù fissi, rilancio dei controlli con falsi FALLITO | 80 min | screenshot presenti; controlli ripetuti con esito leggibile |
 | **T0** | Agente di verifica | Spike (Local API nello stesso processo, o REST) e scheletro `e2e/` con suite di fumo | 90 min | fumo sotto 60 s; test bloccato ucciso; fixture ripulita; reporter |
-| **T1a** | Agente di verifica | C1–C3, console e screenshot: home, navigazione, Piatti | 60 min | sotto 10 min; screenshot completi; 0 ERRORE-STRUMENTO |
+| **T1c** | Agente di verifica | C1–C3, console e screenshot: **Servizi e Menù fissi** (chiude V4; per primo perché mai verificati visivamente) | 60 min | sotto 10 min; screenshot completi; 0 ERRORE-STRUMENTO; poi confronto visivo (C10) a cura della chat di design |
 | **T1b** | Agente di verifica | Idem: Vini, Distillati, Bevande | 60 min | idem |
-| **T1c** | Agente di verifica | Idem: Servizi, Menù fissi (chiude V4) | 60 min | idem; poi confronto visivo (C10) a cura della chat di design |
+| **T1a** | Agente di verifica | Idem: home, navigazione, Piatti (già verificati visivamente in V2 quater: serve a tarare il nuovo motore) | 60 min | idem; i risultati di C2 su Piatti coincidono con quelli noti |
 | **T2a** | Agente di verifica | Flussi di Servizi e Menù fissi | 90 min | 0 ERRORE-STRUMENTO; i controlli già corretti tornano OK |
 | **T2b** | Agente di verifica | Flussi dei cataloghi (Vini, Distillati, Bevande) | 90 min | idem |
 | **T2c** | Agente di verifica | Flussi di Piatti e home | 90 min | idem |
@@ -122,7 +121,19 @@ La verifica resta completa e i controlli dei file JSON restano la fonte di verit
 | **T3** | Design (e chiave API, se la si usa) | Confronto visivo (C10) di tutti gli stati | 60 min | nessun P aperto |
 | **T4** | Agente di verifica | Pensionamento del vecchio lanciatore, `ui:verify` come alias di `pnpm e2e` | 60 min | parità con il vecchio, docs aggiornate |
 
-**Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine consigliato**: 20g → (C10 di Servizi e Menù fissi, a cura mia) → T0 → T1a → T1b → T1c → T2a → passo 21 (se ci sono P) → T2b → T2c → passi 22–26 con T2d al posto del 23 → V6 con la suite completa.
+**Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine**: T0 → T1c → (C10 di Servizi e Menù fissi, a cura mia) → T2a → passo 21 (se ci sono P) → T1b → T2b → T1a → T2c → passi 22–26 con T2d al posto del 23 → V6 con la suite completa.
+
+### 2.2 Stato della serie 20 (aggiornato il 2026-10-19)
+
+| Passo | Cosa | Stato | Note |
+|---|---|---|---|
+| 20 | V4: L2 di Servizi e Menù fissi | 🔶 eseguito, incompleto | nessun difetto nuovo dell'app; 4 FALLITO del lanciatore |
+| 20b | F-SEL: tendine facoltative | ✅ `ed64db5` | |
+| 20c | F-TAB: schede con `Link` | ✅ `6ae1f34` | |
+| 20d | V4 bis: helper Payload persistente e fix dei flussi | ✅ parziale `a7114d8` | 22 controlli OK; matrice e screenshot non fatti |
+| 20e | VC-parallelo: avanzamento, matrice in parallelo | 🔶 chiuso con riserva `a35f8fe` | log e battito, limite su tutti i pacchetti; il blocco di fondo (chiamate sincrone) non risolto |
+| 20f | V4 ter: Servizi e Menù fissi L2, regressione, screenshot | **eseguito due volte, risultati inutilizzabili** (`ff68c75`, `25fa77c`) | la prima volta si è bloccato; la seconda, in modalità legacy, ha dato 17 falsi FALLITO e **0 screenshot** (il lanciatore non ha il codice per salvarli) |
+| 20g | VC-sync: ultima manutenzione del vecchio lanciatore | ❌ **annullato** | non vale la pena riparare un motore che si sostituisce: T0 + T1c danno gli screenshot di Servizi e Menù fissi in circa 2 ore e mezza, e senza lavoro buttato |
 
 ## 3. Blocco comune (da incollare PRIMA del prompt di ogni chat di implementazione)
 
@@ -1613,6 +1624,8 @@ in italiano con la tabella OK / FALLITO / NON PROVATO delle prove e i numeri.
 
 ### Passo 20f — V4 ter: Menù fissi L2, regressione e screenshot per il confronto visivo
 
+> **Esito (2026-10-19)**: **eseguito due volte, risultati inutilizzabili**. Primo tentativo (`ff68c75`): la prova di sanità A0 (L1 `navigazione`) si è fermata dopo 15 secondi per oltre 10 minuti (battito scomparso: chiamata sincrona senza tempo massimo). Secondo tentativo (`25fa77c`), con `UI_VERIFY_MENU_PAYLOAD_LEGACY=1` che avevo prescritto io: la modalità legacy non è mantenuta e restituisce `undefined`; 17 FALLITO e nessuno è un difetto dell'app (`home-riga-menu-testo` «count API=undefined», `piatti-tassonomie` «reading 'map' of undefined», e simili). Valido: i flussi e la matrice C1/C2/C3 di Servizi e Menù fissi sono OK, console pulita. **0 screenshot** (il lanciatore non ha il codice per salvarli per Servizi e Menù fissi). Il passo si rifà con il nuovo motore: T1c.
+
 **Quando**: dopo 20e. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune).
 
 ```text
@@ -1657,61 +1670,13 @@ italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
 
 **Quando Cursor ha finito**: incollami il resoconto; commit `test(ui-verify): V4 ter — L2 di Servizi e Menù fissi, regressione e screenshot`, push, «push fatto». Poi confronto gli screenshot con i riferimenti (C10) e assegno i rilievi.
 
-### Passo 20g — VC-sync: ultima manutenzione del vecchio lanciatore
+### Passo 20g — VC-sync: ANNULLATO (2026-10-19)
 
-**Perché**: V4 ter ha mostrato che il vecchio lanciatore (3.9.0) non ha il codice che salva gli screenshot di Servizi e Menù fissi (0 su 40 e 0 su 72), blocca il thread principale con chiamate sincrone senza tempo massimo e, in modalità legacy, produce falsi FALLITO. Questo è l'ultimo intervento sul vecchio motore (regola R9): serve a ottenere gli screenshot per il confronto visivo di Servizi e Menù fissi. **Quando**: ora (sera del 2026-10-19). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto**. **Stima**: 80 minuti (programmazione 40, prove 40). **Per seguirlo**: in un terminale a parte `zsh scripts/ui-verify/watch.sh 150` (solo avviso, niente `kill`).
-
-```text
-Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Qui MIGLIORI IL LANCIATORE (scripts/ui-verify/**), non verifichi
-schermate nuove. Istanza: VC-sync. TETTO: 40 minuti di programmazione; fai un checkpoint dopo le parti 1 e 2: se superi il
-tetto, FERMATI e riporta. Esegui i comandi del lanciatore FUORI dalla sandbox di Cursor (tutte le autorizzazioni). NON usare
-UI_VERIFY_MENU_PAYLOAD_LEGACY: il percorso legacy non è mantenuto (restituisce undefined: ha prodotto in V4 ter falsi
-FALLITO su Piatti, Home, Servizi e Menù fissi).
-
-Leggi docs/design/verifica/esiti/2026-10-19-V4ter/rapporto.md e .cursor/rules/ui/02-ui-verifica-agente.mdc.
-
-1. NIENTE CHIAMATE SINCRONE CHE BLOCCANO. Il progress.log si ferma e il battito sparisce quando il thread principale è
-   bloccato da una chiamata sincrona senza tempo massimo. In scripts/ui-verify/lib/menu-payload.mjs callClient() usa
-   spawnSync SENZA timeout (righe ~229-240) e isDaemonPortOpen, listenPids, processCommand usano spawnSync senza
-   limite (processCommand può restituire stdout nullo: TypeError in isOrphanMenuPayloadDaemonPid). Altre: build-cache.mjs,
-   cleanup.mjs (execSync lsof), hours-payload.mjs, lib-readers.mjs, run-menu.mjs (~238, ~470). Sostituisci il client del
-   daemon con uno ASINCRONO nello stesso processo (net.connect, una richiesta JSON per riga, tempo massimo 20 secondi con
-   errore che nomina l'operazione) e rendi asincrone, o con `timeout` ≤ 10 s e gestione di `error` e di stdout nullo, tutte
-   le altre. Cerca con grep le rimaste (spawnSync, execSync, execFileSync, Atomics.wait, readSync) e riportale.
-   Il battito va in un WORKER THREAD: ogni 30 secondi scrive «heartbeat» con l'ultimo passo e se il thread principale
-   risponde (ping ogni secondo); se il principale non risponde da 45 secondi scrive «PRINCIPALE BLOCCATO da Ns (ultimo passo:
-   …)» e uccide i processi FIGLI diretti (pkill -P <pid>, che sblocca una spawnSync) senza uccidere il giro; dopo altri 60
-   secondi esce con SIGTERM scrivendo i risultati parziali. Togli del tutto la modalità legacy (variabile compresa).
-2. SCREENSHOT PER IL CONFRONTO VISIVO (C10), oggi ASSENTI per servizi e menu-fissi (0/40 e 0/72). Salva uno screenshot per OGNI
-   cella della matrice (stato × profilo × tema) già visitata per C1/C2/C3, in
-   docs/design/verifica/esiti/<data>-locale-prod/img/<schermata>-<stato>-<profilo>-<tema>.png, con il contesto touch dei
-   profili con tocco (isMobile e hasTouch). Gli stati sono quelli di `stati` del JSON di servizi (13) e menu-fissi (23); per
-   «vuoto» e «nuovo-senza-categorie» (database popolato) niente file, NON PROVATO con il motivo. Riporta il numero di file.
-3. DIFETTI NOTI: (a) stati-ui su locale-dev: addCookies richiede url o domain (errore cookie in newPage); (b) servizi e
-   menu-fissi: le eliminazioni dalla pagina vanno in timeout sul pulsante «Elimina …»: apri la pagina con la fixture creata e
-   riporta se il pulsante esiste (aria-label «Elimina {nome}») e se la riga c'è: se manca o ha un altro nome, è un difetto
-   dell'app e va riportato, non aggirato; (c) crash `ensure-norole-user` (promise senza await): se «utente senza ruolo» non è
-   creabile, NON PROVATO per quella parte; (d) le fixture dell'elenco (menù fissi, categorie verify-ui-pranzo e verify-ui-sempre,
-   piatti verify-ui-p1…p4, servizi) si creano DOPO la pulizia e PRIMA di misurare colonna-elenco.
-4. PROVE, uno alla volta, con il progress.log che avanza: L1 `navigazione`, `home`, `piatti` (controlli-6.6.json) e `shell`
-   (controlli-8.2.json), meno di 3 minuti ciascuno; poi, con --solo, i controlli che in V4 ter hanno dato falsi FALLITO:
-   piatti-terminato, piatti-disabilita, piatti-modulo-inglese, piatti-tassonomie, piatti-persistenza, home-riga-menu-testo,
-   home-riga-menu-casi, servizi-disponibilita, servizi-persistenza, menu-fissi-ordine-piatti, menu-fissi-porzione-traduzione,
-   menu-fissi-servizi-piatti, menu-fissi-colonna-elenco, menu-fissi-elimina-usato, menu-fissi-elimina-senza-uso. Per ognuno: OK o
-   FALLITO con il valore misurato e quello atteso (mai «—»). Test del worker: un blocco sincrono di 60 secondi provocato di
-   proposito (variabile di debug) deve mostrare nel log «PRINCIPALE BLOCCATO» e lo sblocco. Poi L2 `servizi` completo con
-   screenshot (meno di 10 minuti), poi L2 `menu-fissi` con screenshot (meno di 10 minuti). `ps` e `lsof` finali puliti;
-   pnpm typecheck e pnpm lint sull'INTERO repo.
-5. Scrivi docs/design/verifica/esiti/2026-10-19-VCsync/rapporto.md: chiamate sincrone trovate e corrette, tempi, numero di
-   screenshot, esito di ogni controllo ripetuto.
-Non fare git. Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i controlli JSON.
-```
-
-**Quando Cursor ha finito**: incollami il resoconto. Prima del via libera eseguo io `tsc`, ESLint e la ricerca delle chiamate sincrone rimaste. Poi commit `test(ui-verify): VC-sync — client asincrono, battito in un worker, screenshot di Servizi e Menù fissi`, push, «push fatto». Dopo di me, il confronto visivo (C10) di Servizi e Menù fissi.
+**Non eseguire.** Era l'ultima manutenzione prevista per il vecchio lanciatore (client del daemon asincrono, battito in un worker, screenshot di Servizi e Menù fissi, rilancio dei controlli con falsi FALLITO). Annullato perché: (1) il vecchio lanciatore viene sostituito dal percorso v2 (T0–T4) e il lavoro sarebbe buttato; (2) per ottenere gli screenshot di Servizi e Menù fissi bastano T0 (90 minuti) e T1c (60 minuti), cioè circa 2 ore e mezza, contro le 80–120 minuti di 20g più comunque il resto; (3) la causa dei blocchi (chiamate sincrone senza tempo massimo) è esclusa **per costruzione** dalle regole R1–R3 del nuovo motore. Il giro L1 che serve a Composer durante I5 e I6 continua a usare il vecchio `ui:verify` così com'è.
 
 ### Passo T0 — Spike e scheletro del nuovo test runner (Playwright Test)
 
-**Quando**: dopo 20g. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti, con un checkpoint dopo lo spike (15 minuti): l'agente si ferma e aspetta il tuo «continua».
+**Quando**: ora. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti, con un checkpoint dopo lo spike (15 minuti): l'agente si ferma e aspetta il tuo «continua».
 
 ```text
 Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T0 (spike e scheletro del nuovo test runner). Costruisci lo scheletro di e2e/ con Playwright Test. NON verifichi schermate nuove e NON tocchi il vecchio lanciatore.
@@ -1771,7 +1736,7 @@ Non fare git. Rispondi in italiano con la tabella OK / FALLITO / NON PROVATO del
 
 ### Passo T1a — Controlli comuni, console e screenshot: home, navigazione e Piatti
 
-**Quando**: dopo T0. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
+**Quando**: dopo T1b. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
 
 ```text
 Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1a (controlli comuni, console e screenshot). Estendi e2e/ con i controlli comuni e gli screenshot di alcune schermate.
@@ -1812,7 +1777,7 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 
 ### Passo T1b — Controlli comuni, console e screenshot: Vini, Distillati e Bevande
 
-**Quando**: dopo T1a. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
+**Quando**: dopo T1c. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
 
 ```text
 Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1b (controlli comuni, console e screenshot). Estendi e2e/ con i controlli comuni e gli screenshot di alcune schermate.
@@ -1853,7 +1818,7 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 
 ### Passo T1c — Controlli comuni, console e screenshot: Servizi e Menù fissi
 
-**Quando**: dopo T1b. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti. **Chiude V4** (passo 20).
+**Quando**: dopo T0 (è la prima schermata da verificare). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti. **Chiude V4** (passo 20).
 
 ```text
 Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1c (controlli comuni, console e screenshot). Estendi e2e/ con i controlli comuni e gli screenshot di alcune schermate.

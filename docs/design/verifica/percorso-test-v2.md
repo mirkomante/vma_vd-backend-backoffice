@@ -1,6 +1,6 @@
 # Percorso di test v2: la verifica dell'Area App con Playwright Test
 
-Scritto il 2026-10-19, dopo V4 ter. Sostituisce, da qui in avanti, i passi di verifica costruiti sul lanciatore `scripts/ui-verify` (`ui:verify`), che resta in uso solo fino alla chiusura del passo 20g.
+Scritto il 2026-10-19, dopo V4 ter. Sostituisce, da qui in avanti, i passi di verifica costruiti sul lanciatore `scripts/ui-verify` (`ui:verify`), che è **congelato da subito** (regola R9).
 
 ## 0. In una frase
 
@@ -63,7 +63,7 @@ e2e/
 - **R6** Un avanzamento leggibile da fuori: il reporter scrive una riga per test in `.next/e2e-progress.log` (formato: ora, progetto, schermata, controllo, esito, secondi) e stampa lo stesso su stdout.
 - **R7** Un solo giro alla volta: il blocco rifiuta un secondo avvio mostrando il PID del primo.
 - **R8** La suite di fumo (§6, T0) deve passare in meno di 60 secondi dopo **ogni** modifica a `e2e/`.
-- **R9** Una sola chat modifica `e2e/` alla volta. Nessuna chat modifica il vecchio lanciatore dopo il passo 20g.
+- **R9** Una sola chat modifica `e2e/` alla volta. Nessuna chat modifica il vecchio lanciatore (congelato dal 2026-10-19), salvo un errore che fa fallire la build di produzione.
 - **R10** Un passo che supera il **doppio** della stima si ferma e riporta: non si estende.
 
 ## 5. Classificazione degli esiti
@@ -100,7 +100,7 @@ Scelta A, altrimenti B, e si va avanti. **Il vecchio daemon non si riusa.**
 
 ### T1: controlli comuni C1–C3, console e screenshot di tutti gli stati (tre passi: T1a, T1b, T1c; stima 60 minuti l'uno)
 
-T1a: home, navigazione, Piatti. T1b: Vini, Distillati, Bevande. T1c: Servizi, Menù fissi. Per ogni schermata e per **ogni stato** di `stati` e `stati_c1_c2` del JSON, in tutti i progetti: C1 (aspetto e testi), C2 (tocco), C2-mouse, C3 (nessun lampo, cambio di sistema), console pulita, **screenshot** `<schermata>-<stato>-<profilo>-<tema>.png`. La preparazione di uno stato (aprire un foglio, una conferma, un errore simulato) è una funzione del test con **un'asserzione di conferma** (per esempio l'elemento atteso è visibile): se non si può preparare, NON PROVATO con il motivo, mai silenzio.
+T1c: Servizi, Menù fissi (per primi: mai verificati visivamente). T1b: Vini, Distillati, Bevande. T1a: home, navigazione, Piatti (già verificati visivamente in V2 quater: servono a tarare il nuovo motore). Per ogni schermata e per **ogni stato** di `stati` e `stati_c1_c2` del JSON, in tutti i progetti: C1 (aspetto e testi), C2 (tocco), C2-mouse, C3 (nessun lampo, cambio di sistema), console pulita, **screenshot** `<schermata>-<stato>-<profilo>-<tema>.png`. La preparazione di uno stato (aprire un foglio, una conferma, un errore simulato) è una funzione del test con **un'asserzione di conferma** (per esempio l'elemento atteso è visibile): se non si può preparare, NON PROVATO con il motivo, mai silenzio.
 **Accettazione**: la parte di suite della sua schermata finisce in **meno di 10 minuti** con 4 worker; numero di screenshot uguale all'atteso (calcolato dal JSON); **zero ERRORE-STRUMENTO**; i risultati di C2 coincidono con quelli già noti per Piatti (che servono da taratura: nessun FALLITO nuovo su Piatti).
 
 ### T2: i flussi per schermata (T2a Servizi e Menù fissi; T2b cataloghi; T2c Piatti e home; T2d Giorni speciali e Messaggio globale, dopo il passo 24; stima 90 minuti l'uno)
@@ -132,7 +132,7 @@ Quando T1 e T2 eguagliano i controlli del vecchio lanciatore: `pnpm ui:verify` d
 
 ## 9. Congelamento del vecchio motore
 
-- Dopo il passo 20g (VC-sync) nessuno modifica `scripts/ui-verify` (regola R9), salvo un errore bloccante per la build di produzione.
+- Dal 2026-10-19 nessuno modifica `scripts/ui-verify` (regola R9), salvo un errore bloccante per la build di produzione; il passo 20g (VC-sync) è stato annullato.
 - I controlli JSON restano modificabili dalla chat di design e valgono per entrambi i motori finché T4 non è chiuso.
 - I giri L1 di Composer durante I5 e I6 usano il vecchio `ui:verify` finché T1 non è accettato; da lì, `pnpm e2e` per la sua schermata.
 
