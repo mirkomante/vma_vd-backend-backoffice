@@ -1,164 +1,134 @@
 # V4 ter — agente di verifica Area App (6.6 Servizi / Menù fissi)
 
 **Istanza**: V4 ter (dopo V4 bis e VC-parallelo) · **Data**: 2026-10-19  
-**Commit**: `7c20dae6286582a31f45d0fa563abb6cf2d39673` · **Lanciatore**: 3.9.0  
-**Browser**: Chromium 140.0.7339.186 (Playwright, installato in sessione) · **Controlli**: `controlli-6.6.json` v1
+**Commit**: `ff68c7591cd91e57972c91b5b1ab35c02597fa22` · **Lanciatore**: 3.9.0  
+**Browser**: Chromium 140.0.7339.186 (Playwright) · **Controlli**: `controlli-6.6.json` v1 (+ `controlli-8.2.json` v4 per shell L1)  
+**Modalità Payload**: `UI_VERIFY_MENU_PAYLOAD_LEGACY=1` su tutti i giri · **Daemon**: avviato dal lanciatore ma azioni via `payload run` (legacy)
 
 ## 0 — Precondizioni
 
 | Voce | Esito | Dettaglio |
 |---|---|---|
 | `git log --oneline` include VC-parallelo su `scripts/ui-verify` | OK | `f5e8b0d`, `a35f8fe` |
-| `git status` (solo lettura) | OK | working tree pulito a inizio; a fine sessione solo `docs/design/verifica/esiti/**` |
-| Porte 3000/3100/3200/31997 a inizio | Parziale | Residuo `next-server` su **3100** e lock `.next/ui-verify.lock` da giro precedente — puliti prima dei tentativi |
-| Guardiano `watch.sh` / `uiv-watch.sh` | Anomalia | `watch.sh 150 kill` e `/tmp/uiv-watch.sh` attivi in sessione: un giro A0 ha ricevuto **SIGTERM** durante `prod-server`; guardiani poi disattivati |
+| Porte 3000/3100/3200/31997 a inizio sessione | OK | libere prima di ogni giro (`ps`/`lsof`) |
+| A0 prova di sanità L1 navigazione | **Non rieseguita** | già OK in ~31 s (chat design, legacy); per policy sessione |
 
-## A0 — Prova di sanità (3.9.0)
+## Giri eseguiti — durate
 
-**Comando**: `pnpm ui:verify locale-prod --livello 1 --schermata navigazione --controlli controlli-6.6.json`
-
-| Tentativo | Durata | Esito |
-|---|---:|---|
-| 1 (sandbox) | ~12 s | **FALLITO** lanciatore: `TypeError` in `isOrphanMenuPayloadDaemonPid` (`processCommand` → `undefined.includes`) |
-| 2 | ~18 s | **FALLITO** esecuzione: **SIGTERM** in avvio `prod-server` (probabile guardiano) |
-| 3 | ~14 s | **FALLITO** ambiente: Playwright Chromium headless shell non installato |
-| 4 (post `playwright install`, no watch) | ~15 s scrittura esiti + **>10 min** blocco | **FERMATO** (criterio >5 min senza avanzamento `progress.log`) |
-
-**Ultima riga `progress.log` (blocco)**:
-
-`13:24:17 | passo | navigazione | nav-flows readBreadcrumbs | — | 20s`
-
-**Passo bloccato**: fase `navigazione` / `notebook-1280` dopo `nav-flows` (processo `run.mjs` a 0% CPU, daemon `:31997` in ascolto, nessuna nuova riga di avanzamento).
-
-**Decisione policy**: i giri **A1–A4 non sono stati eseguiti** (lanciatore da stabilizzare prima di un nuovo ciclo completo).
-
-**Nota**: il file `esiti/2026-10-19-locale-prod/risultati.json` contiene ancora dati di un **giro L2 servizi interrotto in precedenza** (matrice parziale + flussi); non costituiscono esito valido di V4 ter.
-
-## Giri pianificati (A1–A4) — tempi
-
-| # | Giro | Durata | Esito sessione V4 ter |
+| # | Giro | Durata | Esito esecuzione |
 |---|---|---:|---|
-| A1 | `locale-prod` L2 `--schermata servizi` | — | **NON PROVATO** (blocco A0) |
-| A2 | `locale-prod` L2 `--schermata menu-fissi` | — | **NON PROVATO** (blocco A0) |
-| A3 | `locale-dev` CONSOLE + `servizi-stati-ui` / `menu-fissi-stati-ui` | — | **NON PROVATO** (blocco A0) |
-| A4 | L1 regressione `navigazione`, `home`, `piatti`, `shell` | — | **NON PROVATO** (blocco A0) |
+| A0 | (omessa) | — | già validata esternamente |
+| A1a | L2 `servizi` completo | ~114 s | **Interrotto** — `ensure-norole-user` rejection non awaited (crash) |
+| A1b | L2 `servizi` flussi senza cascade | ~133 s | OK |
+| A1c | L2 `servizi` matrice `C1–C3` | ~180 s | OK (C3-no-lampo/confronto non nel perimetro `--solo`) |
+| A2a | L2 `menu-fissi` completo | ~110 s | **Interrotto** — timeout clic `Elimina verify-ui-menu-libero` |
+| A2b–c | flussi `menu-fissi` (tentativi con elimina) | ~64–201 s | errore / OK parziale |
+| A2d–e | matrice `menu-fissi` a gruppi `--stati` | ~145 s + ~129 s | OK |
+| A3 | `locale-dev` console + stati-ui | ~66 s + ~66 s / ~13 s | console OK; stati-ui **errore cookie** |
+| A4 | L1 `navigazione`, `home`, `piatti`, `shell` | ~16 min totali (loop) | completati (esiti in `locale-prod/`) |
 
-## B — Screenshot (`docs/design/verifica/esiti/2026-10-19-locale-prod/img/`)
+**Ultima riga utile `progress.log` (A1a crash)**: `13:47:53 | login | controllo | C3-cambio-sistema · notebook-1280/sistema | — | 74s`
+
+## B — Screenshot `docs/design/verifica/esiti/2026-10-19-locale-prod/img/`
 
 | Schermata | Attesi (stati `stati_c1_c2` × 390/1280 × chiaro/scuro) | Presenti | Mancanti |
 |---|---:|---:|---|
-| **servizi** | 40 | **0** | 40 — giro L2 A1 non eseguito |
-| **menu-fissi** | 72 | **0** | 72 — giro L2 A2 non eseguito |
+| **servizi** | 40 | **0** | 40 — `servizi-confronto-visivo` / cattura PNG non eseguita dal lanciatore su menu-list |
+| **menu-fissi** | 72 | **0** | 72 — stesso motivo |
+| altri (L1 regressione) | — | 17 | shell/piatti (fuori perimetro 6.6 stati riferimento) |
 
-Stati esclusi per policy (C): `vuoto`, `*-accesso`, `*-ricompila`, `online` — non conteggiati negli attesi sopra.
+## C — Esclusioni policy
 
-## C — Esclusioni policy (motivo)
-
-| Ambito | Controlli | Esito |
+| Controllo | Esito | Motivo |
 |---|---|---|
-| Stato vuoto | `servizi-stato-vuoto`, `menu-fissi-stato-vuoto` | **NON PROVATO** — database popolato (`stato_prova` JSON) |
-| Accesso | `servizi-accesso`, `menu-fissi-accesso` | **NON PROVATO** — coperto da `verify-roles-8_3` |
-| Ricompila | `servizi-ricompila`, `menu-fissi-ricompila` | **NON PROVATO** — rinviato alla 6.5 |
-| Online | controlli `on1`–`on6` | **NON PROVATO** — fuori perimetro V4 ter (V6) |
-
-## D — Tabella controlli **servizi** (esito V4 ter)
+| `servizi-stato-vuoto`, `menu-fissi-stato-vuoto` | NON PROVATO | DB popolato (`stato_prova`) |
+| `servizi-accesso`, `menu-fissi-accesso` | NON PROVATO | coperto da `verify-roles-8_3` |
+| `servizi-ricompila`, `menu-fissi-ricompila` | NON PROVATO | rinviato 6.5 |
+| Online `on1`–`on6` | NON PROVATO | V6 |
 
 Legenda classificazione **FALLITO**: **L** = lanciatore/ambiente · **P** = probabile app · **A** = anomalia esecuzione.
 
-| Controllo | Esito | Misurato | Atteso | Class. |
-|---|---|---|---|---|
-| servizi-testi | NON PROVATO | giro A1 non eseguito | testi §6 (`h1` «Servizi», colonne Nome/Prezzo/Disponibile, ecc.) | **A** |
-| servizi-senza-ricerca-filtri | NON PROVATO | giro A1 non eseguito | nessuna ricerca/filtri/elenco parziale | **A** |
-| servizi-colonna-elenco | NON PROVATO | giro A1 non eseguito | layout schede 390 / tabella 1280 per profilo (`controlli-6.6.json`) | **A** |
-| servizi-colonne-fisse | NON PROVATO | giro A1 non eseguito | Prezzo/Disponibile/azioni 7 rem / 7 rem / 6 rem su 1280 | **A** |
-| servizi-azioni-pagina | NON PROVATO | giro A1 non eseguito | CTA «Nuovo servizio» 358×≥44 px (390) / inline a destra (1280) | **A** |
-| servizi-righe-azioni | NON PROVATO | giro A1 non eseguito | interruttore attivo su riga disabilitata; aria-label italiani | **A** |
-| servizi-disponibilita | NON PROVATO | giro A1 non eseguito | toast disabilita/abilita + badge «Disabilitato» | **A** |
-| servizi-elimina-usato | NON PROVATO | giro A1 non eseguito | cascade 1→4 menù fissi + eliminazione | **A** |
-| servizi-elimina-senza-uso | NON PROVATO | giro A1 non eseguito | dialogo solo «Non si può annullare.» | **A** |
-| servizi-elimina-cascade-registro-permessi | NON PROVATO | giro A1 non eseguito | depth 0 cascade + registro `delete` con `riferimenti=N` | **A** |
-| servizi-modulo-campi | NON PROVATO | giro A1 non eseguito | campi e pulsanti modulo §6 | **A** |
-| servizi-modulo-validazione | NON PROVATO | giro A1 non eseguito | due obbligatori + prezzi validi | **A** |
-| servizi-modulo-inglese | NON PROVATO | giro A1 non eseguito | badge Manca/Presente + fallback locale en | **A** |
-| servizi-modulo-footer | NON PROVATO | giro A1 non eseguito | footer 44 px, max 90% viewport | **A** |
-| servizi-persistenza | NON PROVATO | giro A1 non eseguito | Local API manager/admin/super-admin; norole rifiutato | **A** |
-| servizi-ordine | NON PROVATO | giro A1 non eseguito | ordinamento alfabetico italiano | **A** |
-| servizi-stati-ui | NON PROVATO | giro A3 non eseguito | skeleton / errore caricamento / errore azione simulati | **A** |
-| servizi-stato-vuoto | NON PROVATO | database con dati | «Nessun servizio.» (`stato_prova`) | — |
-| servizi-nomi-accessibili | NON PROVATO | giro A1 non eseguito | nessuna stringa inglese in pagina/aria-label | **A** |
-| servizi-accesso | NON PROVATO | nessun utente idoneo in `ui:verify` | stesso esito guardia `/app/hours` (8.3) | — |
-| servizi-console | NON PROVATO | giro A3 non eseguito | 0 error/warning/pageerror su `locale-dev` | **A** |
-| servizi-ricompila | NON PROVATO | bandiera 6.5 | pulsante «Ricompila il menù pubblico» | — |
-| servizi-confronto-visivo | NON PROVATO | 0 file in `img/` | screenshot stati riferimento 390/1280 chiaro/scuro | **A** |
-| **C1** (matrice L2) | NON PROVATO | giro A1 non eseguito | `scrollWidth <= innerWidth` su ogni stato `stati_c1_c2` × profili × temi L2 | **A** |
-| **C2** (matrice L2) | NON PROVATO | giro A1 non eseguito | elenco vuoto `misura-tocco.md` | **A** |
-| **C2-mouse** | NON PROVATO | giro A1 non eseguito | altezze mouse nell'intervallo | **A** |
-| **C3** (matrice L2) | NON PROVATO | giro A1 non eseguito | classe `dark` coerente con tema | **A** |
-| **C3-no-lampo** | NON PROVATO | giro A1 non eseguito | nessuna mutazione tema post `DOMContentLoaded` | **A** |
-| **C3-cambio-sistema** | NON PROVATO | giro A1 non eseguito | cookie system + `prefers-color-scheme` | **A** |
-
-## D — Tabella controlli **menu-fissi** (esito V4 ter)
+## D — Servizi (sintesi per controllo)
 
 | Controllo | Esito | Misurato | Atteso | Class. |
 |---|---|---|---|---|
-| menu-fissi-testi | NON PROVATO | giro A2 non eseguito | testi §6 (schede Menù/Categorie, conteggi, ecc.) | **A** |
-| menu-fissi-schede-percorsi | NON PROVATO | giro A2 non eseguito | `documentReloaded=false` su cambio scheda | **A** |
-| menu-fissi-colonna-elenco | NON PROVATO | giro A2 non eseguito | layout elenco per profilo | **A** |
-| menu-fissi-colonne-fisse | NON PROVATO | giro A2 non eseguito | colonne fisse tabella 1280 | **A** |
-| menu-fissi-azioni-pagina | NON PROVATO | giro A2 non eseguito | azioni pagina 390/1280 | **A** |
-| menu-fissi-righe-azioni | NON PROVATO | giro A2 non eseguito | azioni riga + tocco 44 px | **A** |
-| menu-fissi-disponibilita | NON PROVATO | giro A2 non eseguito | flusso disponibilità menù | **A** |
-| menu-fissi-categorie-elenco | NON PROVATO | giro A2 non eseguito | elenco categorie scheda Categorie | **A** |
-| menu-fissi-categoria-modulo | NON PROVATO | giro A2 non eseguito | modulo categoria + validazione nome | **A** |
-| menu-fissi-categorie-niente-eliminazione | NON PROVATO | giro A2 non eseguito | assenza cestino su categorie | **A** |
-| menu-fissi-modulo-campi | NON PROVATO | giro A2 non eseguito | campi modulo menù fisso | **A** |
-| menu-fissi-modulo-validazione | NON PROVATO | giro A2 non eseguito | quattro errori modulo vuoto | **A** |
-| menu-fissi-composizione | NON PROVATO | giro A2 non eseguito | vista «Scegli piatti» | **A** |
-| menu-fissi-ordine-piatti | NON PROVATO | giro A2 non eseguito | frecce ordine + «Togli» | **A** |
-| menu-fissi-doppioni | NON PROVATO | giro A2 non eseguito | regola doppioni piatti | **A** |
-| menu-fissi-porzione-traduzione | NON PROVATO | giro A2 non eseguito | porzioni in traduzione inglese | **A** |
-| menu-fissi-visibilita-categoria | NON PROVATO | giro A2 non eseguito | avvisi pranzo/cena/sempre | **A** |
-| menu-fissi-nessuna-categoria | NON PROVATO | `stato_prova` / A2 non eseguito | stato senza categorie | **A** |
-| menu-fissi-servizi-piatti | NON PROVATO | giro A2 non eseguito | sezioni piatti/servizi modulo | **A** |
-| menu-fissi-tassonomie | NON PROVATO | giro A2 non eseguito | tassonomie collegate | **A** |
-| menu-fissi-elimina-usato | NON PROVATO | giro A2 non eseguito | elimina con giorni speciali | **A** |
-| menu-fissi-elimina-senza-uso | NON PROVATO | giro A2 non eseguito | dialogo elimina libero | **A** |
-| menu-fissi-elimina-cascade-registro-permessi | NON PROVATO | giro A2 non eseguito | cascade + registro | **A** |
-| menu-fissi-persistenza | NON PROVATO | giro A2 non eseguito | Local API ruoli | **A** |
-| menu-fissi-ordine-liste | NON PROVATO | giro A2 non eseguito | ordine liste per categoria | **A** |
-| menu-fissi-stati-ui | NON PROVATO | giro A3 non eseguito | simulazioni caricamento/errore | **A** |
-| menu-fissi-stato-vuoto | NON PROVATO | database popolato | stato vuoto (`stato_prova`) | — |
-| menu-fissi-nomi-accessibili | NON PROVATO | giro A2 non eseguito | italiano in UI/accessibilità | **A** |
-| menu-fissi-accesso | NON PROVATO | coperto 8.3 | guardia sezione Menù | — |
-| menu-fissi-console | NON PROVATO | giro A3 non eseguito | console pulita `locale-dev` | **A** |
-| menu-fissi-ricompila | NON PROVATO | rinviato 6.5 | pulsante Ricompila | — |
-| menu-fissi-confronto-visivo | NON PROVATO | 0 screenshot | PNG per C10 | **A** |
-| **C1–C3** matrice L2 | NON PROVATO | giro A2 non eseguito | come `stati_c1_c2` × profili/temi L2 | **A** |
+| servizi-testi | OK | ok | testi §6 (H1, colonne, conteggio) | — |
+| servizi-senza-ricerca-filtri | OK | search=false; filtri=false | nessuna ricerca/filtri | — |
+| servizi-colonna-elenco | AVVISO | telefono-390: tableVisible=false, colW=358, nameW=178 | layout schede 390 / tabella 1280 | — |
+| servizi-colonne-fisse | OK | 4 colonne Nome/Prezzo/Disponibile/Azioni | colonne fisse 1280 | — |
+| servizi-azioni-pagina | OK | h=44, w=358 (390); inline 1280 | CTA ≥44 px | — |
+| servizi-righe-azioni | OK | switchDisabled=false; badge Disabilitato | interruttore attivo su riga disabilitata | — |
+| servizi-disponibilita | FALLITO | API disabled (senza verifica toast UI) | toast + stato API disabled | **P** |
+| servizi-elimina-usato | OK | cascade 4 menù fissi in dialogo | cascade menù | — |
+| servizi-elimina-senza-uso | OK | solo «Non si può annullare» | elimina libero | — |
+| servizi-elimina-cascade-registro-permessi | OK | dopo=[]; svcGone=true; log riferimenti=1; norole NON PROVATO in nota | cascade depth0 + registro | — |
+| servizi-modulo-* | OK | campi, validazione, inglese, footer 44px | attributi §6 | — |
+| servizi-persistenza | FALLITO | create read; ramo norole non verificato | Local API per ruoli | **P** |
+| servizi-ordine | OK | ordine alfabetico verify-ui-* | ordine nome IT | — |
+| servizi-nomi-accessibili | OK | nessuna stringa inglese | italiano UI/aria | — |
+| servizi-console | OK (locale-dev) | err:0 warn:0 http:0 | console pulita | — |
+| servizi-stati-ui | NON PROVATO | `browserContext.addCookies: Cookie should have a url or domain/path pair` | simulazioni caricamento/errore | **L** |
+| servizi-stato-vuoto / accesso / ricompila | NON PROVATO | vedi §C | — | — |
+| servizi-confronto-visivo | NON PROVATO | 0 PNG in `img/` | screenshot stati riferimento | **L** |
+| C1 matrice L2 | OK | 44/44 combinazioni | scroll orizzontale | — |
+| C2 matrice L2 | OK | 22/22 | tocco ≥44 px | — |
+| C2-mouse | OK | 22/22 | altezze mouse | — |
+| C3 matrice L2 | OK | 44/44 | classe `dark` | — |
+| C3-no-lampo | NON PROVATO | non schedulato su schermata servizi | nessun lampo post DCL | **L** |
+| C3-cambio-sistema | OK | login/sistema: dark con OS scuro; cookie light ignora OS | tema system reattivo | — |
 
-## Riepilogo esiti V4 ter (servizi + menu-fissi + matrice)
+## D — Menù fissi (sintesi per controllo)
 
-| Esito | Conteggio controlli distinti (servizi + menu-fissi + matrice) |
+| Controllo | Esito | Misurato | Atteso | Class. |
+|---|---|---|---|---|
+| menu-fissi-testi | OK | ok | testi §6 schede/gruppi | — |
+| menu-fissi-schede-percorsi | OK | documentReloaded=false | Link Next senza reload | — |
+| menu-fissi-colonna-elenco | FALLITO | 1280: colW=976 nameW=0; soglia-768: colW=464 nameW=0 (390/767 OK) | layout per profilo | **P** |
+| menu-fissi-colonne-fisse | OK | 5 colonne tabella | colonne fisse | — |
+| menu-fissi-azioni-pagina | OK | h=44 | azioni pagina | — |
+| menu-fissi-righe-azioni | OK | edit/delete presenti | azioni riga | — |
+| menu-fissi-disponibilita | OK | ok | flusso disponibilità | — |
+| menu-fissi-categorie-* | OK | elenco + no cestino categorie | scheda Categorie | — |
+| menu-fissi-modulo-* | OK | validazione 4 errori; composizione Scegli piatti | modulo §6 | — |
+| menu-fissi-ordine-piatti | FALLITO | piatto rimosso dalla collection | frecce 44px + ordine + Togli | **P** |
+| menu-fissi-visibilita-categoria | OK | avvisi pranzo/cena/sempre | tutti i passi §6 | — |
+| menu-fissi-doppioni / tassonomie | OK | {} / select categorie | regole doppioni/tassonomie | — |
+| menu-fissi-porzione-traduzione | FALLITO | en name=undefined; desc=undefined | porzioni in EN | **P** |
+| menu-fissi-servizi-piatti | FALLITO | services=0 | sezione servizi salvata | **P** |
+| menu-fissi-elimina-usato / senza-uso | NON PROVATO | timeout Playwright 20s su pulsante Elimina (giri A2a–b) | dialoghi eliminazione | **A** |
+| menu-fissi-elimina-cascade-registro-permessi | NON PROVATO | non consolidato in `risultati.json` finale | cascade + registro | **A** |
+| menu-fissi-persistenza / ordine-liste / nomi-accessibili | NON PROVATO | non in ultimo merge esiti | Local API / ordine / italiano | **A** |
+| menu-fissi-nessuna-categoria | NON PROVATO | `stato_prova` + giro incompleto | nuovo senza categorie | — |
+| menu-fissi-console | OK (locale-dev) | err:0 warn:0 | console pulita | — |
+| menu-fissi-stati-ui | NON PROVATO | stesso errore cookie di `servizi-stati-ui` | simulazioni UI | **L** |
+| menu-fissi-confronto-visivo | NON PROVATO | 0 PNG servizi/menu in `img/` | screenshot C10 | **L** |
+| C1–C3 matrice L2 | OK | C1 72/72, C2 36/36, C3 72/72, C2-mouse 36/36 | matrice `stati_c1_c2` | — |
+| C3-no-lampo | NON PROVATO | non su menu-fissi nel lanciatore | anti-lampo | **L** |
+
+## Riepilogo controlli distinti (servizi + menu-fissi, esclusi §C)
+
+| Esito | Conteggio (appross.) |
 |---|---:|
-| OK | 0 |
-| FALLITO | 1 (prova di sanità A0 — blocco lanciatore/ambiente) |
-| AVVISO | 0 |
-| NON PROVATO | 55 |
+| OK | 38 |
+| FALLITO | 7 |
+| AVVISO | 1 |
+| NON PROVATO | 14 |
 
 ## Pulizia fine sessione
 
 | Voce | Esito |
 |---|---|
-| Processi `run.mjs` / Playwright / server 3100–3200 | OK — terminati |
-| Daemon menu-payload `:31997` | OK — nessun listener |
-| `menu-payload delete-prefix verify-ui-` | OK (`deleted: 0`) |
-| Utente `verify-ui-*@test.local` | OK — nessun processo verify attivo; utente non ricreato dopo kill A0 |
-| `git status` | Solo modifiche in `docs/design/verifica/esiti/**` |
+| Processi `run.mjs` / Playwright / server | OK |
+| Porte 3000/3100/3200/31997 | OK — libere |
+| `delete-prefix verify-ui-` | OK (`deleted: 0`) |
+| `git status` | solo `docs/design/verifica/esiti/**` |
 
-## Anomalie ambiente / lanciatore (da correggere prima del prossimo giro)
+## Anomalie lanciatore / ambiente (non corretti in questa chat)
 
-1. **A0**: blocco >10 min dopo ultimo passo `nav-flows readBreadcrumbs` (secondo spawn daemon post-scrittura esiti).
-2. **`isOrphanMenuPayloadDaemonPid`**: crash se `ps` non restituisce stdout (sandbox / race).
-3. **Guardiani `watch.sh`**: rischio SIGTERM su fasi senza battito (`build` / `prod-server`).
-4. **Playwright**: browser non presenti fino a `pnpm exec playwright install chromium webkit` in questa macchina.
+1. Giro L2 `servizi` completo: crash su `menuEnsureNoroleUser()` senza `await` → rejection non gestita dopo `servizi-elimina-cascade-registro-permessi`.
+2. `locale-dev` `servizi-stati-ui` / `menu-fissi-stati-ui`: `addCookies` senza url/domain in `newPage` (`run.mjs:236`).
+3. `menu-fissi-elimina-senza-uso`: timeout 20s su `getByRole('button', { name: 'Elimina verify-ui-menu-libero' })`.
+4. Screenshot stati riferimento servizi/menu-fissi: controllo `*-confronto-visivo` non produce file in `img/` per menu-list.
+5. Esiti `risultati.json`/`rapporto.md` locale-prod sovrascritti dall’ultimo L1 `shell` (8.2): consultare righe pacchetto `menu` per 6.6.
 
-Percorsi esiti: `esiti/2026-10-19-locale-prod/`, `esiti/2026-10-19-locale-dev/`, questo file.
+Percorsi: `esiti/2026-10-19-locale-prod/`, `esiti/2026-10-19-locale-dev/`, questo file.

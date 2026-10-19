@@ -2,62 +2,91 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-19",
-    "commit": "7c20dae62865",
+    "commit": "ff68c7591cd9",
     "launcherVersion": "3.9.0",
-    "launcherHeader": "3.9.0 (A3 non eseguito — V4 ter)",
-    "browsers": "non avviato",
+    "launcherHeader": "3.9.0 (L2)",
+    "browsers": "—",
     "controlliBasename": "controlli-6.6.json",
-    "livelloEseguito": "A3 pianificato",
+    "livelloEseguito": "L2",
     "controlliVersion": 1,
-    "durataMs": 0,
-    "invalidRun": true,
-    "invalidReason": "Prova di sanità A0 non conclusa; giro locale-dev non avviato"
+    "durataMs": 61,
+    "invalidRun": false
   },
   "counts": {
-    "OK": 0,
+    "OK": 4,
     "FALLITO": 0,
     "AVVISO": 0,
-    "NON PROVATO": 4
+    "NON PROVATO": 2
   },
+  "distinctControls": 1,
   "rows": [
     {
       "id": "servizi-console",
       "schermata": "servizi",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "giro non avviato",
-      "atteso": "console pulita (0 error, 0 warning)",
-      "evidenza": "V4 ter blocco A0"
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "servizi-console",
+      "schermata": "servizi",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
     },
     {
       "id": "menu-fissi-console",
       "schermata": "menu-fissi",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "giro non avviato",
-      "atteso": "console pulita (0 error, 0 warning)",
-      "evidenza": "V4 ter blocco A0"
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "menu-fissi-console",
+      "schermata": "menu-fissi",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
     },
     {
       "id": "servizi-stati-ui",
-      "schermata": "servizi",
-      "profiloTema": "telefono-390/chiaro",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
-      "misurato": "giro non avviato",
-      "atteso": "UI stati simulati: caricamento, errore caricamento, errore azione",
-      "evidenza": "V4 ter blocco A0"
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
       "id": "menu-fissi-stati-ui",
-      "schermata": "menu-fissi",
-      "profiloTema": "telefono-390/chiaro",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
-      "misurato": "giro non avviato",
-      "atteso": "UI stati simulati: caricamento, errore caricamento, errore azione",
-      "evidenza": "V4 ter blocco A0"
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "anomalie": [
-    "A0: progress.log fermo su navigazione/nav-flows readBreadcrumbs >5 min"
-  ]
+  "nonProvato": [
+    {
+      "id": "menu-fissi-stati-ui",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
+  "anomalie": [],
+  "screenshotHashes": []
 }
