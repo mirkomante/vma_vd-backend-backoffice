@@ -22,7 +22,13 @@ function timeLabel() {
 
 function formatLine() {
   const nPart = progressTotal != null ? `${progressIndex}/${progressTotal}` : '—'
-  return `${timeLabel()} | ${currentSchermata} | ${currentFase} | ${currentDetail} | ${nPart} | ${elapsedSec()}s`
+  const passo = handlerStepName ? ` | passo: ${handlerStepName}` : ''
+  const detail = `${currentDetail}${passo}`
+  return `${timeLabel()} | ${currentSchermata} | ${currentFase} | ${detail} | ${nPart} | ${elapsedSec()}s`
+}
+
+export function currentHandlerStepLabel() {
+  return handlerStepName || null
 }
 
 function emitLine() {
@@ -72,4 +78,31 @@ export function logProgressParts(parts) {
   const detail =
     profilo && tema ? `${stato} · ${profilo}/${tema}` : [stato, profilo, tema].filter(Boolean).join(' · ') || '—'
   writeProgress({ schermata: schermata ?? currentSchermata, fase: 'controllo', stato: detail })
+}
+
+let handlerStepName = ''
+let handlerStepStartMs = 0
+/** @type {string} */
+let handlerStepStack = ''
+
+/**
+ * Etichetta di passo prima di un await significativo (progress.log + rilevamento stallo).
+ * @param {string} stepLabel
+ */
+export function logHandlerStep(stepLabel) {
+  handlerStepName = stepLabel
+  handlerStepStartMs = Date.now()
+  handlerStepStack = new Error(`passo: ${stepLabel}`).stack ?? ''
+  const line = `${timeLabel()} | passo | ${currentSchermata} | ${stepLabel} | — | ${elapsedSec()}s\n`
+  if (logPath) appendFileSync(logPath, line, 'utf8')
+  process.stdout.write(line)
+}
+
+logHandlerStep.stallSnapshot = () =>
+  handlerStepName ? { step: handlerStepName, startMs: handlerStepStartMs, stack: handlerStepStack } : null
+
+logHandlerStep.clearStep = () => {
+  handlerStepName = ''
+  handlerStepStartMs = 0
+  handlerStepStack = ''
 }

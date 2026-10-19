@@ -28,7 +28,13 @@ import {
   stopServers,
   trackBrowser,
 } from './lib/cleanup.mjs'
-import { stopMenuPayloadSession, menuDeleteVerifyPrefix, menuPayloadBenchmarkCreateRead } from './lib/menu-payload.mjs'
+import {
+  stopMenuPayloadSession,
+  waitMenuPayloadDaemonReady,
+  menuDeleteVerifyPrefix,
+  menuPayloadBenchmarkCreateRead,
+  killOrphanMenuPayloadDaemons,
+} from './lib/menu-payload.mjs'
 import { guardExtraMs, screenBudgetMs } from './lib/timeouts.mjs'
 import { createRunContext } from './lib/perimeter.mjs'
 import {
@@ -99,6 +105,7 @@ import { loadNavExpectations } from './lib/lib-readers.mjs'
 import { auditControlliWiring } from './lib/controlli-handlers.mjs'
 import { initVerifyProgress, stopVerifyProgress, writeProgress } from './lib/progress.mjs'
 import { runStartupPhase } from './lib/startup-phase.mjs'
+import { runBoundedState, runHandlerStep, runTimedControl } from './lib/state-run.mjs'
 
 const ROOT = join(import.meta.dirname, '../..')
 const DATA = '2026-10-19'
@@ -126,7 +133,7 @@ async function shutdownAll(signal, report) {
   shutdownInProgress = true
   writeProgress({ schermata: '—', fase: 'chiusura', stato: signal ?? 'uscita' })
   await forceGuardShutdown(report ?? null)
-  stopMenuPayloadSession()
+  await stopMenuPayloadSession()
   stopServers(devChildGlobal, prodChildGlobal)
   devChildGlobal = null
   prodChildGlobal = null
@@ -532,13 +539,20 @@ async function runAmbienteCheck(baseUrl, report, browserVersion) {
   const browser = await chromium.launch()
   trackBrowser(browser)
   const { ctx, page } = await newPage(browser, 'notebook-1280', 'chiaro', baseUrl)
-  await page.goto('/app/login', { waitUntil: 'networkidle' })
-  const r = await checkAmbiente(page)
+  const outcome = await runTimedControl('AMBIENTE', async () => {
+    await runHandlerStep('AMBIENTE goto /app/login', () =>
+      page.goto('/app/login', { waitUntil: 'domcontentloaded', timeout: 45_000 }),
+    )
+    return checkAmbiente(page)
+  })
+  const r = outcome.timedOut
+    ? { ok: false, misurato: outcome.motivo, atteso: '—', selector: outcome.passo ? `passo: ${outcome.passo}` : null }
+    : outcome.result
   addRow(report, {
     id: 'AMBIENTE',
     schermata: '/app/login',
     profiloTema: `notebook-1280/chiaro/Chromium ${browserVersion}`,
-    esito: r.ok ? 'OK' : 'FALLITO',
+    esito: outcome.timedOut ? 'NON PROVATO' : r.ok ? 'OK' : 'FALLITO',
     misurato: r.misurato,
     atteso: r.atteso,
     evidenza: r.selector ? `selettore: ${r.selector}` : '—',
@@ -608,12 +622,36 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
       for (const temaKey of temiAll) {
         for (const profiloKey of profiliAll) {
           progressStep(screen.id, stato.id, profiloKey, temaKey)
-          const { ctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
-          await page.goto(path, { waitUntil: 'networkidle' })
           const sch = `${screen.id}/${stato.id}`
           const pt = `${profiloKey}/${temaKey}`
-          await runAccessScreenChecks(page, report, screen.id, stato.id, sch, pt, path, profiloKey, temaKey, stato)
-          if (SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey)) {
+          const cellId = `access/${screen.id}/${stato.id}/${profiloKey}/${temaKey}`
+          const { ctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
+          const outcome = await runTimedControl(cellId, async () => {
+            await runHandlerStep(`${cellId} goto`, () =>
+              page.goto(path, { waitUntil: 'domcontentloaded', timeout: 45_000 }),
+            )
+            await runAccessScreenChecks(page, report, screen.id, stato.id, sch, pt, path, profiloKey, temaKey, stato)
+          })
+          if (outcome.timedOut) {
+            const ev = outcome.passo ? `bloccato su ${outcome.passo}` : path
+            report.anomalie.push(`${cellId}: ${outcome.motivo} (${ev})`)
+            for (const id of ['C1', 'C2', 'C2-mouse', 'C3', 'C3-no-lampo']) {
+              if (!runCtx.shouldRun(id)) continue
+              if (id === 'C1' && !C1_PROFILES.has(profiloKey)) continue
+              if (id === 'C2' && !C2_PROFILES.has(profiloKey)) continue
+              if (id === 'C2-mouse' && profiloKey !== 'notebook-1280') continue
+              addRow(report, {
+                id,
+                schermata: sch,
+                profiloTema: pt,
+                esito: 'NON PROVATO',
+                misurato: outcome.motivo,
+                atteso: id,
+                evidenza: ev,
+              })
+            }
+          }
+          if (SHOT_PROFILES.includes(profiloKey) && SHOT_TEMI.includes(temaKey) && !outcome.timedOut) {
             await screenshot(page, report, `${screen.id}-${stato.id}-${profiloKey}-${temaKey}`, temaKey)
           }
           await ctx.close()
@@ -625,16 +663,20 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
   if (runCtx.screenIncluded('reset') && runCtx.shouldRun('reset-senza-token-vuoto')) {
     progressStep('reset', 'senza-token', 'telefono-390', 'chiaro')
     const { ctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-    await page.goto('/app/login/reset', { waitUntil: 'networkidle' })
-    const n = await page.locator('main input:not([type=hidden]), main button, main form').count()
+    const outcome = await runTimedControl('reset-senza-token-vuoto', async () => {
+      await runHandlerStep('reset goto', () =>
+        page.goto('/app/login/reset', { waitUntil: 'domcontentloaded', timeout: 45_000 }),
+      )
+      return page.locator('main input:not([type=hidden]), main button, main form').count()
+    })
     addRow(report, {
       id: 'reset-senza-token-vuoto',
       schermata: 'reset/senza-token',
       profiloTema: 'telefono-390/chiaro',
-      esito: n === 0 ? 'OK' : 'FALLITO',
-      misurato: `${n}`,
+      esito: outcome.timedOut ? 'NON PROVATO' : outcome.result === 0 ? 'OK' : 'FALLITO',
+      misurato: outcome.timedOut ? outcome.motivo : `${outcome.result}`,
       atteso: '0',
-      evidenza: '/app/login/reset',
+      evidenza: outcome.timedOut && outcome.passo ? `bloccato su ${outcome.passo}` : '/app/login/reset',
     })
     await ctx.close()
   }
@@ -642,16 +684,29 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
   if (runCtx.shouldRun('C3-cambio-sistema')) {
     progressStep('login', 'C3-cambio-sistema', 'notebook-1280', 'sistema')
     const { ctx, page } = await newPage(browser, 'notebook-1280', 'sistema-chiaro', baseUrl)
-    const r = await checkTemaCambioSistema(page, baseUrl)
-    addRow(report, {
-      id: 'C3-cambio-sistema',
-      schermata: 'login',
-      profiloTema: 'notebook-1280/sistema',
-      esito: resultToEsito(r),
-      misurato: r.misurato,
-      atteso: r.atteso,
-      evidenza: 'emulateMedia prefers-color-scheme',
-    })
+    const outcome = await runTimedControl('C3-cambio-sistema', () => checkTemaCambioSistema(page, baseUrl))
+    if (outcome.timedOut) {
+      addRow(report, {
+        id: 'C3-cambio-sistema',
+        schermata: 'login',
+        profiloTema: 'notebook-1280/sistema',
+        esito: 'NON PROVATO',
+        misurato: outcome.motivo,
+        atteso: 'dark con system+OS scuro; no cambio con cookie light/dark fisso',
+        evidenza: outcome.passo ? `bloccato su ${outcome.passo}` : 'emulateMedia prefers-color-scheme',
+      })
+    } else {
+      const r = outcome.result
+      addRow(report, {
+        id: 'C3-cambio-sistema',
+        schermata: 'login',
+        profiloTema: 'notebook-1280/sistema',
+        esito: resultToEsito(r),
+        misurato: r.misurato,
+        atteso: r.atteso,
+        evidenza: 'emulateMedia prefers-color-scheme',
+      })
+    }
     await ctx.close()
   }
 
@@ -753,12 +808,23 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
     for (const temaKey of temiAll) {
       for (const profiloKey of profiliShell) {
         progressStep('shell', stato.id, profiloKey, temaKey)
-        const { ctx, page } = await newPage(browser, profiloKey, temaKey, baseUrl)
         const pt = `${profiloKey}/${temaKey}`
         const sch = `shell/${stato.id}`
+        const stateLabel = `shell/${stato.id}/${profiloKey}/${temaKey}`
+        /** @type {import('@playwright/test').BrowserContext | null} */
+        let ctx = null
+        /** @type {import('@playwright/test').Page | null} */
+        let page = null
         try {
-        await loginApp(page, baseUrl, testUser.email, testPassword)
-        await page.goto(stato.percorso, { waitUntil: 'networkidle' })
+          await runBoundedState(stateLabel, async () => {
+            const opened = await runHandlerStep('shell newPage', () => newPage(browser, profiloKey, temaKey, baseUrl))
+            ctx = opened.ctx
+            page = opened.page
+            await runHandlerStep('shell loginApp', () => loginApp(page, baseUrl, testUser.email, testPassword))
+            await runHandlerStep(`shell goto ${stato.percorso}`, () =>
+              page.goto(stato.percorso, { waitUntil: 'networkidle' }),
+            )
+        try {
 
         if (C1_PROFILES.has(profiloKey)) {
           const r = await checkScrollOrizzontale(page)
@@ -932,7 +998,31 @@ async function runLocaleProd(baseUrl, report, opts = {}) {
             evidenza: stato.percorso,
           })
         }
-        await ctx.close()
+          })
+        } catch (err) {
+          const motivo =
+            err.code === 'UI_VERIFY_TIMEOUT' || err.code === 'UI_VERIFY_STALL' || String(err.message).startsWith('tempo:')
+              ? `tempo: ${stateLabel}`
+              : err.message
+          report.anomalie.push(`${stateLabel}: ${motivo}`)
+          for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
+            if (!runCtx.shouldRun(id)) continue
+            if (id === 'C1' && !C1_PROFILES.has(profiloKey)) continue
+            if (id === 'C2' && !C2_PROFILES.has(profiloKey)) continue
+            if (id === 'C2-mouse' && profiloKey !== 'notebook-1280') continue
+            addRow(report, {
+              id,
+              schermata: sch,
+              profiloTema: pt,
+              esito: 'NON PROVATO',
+              misurato: motivo,
+              atteso: id,
+              evidenza: stateLabel,
+            })
+          }
+        } finally {
+          if (ctx) await ctx.close()
+        }
       }
     }
   }
@@ -1291,6 +1381,18 @@ async function main() {
   }
 
   const mode = cli.mode
+
+  if (
+    (mode === 'all' || mode === 'locale-prod' || mode === 'locale-dev') &&
+    (menuScreensInScope() || controlliBasename.includes('6.6'))
+  ) {
+    try {
+      await waitMenuPayloadDaemonReady()
+    } catch (e) {
+      process.stderr.write(`[ui:verify] menu-payload warmup: ${e.message}\n`)
+    }
+  }
+
   const hasShellInControlli = CONTROLLI.schermate?.some((s) => s.id === 'shell')
   const needsShellRegression =
     cli.livello === 2 && controlliBasename.includes('8.5') && (!hasShellInControlli || !runCtx.screenIncluded('shell'))
@@ -1301,6 +1403,8 @@ async function main() {
     if (mode === 'all' || mode === 'locale-prod' || mode === 'locale-dev') {
       await runStartupPhase('provision-user', () => provisionUser(), logStartupPhase)
     }
+
+    killOrphanMenuPayloadDaemons()
 
     const portsToFree = []
     if (mode === 'all' || mode === 'locale-dev') portsToFree.push(DEV_PORT, SIM_PORT)
@@ -1522,9 +1626,9 @@ async function main() {
     }
     stopVerifyProgress()
     releaseUiVerifyLock(ROOT)
-    stopMenuPayloadSession()
+    await stopMenuPayloadSession()
     try {
-      menuDeleteVerifyPrefix()
+      await menuDeleteVerifyPrefix()
     } catch {
       /* ignore */
     }

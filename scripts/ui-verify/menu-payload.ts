@@ -1990,6 +1990,7 @@ async function handleMenuPayloadDaemonRequest(
 async function runMenuPayloadDaemon(payload: Awaited<ReturnType<typeof getPayload>>) {
   const net = await import('node:net')
   const port = Number(process.env.UI_VERIFY_MENU_PAYLOAD_PORT ?? '31997')
+  let daemonServer: import('node:net').Server | null = null
   const server = net.createServer((socket) => {
     let buf = ''
     socket.on('data', (chunk) => {
@@ -2007,12 +2008,21 @@ async function runMenuPayloadDaemon(payload: Awaited<ReturnType<typeof getPayloa
             socket.write(`${JSON.stringify({ id: null, ok: false, error: 'json_invalid' })}\n`)
             return
           }
+          if (req.action === '__shutdown__') {
+            socket.write(`${JSON.stringify({ id: req.id ?? null, ok: true, result: { shutdown: true } })}\n`)
+            await new Promise<void>((resolve) => {
+              daemonServer?.close(() => resolve())
+            })
+            process.exit(0)
+            return
+          }
           const res = await handleMenuPayloadDaemonRequest(payload, req)
           socket.write(`${JSON.stringify(res)}\n`)
         })()
       }
     })
   })
+  daemonServer = server
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject)
     server.listen(port, '127.0.0.1', () => {
@@ -2021,7 +2031,7 @@ async function runMenuPayloadDaemon(payload: Awaited<ReturnType<typeof getPayloa
     })
   })
   await new Promise<void>(() => {
-    /* daemon attivo fino a SIGTERM */
+    /* daemon attivo fino a SIGTERM o __shutdown__ */
   })
 }
 

@@ -12,10 +12,12 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Changed
 
+- **VC-parallelo bis — lanciatore `ui:verify` 3.9.0** — Timeout 60s (`runTimedControl` / `runBoundedState`) anche su accesso/login, `C3-cambio-sistema`, `AMBIENTE` e reset; battito progress con `passo:` interno; daemon menu-payload asincrono (`waitMenuPayloadDaemonReady`, errore a 20s, `__shutdown__`, PID in `.next/ui-verify-daemon.pid`); navigazione L1 senza `networkidle` sui flussi briciole; `menuPayloadRun` async.
 - **VC-parallelo — lanciatore `ui:verify` 3.8.0** — Log avanzamento in `.next/ui-verify-progress.log` (stdout + heartbeat 30s); fasi di avvio con timeout 60s (`UI_VERIFY_STARTUP_PHASE_MS`); matrice C1/C2/C3 in parallelo (`UI_VERIFY_PARALLEL`, default 4) su cataloghi, Servizi e Menù fissi (fixture una volta per stato); chiusura su SIGINT/SIGTERM e audit porte incluso daemon Payload :31997.
 
 ### Tests
 
+- **VC-parallelo bis** — L1 `navigazione` (`controlli-6.6.json`) ~14 s con log passi; `C3-cambio-sistema` strumentato (~8 s, goto/reload `domcontentloaded`). L2 `servizi` parziale (daemon warmup ~2 s; doppio spawn da ritestare). Rapporto `docs/design/verifica/esiti/2026-10-19-VCparallelo/`.
 - **VC-parallelo** — L2 `locale-prod` `--schermata servizi` (~2 min 13 s, matrice ×4); lock concorrente OK; `typecheck`/`lint` OK. L1 `navigazione` (8.2): blocco dopo ~30 s su `menu-fisso-notebook` (**FALLITO** esecuzione); home/piatti/shell non completati. Residuo sporadico porta 31997 post-giro. Rapporto `docs/design/verifica/esiti/2026-10-19-VCparallelo/`.
 
 ### Fixed

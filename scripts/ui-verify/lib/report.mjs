@@ -97,6 +97,17 @@ export function initReport({
     screenshotHashes,
     expectedIds,
     invalidRun: false,
+    /** @type {{ screenId: string, phase: string } | null} */
+    l2InProgress: null,
+    beginL2Screen(screenId) {
+      this.l2InProgress = { screenId, phase: 'flussi' }
+    },
+    markL2FlowsDone() {
+      if (this.l2InProgress) this.l2InProgress.phase = 'matrice'
+    },
+    markL2ScreenComplete() {
+      this.l2InProgress = null
+    },
     replacePacchetto(pacchetto) {
       if (!pacchetto) return
       this.rows = this.rows.filter((r) => (r.pacchetto ?? inferPacchettoFromRow(r)) !== pacchetto)
@@ -176,6 +187,10 @@ export function initReport({
       })
     },
     write() {
+      if (this.l2InProgress) {
+        this.meta.esecuzioneIncompleta = `L2 ${this.l2InProgress.screenId} — fase «${this.l2InProgress.phase}» non conclusa`
+        this.anomalie.push(this.meta.esecuzioneIncompleta)
+      }
       const recordedIds = new Set(this.rows.map((r) => r.id))
       const placeholderMotivo = 'controllo non eseguito dal lanciatore in questa esecuzione'
       for (const id of expectedIds) {
@@ -251,8 +266,11 @@ export function initReport({
         nonPr,
       })
 
+      const incompleta =
+        this.meta.esecuzioneIncompleta ? ` · **ESECUZIONE INCOMPLETA** (${this.meta.esecuzioneIncompleta})` : ''
+
       const header = `# Esito verifica — ${ambiente} — ${data}
-Commit: ${commit} · Lanciatore: ${this.meta.launcherHeader ?? launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: ${this.meta.controlliBasename ?? controlliBasename} v${controlliVersion}${durata}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}
+Commit: ${commit} · Lanciatore: ${this.meta.launcherHeader ?? launcherVersion} · Browser: ${this.meta.browsers ?? browsers} · Controlli: ${this.meta.controlliBasename ?? controlliBasename} v${controlliVersion}${durata}${this.invalidRun ? ' · **ESECUZIONE NON VALIDA** (controllo AMBIENTE fallito)' : ''}${incompleta}
 
 Avanzamento live: \`tail -f .next/ui-verify-progress.log\`
 

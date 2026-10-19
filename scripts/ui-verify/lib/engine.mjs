@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.8.0'
+export const LAUNCHER_VERSION = '3.9.0'
 
 let shellPercorsoPiattiDiagnosticDone = false
 
@@ -179,21 +179,38 @@ export async function checkNoLampo(page) {
 }
 
 export async function checkTemaCambioSistema(page, baseUrl) {
-  await page.context().addCookies([{ name: 'app-theme', value: 'system', url: baseUrl }])
-  await page.emulateMedia({ colorScheme: 'light' })
-  await page.goto(`${baseUrl}/app/login`, { waitUntil: 'networkidle' })
-  let hasDark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
+  const { logHandlerStep } = await import('./progress.mjs')
+  const step = (label, fn) => {
+    logHandlerStep(`C3-cambio-sistema: ${label}`)
+    return fn()
+  }
+  await step('cookie app-theme=system', () =>
+    page.context().addCookies([{ name: 'app-theme', value: 'system', url: baseUrl }]),
+  )
+  await step('emulateMedia light', () => page.emulateMedia({ colorScheme: 'light' }))
+  await step('goto /app/login domcontentloaded', () =>
+    page.goto(`${baseUrl}/app/login`, { waitUntil: 'domcontentloaded', timeout: 45_000 }),
+  )
+  let hasDark = await step('evaluate dark (light OS)', () =>
+    page.evaluate(() => document.documentElement.classList.contains('dark')),
+  )
   if (hasDark) {
     return { ok: false, misurato: 'dark già presente con sistema chiaro', atteso: 'no dark con colorScheme light' }
   }
-  await page.emulateMedia({ colorScheme: 'dark' })
-  await page.waitForTimeout(200)
-  hasDark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
-  await page.context().addCookies([{ name: 'app-theme', value: 'light', url: baseUrl }])
-  await page.reload({ waitUntil: 'networkidle' })
-  await page.emulateMedia({ colorScheme: 'dark' })
-  await page.waitForTimeout(200)
-  const stillLight = !(await page.evaluate(() => document.documentElement.classList.contains('dark')))
+  await step('emulateMedia dark', () => page.emulateMedia({ colorScheme: 'dark' }))
+  await step('wait 200ms dopo dark', () => page.waitForTimeout(200))
+  hasDark = await step('evaluate dark (dark OS)', () =>
+    page.evaluate(() => document.documentElement.classList.contains('dark')),
+  )
+  await step('cookie app-theme=light', () =>
+    page.context().addCookies([{ name: 'app-theme', value: 'light', url: baseUrl }]),
+  )
+  await step('reload domcontentloaded', () => page.reload({ waitUntil: 'domcontentloaded', timeout: 45_000 }))
+  await step('emulateMedia dark (post reload)', () => page.emulateMedia({ colorScheme: 'dark' }))
+  await step('wait 200ms post reload', () => page.waitForTimeout(200))
+  const stillLight = !(await step('evaluate still light con cookie light', () =>
+    page.evaluate(() => document.documentElement.classList.contains('dark')),
+  ))
   const ok = hasDark && stillLight
   return {
     ok,

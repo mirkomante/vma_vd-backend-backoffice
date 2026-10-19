@@ -58,7 +58,7 @@ export async function runWithFlowTimeout(fn, controlId) {
 }
 
 async function runWithTimeout(fn, ms, label, reason) {
-  await Promise.race([
+  return Promise.race([
     fn(),
     sleep(ms).then(() => {
       const err = new Error(`${reason}: ${label}`)

@@ -131,7 +131,9 @@ export async function runMenuListScreens(ctx) {
       continue
     }
 
+    if (runCtx.livello === 2) report.beginL2Screen(screenId)
     await runMenuListFlowControls(ctx, config)
+    if (runCtx.livello === 2) report.markL2FlowsDone()
 
     if (screen?.stati_c1_c2?.length) {
       const matrixControlIds = ['C1', 'C2', 'C3', 'C2-mouse']
@@ -218,7 +220,7 @@ export async function runMenuListScreens(ctx) {
                     await sp.goto(config.path, { waitUntil: 'commit' })
                     await sleep(600)
                   } else if (statoIdInner === 'errore-caricamento') {
-                    await sp.goto(config.path, { waitUntil: 'networkidle' })
+                    await sp.goto(config.path, { waitUntil: 'domcontentloaded', timeout: 45_000 })
                   } else {
                     const okState = await prepareMenuListState(sp, config, statoIdInner, ctx, { skipFixture: true })
                     if (!okState) {
@@ -303,10 +305,11 @@ export async function runMenuListScreens(ctx) {
               for (const row of pack.rows) addRow(report, row)
             }
           }
-          menuDeleteVerifyPrefix()
+          await menuDeleteVerifyPrefix()
         }
       }
     }
+    if (runCtx.livello === 2) report.markL2ScreenComplete()
   }
 }
 

@@ -2,24 +2,634 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-19",
-    "commit": "83ee689704d4",
-    "launcherVersion": "3.8.0",
-    "launcherHeader": "3.8.0 (L1)",
+    "commit": "f5e8b0d3ed74",
+    "launcherVersion": "3.9.0",
+    "launcherHeader": "3.9.0 (L2)",
     "browsers": "Chromium 140.0.7339.186",
-    "controlliBasename": "controlli-8.2.json",
-    "livelloEseguito": "L1",
-    "controlliVersion": 4,
-    "durataMs": 27389,
+    "controlliBasename": "controlli-6.6.json",
+    "livelloEseguito": "L2",
+    "controlliVersion": 1,
+    "durataMs": 409,
     "invalidRun": false
   },
   "counts": {
-    "OK": 166,
+    "OK": 184,
     "FALLITO": 0,
     "AVVISO": 1,
-    "NON PROVATO": 18
+    "NON PROVATO": 31
   },
-  "distinctControls": 6,
+  "distinctControls": 34,
   "rows": [
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-PRESENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "pulsante Ricompila presente",
+      "evidenza": "rinviato alla 6.5",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3-cambio-sistema",
+      "schermata": "login",
+      "profiloTema": "notebook-1280/sistema",
+      "esito": "OK",
+      "misurato": "dopo emulate dark: true; con cookie light ignore OS: true",
+      "atteso": "dark con system+OS scuro; no cambio con cookie light/dark fisso",
+      "evidenza": "emulateMedia prefers-color-scheme",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C3-no-lampo",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "assente in UI con bandiera spenta",
+      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-PRESENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "pulsante Ricompila presente",
+      "evidenza": "rinviato alla 6.5",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "assente in UI con bandiera spenta",
+      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-PRESENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "pulsante Ricompila presente",
+      "evidenza": "rinviato alla 6.5",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-testo",
+      "schermata": "home/iniziale",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
+      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-testo",
+      "schermata": "home/iniziale",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
+      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-testo",
+      "schermata": "home/iniziale",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
+      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-testo",
+      "schermata": "home/iniziale",
+      "profiloTema": "notebook-1280/scuro",
+      "esito": "OK",
+      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
+      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "home-riga-menu-casi",
+      "schermata": "home",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok",
+      "atteso": "conteggio e singolare/plurale come da specifica",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "assente in UI con bandiera spenta",
+      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "assente in UI con bandiera spenta",
+      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voci-menu",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "attese 8; mancanti —; extra —",
+      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-icone",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "icone ok",
+      "atteso": "classi lucide attese per voci abilitate",
+      "evidenza": "sidebar",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voce-attiva",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "una voce attiva per caso",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-briciole",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "briciole in ordine",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-titoli-pagina",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "titoli ok",
+      "atteso": "{Pagina} · Area App",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voci-menu",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "attese 8; mancanti —; extra —",
+      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-icone",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "icone ok",
+      "atteso": "classi lucide attese per voci abilitate",
+      "evidenza": "sidebar",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voce-attiva",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "una voce attiva per caso",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-briciole",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "briciole in ordine",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-casi-unit",
+      "schermata": "navigazione",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-PRESENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "pulsante Ricompila presente",
+      "evidenza": "rinviato alla 6.5",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3-cambio-sistema",
+      "schermata": "login",
+      "profiloTema": "notebook-1280/sistema",
+      "esito": "OK",
+      "misurato": "dopo emulate dark: true; con cookie light ignore OS: true",
+      "atteso": "dark con system+OS scuro; no cambio con cookie light/dark fisso",
+      "evidenza": "emulateMedia prefers-color-scheme",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-PRESENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "pulsante Ricompila presente",
+      "evidenza": "rinviato alla 6.5",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3-cambio-sistema",
+      "schermata": "login",
+      "profiloTema": "notebook-1280/sistema",
+      "esito": "OK",
+      "misurato": "dopo emulate dark: true; con cookie light ignore OS: true",
+      "atteso": "dark con system+OS scuro; no cambio con cookie light/dark fisso",
+      "evidenza": "emulateMedia prefers-color-scheme",
+      "pacchetto": "accesso"
+    },
     {
       "id": "AMBIENTE",
       "schermata": "/app/login",
@@ -245,7 +855,7 @@
       "schermata": "servizi",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "prima menu.services=[641]; dopo=[]; svcGone=true; log=nome=verify-ui-serv-perm; riferimenti=1; norole: NON PROVATO (menu payload ensure-norole-user: The following field is invalid: appRole\n)",
+      "misurato": "prima menu.services=[707]; dopo=[]; svcGone=true; log=nome=verify-ui-serv-perm; riferimenti=1; norole: NON PROVATO (menu payload ensure-norole-user: The following field is invalid: appRole\n)",
       "atteso": "cascade depth0+registro dopo elimina UI",
       "evidenza": "/app/menu/services",
       "pacchetto": "menu"
@@ -1521,16 +2131,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "C3-no-lampo",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
       "id": "servizi-accesso",
       "schermata": "—",
       "profiloTema": "—",
@@ -1579,304 +2179,9 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—",
-      "pacchetto": "accesso"
-    },
-    {
-      "id": "C9",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "pnpm ui:check",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "verify-link-valido",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "NO-OVERRIDE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 1",
-      "atteso": "nessuna corrispondenza (exit 1)",
-      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-ASSENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "assente in UI con bandiera spenta",
-      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-PRESENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "pulsante Ricompila presente",
-      "evidenza": "rinviato alla 6.5",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "attese 8; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-titoli-pagina",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "titoli ok",
-      "atteso": "{Pagina} · Area App",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "attese 8; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-casi-unit",
-      "schermata": "navigazione",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-pannello-telefono",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "altezza pannello con 8 voci Menù",
-      "evidenza": "voci non ancora tutte accese",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—",
-      "pacchetto": "accesso"
-    },
-    {
-      "id": "C9",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "pnpm ui:check",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "verify-link-valido",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "NO-OVERRIDE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 1",
-      "atteso": "nessuna corrispondenza (exit 1)",
-      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-ASSENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "assente in UI con bandiera spenta",
-      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-PRESENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "pulsante Ricompila presente",
-      "evidenza": "rinviato alla 6.5",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-pannello-telefono",
-      "schermata": "navigazione",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "misura pannello telefono",
-      "evidenza": "solo livello 2",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "telefono-390/scuro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-testo",
-      "schermata": "home/iniziale",
-      "profiloTema": "notebook-1280/scuro",
-      "esito": "OK",
-      "misurato": "scheda=Menù; riga=Nessun piatto terminato; count API=0",
-      "atteso": "Menù; «Nessun piatto terminato» (N=0)",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "home-riga-menu-casi",
-      "schermata": "home",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok",
-      "atteso": "conteggio e singolare/plurale come da specifica",
-      "evidenza": "/app",
-      "pacchetto": "menu"
     }
   ],
-  "nonProvato": [
-    {
-      "id": "verify-link-valido",
-      "motivo": "facoltativo: token reale monouso non ottenuto"
-    }
-  ],
+  "nonProvato": [],
   "anomalie": [],
   "screenshotHashes": []
 }

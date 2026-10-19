@@ -33,6 +33,7 @@ import { runCatalogScreens } from './run-catalog.mjs'
 import { runCatalogConsoleForScreen, runCatalogStatiUi } from './run-catalog-flows.mjs'
 import { runMenuListScreens, runMenuListStatiUi } from './run-menu-list.mjs'
 import { runWithStateTimeout } from './timeouts.mjs'
+import { runBoundedState, runHandlerStep } from './state-run.mjs'
 
 const ROOT_MENU = join(import.meta.dirname, '../../..')
 
@@ -314,8 +315,8 @@ async function runNavVociMenu(page, navJson, profiloKey, addRow, report, runCtx)
   const id = 'nav-voci-menu'
   if (!runCtx.shouldRun(id)) return
   const w = page.viewportSize()?.width ?? 1280
-  if (w < 768) await openMobileSidebar(page)
-  const items = await readSidebarNav(page)
+  if (w < 768) await runHandlerStep('nav-voci-menu openMobileSidebar', () => openMobileSidebar(page))
+  const items = await runHandlerStep('nav-voci-menu readSidebarNav', () => readSidebarNav(page))
   const expected = []
   for (const g of navJson.navGroups ?? []) {
     for (const item of g.items) {
@@ -341,8 +342,8 @@ async function runNavIcone(page, navJson, profiloKey, addRow, report, runCtx) {
   const id = 'nav-icone'
   if (!runCtx.shouldRun(id)) return
   const w = page.viewportSize()?.width ?? 1280
-  if (w < 768) await openMobileSidebar(page)
-  const items = await readSidebarNav(page)
+  if (w < 768) await runHandlerStep('nav-icone openMobileSidebar', () => openMobileSidebar(page))
+  const items = await runHandlerStep('nav-icone readSidebarNav', () => readSidebarNav(page))
   const failures = []
   for (const g of navJson.navGroups ?? []) {
     for (const item of g.items) {
@@ -384,14 +385,16 @@ async function runNavFlows(page, baseUrl, navJson, profiloKey, addRow, report, r
       skipped.push(caso.path)
       continue
     }
-    await page.goto(caso.path, { waitUntil: 'networkidle' })
+    await runHandlerStep(`nav-flows goto ${caso.path}`, () =>
+      page.goto(caso.path, { waitUntil: 'domcontentloaded', timeout: 45_000 }),
+    )
     if (await isSegnapostoMain(page) && caso.path.startsWith('/app/menu')) {
       skipped.push(`${caso.path} (segnaposto)`)
       continue
     }
     const w = page.viewportSize()?.width ?? 1280
-    if (w < 768) await openMobileSidebar(page)
-    const items = await readSidebarNav(page)
+    if (w < 768) await runHandlerStep('nav-flows openMobileSidebar', () => openMobileSidebar(page))
+    const items = await runHandlerStep('nav-flows readSidebarNav', () => readSidebarNav(page))
     const active = items.filter((i) => i.active).map((i) => i.label)
     if (kind === 'voce') {
       if (caso.voce_attiva === null) {
@@ -400,12 +403,14 @@ async function runNavFlows(page, baseUrl, navJson, profiloKey, addRow, report, r
         failures.push(`${caso.path}: attese=${caso.voce_attiva} attive=${active.join(',')}`)
       }
     } else {
-      const crumbs = await page.evaluate(() => {
-        const nav = document.querySelector('nav[aria-label="Percorso"]')
-        return nav
-          ? [...nav.querySelectorAll('[data-slot=breadcrumb-item]')].map((li) => li.textContent?.trim()).filter(Boolean)
-          : []
-      })
+      const crumbs = await runHandlerStep('nav-flows readBreadcrumbs', () =>
+        page.evaluate(() => {
+          const nav = document.querySelector('nav[aria-label="Percorso"]')
+          return nav
+            ? [...nav.querySelectorAll('[data-slot=breadcrumb-item]')].map((li) => li.textContent?.trim()).filter(Boolean)
+            : []
+        }),
+      )
       const bc = navJson.breadcrumbCases?.find((b) => b.path === caso.path)
       const labels = bc?.parts?.map((p) => p.label) ?? []
       if (!labels.every((l) => crumbs.join(' ').includes(l))) {
@@ -432,7 +437,9 @@ async function runNavTitoli(page, navJson, profiloKey, addRow, report, runCtx) {
   const failures = []
   for (const caso of NAV_FLOW_CASES) {
     if (!enabled.has(caso.path) || caso.path === '/app') continue
-    await page.goto(caso.path, { waitUntil: 'domcontentloaded' })
+    await runHandlerStep(`nav-titoli goto ${caso.path}`, () =>
+      page.goto(caso.path, { waitUntil: 'domcontentloaded' }),
+    )
     if (await isSegnapostoMain(page) && caso.path.startsWith('/app/menu')) continue
     const title = await page.title()
     const pageName = caso.voce_attiva ?? 'Area App'
@@ -443,7 +450,7 @@ async function runNavTitoli(page, navJson, profiloKey, addRow, report, runCtx) {
       failures.push(`${caso.path}: ${title} atteso ${expected}`)
     }
   }
-  await page.goto('/app', { waitUntil: 'networkidle' })
+  await runHandlerStep('nav-titoli goto /app', () => page.goto('/app', { waitUntil: 'networkidle' }))
   const homeTitle = await page.title()
   if (!homeTitle.startsWith('Area App')) failures.push(`home title: ${homeTitle}`)
   addRow(report, {
@@ -710,50 +717,138 @@ export async function runMenuChecks(ctx) {
 
   report.prepareMenuPackageRerun?.(runCtx)
 
+  const NAV_PROFILE_IDS = ['nav-voci-menu', 'nav-icone', 'nav-voce-attiva', 'nav-briciole', 'nav-titoli-pagina']
+
+  function addNavProfileNonProvato(profiloKey, motivo) {
+    for (const id of NAV_PROFILE_IDS) {
+      if (!runCtx.shouldRun(id)) continue
+      if (id === 'nav-titoli-pagina' && profiloKey !== 'telefono-390') continue
+      addRow(report, {
+        id,
+        schermata: 'navigazione',
+        profiloTema: `${profiloKey}/chiaro`,
+        esito: 'NON PROVATO',
+        misurato: motivo,
+        atteso: '—',
+        evidenza: `navigazione/${profiloKey}`,
+      })
+    }
+  }
+
   if (runCtx.screenIncluded('home')) {
-    const homeIds = [
-      'home-riga-menu-testo',
-      'home-riga-menu-casi',
-      'home-riga-menu-stati',
-      'home-riga-menu-altezza',
-    ]
-    const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
-    await loginApp(page, baseUrl, testUser.email, testPassword)
-    await page.goto('/app', { waitUntil: 'networkidle' })
-    const ready = await isHomeIntegrationReady(page)
-    if (!ready) {
-      for (const id of homeIds) {
+    progressStep('home', 'integrazione', 'telefono-390', 'chiaro')
+    try {
+      await runBoundedState('home', async () => {
+        const homeIds = [
+          'home-riga-menu-testo',
+          'home-riga-menu-casi',
+          'home-riga-menu-stati',
+          'home-riga-menu-altezza',
+        ]
+        const { ctx: pctx, page } = await runHandlerStep('home newPage', () =>
+          newPage(browser, 'telefono-390', 'chiaro', baseUrl),
+        )
+        try {
+          await runHandlerStep('home loginApp', () => loginApp(page, baseUrl, testUser.email, testPassword))
+          await runHandlerStep('home goto /app', () => page.goto('/app', { waitUntil: 'networkidle' }))
+          const ready = await runHandlerStep('home isHomeIntegrationReady', () => isHomeIntegrationReady(page))
+          if (!ready) {
+            for (const id of homeIds) {
+              if (!runCtx.shouldRun(id)) continue
+              addRow(report, {
+                id,
+                schermata: 'home',
+                profiloTema: '—',
+                esito: 'NON PROVATO',
+                misurato: '—',
+                atteso: '—',
+                evidenza: 'schermata non ancora implementata',
+              })
+            }
+          } else {
+            await runHandlerStep('home runHomeRigaMenuTesto', () =>
+              runHomeRigaMenuTesto(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx),
+            )
+            await runHandlerStep('home runHomeRigaMenuCasi', () =>
+              runHomeRigaMenuCasi(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx),
+            )
+            await runHandlerStep('home runHomeRigaMenuAltezza', () =>
+              runHomeRigaMenuAltezza(
+                browser,
+                baseUrl,
+                testUser,
+                testPassword,
+                newPage,
+                loginApp,
+                addRow,
+                report,
+                runCtx,
+                ambiente,
+              ),
+            )
+          }
+        } finally {
+          await pctx.close()
+        }
+      })
+    } catch (e) {
+      const motivo =
+        e.code === 'UI_VERIFY_TIMEOUT' || e.code === 'UI_VERIFY_STALL' || String(e.message).startsWith('tempo:')
+          ? `tempo: home`
+          : e.message
+      report.anomalie.push(`home: ${motivo}`)
+      for (const id of ['home-riga-menu-testo', 'home-riga-menu-casi', 'home-riga-menu-stati', 'home-riga-menu-altezza']) {
         if (!runCtx.shouldRun(id)) continue
         addRow(report, {
           id,
           schermata: 'home',
-          profiloTema: '—',
+          profiloTema: 'telefono-390/chiaro',
           esito: 'NON PROVATO',
-          misurato: '—',
+          misurato: motivo,
           atteso: '—',
-          evidenza: 'schermata non ancora implementata',
+          evidenza: 'home',
         })
       }
-    } else {
-      await runHomeRigaMenuTesto(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx)
-      await runHomeRigaMenuCasi(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx)
-      await runHomeRigaMenuAltezza(browser, baseUrl, testUser, testPassword, newPage, loginApp, addRow, report, runCtx, ambiente)
     }
-    await pctx.close()
   }
 
   if (runCtx.screenIncluded('navigazione')) {
     for (const profiloKey of profiliL1) {
-      progressStep('navigazione', 'menu-fisso-notebook', profiloKey, 'chiaro')
-      const { ctx: pctx, page } = await newPage(browser, profiloKey, 'chiaro', baseUrl)
-      await loginApp(page, baseUrl, testUser.email, testPassword)
-      await page.goto('/app', { waitUntil: 'networkidle' })
-      await runNavVociMenu(page, nav, profiloKey, addRow, report, runCtx)
-      await runNavIcone(page, nav, profiloKey, addRow, report, runCtx)
-      await runNavFlows(page, baseUrl, nav, profiloKey, addRow, report, runCtx, 'voce')
-      await runNavFlows(page, baseUrl, nav, profiloKey, addRow, report, runCtx, 'briciole')
-      if (profiloKey === 'telefono-390') await runNavTitoli(page, nav, profiloKey, addRow, report, runCtx)
-      await pctx.close()
+      const stateLabel = `navigazione/${profiloKey}`
+      progressStep('navigazione', stateLabel, profiloKey, 'chiaro')
+      try {
+        await runBoundedState(stateLabel, async () => {
+          const { ctx: pctx, page } = await runHandlerStep('nav newPage', () =>
+            newPage(browser, profiloKey, 'chiaro', baseUrl),
+          )
+          try {
+            await runHandlerStep('nav loginApp', () => loginApp(page, baseUrl, testUser.email, testPassword))
+            await runHandlerStep('nav goto /app networkidle', () => page.goto('/app', { waitUntil: 'networkidle' }))
+            await runHandlerStep('nav-voci-menu', () => runNavVociMenu(page, nav, profiloKey, addRow, report, runCtx))
+            await runHandlerStep('nav-icone', () => runNavIcone(page, nav, profiloKey, addRow, report, runCtx))
+            await runHandlerStep('nav-voce-attiva', () =>
+              runNavFlows(page, baseUrl, nav, profiloKey, addRow, report, runCtx, 'voce'),
+            )
+            await runHandlerStep('nav-briciole', () =>
+              runNavFlows(page, baseUrl, nav, profiloKey, addRow, report, runCtx, 'briciole'),
+            )
+            if (profiloKey === 'telefono-390') {
+              await runHandlerStep('nav-titoli-pagina', () =>
+                runNavTitoli(page, nav, profiloKey, addRow, report, runCtx),
+              )
+            }
+          } finally {
+            await pctx.close()
+          }
+        })
+      } catch (e) {
+        const motivo =
+          e.code === 'UI_VERIFY_TIMEOUT' || e.code === 'UI_VERIFY_STALL' || String(e.message).startsWith('tempo:')
+            ? `tempo: ${stateLabel}`
+            : e.message
+        report.anomalie.push(`${stateLabel}: ${motivo}`)
+        addNavProfileNonProvato(profiloKey, motivo)
+      }
     }
     runNavCasiUnit(report, addRow, runCtx)
     await runNavPannelloTelefono(
