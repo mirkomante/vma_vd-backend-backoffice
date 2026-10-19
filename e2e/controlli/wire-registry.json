@@ -1,0 +1,8 @@
+{
+  "versione": 1,
+  "nota": "T0: ogni controllo è NON PROVATO finché non esiste un test con commento control:<id> o una voce dedicata qui.",
+  "nonProvati": {
+    "__default__": "T0 scheletro: test controlli in T1/T2"
+  },
+  "tests": []
+}

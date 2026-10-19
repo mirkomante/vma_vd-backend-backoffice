@@ -12,7 +12,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
-- **T0 spike e2e (parziale)** — Opzione A (Local API Payload nello stesso processo del test Playwright): crea/rilegge/cancella piatto `verify-ui-spike` con `assertDevDatabaseFromEnv`, ~3,7 s nel worker; ostacolo risolto con loader ESM `tsx` (transitivo di `payload`) in `NODE_OPTIONS`, perché il resolver predefinito di Playwright non carica `payload-oauth2`. File: `e2e/spike/payload-local.spec.ts`, `e2e/playwright.spike.config.ts`, `e2e/tsconfig.json`. Scheletro T0, suite smoke e script `e2e*` non ancora implementati.
+- **T0 scheletro e2e (Playwright Test)** — Cartella `e2e/` (config, global setup/teardown, fixture Payload per worker con `destroy()`, reporter, smoke, `e2e:wire`); script `e2e`, `e2e:smoke`, `e2e:wire`; `PAYLOAD_DISABLE_PUSH=1` per disattivare push schema in test; tsx risolto da `payload` in `tsx-loader.ts` + `playwright-cli.mjs`. Smoke `telefono-390-chiaro`: ~20 s, 6 OK + 2 ERRORE-STRUMENTO voluti (timeout 3 s + eccezione fixture); lock PID ok; rapporto `docs/design/verifica/esiti/2026-10-19-T0/`. `pnpm typecheck` e `pnpm lint` ok. Spike precedente incorporato (Opzione A Local API).
 
 ### Changed
 

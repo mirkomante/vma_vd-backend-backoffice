@@ -54,7 +54,8 @@ export default buildConfig({
       max: 3,
     },
     // push consentito solo in sviluppo locale (migrazioni obbligatorie altrove — vedi stack/01a-db-postgres.mdc)
-    push: process.env.NODE_ENV !== 'production',
+    push:
+      process.env.NODE_ENV !== 'production' && process.env.PAYLOAD_DISABLE_PUSH !== '1',
   }),
   admin: {
     user: Users.slug,

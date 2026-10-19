@@ -15,5 +15,6 @@
       "@payload-config": ["../payload.config.ts"]
     }
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
 }

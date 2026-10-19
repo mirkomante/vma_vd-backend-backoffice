@@ -1,0 +1,120 @@
+{
+  "commit": "060fe0c8281d",
+  "launcher": "e2e/T0-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (smoke T0)",
+  "durataSecondi": 19,
+  "riepilogo": {
+    "OK": 6,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 0,
+    "ERRORE-STRUMENTO": 2
+  },
+  "esiti": [
+    {
+      "id": "R1: nessuna chiamata sincrona vietata in e2e/",
+      "schermata": "smoke/forbidden-sync-scan.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "passed",
+      "seconds": 0
+    },
+    {
+      "id": "console pulita sulla home",
+      "schermata": "smoke/shell.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "screenshot home telefono-390 chiaro",
+      "schermata": "smoke/shell.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "home: titolo e voci barra laterale",
+      "schermata": "smoke/shell.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "sessione: storageState apre /app senza login",
+      "schermata": "smoke/shell.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "tocco-minimo 390: nessun controllo sotto 44×44",
+      "schermata": "smoke/shell.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "fixture: crea verify-ui-fix e lancia eccezione",
+      "schermata": "smoke/strumento.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: eccezione voluta post-creazione fixture",
+      "atteso": "—",
+      "evidenza": "failed",
+      "seconds": 0.2
+    },
+    {
+      "id": "strumento: blocco ucciso al timeout",
+      "schermata": "smoke/strumento.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "tempo",
+      "atteso": "—",
+      "evidenza": "timedOut",
+      "seconds": 3
+    }
+  ],
+  "erroriStrumento": [
+    {
+      "id": "fixture: crea verify-ui-fix e lancia eccezione",
+      "schermata": "smoke/strumento.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: eccezione voluta post-creazione fixture",
+      "atteso": "—",
+      "evidenza": "failed",
+      "seconds": 0.2
+    },
+    {
+      "id": "strumento: blocco ucciso al timeout",
+      "schermata": "smoke/strumento.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "tempo",
+      "atteso": "—",
+      "evidenza": "timedOut",
+      "seconds": 3
+    }
+  ],
+  "anomalie": [],
+  "exitCode": "failed"
+}
