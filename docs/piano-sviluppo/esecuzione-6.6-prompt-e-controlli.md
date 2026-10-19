@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-19 (commit `e0824bb`). **Prossimi passi**: 20e (VC-parallelo: matrice in parallelo, `progress.log`, avvio senza blocchi, regressione L1), poi 20f (V4 ter: Menù fissi L2 a gruppi, screenshot, confronto visivo). Un passo alla volta.
+**Ultimo aggiornamento**: 2026-10-19 (commit `a35f8fe`). **Prossimi passi**: 20f (V4 ter: prima una prova di sanità del lanciatore con L1 `navigazione`, poi Servizi e Menù fissi L2, screenshot, regressione). Da seguire con il guardiano `scripts/ui-verify/watch.sh`.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1544,6 +1544,8 @@ italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
 
 ### Passo 20e — VC-parallelo: matrice in parallelo, avanzamento leggibile, avvio senza blocchi
 
+> **Esito (2026-10-19)**: 🔶 chiuso con riserva, `f5e8b0d` (3.8.0) e `a35f8fe` (3.9.0). Controllato io su `a35f8fe`: `tsc` sull'intero repo 0 errori, ESLint su `scripts/ui-verify` 0 errori, sintassi dei moduli verificata, nessun file fuori da `scripts/ui-verify/**` e dagli esiti. **Fatto**: `.next/ui-verify-progress.log` con una riga per fase, per controllo e un battito ogni 30 secondi con il passo interno; avvio a fasi con limite di 60 secondi (causa dell'avvio «muto»: l'avanzamento andava su stderr con `\r` senza newline); matrice C1/C2/C3 in parallelo (`UI_VERIFY_PARALLEL`, default 4; Servizi: 40 celle in 2 min 13 s); secondo avvio rifiutato con il PID; limite di 60 secondi per cella su **tutti** i pacchetti (`runTimedControl`: accesso, login, shell, menu); client del daemon Payload asincrono con errore chiaro dopo 20 secondi (il `spawnSync sleep` bloccava timer e Playwright: era la causa dei blocchi osservati nei due giri L2 di Servizi). **Non dimostrato**: L2 di Servizi completo e le quattro regressioni L1 con i nuovi limiti; li prova il passo 20f (con una prova di sanità iniziale). **Nota di processo**: guardiano `scripts/ui-verify/watch.sh` (avviso o fermo automatico quando il log resta fermo), nato da un giro bloccato per più di 7 minuti che il limite di 60 secondi non vedeva perché il thread principale era occupato.
+
 **Perché**: V4 bis ha dimostrato che i controlli veri di Servizi e Menù fissi funzionano, ma la **matrice C1/C2/C3** (celle stato × profilo × tema) gira una cella dopo l'altra: per Servizi supera i 20 minuti. In più, da fuori non si capisce se un giro lavora o è appeso, e l'avvio di `ui:verify` è rimasto muto per oltre 4 minuti. **Quando**: ora. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Tetto**: 30 minuti di programmazione; se lo superi, fermati e riporta.
 
 ```text
@@ -1604,7 +1606,13 @@ policy-test.md; docs/design/verifica/controlli-6.6.json (schermate servizi e men
 0. Riporta HEAD e git status (solo lettura). PRECONDIZIONI: `git log --oneline` deve elencare il commit di VC-parallelo
    su scripts/ui-verify; se manca, FERMATI. Controlla `lsof -nP -iTCP:3000,3100,3200,31997 -sTCP:LISTEN` e il blocco.
    Segui i giri con `tail -f .next/ui-verify-progress.log`.
-A. Esegui, UNA schermata per volta (il lanciatore lo impone), con meno di 10 minuti ciascuna:
+A0. PROVA DI SANITÀ (3.9.0): prima di tutto `pnpm ui:verify locale-prod --livello 1 --schermata navigazione
+   --controlli controlli-6.6.json` con il progress.log che avanza (atteso meno di 3 minuti). Se supera 5 minuti, o il
+   guardiano scripts/ui-verify/watch.sh ferma il giro, FERMATI: riporta l'ultima riga del progress.log e il passo
+   bloccato, e non proseguire (il lanciatore va corretto prima).
+A. Esegui, UNA schermata per volta (il lanciatore lo impone), con meno di 10 minuti ciascuna. Se un giro viene fermato
+   da un blocco, scrivilo nel rapporto con l'ultima riga del progress.log, NON correggere il lanciatore e passa al giro
+   successivo:
    1. locale-prod L2 `--schermata servizi` (con la matrice C1/C2/C3 completa e TUTTI gli screenshot degli stati);
    2. locale-prod L2 `--schermata menu-fissi`, a gruppi di stati con --stati se serve (elenco e categorie; moduli
       e vista «Scegli piatti»; conferme di eliminazione e stati UI), con la matrice completa e TUTTI gli screenshot;
