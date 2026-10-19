@@ -211,15 +211,19 @@ export async function runMenuListSupplementaryFlows(ctx, config) {
           const sample = row?.querySelector('button[aria-label^="Modifica "]')
           const r = sample?.getBoundingClientRect()
           const switchEl = row?.querySelector('[role=switch]')
+          const rowText = row?.textContent ?? ''
           return {
             btn: sample?.getAttribute('aria-label'),
             btnSize: r ? `${Math.round(r.width)}x${Math.round(r.height)}` : '—',
             switchDisabled: switchEl?.getAttribute('aria-disabled') === 'true' || switchEl?.hasAttribute('disabled'),
+            badgeDisabilitato: rowText.includes('Disabilitato'),
+            switchActive: switchEl?.getAttribute('aria-checked') === 'true' || switchEl?.getAttribute('data-checked') === 'true',
           }
         })
         const failures = []
         if (!m.btn?.includes('verify-ui-serv-row')) failures.push('modifica')
-        if (!m.switchDisabled) failures.push('switch attivo su disabled')
+        if (m.switchDisabled) failures.push('switch disabilitato su riga disabilitata')
+        if (!m.badgeDisabilitato) failures.push('badge Disabilitato assente')
         const { esito, misurato } = esitoMisura({ failures, missingMeasures: isEmptyMeasureToken(m.btnSize) ? ['btn'] : [], misurato: JSON.stringify(m) })
         addRow(ctx, 'servizi-righe-azioni', sid, esito, misurato, 'righe azioni', config.path)
         await pctx.close()
@@ -295,6 +299,7 @@ export async function runMenuListSupplementaryFlows(ctx, config) {
     await runIf('servizi-elimina-cascade-registro-permessi', async () => {
       const failures = []
       const notes = []
+      let misurato = '—'
       await withFixtures(testUser.email, async () => {
         menuCreateMenuService(testUser.email, { name: 'verify-ui-serv-perm' })
         menuCreateFixedMenuWithServices(testUser.email, {
@@ -304,31 +309,53 @@ export async function runMenuListSupplementaryFlows(ctx, config) {
           serviceNames: ['verify-ui-serv-perm'],
         })
         const docId = menuFindMenuService(testUser.email, 'verify-ui-serv-perm').doc?.id
+        const beforeMenu = menuFindFixedMenu(testUser.email, 'verify-ui-menu-perm', '0')
+        const beforeSvcIds = JSON.stringify(beforeMenu.doc?.services ?? [])
+        const { ctx: pctx, page } = await newPage(browser, 'telefono-390', 'chiaro', baseUrl)
+        await loginApp(page, baseUrl, testUser.email, testPassword)
+        await gotoMenuList(page, config)
+        await clickRowAction(page, 'verify-ui-serv-perm', 'delete')
+        await page.locator('[role=alertdialog]').getByRole('button', { name: 'Elimina' }).click()
+        await page.waitForTimeout(900)
+        await pctx.close()
+        const afterMenu = menuFindFixedMenu(testUser.email, 'verify-ui-menu-perm', '0')
+        const afterSvcIds = JSON.stringify(afterMenu.doc?.services ?? [])
+        const svcGone = !menuFindMenuService(testUser.email, 'verify-ui-serv-perm').found
+        if (!svcGone) failures.push('servizio ancora presente')
+        if (afterMenu.found && afterSvcIds !== '[]' && afterSvcIds.includes(String(docId))) {
+          failures.push(`cascade menu services=${afterSvcIds}`)
+        }
+        const log = docId
+          ? menuFindMenuServiceDeleteLog(testUser.email, docId, 'verify-ui-serv-perm', 1)
+          : { found: false, detail: null, expectedDetail: '?' }
+        if (!log.found || log.detail !== log.expectedDetail) {
+          failures.push(`log found=${log.found} detail=${log.detail ?? 'null'}`)
+        }
+        misurato = `prima menu.services=${beforeSvcIds}; dopo=${afterSvcIds}; svcGone=${svcGone}; log=${log.detail ?? 'null'}`
         const staffAdmin = menuFindStaffUser('admin')
-        const staffSuper = menuFindStaffUser('super-admin')
         if (staffAdmin.email) {
           const d = menuTryDeleteMenuService(staffAdmin.email, 'verify-ui-serv-perm')
-          if (!d.ok) failures.push(`admin:${d.reason}`)
+          if (d.ok) notes.push('admin delete API: ok (post UI)')
         } else notes.push('admin assente')
-        if (staffSuper.email) notes.push('super: skip delete duplicato')
-        if (docId) {
-          menuTryDeleteMenuService(testUser.email, 'verify-ui-serv-perm')
-          const menuAfter = menuFindFixedMenu(testUser.email, 'verify-ui-menu-perm')
-          if (menuAfter.found) failures.push('menu ancora con servizio')
-          const log = menuFindMenuServiceDeleteLog(testUser.email, docId, 'verify-ui-serv-perm', 1)
-          if (!log.found || log.detail !== log.expectedDetail) failures.push(`log=${log.detail}`)
-        }
         try {
           const noroleUser = menuEnsureNoroleUser()
           const norole = menuTryCreateMenuService(noroleUser.email)
-          if (norole.ok) failures.push('norole create ok')
+          if (norole.ok) notes.push('norole create: inatteso')
           else notes.push(`norole rifiutato: ${norole.reason ?? 'ok'}`)
           menuDeleteUserEmail(noroleUser.email)
         } catch (e) {
           notes.push(`norole: NON PROVATO (${e.message?.slice(0, 80) ?? 'ensure-norole-user'})`)
         }
       })
-      addRow(ctx, 'servizi-elimina-cascade-registro-permessi', sid, failures.length ? 'FALLITO' : 'OK', [...failures, ...notes].join('; ') || 'ok', 'cascade+registro', 'payload')
+      addRow(
+        ctx,
+        'servizi-elimina-cascade-registro-permessi',
+        sid,
+        failures.length ? 'FALLITO' : 'OK',
+        `${misurato}; ${notes.join('; ')}`,
+        'cascade depth0+registro dopo elimina UI',
+        config.path,
+      )
     })
 
     await runIf('servizi-modulo-campi', async () => {

@@ -42,6 +42,8 @@ import {
 } from '@/lib/menu/formats'
 import type { User } from '@/payload-types'
 
+import { assertDevDatabaseFromEnv } from '../import-menu-vtn-backend/databaseUrl'
+
 const argv = process.argv.slice(2)
 const dash = argv.indexOf('--')
 const args = dash >= 0 ? argv.slice(dash + 1) : argv.filter((a) => !a.includes('menu-payload'))
@@ -113,12 +115,13 @@ async function findUserByEmail(payload: Awaited<ReturnType<typeof getPayload>>, 
   return (res.docs[0] as User | undefined) ?? null
 }
 
-async function main() {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('menu-payload: vietato in produzione')
-  }
-
-  const payload = await getPayload({ config })
+export async function dispatchMenuPayloadAction(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  actionName: string,
+  cliArgs: string[],
+) {
+  const action = actionName
+  const args = [actionName, ...cliArgs]
 
   if (action === 'count-sold-out') {
     const email = args[1]
@@ -302,13 +305,14 @@ async function main() {
   if (action === 'find-fixed-menu') {
     const email = args[1]
     const name = args[2]
+    const depth = args[3] != null && args[3] !== '' ? Number(args[3]) : 2
     const user = email ? await findUserByEmail(payload, email) : null
     if (!user || !name) throw new Error('find-fixed-menu: parametri mancanti')
     const found = await payload.find({
       collection: FIXED_MENUS_SLUG,
       where: { name: { equals: name } },
       limit: 1,
-      depth: 2,
+      depth: Number.isFinite(depth) ? depth : 2,
       locale: 'all',
       overrideAccess: false,
       user,
@@ -1957,6 +1961,81 @@ async function main() {
   }
 
   throw new Error(`menu-payload: azione sconosciuta ${action ?? '(vuota)'}`)
+}
+
+async function handleMenuPayloadDaemonRequest(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  req: { id?: number; action: string; args?: string[] },
+) {
+  const logs: string[] = []
+  const origLog = console.log
+  console.log = (...parts: unknown[]) => {
+    const s = parts.map(String).join(' ')
+    logs.push(s)
+    origLog(...parts)
+  }
+  try {
+    await dispatchMenuPayloadAction(payload, req.action, req.args ?? [])
+    const jsonLine = [...logs].reverse().find((l) => l.startsWith('{') || l.startsWith('['))
+    const result = jsonLine ? JSON.parse(jsonLine) : { ok: true }
+    return { id: req.id ?? null, ok: true as const, result }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    return { id: req.id ?? null, ok: false as const, error: message }
+  } finally {
+    console.log = origLog
+  }
+}
+
+async function runMenuPayloadDaemon(payload: Awaited<ReturnType<typeof getPayload>>) {
+  const net = await import('node:net')
+  const port = Number(process.env.UI_VERIFY_MENU_PAYLOAD_PORT ?? '31997')
+  const server = net.createServer((socket) => {
+    let buf = ''
+    socket.on('data', (chunk) => {
+      buf += chunk.toString()
+      let idx
+      while ((idx = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, idx).trim()
+        buf = buf.slice(idx + 1)
+        if (!line) continue
+        void (async () => {
+          let req: { id?: number; action: string; args?: string[] }
+          try {
+            req = JSON.parse(line) as { id?: number; action: string; args?: string[] }
+          } catch {
+            socket.write(`${JSON.stringify({ id: null, ok: false, error: 'json_invalid' })}\n`)
+            return
+          }
+          const res = await handleMenuPayloadDaemonRequest(payload, req)
+          socket.write(`${JSON.stringify(res)}\n`)
+        })()
+      }
+    })
+  })
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject)
+    server.listen(port, '127.0.0.1', () => {
+      process.stdout.write(`${JSON.stringify({ ready: true, port })}\n`)
+      resolve()
+    })
+  })
+  await new Promise<void>(() => {
+    /* daemon attivo fino a SIGTERM */
+  })
+}
+
+async function main() {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('menu-payload: vietato in produzione')
+  }
+  assertDevDatabaseFromEnv()
+  const payload = await getPayload({ config })
+  if (action === '__daemon__') {
+    await runMenuPayloadDaemon(payload)
+    return
+  }
+  await dispatchMenuPayloadAction(payload, action!, args.slice(1))
 }
 
 try {

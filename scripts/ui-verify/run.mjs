@@ -28,6 +28,7 @@ import {
   stopServers,
   trackBrowser,
 } from './lib/cleanup.mjs'
+import { stopMenuPayloadSession, menuDeleteVerifyPrefix, menuPayloadBenchmarkCreateRead } from './lib/menu-payload.mjs'
 import { guardExtraMs, screenBudgetMs } from './lib/timeouts.mjs'
 import { createRunContext } from './lib/perimeter.mjs'
 import {
@@ -1474,6 +1475,12 @@ async function main() {
       process.stderr.write('[ui:verify] ps porte 3000/3100/3200: nessun listener residuo\n')
     }
     releaseUiVerifyLock(ROOT)
+    stopMenuPayloadSession()
+    try {
+      menuDeleteVerifyPrefix()
+    } catch {
+      /* ignore */
+    }
     await deleteUser()
   }
 }

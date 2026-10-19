@@ -10,6 +10,13 @@ import { MENU_LIST_SCREENS, MENU_LIST_SCREEN_IDS } from './menu-list-config.mjs'
 import { gotoMenuList } from './menu-list-ui-helpers.mjs'
 import { runMenuListFlowControls } from './run-menu-list-flows.mjs'
 import { runMenuListStatiUiForScreen } from './run-menu-list-supplementary-flows.mjs'
+import { prepareMenuListState } from './menu-list-state.mjs'
+import { SIM_PORT, waitForPortFree } from './ensure-ports.mjs'
+import { measureDeleteDialogButtons } from './catalog-ui-helpers.mjs'
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms))
+}
 
 const C1_PROFILES = new Set(['telefono-360', 'telefono-390', 'notebook-1280'])
 const C2_PROFILES = new Set(['telefono-390', 'tablet-820'])
@@ -135,30 +142,97 @@ export async function runMenuListScreens(ctx) {
               progressStep(screenId, statoId, profiloKey, temaKey)
               const sch = `${screenId}/${statoId}`
               const pt = `${profiloKey}/${temaKey}`
-              const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, baseUrl)
-              await loginApp(sp, baseUrl, testUser.email, testPassword)
+
+              const addNonProvato = (motivo) => {
+                for (const id of ['C1', 'C2', 'C3', 'C2-mouse']) {
+                  if (!runCtx.shouldRun(id)) continue
+                  if (id === 'C1' && !C1_PROFILES.has(profiloKey)) continue
+                  if (id === 'C2' && !C2_PROFILES.has(profiloKey)) continue
+                  if (id === 'C2-mouse' && profiloKey !== 'notebook-1280') continue
+                  addRow(report, {
+                    id,
+                    schermata: sch,
+                    profiloTema: pt,
+                    esito: 'NON PROVATO',
+                    misurato: motivo,
+                    atteso: id,
+                    evidenza: statoId,
+                  })
+                }
+              }
+
+              let simChild = null
+              let pageBase = baseUrl
               try {
-                await gotoMenuList(sp, config)
-              } catch {
-                /* stato non preparato */
+                if (statoId === 'caricamento' || statoId === 'errore-caricamento') {
+                  if (startMenuDevServer && waitForUrl) {
+                    await waitForPortFree(SIM_PORT)
+                    const env =
+                      statoId === 'caricamento'
+                        ? { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '2500' }
+                        : { APP_MENU_DEV_SIMULATE_LOAD_ERROR: '1' }
+                    simChild = startMenuDevServer(SIM_PORT, env)
+                    pageBase = `http://localhost:${SIM_PORT}`
+                    await waitForUrl(pageBase)
+                  }
+                }
+                const { ctx: sctx, page: sp } = await newPage(browser, profiloKey, temaKey, pageBase)
+                await loginApp(sp, pageBase, testUser.email, testPassword)
+                try {
+                  if (statoId === 'caricamento') {
+                    await sp.goto(config.path, { waitUntil: 'commit' })
+                    await sleep(600)
+                  } else if (statoId === 'errore-caricamento') {
+                    await sp.goto(config.path, { waitUntil: 'networkidle' })
+                  } else {
+                    const okState = await prepareMenuListState(sp, config, statoId, ctx)
+                    if (!okState) {
+                      addNonProvato('stato non preparato')
+                      await sctx.close()
+                      continue
+                    }
+                  }
+                } catch (e) {
+                  report.anomalie.push(`${screenId} stato ${statoId}: ${e.message}`)
+                }
+                if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
+                  const r = await checkScrollOrizzontale(sp)
+                  addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
+                  const r = await checkToccoMinimo(sp)
+                  let misuratoC2 = r.misurato
+                  if (statoId === 'elimina' || statoId === 'elimina-senza-uso') {
+                    const dims = await measureDeleteDialogButtons(sp)
+                    if (dims?.indietro && dims?.elimina) {
+                      misuratoC2 = `Indietro ${dims.indietro}; Elimina ${dims.elimina}${r.ok ? '' : `; violazioni C2: ${r.misurato}`}`
+                    }
+                  }
+                  addRow(report, {
+                    id: 'C2',
+                    schermata: sch,
+                    profiloTema: pt,
+                    esito: resultToEsito(r),
+                    misurato: misuratoC2,
+                    atteso: r.atteso,
+                    evidenza: statoId,
+                  })
+                }
+                if (runCtx.shouldRun('C3')) {
+                  const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
+                  addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
+                  const r = await checkAltezzaMouse(sp)
+                  addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
+                }
+                await sctx.close()
+              } finally {
+                if (simChild) {
+                  simChild.kill('SIGTERM')
+                  await waitForPortFree(SIM_PORT)
+                }
               }
-              if (runCtx.shouldRun('C1') && C1_PROFILES.has(profiloKey)) {
-                const r = await checkScrollOrizzontale(sp)
-                addRow(report, { id: 'C1', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-              }
-              if (runCtx.shouldRun('C2') && C2_PROFILES.has(profiloKey)) {
-                const r = await checkToccoMinimo(sp)
-                addRow(report, { id: 'C2', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-              }
-              if (runCtx.shouldRun('C3')) {
-                const r = await checkTemaClasse(sp, CONTROLLI.temi[temaKey].html_dark)
-                addRow(report, { id: 'C3', schermata: sch, profiloTema: pt, esito: resultToEsito(r), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-              }
-              if (profiloKey === 'notebook-1280' && runCtx.shouldRun('C2-mouse')) {
-                const r = await checkAltezzaMouse(sp)
-                addRow(report, { id: 'C2-mouse', schermata: sch, profiloTema: pt, esito: resultToEsito(r, true), misurato: r.misurato, atteso: r.atteso, evidenza: statoId })
-              }
-              await sctx.close()
             }
           }
         }

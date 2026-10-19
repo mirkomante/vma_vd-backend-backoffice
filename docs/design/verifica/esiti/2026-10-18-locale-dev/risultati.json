@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-dev",
     "data": "2026-10-18",
-    "commit": "6a0b2bce1fca",
-    "launcherVersion": "3.6.0",
-    "launcherHeader": "3.6.0 (L2)",
-    "browsers": "—",
+    "commit": "e0e85da7cf3a",
+    "launcherVersion": "3.7.0",
+    "launcherHeader": "3.7.0 (L2)",
+    "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L2",
     "controlliVersion": 1,
-    "durataMs": 15498,
+    "durataMs": 14761,
     "invalidRun": false
   },
   "counts": {
-    "OK": 19,
+    "OK": 23,
     "FALLITO": 0,
     "AVVISO": 0,
-    "NON PROVATO": 14
+    "NON PROVATO": 13
   },
-  "distinctControls": 4,
+  "distinctControls": 2,
   "rows": [
     {
       "id": "piatti-stati-ui",
@@ -321,16 +321,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "servizi-console",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
       "id": "servizi-elimina-cascade-registro-permessi",
       "schermata": "—",
       "profiloTema": "—",
@@ -349,22 +339,49 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    }
-  ],
-  "nonProvato": [
+    },
     {
       "id": "servizi-console",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "schermata": "servizi",
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
     },
     {
-      "id": "servizi-elimina-cascade-registro-permessi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "id": "servizi-console",
+      "schermata": "servizi",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
     },
     {
-      "id": "servizi-persistenza",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+      "id": "menu-fissi-console",
+      "schermata": "menu-fissi",
+      "profiloTema": "telefono-390/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "menu-fissi-console",
+      "schermata": "menu-fissi",
+      "profiloTema": "notebook-1280/chiaro/Chromium",
+      "esito": "OK",
+      "misurato": "err:0 warn:0 http:0",
+      "atteso": "zero error/warning/pageerror",
+      "evidenza": "—",
+      "pacchetto": "menu"
     }
   ],
+  "nonProvato": [],
   "anomalie": [],
   "screenshotHashes": []
 }

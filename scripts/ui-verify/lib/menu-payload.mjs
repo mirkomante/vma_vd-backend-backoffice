@@ -1,7 +1,12 @@
 import { join } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 
 const ROOT = join(import.meta.dirname, '../../..')
+const DAEMON_PORT = Number(process.env.UI_VERIFY_MENU_PAYLOAD_PORT ?? '31997')
+
+const USE_LEGACY_PAYLOAD = process.env.UI_VERIFY_MENU_PAYLOAD_LEGACY === '1'
+
+let daemonChild = null
 
 function parseStdout(stdout) {
   const lines = stdout.trim().split('\n')
@@ -10,16 +15,111 @@ function parseStdout(stdout) {
   return JSON.parse(line)
 }
 
-export function menuPayloadRun(action, extraArgs = []) {
-  const r = spawnSync(
+function isDaemonPortOpen() {
+  const probe = spawnSync(
+    'node',
+    [
+      '-e',
+      `require('node:net').connect(${DAEMON_PORT},'127.0.0.1',()=>process.exit(0)).on('error',()=>process.exit(1))`,
+    ],
+    { stdio: 'ignore' },
+  )
+  return probe.status === 0
+}
+
+function killDaemonPortListeners() {
+  spawnSync('sh', ['-c', `lsof -ti tcp:${DAEMON_PORT} | xargs kill -9 2>/dev/null || true`], { stdio: 'ignore' })
+}
+
+function stopMenuPayloadDaemon() {
+  if (daemonChild) {
+    try {
+      daemonChild.kill('SIGTERM')
+    } catch {
+      /* ignore */
+    }
+    daemonChild = null
+  }
+  killDaemonPortListeners()
+}
+
+export function stopMenuPayloadSession() {
+  stopMenuPayloadDaemon()
+}
+
+function ensureMenuPayloadDaemon() {
+  if (isDaemonPortOpen()) return
+  if (daemonChild && !daemonChild.killed) return
+  daemonChild = spawn(
     'pnpm',
-    ['payload', 'run', 'scripts/ui-verify/menu-payload.ts', '--', action, ...extraArgs],
-    { cwd: ROOT, encoding: 'utf8', env: { ...process.env } },
+    ['payload', 'run', 'scripts/ui-verify/menu-payload.ts', '--', '__daemon__'],
+    {
+      cwd: ROOT,
+      env: { ...process.env, UI_VERIFY_MENU_PAYLOAD_PORT: String(DAEMON_PORT) },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    },
+  )
+  const deadline = Date.now() + 90_000
+  while (Date.now() < deadline) {
+    const probe = spawnSync(
+      'node',
+      [
+        '-e',
+        `require('node:net').connect(${DAEMON_PORT},'127.0.0.1',()=>process.exit(0)).on('error',()=>process.exit(1))`,
+      ],
+      { stdio: 'ignore' },
+    )
+    if (probe.status === 0) return
+    if (daemonChild.exitCode != null) {
+      throw new Error(`menu payload daemon terminato (exit ${daemonChild.exitCode})`)
+    }
+    spawnSync('sleep', ['0.25'])
+  }
+  throw new Error('menu payload daemon: timeout avvio')
+}
+
+export function menuPayloadRun(action, extraArgs = []) {
+  if (USE_LEGACY_PAYLOAD) {
+    const r = spawnSync(
+      'pnpm',
+      ['payload', 'run', 'scripts/ui-verify/menu-payload.ts', '--', action, ...extraArgs],
+      { cwd: ROOT, encoding: 'utf8', env: { ...process.env } },
+    )
+    if (r.status !== 0) {
+      throw new Error(`menu payload ${action}: ${(r.stderr || r.stdout).slice(0, 400)}`)
+    }
+    return parseStdout(r.stdout)
+  }
+  ensureMenuPayloadDaemon()
+  const r = spawnSync(
+    'node',
+    ['scripts/ui-verify/menu-payload-client.mjs', '--', action, ...extraArgs],
+    {
+      cwd: ROOT,
+      encoding: 'utf8',
+      env: { ...process.env, UI_VERIFY_MENU_PAYLOAD_PORT: String(DAEMON_PORT) },
+    },
   )
   if (r.status !== 0) {
     throw new Error(`menu payload ${action}: ${(r.stderr || r.stdout).slice(0, 400)}`)
   }
   return parseStdout(r.stdout)
+}
+
+/** Misura creazione + lettura (ms) con il backend attuale (daemon o legacy). */
+export function menuPayloadBenchmarkCreateRead(managerEmail) {
+  const t0 = Date.now()
+  menuPayloadRun('create-menu-service', [managerEmail, JSON.stringify({ name: 'verify-ui-bench-svc' })])
+  const tCreate = Date.now() - t0
+  const t1 = Date.now()
+  menuPayloadRun('find-menu-service', [managerEmail, 'verify-ui-bench-svc'])
+  const tRead = Date.now() - t1
+  try {
+    menuPayloadRun('try-delete-menu-service', [managerEmail, 'verify-ui-bench-svc'])
+  } catch {
+    /* cleanup best-effort */
+  }
+  return { createMs: tCreate, readMs: tRead }
 }
 
 export function menuDeleteVerifyPrefix() {
@@ -94,8 +194,8 @@ export function menuFindMenuService(managerEmail, name) {
   return menuPayloadRun('find-menu-service', [managerEmail, name])
 }
 
-export function menuFindFixedMenu(managerEmail, name) {
-  return menuPayloadRun('find-fixed-menu', [managerEmail, name])
+export function menuFindFixedMenu(managerEmail, name, depth = '2') {
+  return menuPayloadRun('find-fixed-menu', [managerEmail, name, String(depth)])
 }
 
 export function menuReadFixedMenuEn(managerEmail, name) {

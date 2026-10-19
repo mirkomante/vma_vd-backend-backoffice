@@ -7,7 +7,7 @@ function initialsFromEmail(email) {
   return local.slice(0, 2).toUpperCase()
 }
 
-export const LAUNCHER_VERSION = '3.6.0'
+export const LAUNCHER_VERSION = '3.7.0'
 
 let shellPercorsoPiattiDiagnosticDone = false
 

@@ -13,6 +13,8 @@ import {
   menuCreateSpecialDayForMenu,
   menuDeleteVerifyPrefix,
   menuEnsureMenuListFixtures,
+  menuFindFixedMenu,
+  menuFindDish,
 } from './menu-payload.mjs'
 import { runMenuListSupplementaryFlows } from './run-menu-list-supplementary-flows.mjs'
 import { selectComboboxOptionByKeyboard } from './catalog-ui-helpers.mjs'
@@ -160,6 +162,7 @@ async function runMenuFissiFlows(ctx, config) {
     await Promise.all([page.waitForURL(/\/fixed\/categories/, { timeout: 20000 }), tabCat.click()])
     const docReloadedAfter = await page.evaluate(() => window.__v4 !== 1)
     const documentReloaded = docReloadedMarker && docReloadedAfter
+    if (documentReloaded) failures.push('documentReloaded=true (atteso false con Link Next)')
     if (!page.url().includes('/categories')) failures.push(`url dopo tab=${page.url()}`)
     await page.goBack({ waitUntil: 'networkidle' })
     if (!page.url().includes('/menu/fixed') || page.url().includes('/categories')) failures.push(`back url=${page.url()}`)
@@ -242,6 +245,7 @@ async function runMenuFissiFlows(ctx, config) {
 
   await runIf('menu-fissi-ordine-piatti', async () => {
     const failures = []
+    let misurato = '—'
     try {
       menuDeleteVerifyPrefix()
       menuEnsureMenuListFixtures(testUser.email)
@@ -255,18 +259,44 @@ async function runMenuFissiFlows(ctx, config) {
       await loginApp(page, baseUrl, testUser.email, testPassword)
       await gotoMenuList(page, config)
       await clickRowAction(page, 'verify-ui-menu-ord', 'edit')
-      const firstDish = await page.locator('[data-slot=sheet-content]').innerText()
-      const m = firstDish.match(/Sposta su ([^\n]+)/)
-      const dishName = m?.[1]?.trim()
+      const firstBtn = page.getByRole('button', { name: /^Sposta su / }).first()
+      const dishName = (await firstBtn.getAttribute('aria-label'))?.replace(/^Sposta su /, '')?.trim()
       if (!dishName) {
         failures.push('piatto non trovato')
       } else {
         const dims = await measureMoveButtons(page, dishName)
-        if (dims.upH < 43) failures.push(`Sposta su h=${dims.upH}`)
+        if (dims.upH < 43 || dims.downH < 43) failures.push(`frecce h=${dims.upH}/${dims.downH}`)
         const upBtn = page.getByRole('button', { name: `Sposta su ${dishName}` })
-        if (!(await upBtn.isDisabled())) failures.push('primo sposta su non disabilitato')
+        const downBtns = page.getByRole('button', { name: /^Sposta giù / })
+        if (!(await upBtn.isDisabled())) failures.push('primo Sposta su non disabilitato')
+        const lastDown = downBtns.last()
+        if (!(await lastDown.isDisabled())) failures.push('ultimo Sposta giù non disabilitato')
+        await page.getByRole('button', { name: `Sposta giù ${dishName}` }).click()
+        const third = page.getByRole('button', { name: /^Sposta su verify-ui-p/ }).nth(2)
+        const thirdName = (await third.getAttribute('aria-label'))?.replace(/^Sposta su /, '')
+        if (thirdName) await page.getByRole('button', { name: `Sposta su ${thirdName}` }).click()
+        await page.getByRole('button', { name: copy(sid, 'FORM_SAVE') ?? 'Salva' }).click()
+        await page.waitForTimeout(800)
+        const apiMenu = menuFindFixedMenu(testUser.email, 'verify-ui-menu-ord', '2')
+        const dishOrder = (apiMenu.doc?.dishes ?? []).map((d) => {
+          if (d == null) return ''
+          if (typeof d === 'object') {
+            const rel = d.dish
+            if (rel && typeof rel === 'object' && rel.name) return String(rel.name)
+            if (rel != null) return String(rel)
+            if (d.name) return String(d.name)
+          }
+          return String(d)
+        })
+        const togliTarget = dishOrder.find((n) => n.startsWith('verify-ui-p')) ?? dishName
+        await clickRowAction(page, 'verify-ui-menu-ord', 'edit')
+        await page.getByRole('button', { name: `Togli ${togliTarget}` }).click()
+        await page.waitForTimeout(400)
+        const stillInCatalog = menuFindDish(testUser.email, String(togliTarget)).found
+        if (!stillInCatalog) failures.push('piatto rimosso dalla collection')
+        misurato = `dish=${dishName}; ordine API=${JSON.stringify(dishOrder)}; togli=${togliTarget}; catalogo=${stillInCatalog}`
       }
-      addRow(ctx, 'menu-fissi-ordine-piatti', sid, failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || `dish=${dishName}`, 'frecce 44px', config.path)
+      addRow(ctx, 'menu-fissi-ordine-piatti', sid, failures.length ? 'FALLITO' : 'OK', failures.join(' | ') || misurato, 'frecce 44px+ordine+Togli', config.path)
       await pctx.close()
     } finally {
       menuDeleteVerifyPrefix()
@@ -275,6 +305,7 @@ async function runMenuFissiFlows(ctx, config) {
 
   await runIf('menu-fissi-visibilita-categoria', async () => {
     const failures = []
+    const snippets = []
     try {
       menuDeleteVerifyPrefix()
       menuEnsureMenuListFixtures(testUser.email)
@@ -288,9 +319,37 @@ async function runMenuFissiFlows(ctx, config) {
     await selectComboboxOptionByKeyboard(page, copy(sid, 'FORM_CATEGORY') ?? 'Categoria', 'verify-ui-pranzo').catch(() => {
       failures.push('categoria verify-ui-pranzo assente (seed)')
     })
-    const sheet = await page.locator('[data-slot=sheet-content]').innerText()
-    if (!/non comparirà mai|compare solo a pranzo/i.test(sheet)) failures.push('avvisi visibilità non letti')
-    addRow(ctx, 'menu-fissi-visibilita-categoria', sid, failures.length ? 'FALLITO' : 'OK', sheet.slice(0, 220), 'avvisi visibilità', config.path)
+    let sheet = await page.locator('[data-slot=sheet-content]').innerText()
+    snippets.push(`pranzo:${sheet.match(/Solo pranzo|compare solo a pranzo/i)?.[0] ?? '—'}`)
+    if (!/Solo pranzo/i.test(sheet)) failures.push('visibilità non precompilata Solo pranzo')
+    await selectComboboxOptionByKeyboard(page, copy(sid, 'FORM_VISIBILITY') ?? 'Visibilità', 'Sempre').catch(() => {
+      failures.push('combo Visibilità Sempre')
+    })
+    sheet = await page.locator('[data-slot=sheet-content]').innerText()
+    if (!/compare solo a pranzo/i.test(sheet)) failures.push('avviso informativo pranzo assente')
+    snippets.push(`sempre+pranzo:${sheet.match(/compare solo a pranzo[^.]*\./i)?.[0]?.slice(0, 80) ?? '—'}`)
+    await selectComboboxOptionByKeyboard(page, copy(sid, 'FORM_VISIBILITY') ?? 'Visibilità', 'Solo cena').catch(() => {
+      failures.push('combo Solo cena')
+    })
+    sheet = await page.locator('[data-slot=sheet-content]').innerText()
+    if (!/non comparirà mai/i.test(sheet)) failures.push('avviso rosso non comparirà mai assente')
+    snippets.push(`cena:${sheet.match(/non comparirà mai/i)?.[0] ?? '—'}`)
+    await selectComboboxOptionByKeyboard(page, copy(sid, 'FORM_CATEGORY') ?? 'Categoria', 'verify-ui-sempre').catch(() => {
+      failures.push('categoria verify-ui-sempre')
+    })
+    sheet = await page.locator('[data-slot=sheet-content]').innerText()
+    if (/non comparirà mai/i.test(sheet)) failures.push('avviso rosso resta dopo verify-ui-sempre')
+    if (!/Solo cena/i.test(sheet)) failures.push('visibilità manuale Solo cena sovrascritta')
+    snippets.push(`sempre-cat:${sheet.includes('Solo cena') ? 'Solo cena mantenuta' : 'persa'}`)
+    addRow(
+      ctx,
+      'menu-fissi-visibilita-categoria',
+      sid,
+      failures.length ? 'FALLITO' : 'OK',
+      snippets.join(' | '),
+      'avvisi visibilità (tutti i passi)',
+      config.path,
+    )
     await pctx.close()
   })
 

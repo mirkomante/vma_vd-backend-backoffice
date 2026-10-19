@@ -1,11 +1,11 @@
 # Esito verifica — locale-dev — 2026-10-18
-Commit: 6a0b2bce1fca · Lanciatore: 3.6.0 (L2) · Browser: — · Controlli: controlli-6.6.json v1 · Durata: 15 s
+Commit: e0e85da7cf3a · Lanciatore: 3.7.0 (L2) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 15 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 19 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 14 · Controlli distinti nel JSON corrente: 4
+OK: 23 · FALLITO: 0 · AVVISO: 0 · NON PROVATO: 13 · Controlli distinti nel JSON corrente: 2
 
 ## Pacchetto: menu
-Righe: 33 · OK: 19 · FALLITO: 0
+Righe: 36 · OK: 23 · FALLITO: 0
 
 ### FALLITO (menu)
 - (nessuno)
@@ -19,7 +19,9 @@ Righe: 33 · OK: 19 · FALLITO: 0
 - **distillati-console**: OK in 2/2 combinazioni
 - **distillati-stati-ui**: OK in 1/1 combinazioni
 - **home-riga-menu-stati**: OK in 1/1 combinazioni
+- **menu-fissi-console**: OK in 2/2 combinazioni
 - **piatti-stati-ui**: OK in 2/2 combinazioni
+- **servizi-console**: OK in 2/2 combinazioni
 - **vini-console**: OK in 2/2 combinazioni
 - **vini-stati-ui**: OK in 1/1 combinazioni
 - **webkit-giro-essenziale**: OK in 1/1 combinazioni
@@ -42,7 +44,6 @@ Righe: 33 · OK: 19 · FALLITO: 0
 - **vini-elimina-registro-permessi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **vini-formati-server** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **vini-persistenza** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **servizi-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **servizi-elimina-cascade-registro-permessi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **servizi-persistenza** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 
@@ -50,10 +51,8 @@ Righe: 33 · OK: 19 · FALLITO: 0
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| servizi-console | NON PROVATO (0/1) |
-| servizi-elimina-cascade-registro-permessi | NON PROVATO (0/1) |
-| servizi-persistenza | NON PROVATO (0/1) |
-| webkit-giro-essenziale | OK (1/1) |
+| menu-fissi-console | OK (2/2) |
+| servizi-console | OK (2/2) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -69,14 +68,11 @@ Righe: 33 · OK: 19 · FALLITO: 0
 | vini-elimina-registro-permessi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | vini-formati-server | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | vini-persistenza | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| servizi-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | servizi-elimina-cascade-registro-permessi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | servizi-persistenza | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
-- servizi-console: controllo non eseguito dal lanciatore in questa esecuzione
-- servizi-elimina-cascade-registro-permessi: controllo non eseguito dal lanciatore in questa esecuzione
-- servizi-persistenza: controllo non eseguito dal lanciatore in questa esecuzione
+- (nessuno)
 
 ## Anomalie dell'ambiente
 - (nessuna)

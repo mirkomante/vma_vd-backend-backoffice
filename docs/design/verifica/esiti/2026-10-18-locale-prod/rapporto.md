@@ -1,11 +1,11 @@
 # Esito verifica — locale-prod — 2026-10-18
-Commit: 16dd08c97708 · Lanciatore: 3.6.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 4 s
+Commit: e0e85da7cf3a · Lanciatore: 3.7.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 33 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 457 · FALLITO: 12 · AVVISO: 4 · NON PROVATO: 116 · Controlli distinti nel JSON corrente: 1
+OK: 486 · FALLITO: 8 · AVVISO: 4 · NON PROVATO: 127 · Controlli distinti nel JSON corrente: 14
 
 ## Pacchetto: accesso
-Righe: 47 · OK: 47 · FALLITO: 0
+Righe: 54 · OK: 54 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
@@ -17,7 +17,7 @@ Righe: 28 · OK: 28 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 428 · OK: 352 · FALLITO: 12
+Righe: 445 · OK: 370 · FALLITO: 8
 
 ### FALLITO (menu)
 - **bevande-paese-fuori-filtro** | bevande | telefono-390/chiaro | misurato `paese API=n/a; trigger="Facoltativo"; sottotitolo=; record senza paese in API` | atteso `nome paese salvato nel trigger (atteso: paese salvato)` | evidenza: /app/menu/drinks
@@ -25,22 +25,6 @@ Righe: 428 · OK: 352 · FALLITO: 12
 - **bevande-righe-azioni** | bevande | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu/drinks
 - **distillati-persistenza** | distillati | telefono-390/chiaro | misurato `create non verificato; page.waitForFunction: Timeout 15000ms exceeded.` | atteso `persistenza` | evidenza: /app/menu/spirits
 - **distillati-righe-azioni** | distillati | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu/spirits
-- **menu-fissi-ordine-piatti** | menu-fissi | telefono-390/chiaro | misurato `piatto non trovato` | atteso `frecce 44px` | evidenza: /app/menu/fixed
-- **menu-fissi-visibilita-categoria** | menu-fissi | telefono-390/chiaro | misurato `Nuovo menù fisso
-
-Il menù compare nel menù pubblico dopo la ricompilazione.
-
-Nome
-Descrizione
-Prezzo (€)
-Categoria
-verify-ui-pranzo
-Visibilità
-Solo pranzo
-
-Quando compare nel menù pubblico. Vale insieme alla visibilità d` | atteso `avvisi visibilità` | evidenza: /app/menu/fixed
-- **servizi-elimina-cascade-registro-permessi** | servizi | telefono-390/chiaro | misurato `menu ancora con servizio; log=null; super: skip delete duplicato; norole: NON PROVATO (menu payload ensure-norole-user: $ cross-env NODE_OPTIONS=--no-deprecation paylo)` | atteso `cascade+registro` | evidenza: payload
-- **servizi-righe-azioni** | servizi | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `righe azioni` | evidenza: /app/menu/services
 - **vini-formati-ui** | vini | telefono-390/chiaro | misurato `volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.waitFor: Timeout 20000ms exceeded.
 Call log:
   - waiting for getByRole('button', { name: /Modifica verify-ui-grade-fmt/i }).first() to be visible
@@ -49,7 +33,7 @@ Call log:
 - **vini-righe-azioni** | vini | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu/wines
 
 ## Pacchetto: completo
-Righe: 86 · OK: 30 · FALLITO: 0
+Righe: 98 · OK: 34 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -57,7 +41,7 @@ Righe: 86 · OK: 30 · FALLITO: 0
 ## Esiti compatti (esecuzione corrente)
 
 ### OK (raggruppati)
-- **AMBIENTE**: OK in 30/30 combinazioni
+- **AMBIENTE**: OK in 34/34 combinazioni
 - **bevande-azioni-pagina**: OK in 2/2 combinazioni
 - **bevande-colonne-fisse**: OK in 1/1 combinazioni
 - **bevande-disponibilita**: OK in 1/1 combinazioni
@@ -74,8 +58,8 @@ Righe: 86 · OK: 30 · FALLITO: 0
 - **bevande-tassonomie**: OK in 1/1 combinazioni
 - **bevande-testi**: OK in 1/1 combinazioni
 - **C2-mouse**: OK in 26/26 combinazioni
-- **C3-cambio-sistema**: OK in 17/17 combinazioni
-- **C9**: OK in 30/30 combinazioni
+- **C3-cambio-sistema**: OK in 20/20 combinazioni
+- **C9**: OK in 34/34 combinazioni
 - **distillati-azioni-pagina**: OK in 2/2 combinazioni
 - **distillati-capacita-non-gestita**: OK in 1/1 combinazioni
 - **distillati-colonne-fisse**: OK in 1/1 combinazioni
@@ -99,12 +83,21 @@ Righe: 86 · OK: 30 · FALLITO: 0
 - **menu-fissi-categoria-modulo**: OK in 1/1 combinazioni
 - **menu-fissi-composizione**: OK in 1/1 combinazioni
 - **menu-fissi-modulo-validazione**: OK in 1/1 combinazioni
+- **menu-fissi-ordine-piatti**: OK in 1/1 combinazioni
 - **menu-fissi-schede-percorsi**: OK in 1/1 combinazioni
-- **NO-OVERRIDE**: OK in 11/11 combinazioni
+- **menu-fissi-visibilita-categoria**: OK in 1/1 combinazioni
+- **nav-briciole**: OK in 2/2 combinazioni
+- **nav-casi-unit**: OK in 1/1 combinazioni
+- **nav-icone**: OK in 2/2 combinazioni
+- **nav-titoli-pagina**: OK in 1/1 combinazioni
+- **nav-voce-attiva**: OK in 2/2 combinazioni
+- **nav-voci-menu**: OK in 2/2 combinazioni
+- **NO-OVERRIDE**: OK in 15/15 combinazioni
 - **piatti-modulo-inglese**: OK in 1/1 combinazioni
 - **servizi-azioni-pagina**: OK in 2/2 combinazioni
 - **servizi-colonne-fisse**: OK in 1/1 combinazioni
 - **servizi-disponibilita**: OK in 1/1 combinazioni
+- **servizi-elimina-cascade-registro-permessi**: OK in 1/1 combinazioni
 - **servizi-elimina-senza-uso**: OK in 1/1 combinazioni
 - **servizi-elimina-usato**: OK in 1/1 combinazioni
 - **servizi-modulo-campi**: OK in 2/2 combinazioni
@@ -114,6 +107,7 @@ Righe: 86 · OK: 30 · FALLITO: 0
 - **servizi-nomi-accessibili**: OK in 1/1 combinazioni
 - **servizi-ordine**: OK in 1/1 combinazioni
 - **servizi-persistenza**: OK in 1/1 combinazioni
+- **servizi-righe-azioni**: OK in 1/1 combinazioni
 - **servizi-senza-ricerca-filtri**: OK in 1/1 combinazioni
 - **servizi-testi**: OK in 1/1 combinazioni
 - **vini-azioni-pagina**: OK in 2/2 combinazioni
@@ -136,12 +130,12 @@ Righe: 86 · OK: 30 · FALLITO: 0
 - **vini-tassonomie**: OK in 1/1 combinazioni
 - **vini-testi**: OK in 1/1 combinazioni
 - **C3**: OK in 96/99 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **servizi-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **distillati-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C1**: OK in 84/87 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **C2**: OK in 64/67 combinazioni (con fallimenti o avvisi su altre combinazioni)
-- **distillati-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **bevande-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **vini-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **servizi-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
 ### FALLITO (tutte le righe, dettaglio)
 - **bevande-paese-fuori-filtro** | bevande | telefono-390/chiaro | misurato `paese API=n/a; trigger="Facoltativo"; sottotitolo=; record senza paese in API` | atteso `nome paese salvato nel trigger (atteso: paese salvato)` | evidenza: /app/menu/drinks
@@ -149,22 +143,6 @@ Righe: 86 · OK: 30 · FALLITO: 0
 - **bevande-righe-azioni** | bevande | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu/drinks
 - **distillati-persistenza** | distillati | telefono-390/chiaro | misurato `create non verificato; page.waitForFunction: Timeout 15000ms exceeded.` | atteso `persistenza` | evidenza: /app/menu/spirits
 - **distillati-righe-azioni** | distillati | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu/spirits
-- **menu-fissi-ordine-piatti** | menu-fissi | telefono-390/chiaro | misurato `piatto non trovato` | atteso `frecce 44px` | evidenza: /app/menu/fixed
-- **menu-fissi-visibilita-categoria** | menu-fissi | telefono-390/chiaro | misurato `Nuovo menù fisso
-
-Il menù compare nel menù pubblico dopo la ricompilazione.
-
-Nome
-Descrizione
-Prezzo (€)
-Categoria
-verify-ui-pranzo
-Visibilità
-Solo pranzo
-
-Quando compare nel menù pubblico. Vale insieme alla visibilità d` | atteso `avvisi visibilità` | evidenza: /app/menu/fixed
-- **servizi-elimina-cascade-registro-permessi** | servizi | telefono-390/chiaro | misurato `menu ancora con servizio; log=null; super: skip delete duplicato; norole: NON PROVATO (menu payload ensure-norole-user: $ cross-env NODE_OPTIONS=--no-deprecation paylo)` | atteso `cascade+registro` | evidenza: payload
-- **servizi-righe-azioni** | servizi | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `righe azioni` | evidenza: /app/menu/services
 - **vini-formati-ui** | vini | telefono-390/chiaro | misurato `volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.waitFor: Timeout 20000ms exceeded.
 Call log:
   - waiting for getByRole('button', { name: /Modifica verify-ui-grade-fmt/i }).first() to be visible
@@ -173,10 +151,10 @@ Call log:
 - **vini-righe-azioni** | vini | telefono-390/chiaro | misurato `switch attivo su disabled` | atteso `tre icone, switch disabilitato su disabled` | evidenza: /app/menu/wines
 
 ### AVVISO
-- **servizi-colonna-elenco** | servizi | telefono-390/chiaro | misurato `{"tableVisible":false,"colW":358,"nameW":178}` | atteso `layout` | evidenza: /app/menu/services
 - **distillati-colonna-elenco** | distillati | telefono-390/chiaro | misurato `{"tableVisible":false,"colW":358,"nameW":178}` | atteso `layout colonna/schede` | evidenza: /app/menu/spirits
 - **bevande-colonna-elenco** | bevande | telefono-390/chiaro | misurato `{"tableVisible":false,"colW":358,"nameW":178}` | atteso `layout colonna/schede` | evidenza: /app/menu/drinks
 - **vini-colonna-elenco** | vini | telefono-390/chiaro | misurato `{"tableVisible":false,"colW":358,"nameW":178}` | atteso `layout colonna/schede` | evidenza: /app/menu/wines
+- **servizi-colonna-elenco** | servizi | telefono-390/chiaro | misurato `{"tableVisible":false,"colW":358,"nameW":178}` | atteso `layout` | evidenza: /app/menu/services
 
 ### NON PROVATO
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
@@ -214,7 +192,6 @@ Call log:
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **C3-no-lampo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **RICOMPILA-ASSENTE** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **RICOMPILA-PRESENTE** | comuni | — | misurato `—` | atteso `pulsante Ricompila presente` | evidenza: rinviato alla 6.5
@@ -230,12 +207,6 @@ Call log:
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **RICOMPILA-PRESENTE** | comuni | — | misurato `—` | atteso `pulsante Ricompila presente` | evidenza: rinviato alla 6.5
-- **servizi-ricompila** | servizi | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
-- **servizi-accesso** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **servizi-confronto-visivo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **servizi-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **servizi-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **servizi-stato-vuoto** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
 - **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
 - **RICOMPILA-PRESENTE** | comuni | — | misurato `—` | atteso `pulsante Ricompila presente` | evidenza: rinviato alla 6.5
@@ -295,12 +266,43 @@ Call log:
 - **C3** | vini/vuoto | telefono-390/chiaro | misurato `stato vuoto: DB con 90 record` | atteso `C3` | evidenza: vuoto
 - **vini-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **vini-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **RICOMPILA-PRESENTE** | comuni | — | misurato `—` | atteso `pulsante Ricompila presente` | evidenza: rinviato alla 6.5
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **RICOMPILA-PRESENTE** | comuni | — | misurato `—` | atteso `pulsante Ricompila presente` | evidenza: rinviato alla 6.5
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **RICOMPILA-PRESENTE** | comuni | — | misurato `—` | atteso `pulsante Ricompila presente` | evidenza: rinviato alla 6.5
+- **servizi-ricompila** | servizi | telefono-390/chiaro | misurato `—` | atteso `—` | evidenza: rinviato alla 6.5
+- **servizi-accesso** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **servizi-confronto-visivo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **servizi-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **servizi-stati-ui** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **servizi-stato-vuoto** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
+- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
+- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
+- **RICOMPILA-ASSENTE** | comuni | — | misurato `—` | atteso `assente in UI con bandiera spenta` | evidenza: eseguito con schermata piatti (runRicompilaAssenteCheck)
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| menu-fissi-schede-percorsi | OK (1/1) |
+| AMBIENTE | OK (34/34) |
+| C1 | NON PROVATO (84/87) |
+| C2 | NON PROVATO (64/67) |
+| C2-mouse | OK (26/26) |
+| C3 | NON PROVATO (96/99) |
+| C9 | OK (34/34) |
+| NO-OVERRIDE | OK (15/15) |
+| RICOMPILA-ASSENTE | NON PROVATO (0/1) |
+| nav-briciole | OK (2/2) |
+| nav-casi-unit | OK (1/1) |
+| nav-icone | OK (2/2) |
+| nav-titoli-pagina | OK (1/1) |
+| nav-voce-attiva | OK (2/2) |
+| nav-voci-menu | OK (2/2) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -340,7 +342,6 @@ Call log:
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | C3-no-lampo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| RICOMPILA-ASSENTE | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
@@ -356,15 +357,6 @@ Call log:
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
-| servizi-colonna-elenco | servizi | telefono-390/chiaro | AVVISO | {"tableVisible":false,"colW":358,"nameW":178} | layout | /app/menu/services |
-| servizi-righe-azioni | servizi | telefono-390/chiaro | FALLITO | switch attivo su disabled | righe azioni | /app/menu/services |
-| servizi-elimina-cascade-registro-permessi | servizi | telefono-390/chiaro | FALLITO | menu ancora con servizio; log=null; super: skip delete duplicato; norole: NON PROVATO (menu payload ensure-norole-user: $ cross-env NODE_OPTIONS=--no-deprecation paylo) | cascade+registro | payload |
-| servizi-ricompila | servizi | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
-| servizi-accesso | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| servizi-confronto-visivo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| servizi-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| servizi-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| servizi-stato-vuoto | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
@@ -374,8 +366,6 @@ Call log:
 | verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
 | shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
 | RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
-| menu-fissi-ordine-piatti | menu-fissi | telefono-390/chiaro | FALLITO | piatto non trovato | frecce 44px | /app/menu/fixed |
-| menu-fissi-visibilita-categoria | menu-fissi | telefono-390/chiaro | FALLITO | Nuovo menù fisso  Il menù compare nel menù pubblico dopo la ricompilazione.  Nome Descrizione Prezzo (€) Categoria verify-ui-pranzo Visibilità Solo pranzo  Quando compare nel menù pubblico. Vale insieme alla visibilità d | avvisi visibilità | /app/menu/fixed |
 | menu-fissi-accesso | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | menu-fissi-azioni-pagina | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | menu-fissi-categorie-elenco | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
@@ -437,9 +427,29 @@ Call log:
 | C3 | vini/vuoto | telefono-390/chiaro | NON PROVATO | stato vuoto: DB con 90 record | C3 | vuoto |
 | vini-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | vini-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| RICOMPILA-PRESENTE | comuni | — | NON PROVATO | — | pulsante Ricompila presente | rinviato alla 6.5 |
+| servizi-colonna-elenco | servizi | telefono-390/chiaro | AVVISO | {"tableVisible":false,"colW":358,"nameW":178} | layout | /app/menu/services |
+| servizi-ricompila | servizi | telefono-390/chiaro | NON PROVATO | — | — | rinviato alla 6.5 |
+| servizi-accesso | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| servizi-confronto-visivo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| servizi-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| servizi-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| servizi-stato-vuoto | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
+| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
+| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
+| RICOMPILA-ASSENTE | comuni | — | NON PROVATO | — | assente in UI con bandiera spenta | eseguito con schermata piatti (runRicompilaAssenteCheck) |
 
 ## Non provato (e perché)
-- (nessuno)
+- verify-link-valido: facoltativo: token reale monouso non ottenuto
+- shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
 
 ## Anomalie dell'ambiente
 - (nessuna)
