@@ -7,7 +7,7 @@ export function parsePayloadStdout(stdout: string): Record<string, unknown> {
   return JSON.parse(line) as Record<string, unknown>
 }
 
-export async function payloadRun(args: string[], env: NodeJS.ProcessEnv = {}): Promise<string> {
+export async function payloadRun(args: string[], env: Record<string, string | undefined> = {}): Promise<string> {
   const r = await runProcess('pnpm', ['payload', 'run', ...args], {
     cwd: REPO_ROOT,
     timeoutMs: 120_000,

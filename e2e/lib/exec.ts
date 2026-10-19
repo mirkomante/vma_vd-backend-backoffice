@@ -5,7 +5,7 @@ export async function runProcess(
   args: string[],
   options: {
     cwd: string
-    env?: NodeJS.ProcessEnv
+    env?: Record<string, string | undefined>
     timeoutMs: number
   },
 ): Promise<{ code: number; stdout: string; stderr: string }> {
