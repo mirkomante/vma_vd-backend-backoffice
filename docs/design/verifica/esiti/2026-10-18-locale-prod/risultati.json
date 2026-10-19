@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-18",
-    "commit": "6a0b2bce1fca",
+    "commit": "f0bdd6b0d4ba",
     "launcherVersion": "3.6.0",
-    "launcherHeader": "3.6.0 (L2)",
+    "launcherHeader": "3.6.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
-    "livelloEseguito": "L2",
+    "livelloEseguito": "L1",
     "controlliVersion": 1,
-    "durataMs": 28234,
+    "durataMs": 355831,
     "invalidRun": false
   },
   "counts": {
-    "OK": 252,
-    "FALLITO": 4,
-    "AVVISO": 1,
-    "NON PROVATO": 92
+    "OK": 457,
+    "FALLITO": 12,
+    "AVVISO": 4,
+    "NON PROVATO": 116
   },
-  "distinctControls": 1,
+  "distinctControls": 34,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -3491,6 +3491,956 @@
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
+      "id": "piatti-modulo-inglese",
+      "schermata": "piatti",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge Manca/Presente ok; locale=en name=\"verify-ui-noen\" desc=\"Desc IT\"",
+      "atteso": "Manca/Presente; con inglese vuoto locale=en ricade su italiano per nome e descrizione",
+      "evidenza": "/app/menu",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-testi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "testi principali ok",
+      "atteso": "testi §6 spec",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-colonna-elenco",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "AVVISO",
+      "misurato": "{\"tableVisible\":false,\"colW\":358,\"nameW\":178}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-colonna-elenco",
+      "schermata": "distillati",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "col=976px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-colonna-elenco",
+      "schermata": "distillati",
+      "profiloTema": "soglia-767/chiaro",
+      "esito": "OK",
+      "misurato": "{\"tableVisible\":false,\"colW\":735,\"nameW\":555}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-colonna-elenco",
+      "schermata": "distillati",
+      "profiloTema": "soglia-768/chiaro",
+      "esito": "OK",
+      "misurato": "col=480px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-colonne-fisse",
+      "schermata": "distillati",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "colonne=Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni; left=280,776,936,1048,1160,280,776,936,1048,1160,280,776,936,1048,1160,280,776,936,1048,1160,280,776,936,1048,1160,280,776,936,1048,1160,280,776,936,1048,1160",
+      "atteso": "bordi sinistri colonne fisse",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-azioni-pagina",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":44,\"w\":358,\"colW\":358,\"inline\":false}",
+      "atteso": "pulsante piena larghezza ≥44px",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-azioni-pagina",
+      "schermata": "distillati",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":36,\"w\":146,\"colW\":976,\"inline\":true}",
+      "atteso": "pulsante in riga col titolo",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-righe-azioni",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "switch attivo su disabled",
+      "atteso": "tre icone, switch disabilitato su disabled",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-disponibilita",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "disponibilità e filtro",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-elimina",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "elimina libero",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-elimina-registro-permessi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
+      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-campi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "modulo nuovo",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-campi",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "modulo nuovo",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-validazione",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "validazione",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-inglese",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge noen=\"Traduzione inglese (facoltativa) Manca\"; badge yesen=\"Traduzione inglese (facoltativa) Presente\"; API locale=en noen name=\"verify-ui-distillati-noen\" desc=\"Desc IT\"; yesen desc=\"Desc EN\"",
+      "atteso": "inglese",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-modulo-footer",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"footerH\":44,\"btnCount\":2}",
+      "atteso": "footer 44px",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-formati-server",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"probe\":{\"results\":[{\"label\":\"abv-46\",\"rejected\":true,\"message\":\"Il grado deve essere un valore intero da 30% a 45%.\",\"expected\":\"Il grado deve essere un valore intero da 30% a 45%.\"},{\"label\":\"aging-4\",\"rejected\":true,\"message\":\"L'invecchiamento deve essere uno tra: 5, 7, 10, 12, 14, 15, 16, 18, 21, 24 anni.\",\"expected\":\"L'invecchiamento deve essere uno tra: 5, 7, 10, 12, 14, 15, 16, 18, 21, 24 anni.\"}],\"canonicalOk\":true},\"dis\":{\"ok\":true,\"id\":4171}}",
+      "atteso": "validazione formati Local API spirits",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-capacita-non-gestita",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "volume DB invariato",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-paese-fuori-filtro",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "paese API=Vietnam; trigger=\"Vietnam\"; sottotitolo=",
+      "atteso": "nome paese salvato nel trigger (atteso: Vietnam)",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-tassonomie",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "tipologie (7): Amari e Liquori | Calvados | Distillati vietnamiti | Grappe | Rum | Vin Doux Naturel | Whisky",
+      "atteso": "tassonomie",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-persistenza",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "create non verificato; page.waitForFunction: Timeout 15000ms exceeded.",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-filtri-ricerca",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "ricerca",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-nomi-accessibili",
+      "schermata": "distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "italiano",
+      "atteso": "T1",
+      "evidenza": "/app/menu/spirits",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Indietro 288x44; Elimina 288x44",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 38 record",
+      "atteso": "C1",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 38 record",
+      "atteso": "C2",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 38 record",
+      "atteso": "C3",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "distillati/piu-di-100-distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "piu-di-100-distillati",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "distillati/piu-di-100-distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "piu-di-100-distillati",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "distillati/piu-di-100-distillati",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "piu-di-100-distillati",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "distillati-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-formati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "distillati-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-testi",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "testi principali ok",
+      "atteso": "testi §6 spec",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-colonna-elenco",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "AVVISO",
+      "misurato": "{\"tableVisible\":false,\"colW\":358,\"nameW\":178}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-colonna-elenco",
+      "schermata": "bevande",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "col=976px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-colonna-elenco",
+      "schermata": "bevande",
+      "profiloTema": "soglia-767/chiaro",
+      "esito": "OK",
+      "misurato": "{\"tableVisible\":false,\"colW\":735,\"nameW\":555}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-colonna-elenco",
+      "schermata": "bevande",
+      "profiloTema": "soglia-768/chiaro",
+      "esito": "OK",
+      "misurato": "col=480px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-colonne-fisse",
+      "schermata": "bevande",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "colonne=Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni, Nome, Paese, Prezzo, Disponibile, Azioni; left=280,776,936,1048,1160,280,776,936,1048,1160,280,776,936,1048,1160",
+      "atteso": "bordi sinistri colonne fisse",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-azioni-pagina",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":44,\"w\":358,\"colW\":358,\"inline\":false}",
+      "atteso": "pulsante piena larghezza ≥44px",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-azioni-pagina",
+      "schermata": "bevande",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":36,\"w\":145,\"colW\":976,\"inline\":true}",
+      "atteso": "pulsante in riga col titolo",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-righe-azioni",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "switch attivo su disabled",
+      "atteso": "tre icone, switch disabilitato su disabled",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-disponibilita",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "disponibilità e filtro",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-elimina",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "elimina libero",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-elimina-registro-permessi",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
+      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-campi",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "modulo nuovo",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-campi",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "modulo nuovo",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-modulo-validazione",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "validazione",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
       "id": "bevande-modulo-inglese",
       "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
@@ -3501,17 +4451,1484 @@
       "pacchetto": "menu"
     },
     {
-      "id": "piatti-modulo-inglese",
-      "schermata": "piatti",
+      "id": "bevande-modulo-footer",
+      "schermata": "bevande",
       "profiloTema": "telefono-390/chiaro",
       "esito": "OK",
-      "misurato": "badge Manca/Presente ok; locale=en name=\"verify-ui-noen\" desc=\"Desc IT\"",
-      "atteso": "Manca/Presente; con inglese vuoto locale=en ricade su italiano per nome e descrizione",
-      "evidenza": "/app/menu",
+      "misurato": "{\"footerH\":44,\"btnCount\":2}",
+      "atteso": "footer 44px",
+      "evidenza": "/app/menu/drinks",
       "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-formati-server",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"probe\":{\"results\":[{\"label\":\"volume-70\",\"rejected\":true,\"message\":\"La capacità deve essere una tra: 25 cl, 33 cl, 50 cl, 75 cl.\",\"expected\":\"La capacità deve essere una tra: 25 cl, 33 cl, 50 cl, 75 cl.\"},{\"label\":\"abv-128\",\"rejected\":true,\"message\":\"Il grado deve essere un valore da 3% a 12%, a passi di 0,5 (per esempio 5% o 5,5%).\",\"expected\":\"Il grado deve essere un valore da 3% a 12%, a passi di 0,5 (per esempio 5% o 5,5%).\"}],\"canonicalOk\":true}}",
+      "atteso": "validazione formati Local API drinks",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-paese-facoltativo",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "paese facoltativo",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-paese-fuori-filtro",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "paese API=n/a; trigger=\"Facoltativo\"; sottotitolo=; record senza paese in API",
+      "atteso": "nome paese salvato nel trigger (atteso: paese salvato)",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-tassonomie",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "tipologie (3): Calde | Fredde | Vietnamite",
+      "atteso": "tassonomie",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-persistenza",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "create non verificato; page.waitForFunction: Timeout 15000ms exceeded.",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-filtri-ricerca",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "ricerca",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-nomi-accessibili",
+      "schermata": "bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "italiano",
+      "atteso": "T1",
+      "evidenza": "/app/menu/drinks",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Indietro 288x44; Elimina 288x44",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 13 record",
+      "atteso": "C1",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 13 record",
+      "atteso": "C2",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 13 record",
+      "atteso": "C3",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "bevande/piu-di-100-bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "piu-di-100-bevande",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "bevande/piu-di-100-bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "piu-di-100-bevande",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "bevande/piu-di-100-bevande",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "piu-di-100-bevande",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "bevande-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-formati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "bevande-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-testi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "testi principali ok",
+      "atteso": "testi §6 spec",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-colonna-elenco",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "AVVISO",
+      "misurato": "{\"tableVisible\":false,\"colW\":358,\"nameW\":178}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-colonna-elenco",
+      "schermata": "vini",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "col=976px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-colonna-elenco",
+      "schermata": "vini",
+      "profiloTema": "soglia-767/chiaro",
+      "esito": "OK",
+      "misurato": "{\"tableVisible\":false,\"colW\":735,\"nameW\":555}",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-colonna-elenco",
+      "schermata": "vini",
+      "profiloTema": "soglia-768/chiaro",
+      "esito": "OK",
+      "misurato": "col=544px; table=true",
+      "atteso": "layout colonna/schede",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-colonne-fisse",
+      "schermata": "vini",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "colonne=Nome, Origine, Prezzo, Disponibile, Azioni, Nome, Origine, Prezzo, Disponibile, Azioni, Nome, Origine, Prezzo, Disponibile, Azioni, Nome, Origine, Prezzo, Disponibile, Azioni, Nome, Origine, Prezzo, Disponibile, Azioni; left=280,712,936,1048,1160,280,712,936,1048,1160,280,712,936,1048,1160,280,712,936,1048,1160,280,712,936,1048,1160",
+      "atteso": "bordi sinistri colonne fisse",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-azioni-pagina",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":44,\"w\":358,\"colW\":358,\"inline\":false}",
+      "atteso": "pulsante piena larghezza ≥44px",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-azioni-pagina",
+      "schermata": "vini",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "{\"h\":36,\"w\":117,\"colW\":976,\"inline\":true}",
+      "atteso": "pulsante in riga col titolo",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-righe-azioni",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "switch attivo su disabled",
+      "atteso": "tre icone, switch disabilitato su disabled",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-disponibilita",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "disponibilità e filtro",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-elimina",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "elimina libero",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-elimina-registro-permessi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "norole: NON PROVATO (coperto da scripts/verify-roles-8_3.ts)",
+      "atteso": "registro e permessi staff (norole coperto da verify-roles-8_3)",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-campi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "modulo nuovo",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-campi",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/scuro",
+      "esito": "OK",
+      "misurato": "campi modulo",
+      "atteso": "modulo nuovo",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-validazione",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "validazione",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-inglese",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "badge noen=\"Traduzione inglese (facoltativa) Manca\"; badge yesen=\"Traduzione inglese (facoltativa) Presente\"; API locale=en noen name=\"verify-ui-vini-noen\" desc=\"Desc IT\"; yesen desc=\"Desc EN\"",
+      "atteso": "inglese",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-footer",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"footerH\":44,\"btnCount\":2}",
+      "atteso": "footer 44px",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-modulo-anno",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "anno/NV",
+      "atteso": "modulo anno",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-formati-ui",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "volume opzioni (7): Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; atteso: Non indicata | 25 cl | 33 cl | 37,5 cl | 50 cl | 75 cl | 150 cl; grado UI=; locator.waitFor: Timeout 20000ms exceeded.\nCall log:\n  - waiting for getByRole('button', { name: /Modifica verify-ui-grade-fmt/i }).first() to be visible\n",
+      "atteso": "capacità/grado",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-formati-server",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "{\"probe\":{\"results\":[{\"label\":\"year-99\",\"rejected\":true,\"message\":\"L'anno deve avere quattro cifre, tra 1900 e 2026, oppure essere NV.\",\"expected\":\"L'anno deve avere quattro cifre, tra 1900 e 2026, oppure essere NV.\"},{\"label\":\"volume-70\",\"rejected\":true,\"message\":\"La capacità deve essere una tra: 25 cl, 33 cl, 37,5 cl, 50 cl, 75 cl, 150 cl.\",\"expected\":\"La capacità deve essere una tra: 25 cl, 33 cl, 37,5 cl, 50 cl, 75 cl, 150 cl.\"},{\"label\":\"abv-128\",\"rejected\":true,\"message\":\"Il grado deve andare da 5% a 20% a passi di 0,5 (per esempio 13% o 13,5%).\",\"expected\":\"Il grado deve andare da 5% a 20% a passi di 0,5 (per esempio 13% o 13,5%).\"}],\"canonicalOk\":true,\"yearMsg\":\"L'anno deve avere quattro cifre, tra 1900 e 2026, oppure essere NV.\"},\"dis\":{\"ok\":true,\"id\":5169},\"gradeWine\":{\"ok\":true,\"id\":5169,\"name\":\"verify-ui-disabled-abv\"}}",
+      "atteso": "validazione formati Local API",
+      "evidenza": "payload",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-filtri-origine",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "cascata filtri",
+      "atteso": "origine filtri",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-cascata",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "UI regioni (12): Nessuna regione | Piemonte | Campania | Friuli Venezia Giulia | Trentino Alto Adige | Umbria | Lombardia | Marche; collection sample: Alsazia | Borgogna | Campania | Friuli Venezia Giulia | Loira | Lombardia | Marche | Piemonte",
+      "atteso": "origine §7",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-opzioni-query",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "opzioni=0; tax Libano/Sicilia ok",
+      "atteso": "enabled in query e UI",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-origine-fuori-filtro",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "paese API=Vietnam; trigger=\"Vietnam\"; sottotitolo=verify-ui-vini-off-filter",
+      "atteso": "nome paese salvato nel trigger (atteso: Vietnam)",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-coerenza-geografica",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "locale-dev only",
+      "evidenza": "ambiente",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-tassonomie",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "tipologie (5): Bianchi | Champagne | Rosati | Rossi | Spumanti",
+      "atteso": "tassonomie",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-persistenza",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "FALLITO",
+      "misurato": "create non verificato; page.waitForFunction: Timeout 15000ms exceeded.",
+      "atteso": "persistenza",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-filtri-ricerca",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "ok",
+      "atteso": "ricerca",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-nomi-accessibili",
+      "schermata": "vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "italiano",
+      "atteso": "T1",
+      "evidenza": "/app/menu/wines",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elenco",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-attivi",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "filtri-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "filtri-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "filtri-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-origine",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "modulo-inglese-aperto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "origine-senza-regioni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "origine-senza-regioni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "origine-senza-regioni",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nuovo-errori",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-geografia",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-geografia",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-geografia",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-anno",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-anno",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-anno",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "Indietro 288x44; Elimina 288x44",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "elimina",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-azione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-azione",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "nessun-risultato",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/errore-caricamento",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "errore-caricamento",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 90 record",
+      "atteso": "C1",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 90 record",
+      "atteso": "C2",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/vuoto",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "stato vuoto: DB con 90 record",
+      "atteso": "C3",
+      "evidenza": "vuoto",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C1",
+      "schermata": "vini/piu-di-100-vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "390 vs innerWidth 390",
+      "atteso": "scrollWidth <= innerWidth",
+      "evidenza": "piu-di-100-vini",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C2",
+      "schermata": "vini/piu-di-100-vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "nessun elemento",
+      "atteso": "nessun elemento sotto 44 px",
+      "evidenza": "piu-di-100-vini",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "C3",
+      "schermata": "vini/piu-di-100-vini",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "dark assente",
+      "atteso": "dark assente",
+      "evidenza": "piu-di-100-vini",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "vini-console",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-stati-ui",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "nonProvato": [],
+  "nonProvato": [
+    {
+      "id": "verify-link-valido",
+      "motivo": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "motivo": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "vini-console",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "vini-stati-ui",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    }
+  ],
   "anomalie": [],
   "screenshotHashes": [
     {
@@ -4823,6 +7240,21 @@
       "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
       "temaKey": "chiaro",
       "hash": "f31b80625c604f49ed683e45baa828fdcd169962c5f875f5ab07ec1d740445dc"
+    },
+    {
+      "name": "distillati-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "9e356bb51b47a1cfcda839fa3138de674440c039c445b3260bf63d79859b55ee"
+    },
+    {
+      "name": "bevande-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "1a3c8df98f27b6acfaf5e3fbe7b51dea628c0281648161b4d0c60bc3c367d870"
+    },
+    {
+      "name": "vini-modulo-paese-fuori-filtro-telefono-390-chiaro",
+      "temaKey": "chiaro",
+      "hash": "69a63a24d86a8961f7495b633f3297427bd24d7c21b5b97348b57f8ad75d2a58"
     }
   ]
 }
