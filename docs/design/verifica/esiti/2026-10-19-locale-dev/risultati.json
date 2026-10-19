@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "ambiente": "locale-dev",
+    "data": "2026-10-19",
+    "commit": "7c20dae62865",
+    "launcherVersion": "3.9.0",
+    "launcherHeader": "3.9.0 (A3 non eseguito — V4 ter)",
+    "browsers": "non avviato",
+    "controlliBasename": "controlli-6.6.json",
+    "livelloEseguito": "A3 pianificato",
+    "controlliVersion": 1,
+    "durataMs": 0,
+    "invalidRun": true,
+    "invalidReason": "Prova di sanità A0 non conclusa; giro locale-dev non avviato"
+  },
+  "counts": {
+    "OK": 0,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 4
+  },
+  "rows": [
+    {
+      "id": "servizi-console",
+      "schermata": "servizi",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "giro non avviato",
+      "atteso": "console pulita (0 error, 0 warning)",
+      "evidenza": "V4 ter blocco A0"
+    },
+    {
+      "id": "menu-fissi-console",
+      "schermata": "menu-fissi",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "giro non avviato",
+      "atteso": "console pulita (0 error, 0 warning)",
+      "evidenza": "V4 ter blocco A0"
+    },
+    {
+      "id": "servizi-stati-ui",
+      "schermata": "servizi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "giro non avviato",
+      "atteso": "UI stati simulati: caricamento, errore caricamento, errore azione",
+      "evidenza": "V4 ter blocco A0"
+    },
+    {
+      "id": "menu-fissi-stati-ui",
+      "schermata": "menu-fissi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "giro non avviato",
+      "atteso": "UI stati simulati: caricamento, errore caricamento, errore azione",
+      "evidenza": "V4 ter blocco A0"
+    }
+  ],
+  "anomalie": [
+    "A0: progress.log fermo su navigazione/nav-flows readBreadcrumbs >5 min"
+  ]
+}

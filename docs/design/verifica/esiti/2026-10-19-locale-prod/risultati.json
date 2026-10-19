@@ -2,23 +2,24 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-19",
-    "commit": "f5e8b0d3ed74",
+    "commit": "7c20dae62865",
     "launcherVersion": "3.9.0",
-    "launcherHeader": "3.9.0 (L2)",
+    "launcherHeader": "3.9.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
-    "livelloEseguito": "L2",
+    "livelloEseguito": "L1",
     "controlliVersion": 1,
-    "durataMs": 409,
-    "invalidRun": false
+    "durataMs": 14944,
+    "invalidRun": true,
+    "invalidReason": "V4 ter: A0 bloccato; A1-A2 non eseguiti; file misto con giro L2 servizi interrotto"
   },
   "counts": {
-    "OK": 184,
+    "OK": 187,
     "FALLITO": 0,
     "AVVISO": 1,
-    "NON PROVATO": 31
+    "NON PROVATO": 34
   },
-  "distinctControls": 34,
+  "distinctControls": 14,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -388,106 +389,6 @@
       "misurato": "—",
       "atteso": "assente in UI con bandiera spenta",
       "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "attese 8; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-titoli-pagina",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "titoli ok",
-      "atteso": "{Pagina} · Area App",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "attese 8; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-casi-unit",
-      "schermata": "navigazione",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
       "pacchetto": "menu"
     },
     {
@@ -2179,9 +2080,178 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "AMBIENTE",
+      "schermata": "/app/login",
+      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
+      "esito": "OK",
+      "misurato": "assente",
+      "atteso": "assente (nessun indicatore dev Next)",
+      "evidenza": "—",
+      "pacchetto": "accesso"
+    },
+    {
+      "id": "C9",
+      "schermata": "—",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "pnpm ui:check",
+      "pacchetto": "completo"
+    },
+    {
+      "id": "verify-link-valido",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "completo",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
+    },
+    {
+      "id": "NO-OVERRIDE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 1",
+      "atteso": "nessuna corrispondenza (exit 1)",
+      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "RICOMPILA-ASSENTE",
+      "schermata": "comuni",
+      "profiloTema": "—",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "assente in UI con bandiera spenta",
+      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voci-menu",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "attese 8; mancanti —; extra —",
+      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-icone",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "icone ok",
+      "atteso": "classi lucide attese per voci abilitate",
+      "evidenza": "sidebar",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voce-attiva",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "una voce attiva per caso",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-briciole",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "briciole in ordine",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-titoli-pagina",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "titoli ok",
+      "atteso": "{Pagina} · Area App",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voci-menu",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "attese 8; mancanti —; extra —",
+      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-icone",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "icone ok",
+      "atteso": "classi lucide attese per voci abilitate",
+      "evidenza": "sidebar",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voce-attiva",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "una voce attiva per caso",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-briciole",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "briciole in ordine",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-casi-unit",
+      "schermata": "navigazione",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
+      "pacchetto": "menu"
     }
   ],
-  "nonProvato": [],
+  "nonProvato": [
+    {
+      "id": "verify-link-valido",
+      "motivo": "facoltativo: token reale monouso non ottenuto"
+    },
+    {
+      "id": "shell-admin-link",
+      "motivo": "NON PROVABILE con utente solo App (adminRole none)"
+    }
+  ],
   "anomalie": [],
   "screenshotHashes": []
 }

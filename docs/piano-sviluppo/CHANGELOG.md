@@ -19,6 +19,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Tests
 
+- **V4 ter (6.6)** — Prova di sanità A0 (`locale-prod` L1 `navigazione`) **non conclusa**: blocco >10 min su `progress.log` (`nav-flows readBreadcrumbs`, SIGTERM); giri L2 servizi/menù fissi, `locale-dev` (console/stati-ui) e regressione L1 **non eseguiti**; 0 screenshot in `img/`. Esiti: `docs/design/verifica/esiti/2026-10-19-V4ter/`, `2026-10-19-locale-dev/`, `2026-10-19-locale-prod/` (`invalidRun`).
 - **VC-parallelo bis** — L1 `navigazione` (`controlli-6.6.json`) ~14 s con log passi; `C3-cambio-sistema` strumentato (~8 s, goto/reload `domcontentloaded`). L2 `servizi` parziale (daemon warmup ~2 s; doppio spawn da ritestare). Rapporto `docs/design/verifica/esiti/2026-10-19-VCparallelo/`.
 - **VC-parallelo** — L2 `locale-prod` `--schermata servizi` (~2 min 13 s, matrice ×4); lock concorrente OK; `typecheck`/`lint` OK. L1 `navigazione` (8.2): blocco dopo ~30 s su `menu-fisso-notebook` (**FALLITO** esecuzione); home/piatti/shell non completati. Residuo sporadico porta 31997 post-giro. Rapporto `docs/design/verifica/esiti/2026-10-19-VCparallelo/`.
 
