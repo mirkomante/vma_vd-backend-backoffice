@@ -2,14 +2,14 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-18",
-    "commit": "f0bdd6b0d4ba",
+    "commit": "16dd08c97708",
     "launcherVersion": "3.6.0",
     "launcherHeader": "3.6.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L1",
     "controlliVersion": 1,
-    "durataMs": 355831,
+    "durataMs": 4387,
     "invalidRun": false
   },
   "counts": {
@@ -18,7 +18,7 @@
     "AVVISO": 4,
     "NON PROVATO": 116
   },
-  "distinctControls": 34,
+  "distinctControls": 1,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -3171,16 +3171,6 @@
       "pacchetto": "accesso"
     },
     {
-      "id": "menu-fissi-schede-percorsi",
-      "schermata": "menu-fissi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "href menu=/app/menu/fixed; cat=/app/menu/fixed/categories; documentReloaded=true",
-      "atteso": "schede come percorsi",
-      "evidenza": "/app/menu/fixed",
-      "pacchetto": "menu"
-    },
-    {
       "id": "menu-fissi-categoria-modulo",
       "schermata": "menu-fissi",
       "profiloTema": "telefono-390/chiaro",
@@ -5909,26 +5899,19 @@
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-schede-percorsi",
+      "schermata": "menu-fissi",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "href menu=/app/menu/fixed; cat=/app/menu/fixed/categories; documentReloaded=false",
+      "atteso": "schede come percorsi",
+      "evidenza": "/app/menu/fixed",
+      "pacchetto": "menu"
     }
   ],
-  "nonProvato": [
-    {
-      "id": "verify-link-valido",
-      "motivo": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "shell-admin-link",
-      "motivo": "NON PROVABILE con utente solo App (adminRole none)"
-    },
-    {
-      "id": "vini-console",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "vini-stati-ui",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    }
-  ],
+  "nonProvato": [],
   "anomalie": [],
   "screenshotHashes": [
     {

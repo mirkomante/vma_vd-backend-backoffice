@@ -1,8 +1,8 @@
 # Esito verifica — locale-prod — 2026-10-18
-Commit: f0bdd6b0d4ba · Lanciatore: 3.6.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 5 min 56 s
+Commit: 16dd08c97708 · Lanciatore: 3.6.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 4 s
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 457 · FALLITO: 12 · AVVISO: 4 · NON PROVATO: 116 · Controlli distinti nel JSON corrente: 34
+OK: 457 · FALLITO: 12 · AVVISO: 4 · NON PROVATO: 116 · Controlli distinti nel JSON corrente: 1
 
 ## Pacchetto: accesso
 Righe: 47 · OK: 47 · FALLITO: 0
@@ -300,40 +300,7 @@ Call log:
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | OK (30/30) |
-| C1 | NON PROVATO (84/87) |
-| C2 | NON PROVATO (64/67) |
-| C2-mouse | OK (26/26) |
-| C3 | NON PROVATO (96/99) |
-| C9 | OK (30/30) |
-| NO-OVERRIDE | OK (11/11) |
-| RICOMPILA-ASSENTE | NON PROVATO (0/1) |
-| vini-azioni-pagina | OK (2/2) |
-| vini-coerenza-geografica | NON PROVATO (0/1) |
-| vini-colonna-elenco | AVVISO (3/4) |
-| vini-colonne-fisse | OK (1/1) |
-| vini-console | NON PROVATO (0/1) |
-| vini-disponibilita | OK (1/1) |
-| vini-elimina | OK (1/1) |
-| vini-elimina-registro-permessi | OK (1/1) |
-| vini-filtri-origine | OK (1/1) |
-| vini-filtri-ricerca | OK (1/1) |
-| vini-formati-server | OK (1/1) |
-| vini-formati-ui | FALLITO (0/1) |
-| vini-modulo-anno | OK (1/1) |
-| vini-modulo-campi | OK (2/2) |
-| vini-modulo-footer | OK (1/1) |
-| vini-modulo-inglese | OK (1/1) |
-| vini-modulo-validazione | OK (1/1) |
-| vini-nomi-accessibili | OK (1/1) |
-| vini-origine-cascata | OK (1/1) |
-| vini-origine-fuori-filtro | OK (1/1) |
-| vini-origine-opzioni-query | OK (1/1) |
-| vini-persistenza | FALLITO (0/1) |
-| vini-righe-azioni | FALLITO (0/1) |
-| vini-stati-ui | NON PROVATO (0/1) |
-| vini-tassonomie | OK (1/1) |
-| vini-testi | OK (1/1) |
+| menu-fissi-schede-percorsi | OK (1/1) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -472,10 +439,7 @@ Call log:
 | vini-stati-ui | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
-- verify-link-valido: facoltativo: token reale monouso non ottenuto
-- shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
-- vini-console: controllo non eseguito dal lanciatore in questa esecuzione
-- vini-stati-ui: controllo non eseguito dal lanciatore in questa esecuzione
+- (nessuno)
 
 ## Anomalie dell'ambiente
 - (nessuna)
