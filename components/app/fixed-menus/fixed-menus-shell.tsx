@@ -1,6 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
+import Link from 'next/link'
 
 import { MenuPageHeader } from '@/components/app/menu/menu-page-header'
 import { buttonVariants } from '@/components/ui/button'
@@ -32,9 +33,10 @@ export function FixedMenusShell({ activeTab, tabAction, children }: FixedMenusSh
         role="tablist"
         aria-label={MENU_FISSI_PAGE_TITLE}
       >
-        <a
+        <Link
           href="/app/menu/fixed"
           role="tab"
+          aria-selected={activeTab === 'menus'}
           aria-current={activeTab === 'menus' ? 'page' : undefined}
           className={cn(
             buttonVariants({ variant: 'ghost', size: 'default' }),
@@ -43,10 +45,11 @@ export function FixedMenusShell({ activeTab, tabAction, children }: FixedMenusSh
           )}
         >
           {MENU_FISSI_TAB_MENUS}
-        </a>
-        <a
+        </Link>
+        <Link
           href="/app/menu/fixed/categories"
           role="tab"
+          aria-selected={activeTab === 'categories'}
           aria-current={activeTab === 'categories' ? 'page' : undefined}
           className={cn(
             buttonVariants({ variant: 'ghost', size: 'default' }),
@@ -55,7 +58,7 @@ export function FixedMenusShell({ activeTab, tabAction, children }: FixedMenusSh
           )}
         >
           {MENU_FISSI_TAB_CATEGORIES}
-        </a>
+        </Link>
       </div>
 
       {children}

@@ -12,6 +12,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- **F-TAB — schede Menù fissi senza ricarica documento** — In `FixedMenusShell` le schede «Menù fissi» e «Categorie» usano `Link` di Next (percorsi invariati) con `aria-selected`; risolve il rilievo A (`documentReloaded` su cambio scheda).
+
+### Tests
+
+- **F-TAB** — L0: `typecheck`, `lint` (0 errori), `ui:check` OK; unitari `lib/**/*.test.ts` (100/100, `node --import ./scripts/node-test-resolve.mjs`). L1 `locale-prod` livello 1 `--solo menu-fissi-schede-percorsi` (`controlli-6.6.json`): **OK** (`documentReloaded=false`); esiti in `docs/design/verifica/esiti/2026-10-18-locale-prod/`.
+
+### Fixed
+
 - **F-SEL — tendine facoltative Distillati, Bevande e Vini** — `OptionalSelectField` con segnaposto interno non persistito; corretti trigger che mostravano `__empty__` / `__no_country__`; capacità/grado/invecchiamento affiancati da `md` come nei Vini; scelta «Non indicata» sui Vini non salva più `__empty__`.
 
 ### Tests
