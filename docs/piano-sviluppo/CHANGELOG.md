@@ -10,6 +10,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Added
+
+- **Passo 24 (I5) — Giorni speciali e Messaggio globale** — Schermate `/app/menu/special-days` (Prossimi/Passati, CRUD, interruttore «Attivo», modulo con data nativa, ambito, menù fissi per categoria, messaggio localizzato, sovrapposizione anticipata) e `/app/menu/message` (campo `globalMessage` it/en, Salva/Annulla/Togli, pannello pubblicazione con lettura server di `disponibilita.json`); azioni in `special-days-actions.ts` e `message-actions.ts`; voci «Giorni speciali» e «Messaggio globale» abilitate in `lib/app/navigation.ts`; helper e copy in `lib/menu/specialDays/`, `lib/menu/globalMessage/`, `lib/app/specialDays/`, `lib/app/globalMessage/`; simulazione ritardo lettura pubblicazione `APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS` (`lib/app/menu/devSimulate.ts` + `devPublishReadDelay.ts`, mai in production); caselle menù fissi solo in `components/app/special-days/` (nessun touch a `components/app/fixed-menus/**`).
+
 ### Fixed
 
 - **Lanciatore `ui:verify` — daemon `menu-payload` EADDRINUSE** — `waitMenuPayloadDaemonReady` non richiama più `killOrphanMenuPayloadDaemons` a ogni invocazione (`orphansHandled` + attesa fino a 10 s dopo la prima pulizia); evita di terminare il daemon del giro corrente e il secondo spawn su `:31997` (V-MF giro 3).
@@ -21,6 +25,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - **Menù fissi (`fixed-menus-shell`)** — `ui-check-allow`: deviazione D6: area di tocco delle schede con `pointer-coarse` fuori da `components/ui` (P8). Il registro D6 in design non è aggiornato in questo passo.
 
 ### Tests
+
+- **I5 (passo 24)** — L0: `pnpm typecheck` (radice + e2e) 0 errori; `pnpm lint` 0 errori (105 warning preesistenti); `pnpm ui:check` ok (2 eccezioni `ui-check-allow`); unitari `lib/**/*.test.ts` **103/103** (`node --import ./scripts/node-test-resolve.mjs --experimental-strip-types --test`); `pnpm payload run scripts/verify-lib-app-8_2.ts` OK; grep `overrideAccess: true` in `special-days` / `message` 0 match. L1 `navigazione` (`controlli-6.6.json`, ~15 s build+giro): righe schermata `navigazione` tutte **OK** (incluse voci e titoli per `/app/menu/special-days` e `/app/menu/message`); L1 `shell` (`controlli-8.2.json`): righe schermata `shell` **0 FALLITO**; L1 `giorni-speciali,messaggio-globale` atteso **NON PROVATO** (lanciatore senza modulo). Prove manuali dev (sovrapposizione, messaggio, `MENU_AVAILABILITY_IN_MEMORY=1`) **non eseguite** in questa sessione.
 
 - **D6 (passo 22)** — Su copia pulita di `9234ad7`: `controlli-6.6.json` valido e riscritto con lo stesso formato; nessuna chiave o schermata esistente cambiata; `node e2e/scripts/wire-controlli.mjs` OK (242 id); `node scripts/ui-verify/verify-controlli-wire.mjs` OK sulle sei schermate esistenti e su `giorni-speciali messaggio-globale` (50 controlli, tipi gestiti); ogni stato ha il PNG di riferimento, ogni PNG è usato, gli id sono unici. Nessun codice toccato: L1 e L2 non applicabili (controlli non ancora implementati nel lanciatore: V6).
 

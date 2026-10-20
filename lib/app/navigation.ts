@@ -92,7 +92,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Giorni speciali',
         href: '/app/menu/special-days',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'calendar-heart',
       },
       {
@@ -100,7 +100,7 @@ export const APP_NAV_GROUPS: readonly AppNavGroupDef[] = [
         label: 'Messaggio globale',
         href: '/app/menu/message',
         section: 'menu',
-        enabled: false,
+        enabled: true,
         iconKey: 'megaphone',
       },
     ],
