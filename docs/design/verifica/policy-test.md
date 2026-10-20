@@ -190,7 +190,7 @@ Al massimo **tre criteri, tutti sul risultato per l'app**: (a) i controlli richi
 - **Automazione in Cloud Build** (L0 e S a ogni push): la configurazione non è stata esaminata; da valutare dopo il 24c. Ogni push su `main` avvia già la build e il deploy.
 - **L1v**: da provare una volta che l'agente di verifica di Cursor legga bene gli screenshot.
 - **Debito 21c** (nove flussi di Menù fissi): saldato in parte dal 24d; il resto è nell'eccezione firmata (sezione 6).
-- **Scheda di V6 da riscrivere** (passo 28): il prompt attuale usa il vecchio lanciatore (`ui:verify`, controlli da implementare in `scripts/ui-verify/**`). Va riscritto dopo il passo 26 con Playwright e con la cancellazione del lanciatore come ultimo atto.
+- **Scheda di V6** (passo 28): riscritta il 2026-10-20, dopo il passo 26, senza lanciatore e spezzata in 28–28g; la cancellazione di `scripts/ui-verify` è l'ultimo atto (28g). Il passo 28 scrive lo smoke online come script Node fuori da `e2e/` (`scripts/online-smoke.mjs`): i controlli di sola richiesta HTTP non hanno bisogno di un browser, e la regola «controlli nuovi solo in Playwright» (§9) vale per i controlli di interfaccia. Prima del 28b serve l'approvazione di Mirko del nuovo tetto del motore.
 - **Motivi dei NON PROVATO nel rapporto**: con `test.skip(titolo, fn)` il reporter scrive «saltato» e i motivi restano nel codice e nel registro. Da correggere dentro V6 (`test.skip(true, motivo)` dentro il test).
 - **Cablaggio `e2e:wire`**: oggi vuoto. Dal 24c ogni test porta `// control:<id>`; resta da decidere, dopo il 24c, se `wire` debba fallire per un controllo del nucleo senza test.
 

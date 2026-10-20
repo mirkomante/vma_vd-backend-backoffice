@@ -13,7 +13,7 @@
 | **Implementazione** (Composer scrive codice) | 4, 5, 7, 11, 16, 19, 24, 26 | **Blocco comune (§3) + prompt del passo**, nello stesso primo messaggio, in quest'ordine |
 | **Import di produzione** | 31 | Blocco comune + prompt del passo 31 (che sostituisce la regola 6 del Blocco comune) |
 | **Revisione di regola** | 1 | Solo il prompt del passo (nessun Blocco comune) |
-| **Agente di verifica** (implementa i controlli: VC; esegue L2: V) | 3, 8, 13, 15, 18, 20, 23, 28 | Solo il prompt del passo (ha già le sue regole; **non** il Blocco comune) |
+| **Agente di verifica** (implementa i controlli: VC; esegue L2: V) | 3, 8, 13, 15, 18, 20, 23, 28, 28b–28g | Solo il prompt del passo (ha già le sue regole; **non** il Blocco comune) |
 | **Correzione dei rilievi P** (F) | 10, 14, 21, 29 | Solo il prompt del passo (è autonomo), e solo se ci sono rilievi P |
 | **Design, rilievi, tuoi** (D, RL, M) | 2, 6, 9, 12, 17, 22, 25, 27, 30 | Niente in Cursor: istruzioni nella scheda del passo |
 
@@ -96,14 +96,20 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 24d | 🔶 chiuso con riserva `36b35c8` | Solo il prompt del passo 24d | V-MF2 | Agente di verifica | **Nucleo di Menù fissi in Playwright, dopo il 24c**, più `giorni-speciali-attivazione`; primo atto: correggere due asserzioni del 24c e rimuovere `menuA`; limite DURO +100 righe di motore | L1 mirato, motore Playwright | controlli richiesti con esito misurato; zero ERRORE-STRUMENTO sul nucleo; ambiente pulito |
 | 25 | ✅ `1f4b6c0` | — | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
 | 26 | 🔶 chiuso con riserva `9a4d8b7` | Blocco comune + prompt del passo 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
-| 27 | 🔲 | — (istruzioni del passo) | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
-| 28 | 🔲 | Solo il prompt del passo 28 | V6 | Agente di verifica | **L2 completo**: tutte le schermate, profili, temi, WebKit, più i controlli online senza credenziali **(dal 2026-10-19: esegue la suite e2e completa più i controlli online)** | **L2** | rapporto scritto |
+| 27 | ✅ `0ff8e15` | — (istruzioni del passo) | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
+| 28 | 🔲 | Solo il prompt del passo 28 | V6a | Agente di verifica | **Backend e online, senza lanciatore**: `verify:menu-6_4`, `6_2` (diagnosi) e `final-proofs` con le variabili giuste; `scripts/online-smoke.mjs` con `on1`–`on6` e `on-menu-1`. Il resto di V6 sta in 28b–28g | backend e HTTP | tre criteri della scheda; tu committi |
+| 28b | 🔲 | Prompt da scrivere | V6b | Agente di verifica | **Nuclei rimasti di Giorni speciali e Messaggio globale** (eccezione firmata): dieci controlli in Playwright, due avvii del server di sviluppo. **Prima: tua approvazione del nuovo tetto del motore** | L2 mirato | tre criteri; tu committi |
+| 28c | 🔲 | Prompt da scrivere | V6c | Agente di verifica | **Stati simulati una volta per tipo di schermata** (catalogo, elenco dei menù, pagina, riga di home): tre avvii del server di sviluppo | L2 mirato | tre criteri; tu committi |
+| 28d | 🔲 | Prompt da scrivere | V6d | Agente di verifica | **Matrice C1/C2/C3 e screenshot** di Piatti, Vini, Distillati e Bevande | L2 | tre criteri; tu committi |
+| 28e | 🔲 | Prompt da scrivere | V6e | Agente di verifica | **Matrice C1/C2/C3 e screenshot** di Giorni speciali, Messaggio globale, home e navigazione | L2 | tre criteri; tu committi |
+| 28f | 🔲 | Prompt da scrivere | V6f | Agente di verifica | **Menù fissi oltre il nucleo** (quattro flussi e due risultati non validi del 24d) e **bulk da 101** dei quattro cataloghi | L2 | tre criteri; tu committi |
+| 28g | 🔲 | Prompt da scrivere | V6g | Agente di verifica | **WebKit, cancellazione del lanciatore `scripts/ui-verify` e chiusura di V6** | L2 | rapporto di V6 scritto; tu committi |
 | 29 | 🔲 | Solo il prompt del passo 29, se ci sono P | RL6/F6 | Design, Composer | Rilievi di V6 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 30 | 🔲 | — (istruzioni del passo) | M3/D9 | Tu, Design | **L3**: sessione reale su Cloud Run (io col tuo browser) e giro su iPhone vero (tu), §6 | **L3** | esito scritto; rilievi P chiusi |
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-20 (commit `9a4d8b7`). **Passo 26 (I6) chiuso con riserva**: 3 OK / 0 FALLITO / 164 NON PROVATO su 167 voci di §9; `verify:menu-6_2` e `6_4` FALLITI (cause in scheda), L1 del lanciatore ERRORE-STRUMENTO su Home e navigazione, tre controlli di backend a V6. Prima: **Passo 25 (D7) chiuso**: sei voci nuove di `livello_3`, `ritardo_pubblicazione` definita, `on-menu-1` (online, livello 2); nessun controllo L2 nuovo per Giorni speciali e Messaggio globale (§9 già coperta). Prima: **Passo 24d eseguito, chiuso con riserva** (24 min 19 s, 0 ERRORE-STRUMENTO nel giro finale; 10 OK validi; due risultati non validi registrati NON PROVATO). Decisioni di Mirko: **nessun passo 24e**; **nessun nuovo passo di test prima di V6**, salvo un difetto trovato da Mirko usando l'app; **il vecchio lanciatore `scripts/ui-verify` si cancella a V6**; eccezione scritta verso V6 estesa a Menù fissi (policy §6). Corretto un ciclo infinito della pulizia dei dati di prova (`27ebdbd`). **Prossimo passo: 27 (M2, tuo: Cloud Build e smoke)**; la scheda di V6 (28) è da riscrivere ora che il 26 è chiuso, prima di lanciare V6. Il 23 è eliminato. I debiti A1–A12 e dello strumento sono in 2.3 e si chiudono in F6 (passo 29) e V6 (passo 28), che ricevono solo ciò che è L2 o è scritto in un'eccezione firmata.
+**Ultimo aggiornamento**: 2026-10-20 (commit `0ff8e15`). **Passo 27 (M2) chiuso**: smoke online fatto con `curl` (lanciatore in ERRORE-STRUMENTO, non rilanciato), nove rotte del Menù protette, Cloud Build e traffico non verificati dalla chat di design. **V6 riscritta**: spezzata in 28–28g, senza lanciatore; il vecchio prompt è tolto. Prima: **Passo 26 (I6) chiuso con riserva**: 3 OK / 0 FALLITO / 164 NON PROVATO su 167 voci di §9; `verify:menu-6_2` e `6_4` FALLITI (cause in scheda), L1 del lanciatore ERRORE-STRUMENTO su Home e navigazione, tre controlli di backend a V6. Prima: **Passo 25 (D7) chiuso**: sei voci nuove di `livello_3`, `ritardo_pubblicazione` definita, `on-menu-1` (online, livello 2); nessun controllo L2 nuovo per Giorni speciali e Messaggio globale (§9 già coperta). Prima: **Passo 24d eseguito, chiuso con riserva** (24 min 19 s, 0 ERRORE-STRUMENTO nel giro finale; 10 OK validi; due risultati non validi registrati NON PROVATO). Decisioni di Mirko: **nessun passo 24e**; **nessun nuovo passo di test prima di V6**, salvo un difetto trovato da Mirko usando l'app; **il vecchio lanciatore `scripts/ui-verify` si cancella a V6**; eccezione scritta verso V6 estesa a Menù fissi (policy §6). Corretto un ciclo infinito della pulizia dei dati di prova (`27ebdbd`). **Prossimo passo: 28 (V6a, backend e online)**; i prompt di 28b–28g si scrivono uno alla volta, e prima del 28b serve la tua approvazione del nuovo tetto del motore. Il 23 è eliminato. I debiti A1–A12 e dello strumento sono in 2.3 e si chiudono in F6 (passo 29) e V6 (passo 28), che ricevono solo ciò che è L2 o è scritto in un'eccezione firmata.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -2284,6 +2290,8 @@ VERIFICHE: quelle del punto 2. Risposta finale: la tabella completa delle checkl
 
 ### Passo 27 — M2: deploy in produzione e smoke
 
+> **Esito (2026-10-20)**: ✅ `0ff8e15` (ultimo commit al momento del deploy, indicato da Mirko; dopo il 24b i commit sono di sola documentazione). **Smoke**: il lanciatore (`ui:verify online`) è andato in **ERRORE-STRUMENTO**: fermo 191 s sul primo passo (`AMBIENTE goto /app/login`), interrotto da Mirko, terzo caso dopo il 21c e il 24; ha anche avviato il daemon locale `menu-payload`. Non rilanciato. I controlli `on1`–`on6` e `on-menu-1` sono richieste HTTP e sono stati fatti con `curl` sul dominio pubblico, senza credenziali: `on1` 200 e «Area App»; `on2` 307 verso `<dominio>/app/login`; `on3` 303 con `Location: /app/login` e `Set-Cookie: payload-token` con `Expires` uguale all'istante della richiesta (scaduto); `on4` 0 (conteggio sull'intera pagina, approssimato); `on5` un campo password e l'avviso; `on6` 200 e l'avviso; `on-menu-1` nove rotte con 307 verso `<dominio>/app/login`, nessun 404 né 5xx (la revisione in linea contiene quindi le due rotte nate nel passo 24). **Non verificato dalla chat di design**: l'esito di Cloud Build e il 100 % del traffico di Cloud Run (Mirko ha dato l'hash come «deploy fatto» e non ha risposto ai sì o no); il sito non è raggiungibile da qui. **Debito**: lo smoke senza lanciatore (`scripts/online-smoke.mjs`) si scrive nel passo 28.
+
 **Chi**: tu. Nessun prompt di Cursor.
 
 **Che cos'è**: il deploy è **automatico**. Ogni push su `main` avvia il trigger Cloud Build (progetto `vma-vd`, regione `europe-west1`, servizio Cloud Run `vma-vd-backend-backoffice-git`; vedi `docs/operativo/cloud-run-produzione.md`). Non c'è un comando di deploy da lanciare, e la 6.6 non ha migrazioni: nessun passaggio sul database di produzione.
@@ -2293,53 +2301,84 @@ VERIFICHE: quelle del punto 2. Risposta finale: la tabella completa delle checkl
 2. Smoke (1 minuto, nessuna credenziale): `BASE_URL=<indirizzo pubblico dell'App, senza /app> pnpm ui:verify online --controlli controlli-8.2.json`
 3. Scrivimi «deploy fatto» con l'hash del commit e incollami l'esito dello smoke.
 
-### Passo 28 — V6: l'agente esegue L2 completo (tutte le schermate, WebKit, online senza credenziali)
+### Passo 28 — V6a: backend e online, senza lanciatore
 
-> **⚠ Da riscrivere prima di V6 (2026-10-20, policy v2 §9)**: il prompt qui sotto è quello del vecchio lanciatore (`ui:verify`, controlli da implementare in `scripts/ui-verify/**`, nove flussi di Menù fissi nel lanciatore). Con la policy v2 i controlli stanno solo in Playwright, **non si scrivono nuovi passi di test prima di V6** (salvo un difetto trovato da Mirko usando l'app) e **il lanciatore si cancella a V6**, come ultimo atto. Il prompt nuovo si scrive dopo il passo 26: **non incollare questo**.
+> **Scheda riscritta il 2026-10-20 dopo il passo 26** (policy v2 §9). Il vecchio prompt di V6 usava il lanciatore `ui:verify`: **non si incolla**. V6 è spezzata in 28–28g (vedi la sezione successiva): questa scheda è la prima parte, senza interfaccia e senza browser.
 
-> **V6, indicazioni (2026-10-20)**: oltre alla suite di fase, l'agente (non Mirko a mano) **riprova i tre stati simulati** di ogni schermata (caricamento, errore di caricamento, errore dell'azione) con **un dev server alla volta** (quattro avvii in tutto), il **bulk da 101 record** dei cataloghi e i **flussi di Menù fissi non provati a runtime** (elenco in 2.2: `colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-*`, `persistenza`, `ordine-liste`, `nomi-accessibili`), e **scrive dentro V6 i flussi di Giorni speciali e Messaggio globale** (ex T2d). **Primo compito di V6**: diagnosticare il timeout di `menu-fissi-elimina-senza-uso` (vedi 2.3) e rilanciare i nove flussi di Menù fissi (il guasto del daemon è corretto in `fab9f5d`). Per i flussi già provati vale la regola: un esito L2 resta valido finché non cambia un file del raggio largo (policy-test §4). Il passo si spezza in giri per schermata, ciascuno con i suoi tre criteri.
+**Perché**: il passo 26 ha lasciato tre controlli di backend aperti (`verify:menu-6_4` a database allineato, `verify:menu-6_2` con una diagnosi mirata, `verify:menu-availability-final-proofs` con le sue variabili) e lo smoke online non gira più con il lanciatore (fermo 191 s sul primo passo nel passo 27). Qui si risolvono e si scrive lo smoke online come script a sé.
 
-**Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
+**Decisione di disegno** (chat di design, da confermare in sede di controllo): i controlli di sola richiesta HTTP non hanno bisogno di un browser. Lo smoke sta in `scripts/online-smoke.mjs` (Node, nessuna dipendenza), **fuori da `e2e/`**: non pesa sul motore (3.145 righe, soglia di revisione 3.200). La regola «controlli nuovi solo in Playwright» (policy §9) vale per i controlli di interfaccia.
+
+**Quando**: ora; **mai insieme a una chat di Composer**. **Chi**: agente di verifica, chat pulita. **Stima e tetto**: 45 minuti; a 90 FERMATI e riporta (R10).
+
+**Cosa fai tu**: apri una chat nuova di Cursor (agente di verifica), senza altre chat attive; esegui in un terminale la pulizia della prima riga del prompt; incolla **solo** il prompt; a fine passo incollami qui la risposta finale, con la durata in minuti. **Commit e push**: nessun git dell'agente; committi tu dopo il mio controllo. Se `git status --short` mostra file diversi da quelli che ti scrivo, ti fermi e me li incolli. **Messaggio di commit suggerito**: `test(online): passo 28 (V6a) — verify di backend riesaminati e smoke online senza lanciatore`.
 
 ```text
-Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Verifichi, non correggi. Istanza: V6, dopo la chat I6 e del deploy (passo 27).
+PASSO 28 (V6a): backend e online, senza lanciatore. Rispondi in italiano. Sei l'agente di verifica: PROVI, non modifichi l'app.
 
-Leggi nell'ordine, per intero:
-1. .cursor/rules/ui/02-ui-verifica-agente.mdc  (le tue regole: valgono sempre)
-2. docs/design/verifica/README.md e docs/design/verifica/policy-test.md
-3. docs/design/verifica/controlli-6.6.json (i controlli del Menù) e docs/design/verifica/controlli-8.2.json
-   (shell e accesso, per la regressione)
-4. docs/design/verifica/misura-tocco.md
-5. Le specifiche, solo per capire i controlli: le nove specifiche in docs/design/schermate/: piatti, vini, distillati, bevande, servizi, menu-fissi, giorni-speciali, messaggio-globale, integrazione
+PRIMA, in un terminale: pkill -f "next dev"; pkill -f "menu-payload"; lsof -nP -iTCP:3000,3100,3200,3201,3202,3203,3002,31997 -sTCP:LISTEN | tail -n +2;
+rm -f .next/e2e.lock .next/ui-verify.lock  (se lsof stampa ancora qualcosa, kill del PID). Un solo server alla volta, mai insieme a Composer.
 
-Poi, in quest'ordine:
-0. Riporta nel rapporto l'hash di HEAD e lo stato di git (solo lettura: git rev-parse --short HEAD, git status --short).
-   Se git status non è pulito, fermati e dimmelo.
-A. Il lanciatore ha già i controlli del Menù. Se nei rapporti dei passi VC (cartelle
-   docs/design/verifica/esiti/<data>-controlli/) o nei rapporti V precedenti ci sono controlli ancora IN DEBITO o
-   non completati, ora tutte le schermate esistono: IMPLEMENTALI tu in scripts/ui-verify/** ed ESEGUILI in questa
-   verifica. Rifinisci anche nav-pannello-telefono (caso telefono-390-basso, con le otto voci accese), che VC1 ha
-   lasciato come «controllo dubbio». Completa i controlli online nuovi del Menù previsti dal file dei controlli.
-   Non cambiare i controlli JSON. Nel rapporto scrivi quali hai completato ed eseguito e quali no, e perché.
-B. Esegui, su locale-dev (solo il controllo CONSOLE) e su locale-prod (tutti gli altri):
-   pnpm ui:verify --livello 2 --controlli controlli-6.6.json   (tutto)
-   pnpm ui:verify --livello 2 --controlli controlli-8.2.json   (shell e accesso)
-   pnpm ui:verify --livello 2 --controlli controlli-8.5.json   (Orari)
-C. Esegui i controlli «online-senza-credenziali» contro BASE_URL = <DOMINIO PUBBLICO DI CLOUD RUN: sostituiscilo con l'indirizzo con cui apri l'App in produzione, senza /app>, con il comando
-   BASE_URL=<dominio> pnpm ui:verify online --controlli controlli-8.2.json
-   Nessuna credenziale, nessun utente di prova sul dominio pubblico.
-D. Scrivi gli esiti in docs/design/verifica/esiti/<AAAA-MM-GG>-<ambiente>/ come da README, sezione 7.
-E. Cancella l'utente di prova e i dati «verify-ui-…» rimasti, e verifica con git status che i file nuovi siano solo
-   quelli attesi.
+CONTESTO. Riporta git rev-parse --short HEAD e git status --short: il secondo deve essere vuoto, altrimenti FERMATI. Dominio pubblico (BASE_URL, senza /app):
+https://vma-vd-backend-backoffice-git-437074136999.europe-west1.run.app
+Il lanciatore scripts/ui-verify è congelato e da cancellare più avanti: NON usarlo, NON rilanciarlo. Fatti già accertati, non rifarli: (1) verify:menu-6_4 fa per progetto un
+round-trip che cancella e reimporta il contenuto del menù nel database di sviluppo; con il database non allineato allo snapshot il primo errore è «Impronta contenuto roundtrip» e il
+finally lo sostituisce con il conteggio dei piatti; i piatti in più erano di prova (confermato da Mirko). (2) Il blocco REST di verify:menu-6_2 gira solo con pnpm dev acceso; dopo l'ultimo OK noto
+(18/10) non sono cambiati collection, hook né dipendenze; il FALLITO è «REST fallback-locale=none: description doveva essere vuota» (scripts/verify-menu-6_2.ts, circa riga 1796).
+(3) final-proofs va lanciato con il dev avviato con le variabili della SUA intestazione (file /tmp/vma-final-dev-*), non con quelle di 6_4. Mai produzione, salvo lo smoke online (solo
+richieste senza credenziali); mai prod-db.sh; non stampare mai DATABASE_URL.
 
-Non fare git (puoi leggere git status). Non toccare app/, components/, lib/, docs/design (fuori da verifica/esiti), né i
-controlli. Rispondi in italiano, distinguendo sempre OK, FALLITO, AVVISO e NON PROVATO, con il valore misurato e
-quello atteso per ogni FALLITO. Se un controllo ti sembra sbagliato o impossibile, non cambiarlo: scrivilo come
-«controllo dubbio».
+PERIMETRO. Puoi creare: scripts/online-smoke.mjs; la cartella NUOVA docs/design/verifica/esiti/<data di oggi, date +%F>-V6a/ con il solo rapporto.md (niente PNG, niente log). Puoi modificare:
+package.json (SOLO l'aggiunta dello script "online:smoke": "node scripts/online-smoke.mjs"), docs/piano-sviluppo/CHANGELOG.md (una voce Tests, al massimo 25 righe). File temporaneo ammesso:
+scripts/tmp-v6a-rest-locale.ts, da cancellare prima di finire. VIETATO: app/, components/, lib/, collections/, globals/, e2e/, scripts/verify-*.ts (se un verify ti sembra sbagliato, scrivilo
+come «controllo dubbio», non correggerlo), scripts/ui-verify/**, docs/design/** fuori dalla cartella nuova degli esiti, controlli-*.json, dipendenze.
+LIMITI DURI: scripts/online-smoke.mjs al massimo 120 righe; rapporto.md al massimo 120; CHANGELOG 25. Raggiunto un limite FERMATI e rispondi con ciò che hai.
+
+FAI, in quest'ordine:
+1. Controlla che il database sia vma_vd_dev (solo il nome). Riporta i conteggi di piatti, menù fissi, giorni speciali, vini, distillati, bevande e servizi (file temporaneo con la Local API).
+2. verify:menu-6_4, UNA volta. Avvia pnpm dev con le variabili dell'intestazione di scripts/verify-menu-6_4.ts (IN_MEMORY, trace, mirror e sync in /tmp). Lancia pnpm verify:menu-6_4 con l'output
+   salvato con tee in /tmp. Riporta l'esito, la PRIMA riga di errore (non solo l'ultima) e i conteggi prima e dopo. Atteso: OK se il database è allineato allo snapshot.
+3. verify:menu-6_2, con dev acceso. Prima la diagnosi: con il file temporaneo crea un piatto «verify-ui-v6a-<tag>» con nome italiano e descrizione «Solo IT» (Local API, locale it), poi chiedi
+   a GET /api/dishes/<id>?locale=en&depth=0 con ciascuno di questi parametri: nessuno, fallback-locale=none, fallback-locale=null, fallback-locale=false. Riporta name e description di ogni risposta.
+   Cancella il piatto in try/finally. Poi leggi (sola lettura) come node_modules/payload interpreta il parametro fallback-locale e riporta file e riga. Poi lancia pnpm verify:menu-6_2 UNA volta.
+   Classifica la causa con la prova: (iii) regressione dell'app, (iv) asserzione superata dal codice, (v) comportamento di Payload (parametro non onorato), (vi) altro o non determinata.
+4. final-proofs: ferma il dev; riavvialo con le variabili dell'intestazione di scripts/verify-menu-availability-final-proofs.ts; lancia pnpm verify:menu-availability-final-proofs UNA volta.
+   Il server standalone :3002 NON si avvia: se lo script si interrompe per :3002, è ambiente (NON PROVATO), non FALLITO. Ferma il dev.
+5. Smoke online. Scrivi scripts/online-smoke.mjs: legge BASE_URL (obbligatoria; se manca esce con errore), usa fetch con redirect: 'manual' e NON invia mai credenziali né cookie. Una riga per controllo
+   «OK|FALLITO <id> <misurato>», uscita 1 se c'è un FALLITO, nessuna scrittura su disco. Controlli e attesi (già osservati a mano sul dominio il 2026-10-20):
+   on1 GET /app/login: 200 e testo «Area App». on2 GET /app: 307 con destinazione = BASE_URL + /app/login. on3 POST /app/logout senza cookie: 303, Location /app/login (relativa o con l'origine
+   di BASE_URL), Set-Cookie payload-token con Expires non successiva alla richiesta. on4 GET /app/login/reset senza token: nessun <form>, <input> o <button> nel markup (approssimazione sull'intera pagina:
+   scrivilo nel rapporto). on5 GET /app/login/reset?token=prova&resetFailed=1: campo name="password" e la frase GENERIC_RESET_FAILURE_MESSAGE. on6 GET /app/login/verify: 200 e la frase
+   GENERIC_VERIFY_FAILURE_MESSAGE. on-menu-1 (docs/design/verifica/controlli-6.6.json, blocco online-senza-credenziali): per le nove rotte /app/menu, /app/menu/wines, /app/menu/spirits,
+   /app/menu/drinks, /app/menu/services, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message: 3xx con destinazione BASE_URL + /app/login, mai 404 né 5xx,
+   mai 0.0.0.0 né localhost. Le due frasi si ESTRAGGONO dal sorgente lib/auth/localEmail/messages.ts con una regex: non si copiano. Lancialo contro il dominio con
+   BASE_URL=<dominio> pnpm online:smoke: atteso tutto OK. Prova NEGATIVA: con BASE_URL=http://127.0.0.1:9 deve dare errore o FALLITO, mai OK; riporta le due uscite.
+6. Chiusura: pnpm typecheck (radice ed e2e) e pnpm lint a 0 errori (0 warning nei file toccati), pnpm ui:check, pnpm e2e:wire; ps e lsof con le porte 3000–3203, 3002 e 31997 libere;
+   pnpm payload run e2e/scripts/count-verify-ui.ts a zero; cancella i file temporanei; git status --short: solo i file del perimetro. NON fare git.
+
+TRE CRITERI (riporta i numeri): (a) 6_4, 6_2 e final-proofs hanno un esito misurato con la prima riga di errore e la classe di causa, oppure un NON PROVATO con motivo e livello; lo smoke online
+ha un esito per ciascuno dei sette controlli; (b) zero ERRORE-STRUMENTO nei passi; (c) ambiente pulito: porte libere, dev fermo, zero record verify-ui-, nessun file di esito versionato modificato.
+I FALLITO dell'app non sono un motivo per rifiutare il passo: si classificano P o A (policy-test §5) e non si modificano controlli, script di verify né app.
+RISPOSTA FINALE: tabella «Esiti reali» (controllo, esito, prima riga di errore, classe di causa), i conteggi prima e dopo, le risposte della diagnosi REST per ciascun parametro, le due uscite
+dello smoke (positiva e negativa), il numero di righe di scripts/online-smoke.mjs, l'elenco dei file toccati, il git status --short e la durata in minuti.
 ```
 
-**Quando Cursor ha finito**: incollami qui il suo resoconto finale. Il rapporto sta in `docs/design/verifica/esiti/<data>-<ambiente>/`: fai tu `git add -A` e un commit con il messaggio indicato sotto, poi il push, e scrivimi «push fatto». Io controllo e ti do il prompt di aggiornamento stato (§1.3), da incollare in una chat nuova di Composer.
-**Messaggio di commit suggerito** (lo fai tu): `docs(verifica): rapporto L2 V6 (Menù completo)`
+### Passi 28b–28g — il resto di V6 (indicazioni; i prompt si scrivono uno alla volta)
+
+Ogni passo è una chat nuova dell'agente di verifica, con i **suoi tre criteri** e **un solo obiettivo** (policy §9: sviluppo dello strumento e giri lunghi non stanno nella stessa chat). Il prompt di ciascuno lo scrive la chat di design dopo l'esito del precedente. In tutti: `PLAYWRIGHT_BROWSERS_PATH=$HOME/Library/Caches/ms-playwright` nel terminale di Cursor (altrimenti punta a una cache vuota e il browser «non esiste»); esiti in una cartella nuova per giro (`E2E_ESITI`); nessun lanciatore; i FALLITO sono risultati (P o A), non si cambiano controlli né app; **limiti di righe duri**; non si fa mai git dall'agente.
+
+**Prima del 28b: decisione di Mirko sul motore.** Il motore Playwright è a 3.145 righe (soglia di revisione 3.200, policy §9) e V6 ne aggiunge molte: la chat di design scrive la valutazione e propone un **nuovo tetto duro per tutto V6** (ordine di grandezza: 4.000 righe di motore); oltre quel tetto l'agente si ferma. Senza la tua approvazione scritta il 28b non parte.
+
+| Passo | Obiettivo | Controlli e ambiente |
+|---|---|---|
+| **28b** | Nuclei rimasti di Giorni speciali e Messaggio globale (eccezione firmata, policy §6) | `giorni-speciali-testi`, `-nomi-accessibili`, `-modulo-validazione`, `-console`; `messaggio-globale-testi`, `-nomi-accessibili`, `-console`, `-file-riceve-messaggio`, `-permessi`, `-pubblicazione`. Due avvii del server di sviluppo: normale (console) e con `MENU_AVAILABILITY_IN_MEMORY=1` più `APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS` (`ritardo_pubblicazione`) |
+| **28c** | Stati simulati, **una volta per tipo di schermata** (policy §7) | `vini-stati-ui` (catalogo), `servizi-stati-ui` (elenco dei menù), `messaggio-globale-stati-ui` (pagina), `home-riga-menu-stati`. Tre avvii: `errore_server`, `errore_caricamento`, `caricamento_lento`; con quello di 28b sono i quattro avvii di V6 |
+| **28d** | Matrice C1/C2/C3 e screenshot di Piatti, Vini, Distillati e Bevande | Stati di `stati_c1_c2`, 390 e 1280 chiaro e scuro (più 767/768 per gli elenchi); estende il modello di `servizi-menu-fissi-matrix.spec.ts`; con i tre screenshot mancanti di Vini (`origine-senza-regioni`, `errore-geografia`, `errore-anno`) |
+| **28e** | Lo stesso per Giorni speciali, Messaggio globale, home e navigazione | Stessi stati e profili del 28d; il confronto visivo (C10) con i PNG di riferimento resta a carico della chat di design |
+| **28f** | Menù fissi oltre il nucleo, e bulk da 101 dei cataloghi | `menu-fissi-colonna-elenco`, `-porzione-traduzione`, `-servizi-piatti`, `-ordine-liste`, più i due risultati non validi del 24d (`-elimina-senza-uso`, `-nomi-accessibili`, con `await` sul caricamento dell'elenco); `*-ordine-100` di Piatti, Vini, Distillati e Bevande; con i quattro screenshot mancanti di Menù fissi (`scegli-piatti` a 390 e 1280, `visibilita-categoria`, `visibilita-avviso`) |
+| **28g** | WebKit, cancellazione del lanciatore, chiusura di V6 | Una passata WebKit della matrice; **ultimo atto**: cancellare `scripts/ui-verify/`, gli script `ui:verify` di `package.json` e i riferimenti in regole e documenti (R9, R13 e il resto di policy §9); rapporto di V6 |
+
+**Ordine e regole**: 28 → 28b → 28c → 28d → 28e → 28f → 28g, con il passo 29 (rilievi e correzioni) dopo l'ultimo giro che produce FALLITO. Un esito L2 resta valido finché non cambia un file del raggio largo (policy §4): ciò che 28–28g provano non si rifà. Lo stato vuoto e «accesso senza ruolo» restano NON PROVATO (lo copre `scripts/verify-roles-8_3.ts`) salvo una decisione diversa. Se un passo supera il doppio della stima (R10) si ferma e riporta.
 
 ### Passo 29 — RL6/F6: rilievi di V6 e correzione dei P (solo se ci sono)
 
