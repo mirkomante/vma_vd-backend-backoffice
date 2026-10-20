@@ -51,7 +51,9 @@ async function clickFixedMenuDelete(page: import('@playwright/test').Page, menuN
 
 test.describe('Menù fissi', () => {
   // control:menu-fissi-elimina-senza-uso
-  test(`menu-fissi-elimina-senza-uso ${PROFILE}`, async ({ page, payload, payloadWorker }, testInfo) => {
+  // NON PROVATO: il risultato del 24d non è valido (count() senza attesa mentre l'elenco si carica: difetto del test, non provato difetto dell'app).
+  // Decisione di Mirko (2026-10-20): nessuna rimisura prima di V6; eccezione scritta verso V6 (policy §6).
+  test.fixme(`menu-fissi-elimina-senza-uso ${PROFILE}`, async ({ page, payload, payloadWorker }, testInfo) => {
       const nome = payload.nome.bind(payload)
       const managerEmail = payload.managerEmail
       const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
@@ -212,7 +214,9 @@ test.describe('Menù fissi', () => {
   })
 
   // control:menu-fissi-nomi-accessibili
-  test(`menu-fissi-nomi-accessibili ${PROFILE}`, async ({ page }) => {
+  // NON PROVATO: il risultato del 24d non è valido (legge innerText, senza gli aria-label, prima che l'elenco sia caricato).
+  // Decisione di Mirko (2026-10-20): nessuna rimisura prima di V6; eccezione scritta verso V6 (policy §6).
+  test.fixme(`menu-fissi-nomi-accessibili ${PROFILE}`, async ({ page }) => {
     await gotoFixedMenus(page)
     const body = await page.locator('main').innerText()
     const hits = ENGLISH_BANNED.filter((w) => body.includes(w))

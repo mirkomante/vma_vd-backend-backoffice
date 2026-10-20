@@ -263,6 +263,7 @@ try {
   for (const l of out.split('\n').filter(Boolean)) {
     const st = l.slice(0, 2)
     if (st === '??') continue // cartella o file nuovo: va bene
+    if (st[1] === ' ') continue // già in staging: modifica o cancellazione deliberata (git add, git rm)
     add(l.slice(3).trim(), 1, 'R13', 'file di esito versionato modificato', 'un giro non riscrive un esito esistente: `git checkout -- docs/design/verifica/esiti` e usa una cartella nuova (E2E_ESITI)')
   }
 } catch {

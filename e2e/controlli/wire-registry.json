@@ -12,7 +12,9 @@
     "menu-fissi-console": "NON PROVATO: richiede server di sviluppo (porta 3200); scadenza V6 passo 28",
     "menu-fissi-testi": "NON PROVATO «tetto»: limite di righe del passo 24d; eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
     "menu-fissi-modulo-validazione": "NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28",
-    "menu-fissi-disponibilita": "NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28"
+    "menu-fissi-disponibilita": "NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28",
+    "menu-fissi-elimina-senza-uso": "NON PROVATO: risultato del 24d non valido (difetto del test); nessuna rimisura prima di V6 (decisione di Mirko, 2026-10-20); eccezione scritta verso V6",
+    "menu-fissi-nomi-accessibili": "NON PROVATO: risultato del 24d non valido (difetto del test); nessuna rimisura prima di V6 (decisione di Mirko, 2026-10-20); eccezione scritta verso V6"
   },
   "tests": []
 }
