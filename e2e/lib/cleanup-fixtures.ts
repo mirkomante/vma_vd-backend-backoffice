@@ -28,18 +28,19 @@ const DELETE_ORDER: CollectionSlug[] = [
 
 async function findVerifyUiFixedMenuIds(payload: Payload): Promise<Set<string>> {
   const ids = new Set<string>()
-  for (;;) {
+  for (let page = 1; ; page += 1) {
     const found = await payload.find({
       collection: FIXED_MENUS_SLUG,
       where: { name: { like: 'verify-ui-%' } },
       limit: 100,
+      page,
       depth: 0,
       overrideAccess: true,
     })
-    if (found.docs.length === 0) break
     for (const doc of found.docs as FixedMenu[]) {
       ids.add(String(doc.id))
     }
+    if (!found.hasNextPage) break
   }
   return ids
 }
