@@ -5214,7 +5214,7 @@
       "chiaro"
      ],
      "atteso": {
-      "interruttore": "«Attivo: {data}, {ambito}» (data in lettere in minuscolo, come nel testo della specifica), etichetta visibile «Attivo» su telefono; resta attivo sulle righe disattivate",
+      "interruttore": "«Attivo: {data}, {ambito}» (data in lettere come nell'elenco, con la prima lettera maiuscola: la specifica non fissa la maiuscola e l'app usa la stessa funzione dell'elenco), etichetta visibile «Attivo» su telefono; resta attivo sulle righe disattivate",
       "matita": "«Modifica il giorno speciale di {data}»",
       "cestino": "«Elimina il giorno speciale di {data}»",
       "aree_di_tocco": "44 px con il tocco, interruttore, matita e cestino",
