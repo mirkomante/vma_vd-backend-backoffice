@@ -39,3 +39,16 @@ Per i cataloghi **non è mai stato fatto** un confronto con le demo. Gli screens
 1. **F4** (Composer): correzione di P1–P7 (passo 21), senza giri di verifica.
 2. **T1e** (versione ridotta): gli screenshot mancanti, con il foglio scorso fino alla sezione, dopo F4.
 3. Confronto visivo degli stati rimasti e a 1280 px.
+
+
+---
+
+## Esito dopo F4 e T1e (2026-10-20)
+
+Confronto visivo sugli **screenshot nuovi di T1e** (390 px chiaro): Servizi (modulo), Menù fissi (elenco, Categorie, modulo, sezioni Piatti e Servizi, conferma di eliminazione, foglio della categoria), Vini (elenco, modulo, nuovo con errori, filtri, origine), Distillati (modulo, nuovo con errori), Bevande (elenco, modulo, fondo).
+
+**P1–P7: tutti corretti e verificati.** Titolo dei fogli con sottotitolo e piè «Salva \| Annulla» in **tutti** i fogli (anche di Vini, Distillati e Bevande), titoli di sezione del modulo del menù fisso, schede a sottolineatura con il pulsante dentro la scheda, etichetta «Attiva» sotto l'interruttore, «Verrà tolto anche da 1 giorno speciale: …», interruttore a destra nel foglio della categoria. **Nessun P aperto, nessun difetto che impedisca l'uso.**
+
+**Nuovi rilievi A** (sezione 2.3 del piano; si chiudono in F6): A5 (etichetta «Attiva» su desktop, da chiarire), **A6** (area di tocco delle schede di Menù fissi sotto 44 px: 4 FALLITO C2 dopo F4), A7 (Capacità e Grado, Invecchiamento e Grado su due righe a 390 px), **A8** (filtro Stato dei Vini con il valore grezzo «all»), A9–A12 (testi segnaposto dei filtri, titoli di sezione, icona «+», frase in più).
+
+**Non confrontato**: Servizi a 1280 px, i moduli a 1280 px e gli stati in scuro dei cataloghi; i sette screenshot mancanti (vedi 2.3).

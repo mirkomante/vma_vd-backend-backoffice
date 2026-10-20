@@ -84,8 +84,8 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(si chiude con F4 e T1e senza P aperti: vedi 2.1 e 2.2)** | **L2** mirato | rapporto scritto |
-| 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
+| 20 | ✅ `853a1e5` | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(si chiude con F4 e T1e senza P aperti: vedi 2.1 e 2.2)** | **L2** mirato | rapporto scritto |
+| 21 | ✅ `22b66b8` | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
 | 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(eliminato il 2026-10-20: i controlli di Giorni speciali e Messaggio globale si scrivono dentro V6, passo 28)** | lint e typecheck | tu committi e pushi |
 | 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-20 (commit `cf754c5`). **Chiusura del passo 20 e della serie T in una sessione**: (1) applica questo pacchetto; (2) **F4** (passo 21: sette rilievi P e fogli dei cataloghi, senza giri di verifica); (3) **T1e** (screenshot di Servizi, Menù fissi e cataloghi); (4) confronto visivo (C10) a cura della chat di design; ciò che resta diventa rilievo A o debito annotato. Un solo giro di F4 più T1e. F4 e T1e non girano mai insieme.
+**Ultimo aggiornamento**: 2026-10-20 (commit `853a1e5`). **Passo 20 CHIUSO** (F4 `22b66b8` e T1e `853a1e5`, confronto visivo fatto). **Prossimo passo: 22 (D6)**: la chat di design scrive i controlli di Giorni speciali e Messaggio globale; poi **24 (I5)** con Composer. I rilievi A e i debiti dello strumento sono nella sezione 2.3 e si chiudono in F6 (passo 29) insieme ai P di V6.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -117,12 +117,12 @@ La verifica resta completa e i controlli dei file JSON restano la fonte di verit
 | **T1b** | Idem: Vini, Distillati, Bevande | non eseguito | **assorbito in T1e (Parte B)**: mai confrontati con le demo, è il rischio maggiore |
 | **T1c** | Idem: Servizi e Menù fissi | 🔶 struttura in repo (`0bb6847`) | **chiuso**: assorbito da T1e (Parte A) |
 | **T1d** | Chiusura di T1c (già «T1c bis») | 🔶 chiuso al tetto (`cf754c5`) | **chiuso**: le simulazioni passano a V6, il resto a T1e |
-| **T1e** | Screenshot: Parte A Servizi e Menù fissi, Parte B Vini, Distillati e Bevande | 🔲 dopo F4 | **eseguire**: un solo passo, due parti con un arresto in mezzo; tre criteri |
+| **T1e** | Screenshot: Parte A Servizi e Menù fissi, Parte B Vini, Distillati e Bevande | ✅ `853a1e5` (81 file su 88 attesi) | **chiuso**: 7 stati mancanti per ERRORE-STRUMENTO (debito per V6) |
 | **T2a** | Flussi di Servizi e Menù fissi | non eseguito | **eliminato**: già provati in 20d (22 flussi OK) e nei giri di V4 ter; F4 tocca solo la presentazione; i flussi non provati di Menù fissi (2.2) si provano in V6 |
 | **T2b** | Flussi dei cataloghi | non eseguito | **eliminato**: provati in V3 e V3 bis; il resto a V6 |
 | **T2c** | Flussi di Piatti e home | non eseguito | **eliminato**: provati in V2 quater |
 | **T2d** | Flussi di Giorni speciali e Messaggio globale | non eseguito | **rinviato a V6** (passo 28): si scrivono dentro V6, dopo I5 e I6 |
-| **T3** | Confronto visivo (C10) | 🔶 fatto per 28 screenshot (Servizi e Menù fissi) | **chiude con T1e**: la chat di design confronta gli screenshot nuovi; i P residui non bloccanti diventano A |
+| **T3** | Confronto visivo (C10) | ✅ fatto il 2026-10-20 su F4 e T1e | **chiuso**: nessun P aperto, rilievi A5–A12 in 2.3 |
 | **T4** | Pensionamento del vecchio lanciatore | non eseguito | **rinviato a dopo V6** (non ora) |
 
 **Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine di esecuzione** (le righe e le schede sono sempre in ordine ascendente per identificativo; questo è l'ordine in cui si eseguono): applicare il pacchetto → **F4** (passo 21, Composer) → push → **T1e** (agente di verifica) → push → confronto visivo (C10, chat di design) → passi 22–26 (D6, I5, D7, I6; il 23 è eliminato) → V6 con la suite completa. **F4 e T1e non girano mai insieme** (la verifica costruisce l'app dalla stessa cartella).
@@ -133,13 +133,34 @@ La verifica resta completa e i controlli dei file JSON restano la fonte di verit
 
 | Passo | Cosa | Stato | Note |
 |---|---|---|---|
-| 20 | V4: L2 di Servizi e Menù fissi | 🔶 funzionale provato, visivo con 7 rilievi P | **si chiude con F4 e T1e** (2026-10-20). Funzionale: Servizi provato (20d: righe, cascata con registro, disponibilità, eliminazione, modulo, persistenza, ordine; V4 ter: matrice C1–C3 OK); Menù fissi provato per schede, ordine con frecce, visibilità, composizione, validazione, categorie, doppioni, tassonomie, disponibilità. **NON provati a runtime in Menù fissi** (debito per V6, dall'agente): `colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-usato`, `elimina-senza-uso`, `elimina-cascade-registro-permessi`, `persistenza`, `ordine-liste`, `nomi-accessibili`, `stati-ui` (la parte di database è coperta da `verify:menu-6_2`, `6_3` e `verify-fixed-menu-en-locale.ts`). Visivo: C10 di 28 screenshot (7 P, vedi `esiti/2026-10-19-T1c/rilievi.md`) |
+| 20 | V4: L2 di Servizi e Menù fissi | ✅ **chiuso** (2026-10-20) | F4 (`22b66b8`) e T1e (`853a1e5`) senza P aperti. Verificato visivamente su Servizi, Menù fissi, Vini, Distillati e Bevande: P1–P7 corretti (titolo con sottotitolo, piè «Salva \| Annulla», titoli di sezione, schede a sottolineatura con l'azione dentro la scheda, etichetta «Attiva», «da 1 giorno speciale», interruttore a destra). **Non provato a runtime** e annotato come debito per V6: flussi di Menù fissi (`colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-*`, `persistenza`, `ordine-liste`, `nomi-accessibili`), i tre stati simulati, il bulk da 101, sette screenshot mancanti (vedi 2.3) |
 | 20b | F-SEL: tendine facoltative | ✅ `ed64db5` | |
 | 20c | F-TAB: schede con `Link` | ✅ `6ae1f34` | |
 | 20d | V4 bis: helper Payload persistente e fix dei flussi | ✅ parziale `a7114d8` | 22 controlli OK; matrice e screenshot non fatti |
 | 20e | VC-parallelo: avanzamento, matrice in parallelo | 🔶 chiuso con riserva `a35f8fe` | log e battito, limite su tutti i pacchetti; il blocco di fondo (chiamate sincrone) non risolto |
 | 20f | V4 ter: Servizi e Menù fissi L2, regressione, screenshot | **eseguito due volte, risultati inutilizzabili** (`ff68c75`, `25fa77c`) | la prima volta si è bloccato; la seconda, in modalità legacy, ha dato 17 falsi FALLITO e **0 screenshot** (il lanciatore non ha il codice per salvarli) |
 | 20g | VC-sync: ultima manutenzione del vecchio lanciatore | ❌ **annullato** | non vale la pena riparare un motore che si sostituisce: T0 + T1c danno gli screenshot di Servizi e Menù fissi in circa 2 ore e mezza, e senza lavoro buttato |
+
+### 2.3 Debiti della 6.6 (rilievi A e debiti dello strumento, 2026-10-20)
+
+Nessuno di questi **impedisce l'uso**: per la regola «un solo giro» non genera un nuovo giro di F4 e T1e. Si correggono **in F6 (passo 29)**, insieme ai P che troverà V6, prima del primo uso reale.
+
+| Id | Dove | Cosa | Priorità |
+|---|---|---|---|
+| A1 | Moduli | Prezzo nel modulo senza due decimali («2», «30» invece di «2,00», «18,00»); vale anche per Piatti | media |
+| A2 | Moduli | Etichette dei campi non rosse nello stato di errore (nel riferimento lo sono) | bassa |
+| A3 | Conferma di eliminazione del menù fisso | L'app scrive il giorno della settimana («lunedì 1 giugno 2099»), il PNG no: si tiene l'app e si aggiorna il PNG | bassa |
+| A4 | Intestazione del gruppo nell'elenco dei menù fissi | «N menù · Sempre» più scuro del riferimento | bassa |
+| A5 | Scheda Categorie su desktop | L'etichetta «Attiva» accanto all'interruttore non compare da `md` in su (F4); il riferimento esiste solo a 390 px | da chiarire |
+| A6 | Menù fissi, schede (390 px) | **Area di tocco delle schede sotto 44 px** (4 FALLITO C2 su `elenco` e `categorie`, chiaro e scuro, dopo F4: il testo con sottolineatura ha `pb-2`). Aggiungere l'estensione dell'area di tocco (`pointer-coarse`) | **alta** |
+| A7 | Vini, Distillati, Bevande, moduli a 390 px | Capacità e Grado (Vini, Bevande) e Invecchiamento e Grado (Distillati) sono su due righe; nel riferimento sono **affiancati** anche a 390 px (la correzione di F-SEL usa il breakpoint `md`) | media |
+| A8 | Vini, foglio dei filtri | Il filtro **Stato** mostra il valore grezzo «all» invece di «Tutti» (Select senza `items`); controllare lo stesso foglio in Distillati e Bevande | **alta** |
+| A9 | Vini, foglio dei filtri | Regione e Denominazione disabilitate dicono «Tutte le regioni» e «Tutte le denominazioni»; nel riferimento «Scegli prima il paese» e «Scegli prima la regione» | bassa |
+| A10 | Moduli | Titoli di sezione («Dati», «Categoria e visibilità», «Servizi») più grandi e pesanti che nel riferimento; in Distillati manca il titolo «Origine» prima di Tipologia e Paese | bassa |
+| A11 | Modulo del menù fisso | «Aggiungi o togli piatti» senza l'icona «+» del riferimento; etichetta «Porzione» nera e più grande che nel riferimento | bassa |
+| A12 | Modulo delle Bevande | Frase in più sotto Capacità e Grado («Un valore non in elenco resta finché non lo cambi.») che il riferimento non ha: toglierla o approvarla | bassa |
+
+**Debiti dello strumento, per V6** (li svolge l'agente, non Mirko): (1) 7 screenshot mancanti per ERRORE-STRUMENTO: `scegli-piatti` (390 e 1280), `visibilita-categoria`, `visibilita-avviso` di Menù fissi, e `origine-senza-regioni`, `errore-geografia`, `errore-anno` di Vini; (2) gli stati `modulo-fondo` non scorrono fino in fondo (mostrano l'inizio del foglio); (3) il giro completo di T1e ha dato 116 ERRORE-STRUMENTO (preparazioni dei cataloghi e stati in parallelo di Menù fissi) e i suoi esiti non sono nel repo (ogni giro successivo sovrascrive `risultati.json`: salvarli in cartelle diverse); (4) i tre stati simulati di ogni schermata, il bulk da 101, e i flussi di Menù fissi non provati (2.2); (5) confronto visivo non fatto per Servizi a 1280 px, i moduli a 1280 px e gli stati in scuro dei cataloghi.
 
 ## 3. Blocco comune (da incollare PRIMA del prompt di ogni chat di implementazione)
 
@@ -1682,6 +1703,8 @@ italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
 
 ### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
 
+> **Esito (2026-10-20)**: ✅ `22b66b8`. Controllato io: perimetro (14 file in `components/app/`, `lib/menu/` e CHANGELOG), `pnpm typecheck` (radice ed `e2e`) a 0 errori, ESLint senza errori, **102 test su 102** (due nuovi per P6). Confermato **visivamente** sugli screenshot di T1e: titolo con sottotitolo e piè «Salva \| Annulla» in tutti i fogli (anche Vini, Distillati e Bevande), titoli di sezione del modulo del menù fisso, schede a sottolineatura con il pulsante dentro la scheda, etichetta «Attiva» sotto l'interruttore, «Verrà tolto anche da 1 giorno speciale», interruttore a destra nel foglio della categoria.
+
 > **F4 compilato (2026-10-20): UN SOLO prompt, senza Parte A.** Cartella dei rilievi `2026-10-19-T1c`. Perimetro: `components/app/**`, `lib/menu/**` (testi e funzioni di formato), `lib/app/**` se serve e i test di `lib/`. Perché senza Parte A: la verifica visiva successiva (T1e e C10) è già il controllo; un giro in meno. **Quando**: dopo aver applicato il pacchetto di chiusura. **Chi**: Composer (modifica l'app: **non gira insieme a T1e**). **Commit e push**: li fai tu.
 >
 > ```text
@@ -2401,6 +2424,8 @@ o controllo dubbio). Non fare git. Se superi 120 minuti, FERMATI e riporta.
 
 
 ### Passo T1e — Screenshot per il confronto visivo: Servizi, Menù fissi e cataloghi
+
+> **Esito (2026-10-20)**: ✅ `853a1e5`. Controllato io: `pnpm typecheck` a 0 errori, ESLint senza errori, nessuna chiamata vietata, nessun worktree, nessun file fuori da `e2e/`, `docs/` e `package.json`. **81 screenshot su 88 attesi** (Servizi 13/13, Distillati 16/16, Bevande 16/16, Menù fissi 18/22, Vini 18/21); i fogli ora si vedono scorsi alla sezione (`modulo-piatti`, `modulo-servizi`). Giro di Servizi: 155 OK, 0 FALLITO; il giro completo ha dato 116 ERRORE-STRUMENTO e **4 FALLITO sul tocco delle schede di Menù fissi** (A6). Confronto visivo: vedi `esiti/2026-10-19-T1c/rilievi.md` e 2.3.
 
 **Perché (2026-10-20)**: il confronto visivo sui 28 screenshot di Servizi e Menù fissi ha trovato sette difetti veri dell'app; Vini, Distillati e Bevande non hanno **mai** avuto un confronto con le demo, e quelli del 18 ottobre non servono (precedenti a F3 e F-SEL; i fogli sono stati scattati a metà animazione). Questo passo produce gli screenshot che mancano per **tutte e cinque le schermate**, dopo F4. **Tre criteri**, non sette; tempi e perfezione dello strumento sono obiettivi. Simulazioni (caricamento, errore di caricamento, errore dell'azione): NON PROVATO, le riprova V6. **Quando**: dopo F4 (passo 21), **con F4 già pushato** e Composer fermo. **Chi**: agente di verifica; **non gira insieme a F4**. **Stima**: 90 minuti; **tetto**: 120.
 
