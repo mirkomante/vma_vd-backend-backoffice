@@ -72,7 +72,7 @@ Per Giorni speciali il posto 8 è l'interruttore «Attivo» e il posto 3 la **so
 
 ### 3.1 Confronto visivo con la demo (L1v)
 
-Il confronto visivo con le demo ha trovato in un'ora più difetti di tutti i giri automatici della settimana. Va fatto **a ogni schermata**, non alla fine.
+Il confronto del 2026-10-20 ha trovato 7 rilievi P in un'ora; i giri automatici precedenti, circa 8 difetti veri su circa 70 FALLITO (percorso-test-v2 §1). Va fatto **a ogni schermata**, non alla fine.
 
 - L'agente di verifica prende gli screenshot di 390 e 1280 chiaro degli stati principali e li confronta con i PNG di riferimento in `docs/design/schermate/<schermata>/`.
 - Produce una **tabella di differenze** (cosa, dove, gravità proposta P o A). Non giudica l'estetica in astratto.
