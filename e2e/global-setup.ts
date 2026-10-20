@@ -93,6 +93,8 @@ export default async function globalSetup(): Promise<void> {
       runId,
       userEmail,
       userId: created.id,
+      /** Solo in .next/e2e-run.json locale: login sul server dev (porta 3200) per simulazioni. */
+      probePassword: password,
       startedAt: new Date().toISOString(),
       buildReuse: build.reuse,
       buildReason: build.reason,

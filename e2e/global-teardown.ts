@@ -17,7 +17,11 @@ function killPid(pid: number): void {
 export default async function globalTeardown(): Promise<void> {
   process.env.PAYLOAD_DISABLE_PUSH = '1'
   try {
-    await payloadRun(['scripts/cleanup-verify-ui-menu-fixtures.ts'])
+    try {
+      await payloadRun(['scripts/cleanup-verify-ui-menu-fixtures.ts'])
+    } catch {
+      /* ripiego: provision-user delete sotto */
+    }
     try {
       const meta = JSON.parse(readFileSync(E2E_RUN_META, 'utf8')) as {
         userEmail?: string

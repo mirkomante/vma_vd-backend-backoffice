@@ -22,6 +22,8 @@ const themes = [
   { suffix: 'scuro', colorScheme: 'dark' as const, cookie: 'dark' },
 ]
 
+const isControlliSuite = process.env.E2E_SUITE === 'controlli'
+
 const projects = profiles.flatMap((profile) =>
   themes.map((theme) => ({
     name: `${profile.name}-${theme.suffix}`,
@@ -40,7 +42,8 @@ const projects = profiles.flatMap((profile) =>
 
 export default defineConfig({
   testDir: '.',
-  testMatch: ['smoke/**/*.spec.ts'],
+  testMatch: isControlliSuite ? ['controlli/**/*.spec.ts'] : ['smoke/**/*.spec.ts'],
+  testIgnore: isControlliSuite ? [] : ['**/strumento.spec.ts'],
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,

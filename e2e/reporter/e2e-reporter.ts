@@ -12,7 +12,7 @@ import type {
 import { E2E_ESITI_DIR, E2E_PROGRESS_LOG, REPO_ROOT } from '../lib/paths'
 import { runProcess } from '../lib/exec'
 
-const LAUNCHER = 'e2e/T0-playwright'
+const LAUNCHER = process.env.E2E_SUITE === 'controlli' ? 'e2e/T1c-playwright' : 'e2e/T0-playwright'
 
 type RowEsito = 'OK' | 'FALLITO' | 'AVVISO' | 'NON PROVATO' | 'ERRORE-STRUMENTO'
 
@@ -27,9 +27,12 @@ type Row = {
   seconds: number
 }
 
-function classify(result: TestResult): RowEsito {
+function classify(result: TestResult, test: TestCase): RowEsito {
   if (result.status === 'timedOut') return 'ERRORE-STRUMENTO'
-  if (result.status === 'passed') return 'OK'
+  if (result.status === 'passed') {
+    if (test.annotations.some((a) => a.type === 'AVVISO')) return 'AVVISO'
+    return 'OK'
+  }
   if (result.status === 'skipped') return 'NON PROVATO'
   if (result.status === 'failed') {
     const msg = result.error?.message ?? ''
@@ -58,7 +61,7 @@ export default class E2eReporter implements Reporter {
   private started = Date.now()
 
   onTestEnd(test: TestCase, result: TestResult): void {
-    const esito = classify(result)
+    const esito = classify(result, test)
     const seconds = (result.duration / 1000).toFixed(1)
     const schermata = test.parent.title || 'smoke'
     const profiloTema = test.parent.project()?.name ?? '—'
@@ -67,8 +70,22 @@ export default class E2eReporter implements Reporter {
       schermata,
       profiloTema,
       esito,
-      misurato: esito === 'ERRORE-STRUMENTO' ? instrumentoDetail(result) : '—',
-      atteso: esito === 'FALLITO' ? 'asserzione' : '—',
+      misurato:
+        esito === 'ERRORE-STRUMENTO'
+          ? instrumentoDetail(result)
+          : esito === 'FALLITO' || esito === 'AVVISO'
+            ? (result.error?.message?.split('\n')[0] ?? '—').slice(0, 200)
+            : esito === 'NON PROVATO'
+              ? test.annotations.find((a) => a.type === 'skip')?.description ?? 'saltato'
+              : 'conforme',
+      atteso:
+        esito === 'FALLITO' || esito === 'AVVISO'
+          ? 'asserzione soddisfatta'
+          : esito === 'NON PROVATO'
+            ? 'motivo nel skip'
+            : esito === 'ERRORE-STRUMENTO'
+              ? 'nessuna eccezione fuori asserzione'
+              : 'come da JSON',
       evidenza: result.status,
       seconds: Number(seconds),
     }
@@ -99,7 +116,10 @@ export default class E2eReporter implements Reporter {
       commit,
       launcher: LAUNCHER,
       browser: 'chromium (Playwright)',
-      controlli: 'controlli-6.6.json (smoke T0)',
+      controlli:
+        process.env.E2E_SUITE === 'controlli'
+          ? 'controlli-6.6.json (T1c servizi, menu-fissi)'
+          : 'controlli-6.6.json (smoke T0)',
       durataSecondi: Math.round((Date.now() - this.started) / 1000),
       riepilogo: counts,
       esiti: this.rows,
