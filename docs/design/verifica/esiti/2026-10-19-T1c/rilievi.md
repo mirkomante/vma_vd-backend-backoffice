@@ -52,3 +52,13 @@ Confronto visivo sugli **screenshot nuovi di T1e** (390 px chiaro): Servizi (mod
 **Nuovi rilievi A** (sezione 2.3 del piano; si chiudono in F6): A5 (etichetta «Attiva» su desktop, da chiarire), **A6** (area di tocco delle schede di Menù fissi sotto 44 px: 4 FALLITO C2 dopo F4), A7 (Capacità e Grado, Invecchiamento e Grado su due righe a 390 px), **A8** (filtro Stato dei Vini con il valore grezzo «all»), A9–A12 (testi segnaposto dei filtri, titoli di sezione, icona «+», frase in più).
 
 **Non confrontato**: Servizi a 1280 px, i moduli a 1280 px e gli stati in scuro dei cataloghi; i sette screenshot mancanti (vedi 2.3).
+
+
+---
+
+## Riclassificazione del 2026-10-20 (revisione esterna, verificata)
+
+- **A6 diventa P8**: il controllo C2 è FALLITO 4 volte dopo F4 (prima era OK in V4 ter e nella matrice di T1d); per policy-test §5 un FALLITO è un rilievo P. Le schede di Menù fissi, ora testo con `px-1 pb-2`, misurano circa 30 px. Si chiude in **21b**.
+- **A8 si chiude subito in 21b** (priorità alta, visibile): il `Select` «Stato» dei filtri è senza `items` in **tutti e tre** i cataloghi (Vini, Distillati, Bevande); Piatti lo ha già.
+- Il prompt di F4 vietava ogni giro di verifica; la policy prevede L1 a fine passo (§2): da ora L1 non si vieta mai nei prompt.
+- I flussi di Menù fissi sono non provati **dopo F4** (circa 300 righe di `fixed-menu-form-sheet.tsx` cambiate): li prova **21c**.

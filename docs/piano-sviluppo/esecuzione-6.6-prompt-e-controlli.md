@@ -84,8 +84,10 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | ✅ `853a1e5` | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(si chiude con F4 e T1e senza P aperti: vedi 2.1 e 2.2)** | **L2** mirato | rapporto scritto |
+| 20 | ✅ `853a1e5` | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(chiuso con F4 e T1e; coda: 21b e 21c, vedi 2.3)** | **L2** mirato | rapporto scritto |
 | 21 | ✅ `22b66b8` | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
+| 21b | 🔲 | Solo il prompt del passo 21b | F-TOCCO | Composer | **Area di tocco delle schede di Menù fissi (P8, ex A6) e filtro Stato dei cataloghi (A8, `items`)** | L0 + **L1** (obbligatorio) | tocco senza FALLITO; tre `Select` con `items`; tu pushi |
+| 21c | 🔲 | Solo il prompt del passo 21c | V-MF | Agente di verifica | **Prova di funzionamento di Menù fissi dopo F4** (nove controlli di flusso) più C2 delle schede; un solo giro, tetto 30 minuti | L1 mirato, motore esistente | nove controlli con esito misurato; C2 delle schede senza FALLITO; ambiente pulito |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
 | 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(eliminato il 2026-10-20: i controlli di Giorni speciali e Messaggio globale si scrivono dentro V6, passo 28)** | lint e typecheck | tu committi e pushi |
 | 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
@@ -98,7 +100,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-20 (commit `853a1e5`). **Passo 20 CHIUSO** (F4 `22b66b8` e T1e `853a1e5`, confronto visivo fatto). **Prossimo passo: 22 (D6)**: la chat di design scrive i controlli di Giorni speciali e Messaggio globale; poi **24 (I5)** con Composer. I rilievi A e i debiti dello strumento sono nella sezione 2.3 e si chiudono in F6 (passo 29) insieme ai P di V6.
+**Ultimo aggiornamento**: 2026-10-20 (commit `627199d`). Passo 20 chiuso, con una **coda di due passi prima del 22** (decisione di Mirko dopo la revisione esterna): **21b (F-TOCCO, Composer)**: corregge l'area di tocco delle schede di Menù fissi (P8, ex A6) e il filtro Stato dei cataloghi (A8), con L0 e **L1 obbligatorio**; poi **21c (V-MF, agente di verifica)**: prova di funzionamento di Menù fissi dopo F4, un solo giro. Poi **22 (D6)**. 21b e 21c non girano mai insieme. Se 21c trova difetti dell'app: un solo giro di correzione, poi si prosegue.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -127,13 +129,13 @@ La verifica resta completa e i controlli dei file JSON restano la fonte di verit
 
 **Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine di esecuzione** (le righe e le schede sono sempre in ordine ascendente per identificativo; questo è l'ordine in cui si eseguono): applicare il pacchetto → **F4** (passo 21, Composer) → push → **T1e** (agente di verifica) → push → confronto visivo (C10, chat di design) → passi 22–26 (D6, I5, D7, I6; il 23 è eliminato) → V6 con la suite completa. **F4 e T1e non girano mai insieme** (la verifica costruisce l'app dalla stessa cartella).
 
-**Regole di chiusura (2026-10-20)**: (1) il passo 20 si chiude con F4 e T1e senza P aperti, non con T2a; (2) **un solo giro** di F4 più T1e: ciò che resta dopo diventa rilievo A o debito annotato, salvo difetti che impediscono l'uso; (3) i tre stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATO con il motivo e li riprova V6 dall'agente, non a mano; (4) criteri di accettazione al massimo tre, tutti sul risultato per l'app; tempi e perfezione dello strumento sono obiettivi, non motivi di rifiuto; (5) un esito L2 resta valido finché non cambia un file del raggio largo (policy-test §4), e non si fanno verifiche per scrupolo (§7).
+**Regole di chiusura (2026-10-20)**: (1) il passo 20 si chiude con F4 e T1e senza P aperti, non con T2a; (2) **un solo giro** di F4 più T1e: ciò che resta dopo diventa rilievo A o debito annotato, salvo difetti che impediscono l'uso; (3) i tre stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATO con il motivo e li riprova V6 dall'agente, non a mano; (4) criteri di accettazione al massimo tre, tutti sul risultato per l'app; tempi e perfezione dello strumento sono obiettivi, non motivi di rifiuto; (5) un esito L2 resta valido finché non cambia un file del raggio largo (policy-test §4), e non si fanno verifiche per scrupolo (§7); (6) **L1 a fine di ogni passo che tocca una schermata non si vieta MAI nei prompt** (policy-test §2 e §5: la regressione di P8 è nata perché il prompt di F4 lo vietava); (7) un FALLITO di un controllo è un rilievo **P**, non A (policy-test §5): gli A sono gli AVVISO e i difetti senza controllo.
 
 ### 2.2 Stato della serie 20 (aggiornato il 2026-10-19)
 
 | Passo | Cosa | Stato | Note |
 |---|---|---|---|
-| 20 | V4: L2 di Servizi e Menù fissi | ✅ **chiuso** (2026-10-20) | F4 (`22b66b8`) e T1e (`853a1e5`) senza P aperti. Verificato visivamente su Servizi, Menù fissi, Vini, Distillati e Bevande: P1–P7 corretti (titolo con sottotitolo, piè «Salva \| Annulla», titoli di sezione, schede a sottolineatura con l'azione dentro la scheda, etichetta «Attiva», «da 1 giorno speciale», interruttore a destra). **Non provato a runtime** e annotato come debito per V6: flussi di Menù fissi (`colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-*`, `persistenza`, `ordine-liste`, `nomi-accessibili`), i tre stati simulati, il bulk da 101, sette screenshot mancanti (vedi 2.3) |
+| 20 | V4: L2 di Servizi e Menù fissi | ✅ **chiuso** (2026-10-20), con la coda 21b e 21c | F4 (`22b66b8`) e T1e (`853a1e5`) senza P aperti. Verificato visivamente su Servizi, Menù fissi, Vini, Distillati e Bevande: P1–P7 corretti (titolo con sottotitolo, piè «Salva \| Annulla», titoli di sezione, schede a sottolineatura con l'azione dentro la scheda, etichetta «Attiva», «da 1 giorno speciale», interruttore a destra). **Non provato a runtime DOPO F4** (F4 ha riscritto circa 300 righe di `fixed-menu-form-sheet.tsx` e toccato i fogli di Servizi e dei cataloghi: la prova di 20d è precedente); li prova **21c (V-MF)**, non V6: flussi di Menù fissi (`colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-*`, `persistenza`, `ordine-liste`, `nomi-accessibili`), i tre stati simulati, il bulk da 101, sette screenshot mancanti (vedi 2.3) |
 | 20b | F-SEL: tendine facoltative | ✅ `ed64db5` | |
 | 20c | F-TAB: schede con `Link` | ✅ `6ae1f34` | |
 | 20d | V4 bis: helper Payload persistente e fix dei flussi | ✅ parziale `a7114d8` | 22 controlli OK; matrice e screenshot non fatti |
@@ -143,7 +145,7 @@ La verifica resta completa e i controlli dei file JSON restano la fonte di verit
 
 ### 2.3 Debiti della 6.6 (rilievi A e debiti dello strumento, 2026-10-20)
 
-Nessuno di questi **impedisce l'uso**: per la regola «un solo giro» non genera un nuovo giro di F4 e T1e. Si correggono **in F6 (passo 29)**, insieme ai P che troverà V6, prima del primo uso reale.
+**Revisione del 2026-10-20**: A6 diventa **P8** (policy-test §5: FALLITO è P) e A8 (alta, visibile) si chiude subito, entrambi in **21b**. Gli altri rilievi A non impediscono l'uso e si correggono **in F6 (passo 29)**, insieme ai P che troverà V6, prima del primo uso reale.
 
 | Id | Dove | Cosa | Priorità |
 |---|---|---|---|
@@ -152,9 +154,9 @@ Nessuno di questi **impedisce l'uso**: per la regola «un solo giro» non genera
 | A3 | Conferma di eliminazione del menù fisso | L'app scrive il giorno della settimana («lunedì 1 giugno 2099»), il PNG no: si tiene l'app e si aggiorna il PNG | bassa |
 | A4 | Intestazione del gruppo nell'elenco dei menù fissi | «N menù · Sempre» più scuro del riferimento | bassa |
 | A5 | Scheda Categorie su desktop | L'etichetta «Attiva» accanto all'interruttore non compare da `md` in su (F4); il riferimento esiste solo a 390 px | da chiarire |
-| A6 | Menù fissi, schede (390 px) | **Area di tocco delle schede sotto 44 px** (4 FALLITO C2 su `elenco` e `categorie`, chiaro e scuro, dopo F4: il testo con sottolineatura ha `pb-2`). Aggiungere l'estensione dell'area di tocco (`pointer-coarse`) | **alta** |
+| **P8** (ex A6) | Menù fissi, schede (390 px) | **Area di tocco delle schede sotto 44 px**: 4 FALLITO C2 su `elenco` e `categorie`, chiaro e scuro, comparsi dopo F4 (prima C2 era OK; le schede ora sono testo con `px-1 pb-2`, circa 30 px). Per policy-test §5 un FALLITO è un rilievo **P**, non A. Estendere l'area di tocco (D6, `pointer-coarse`) senza cambiare l'aspetto | **P: chiuso da 21b** |
 | A7 | Vini, Distillati, Bevande, moduli a 390 px | Capacità e Grado (Vini, Bevande) e Invecchiamento e Grado (Distillati) sono su due righe; nel riferimento sono **affiancati** anche a 390 px (la correzione di F-SEL usa il breakpoint `md`) | media |
-| A8 | Vini, foglio dei filtri | Il filtro **Stato** mostra il valore grezzo «all» invece di «Tutti» (Select senza `items`); controllare lo stesso foglio in Distillati e Bevande | **alta** |
+| A8 | Vini, Distillati e Bevande, foglio dei filtri | Il filtro **Stato** mostra il valore grezzo «all» invece di «Tutti»: il `Select` non ha `items` (verificato nei tre cataloghi; Piatti lo ha). Visibile all'utente | **alta: chiuso da 21b** |
 | A9 | Vini, foglio dei filtri | Regione e Denominazione disabilitate dicono «Tutte le regioni» e «Tutte le denominazioni»; nel riferimento «Scegli prima il paese» e «Scegli prima la regione» | bassa |
 | A10 | Moduli | Titoli di sezione («Dati», «Categoria e visibilità», «Servizi») più grandi e pesanti che nel riferimento; in Distillati manca il titolo «Origine» prima di Tipologia e Paese | bassa |
 | A11 | Modulo del menù fisso | «Aggiungi o togli piatti» senza l'icona «+» del riferimento; etichetta «Porzione» nera e più grande che nel riferimento | bassa |
@@ -199,6 +201,7 @@ REGOLE
    controllo: dichiaralo NON PROVATO (lo completa e lo esegue l'agente di verifica nel passo V successivo) e vai
    avanti con il resto, senza prove manuali al suo posto; non è un motivo per fermare la chat. Se un L1 fallisce, correggi e rilancia solo i controlli falliti;
    al terzo giro fermati e riportami.
+5c. L1 della schermata toccata a fine passo è OBBLIGATORIO (policy-test §2): se il prompt non lo chiede, eseguilo comunque; i FALLITO di L1 bloccano la chiusura del passo (§5).
 5b. PRIMA DI OGNI COMMIT, anche di soli script o documenti: pnpm typecheck e pnpm lint sull'INTERO repo. La build di Cloud
    Build (next build) controlla anche scripts/**: un commit senza controllo dei tipi ha già fatto fallire la build di
    produzione (F-EN, script di servizio). Non lasciare correzioni locali non committate. Giri di ui:verify: UNO alla
@@ -1791,6 +1794,98 @@ REGOLE
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
 **Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
+
+### Passo 21b — F-TOCCO: area di tocco delle schede di Menù fissi e filtro Stato dei cataloghi
+
+**Perché (2026-10-20)**: la revisione esterna ha trovato due errori nella chiusura del passo 20 e li ho verificati. (1) A6 non è un rilievo A: il controllo C2 è FALLITO (4 volte, dopo F4) e per policy-test §5 un FALLITO è un rilievo **P**; le schede di Menù fissi, ora testo con `px-1 pb-2`, misurano circa 30 px. (2) A8 è reale e visibile: nel foglio dei filtri di Vini, Distillati e Bevande il `Select` «Stato» non ha `items` (Piatti sì) e mostra «all». In più, il prompt di F4 vietava ogni giro di verifica, contro la policy (L1 a fine passo); la regressione di P8 è nata così: **in questo prompt L1 è obbligatorio**. **Quando**: ora, prima del 22. **Chi**: Composer (modifica l'app): **non gira insieme a 21c**. **Stima**: 45 minuti; **tetto**: 90. **Commit e push**: li fai tu.
+
+```text
+Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F-TOCCO: correzione di due rilievi: P8 (area di tocco delle schede
+di Menù fissi) e A8 (filtro Stato dei cataloghi). Nient'altro. Le regole di .cursor/rules si caricano da sole.
+
+PERIMETRO: components/app/fixed-menus/fixed-menus-shell.tsx; components/app/wines/wines-catalog-page.tsx,
+components/app/spirits/spirits-catalog-page.tsx, components/app/drinks/drinks-catalog-page.tsx; un eventuale helper in
+lib/menu/catalog/ con il suo test unitario; una voce in docs/piano-sviluppo/CHANGELOG.md. VIETATO: docs/design/**, i controlli JSON,
+scripts/ui-verify/**, e2e/**, collections/**, dipendenze, migrazioni, qualunque altro componente o comportamento.
+
+LEGGI: docs/design/verifica/esiti/2026-10-19-T1c/rilievi.md (sezione «Esito dopo F4 e T1e») e docs/piano-sviluppo/
+esecuzione-6.6-prompt-e-controlli.md §2.3 (P8 e A8); docs/design/verifica/misura-tocco.md (come si misura e come si ottiene l'area di
+tocco) e come lo fanno components/ui/switch.tsx e components/ui/checkbox.tsx (estensione invisibile con `pointer-coarse`).
+
+FAI
+1. P8: le due schede («Menù fissi», «Categorie») in fixed-menus-shell.tsx devono avere, con il tocco (`pointer-coarse`), un'area di
+   tocco di almeno 44 px di altezza e di larghezza, SENZA cambiare l'aspetto (testo con sottolineatura sotto la scheda attiva, come nel
+   riferimento menu-fissi/390-chiaro.png) e senza cambiare nulla con il mouse. Usa l'estensione invisibile (pseudo-elemento o
+   padding negativo compensato), non un'altezza maggiore visibile. Restano Link di next/link, role, aria-selected e aria-current.
+2. A8: nei tre fogli dei filtri il `Select` «Stato» riceve `items` (valore → etichetta: «Tutti», «Abilitati»/«Abilitate»,
+   «Disabilitati»/«Disabilitate» secondo le etichette già nei copy di ogni schermata), come fa Piatti con filterStatusItems. Controlla
+   TUTTI gli altri `Select` di quei tre fogli: devono avere `items`. Se serve, un helper condiviso in lib/menu/catalog/ con un test
+   unitario che verifica la mappa.
+3. Nessun'altra modifica. Ogni Select mantiene `items`; nessun useEffect con setState sincrono.
+
+PARTE A, solo proposta: scrivi per P8 e A8 la causa che vedi nel codice, i file che toccherai e come otterrai l'area di tocco senza
+cambiare l'aspetto. Poi FERMATI e aspetta il mio «procedi».
+
+DOPO IL «PROCEDI»: implementa e poi VERIFICA, L1 OBBLIGATORIO (non è facoltativo e non si salta):
+- L0: pnpm typecheck (radice ed e2e) e pnpm lint sull'INTERO repo a 0 errori, pnpm ui:check, test unitari di lib/.
+- L1 di Menù fissi con il motore e2e: `pnpm e2e:t1c` filtrato su Menù fissi con --grep (leggi e2e/playwright.config.ts e il rapporto
+  docs/design/verifica/esiti/2026-10-19-T1c/rapporto.md per la sintassi dei titoli). Atteso: C2 su `elenco` e `categorie` a 390 px
+  (chiaro e scuro) senza FALLITO, e nessun FALLITO nuovo in C1 e C3. Gli ERRORE-STRUMENTO non sono FALLITO: riportali.
+- L1 dei cataloghi, SOLO Vini (gli altri due hanno lo stesso codice): `pnpm ui:verify locale-prod --livello 1 --schermata vini
+  --controlli controlli-6.6.json --profili telefono-390 --temi chiaro`, un giro, tetto 10 minuti; se si blocca, riportalo come
+  ERRORE-STRUMENTO e non rilanciarlo.
+Un solo giro di correzione dopo i FALLITO di L1; al secondo FERMATI e riporta. Il tetto totale è 90 minuti.
+
+TRE CRITERI DI ACCETTAZIONE (riporta i numeri): (a) P8: C2 delle schede di Menù fissi senza FALLITO a 390 px, chiaro e scuro, e aspetto
+invariato (descrivi la tecnica usata); (b) A8: i tre `Select` Stato con `items`, nessun `Select` dei tre fogli di filtri senza `items`
+(riporta il grep), test unitario verde, L1 di Vini senza FALLITO; (c) typecheck e lint dell'intero repo a 0 errori e nessun file fuori
+perimetro (git diff --name-only). NON fare git: commit e push li fa l'utente.
+RISPOSTA FINALE: tabella con file e riga prima e dopo per P8 e A8, esiti di L0 e di L1 (comando, numeri), elenco dei Select controllati.
+```
+
+**Cosa fai tu**: incolla il prompt in una chat nuova di Cursor; incollami la Parte A; rispondi «procedi» (con le mie correzioni, se ci sono); a fine lavoro incollami il resoconto (controllo io `tsc`, ESLint, test e diff); poi `git add -A && git commit -m "fix(app): F-TOCCO — area di tocco delle schede di Menù fissi (P8) e filtro Stato dei cataloghi (A8)" && git push`.
+
+### Passo 21c — V-MF: prova di funzionamento di Menù fissi dopo F4
+
+**Perché (2026-10-20)**: F4 ha riscritto circa 300 righe di `fixed-menu-form-sheet.tsx` (160 aggiunte e 139 tolte) e toccato i fogli di Servizi e dei cataloghi; i flussi di Menù fissi non sono provati dopo F4 (la prova di 20d è precedente). **Quando**: **solo dopo il push di 21b** (la verifica costruisce l'app dalla stessa cartella: non gira mai insieme a Composer). **Chi**: agente di verifica. **Stima e tetto**: 30 minuti, **un solo giro**. **Motore**: il motore e2e per C2 delle schede (esiste); i nove controlli di flusso **esistono solo nel vecchio lanciatore** (`scripts/ui-verify/lib/run-menu-list-flows.mjs` e `run-menu-list-supplementary-flows.mjs`, congelato alla versione 3.9.0), che si usa **con `--solo`** senza modificarlo; il motore e2e non ha ancora test per questi flussi (T2a è stato eliminato) e scriverli è un lavoro nuovo che non si fa ora. Se un controllo del vecchio lanciatore si blocca, si riporta ERRORE-STRUMENTO con l'ultima riga del log e si passa al successivo.
+
+**Prima, in un terminale**: `pkill -f "next dev"; lsof -nP -iTCP:3100,3200,3201,3202,3203 -sTCP:LISTEN | tail -n +2; rm -f .next/e2e.lock .next/ui-verify.lock` (se resta un listener sulla 3100, `kill` del suo PID). Per seguire il giro del vecchio lanciatore: `tail -f .next/ui-verify-progress.log`.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: V-MF. Obiettivo UNICO: provare il funzionamento di Menù
+fissi dopo F4 e F-TOCCO, con UN SOLO giro, tetto 30 minuti. NON modifichi app/, components/, lib/, collections/, i controlli JSON né il
+vecchio lanciatore (scripts/ui-verify): lo USI. Puoi creare solo i rapporti in docs/design/verifica/esiti/2026-10-20-V-MF/. Esegui
+i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni). NON fare git.
+
+Leggi: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/esiti/2026-10-18-VCtempi/rapporto.md (come si usa --solo);
+docs/design/verifica/controlli-6.6.json (schermata menu-fissi, i nove controlli sotto); e2e/README.md e il rapporto
+docs/design/verifica/esiti/2026-10-19-T1c/rapporto.md.
+
+FAI, in quest'ordine
+1. C2 delle schede: `pnpm e2e:t1c` filtrato su Menù fissi con --grep (sintassi: e2e/playwright.config.ts e il rapporto di T1c). Atteso: C2
+   su `elenco` e `categorie` a 390 px, chiaro e scuro, SENZA FALLITO (dopo F-TOCCO le schede hanno l'area di tocco estesa). Riporta le
+   misure degli elementi sotto 44 px, se ce ne sono, con nome e dimensione.
+2. I NOVE controlli di flusso con il vecchio lanciatore, `--solo`, un solo comando (profilo telefono-390, tema chiaro; notebook-1280
+   solo per colonna-elenco): menu-fissi-colonna-elenco, menu-fissi-porzione-traduzione, menu-fissi-servizi-piatti,
+   menu-fissi-elimina-usato, menu-fissi-elimina-senza-uso, menu-fissi-elimina-cascade-registro-permessi, menu-fissi-persistenza,
+   menu-fissi-ordine-liste, menu-fissi-nomi-accessibili. Il lanciatore crea e cancella da solo i dati di prova (fixture, daemon Payload).
+   Per ognuno: OK, FALLITO (con misurato e atteso, mai «—») o NON PROVATO con il motivo. Un FALLITO causato dallo strumento (selettore
+   non trovato, eccezione, fixture assente, tempo) è ERRORE-STRUMENTO e NON un difetto dell'app: non correggerlo e non rilanciare.
+3. Salva gli esiti in docs/design/verifica/esiti/2026-10-20-V-MF/ COPIANDO risultati.json e rapporto.md di ogni comando in file con un
+   nome diverso per ogni giro (per esempio c2-e2e-risultati.json, flussi-risultati.json): NON sovrascrivere risultati.json di giri
+   precedenti. Scrivi in quella cartella un rapporto.md con la tabella dei nove controlli, di C2 e dei tempi.
+4. A fine giro: `ps` e `lsof` (porte 3100-3203) senza server, nessun worktree, e `pnpm payload run e2e/scripts/count-verify-ui.ts` deve dare
+   {"total":0}; se non è zero, `pnpm payload run scripts/ui-verify/menu-payload.ts -- delete-prefix verify-ui-`.
+
+TRE CRITERI DI ACCETTAZIONE (riporta i numeri): (a) ognuno dei nove controlli ha un esito MISURATO (OK, FALLITO o NON PROVATO con il
+motivo); (b) C2 delle schede di Menù fissi senza FALLITO; (c) ambiente pulito (porte e record verify-ui- a zero). Gli ERRORE-STRUMENTO si
+riportano ma non rendono il passo non accettato; il tempo e la perfezione dello strumento sono obiettivi, non motivi di rifiuto. Se superi 30
+minuti FERMATI e riporta quello che hai misurato.
+RISPOSTA FINALE: tabella dei nove controlli e di C2 (OK / FALLITO / NON PROVATO / ERRORE-STRUMENTO, misurato e atteso), tempi, esito dei tre
+criteri.
+```
+
+**Cosa fai tu**: pulizia nel terminale, poi il prompt in una chat nuova di Cursor (solo dopo il push di 21b); a fine lavoro incollami il resoconto; poi `git add -A && git commit -m "test(menu-fissi): V-MF — prova di funzionamento di Menù fissi dopo F4 e F-TOCCO" && git push`. **Se V-MF trova difetti dell'app**: un solo giro di correzione (te lo preparo io), poi si prosegue con il 22; ciò che resta diventa rilievo A annotato.
 
 ### Passo 22 — D6: controlli per Giorni speciali e Messaggio globale
 
