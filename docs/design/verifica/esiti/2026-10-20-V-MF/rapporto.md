@@ -7,9 +7,10 @@
 | Passo | Comando | Durata | Exit |
 |---|---|---:|---:|
 | 1 C2 e2e | `E2E_ESITI=2026-10-20-V-MF pnpm exec node e2e/scripts/playwright-cli.mjs --workers=4 --grep "menu-fissi/(elenco\|categorie).+C2"` | **27,2 s** | 0 |
-| 2 flussi | `pnpm ui:verify locale-prod --livello 1 --controlli controlli-6.6.json --schermata menu-fissi --profili telefono-390,notebook-1280 --temi chiaro --solo` (9 id) | **43,3 s** | 1 |
+| 2 flussi | `pnpm ui:verify locale-prod … --solo` (9 id) | **43,3 s** | 1 |
+| 2b flussi (rilancio) | `PAYLOAD_DISABLE_PUSH=1 pnpm ui:verify locale-prod … --solo` (9 id) | **45,5 s** | 1 |
 
-Artefatti: `c2-e2e-risultati.json`, `c2-e2e-rapporto.md`, `flussi-risultati.json`.
+Artefatti: `c2-e2e-*`, `flussi-risultati.json`, `flussi2-risultati.json`, `flussi2-rapporto.md`, `flussi2-run.log`.
 
 ## C2 schede (elenco + categorie, telefono-390 chiaro/scuro)
 
@@ -38,7 +39,21 @@ Elementi sotto 44 px sui quattro C2 a 390 px: **nessuno** (evidenza: `misurato: 
 | menu-fissi-ordine-liste | **ERRORE-STRUMENTO** | non eseguito | ordinamento liste (JSON §9 p.18) |
 | menu-fissi-nomi-accessibili | **ERRORE-STRUMENTO** | non eseguito | nomi accessibili IT (JSON §6, T1) |
 
-Log: `Error: menu-payload daemon exit 1 prima di :31997` in `scripts/ui-verify/lib/menu-payload.mjs` dopo build e avvio `next start` (~30 s dall’avvio). Prima spawn daemon OK in provision-user; fallita la seconda in fase fixture.
+**Giro 1 e rilancio (2b)**: stesso errore. Messaggio lanciatore (stderr troncato): `stderr=$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- __daemon__`. **stderr completo daemon** (riproduzione con :31997 già in ascolto): `listen EADDRINUSE: address already in use 127.0.0.1:31997` + `[ELIFECYCLE] Command failed with exit code 1.` — `PAYLOAD_DISABLE_PUSH=1` non risolve; guasto nella sequenza (doppio spawn / porta ancora occupata dopo warmup e provision).
+
+### Rilancio 2b — tabella nove controlli
+
+| Id | Esito | Misurato | Atteso |
+|---|---|---|---|
+| menu-fissi-colonna-elenco | ERRORE-STRUMENTO | non eseguito; daemon exit 1 EADDRINUSE :31997 | layout per profilo |
+| menu-fissi-porzione-traduzione | ERRORE-STRUMENTO | non eseguito | porzione + EN + API |
+| menu-fissi-servizi-piatti | ERRORE-STRUMENTO | non eseguito | servizi + stati piatti |
+| menu-fissi-elimina-usato | ERRORE-STRUMENTO | non eseguito | cascade + elimina |
+| menu-fissi-elimina-senza-uso | ERRORE-STRUMENTO | non eseguito | dialogo senza cascade |
+| menu-fissi-elimina-cascade-registro-permessi | ERRORE-STRUMENTO | non eseguito | cascade + log + ruoli |
+| menu-fissi-persistenza | ERRORE-STRUMENTO | non eseguito | persistenza + permessi |
+| menu-fissi-ordine-liste | ERRORE-STRUMENTO | non eseguito | ordinamento liste |
+| menu-fissi-nomi-accessibili | ERRORE-STRUMENTO | non eseguito | nomi accessibili IT |
 
 ## Ambiente finale
 
@@ -60,4 +75,5 @@ Log: `Error: menu-payload daemon exit 1 prima di :31997` in `scripts/ui-verify/l
 ## Note
 
 - Nessun commit git (per istruzione V-MF).
-- Non è stato rilanciato `ui:verify` (giro unico; errore strumento non corretto in questa chat).
+- Rilancio unico con `PAYLOAD_DISABLE_PUSH=1` (2026-10-20 pomeriggio): fallito come giro 1; nessun terzo tentativo.
+- **Piano (da aggiungere)**: il vecchio lanciatore va usato con `PAYLOAD_DISABLE_PUSH=1` **e** va corretta la sequenza del daemon `menu-payload` (non rispawnare su :31997 se già in ascolto / non killare il daemon vivo tra warmup e flussi).

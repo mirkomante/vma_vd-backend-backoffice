@@ -1,0 +1,67 @@
+{
+  "istanza": "V-MF-rilancio",
+  "ambiente": "locale-prod",
+  "PAYLOAD_DISABLE_PUSH": "1",
+  "durataSecondi": 45,
+  "exitCode": 1,
+  "erroreStrumento": "menu-payload daemon exit 1 prima di :31997 (seconda spawn mentre la porta è già in uso)",
+  "stderrLanciatore": "menu-payload daemon exit 1 prima di :31997; cmd=; stderr=$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- __daemon__",
+  "stderrDaemonCompletoRiprodotto": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/ui-verify/menu-payload.ts -- __daemon__\nlisten EADDRINUSE: address already in use 127.0.0.1:31997\n[ELIFECYCLE] Command failed with exit code 1.",
+  "nota": "Il lanciatore tronca stderr a 350 caratteri; la riproduzione manuale con primo daemon già in ascolto su :31997 mostra EADDRINUSE. Causa sequenza: warmup/provision avvia daemon; killOrphanMenuPayloadDaemons dopo provision-user; dopo prod-server una seconda waitMenuPayloadDaemonReady tenta spawn mentre :31997 è ancora occupata (o race tra due spawn).",
+  "esiti": [
+    {
+      "id": "menu-fissi-colonna-elenco",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon (exit 1, EADDRINUSE :31997)",
+      "atteso": "layout elenco per profilo"
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "porzione IT + modulo EN + API locale=en"
+    },
+    {
+      "id": "menu-fissi-servizi-piatti",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "servizi M2M + stati piatti"
+    },
+    {
+      "id": "menu-fissi-elimina-usato",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "dialogo cascade giorni speciali"
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "dialogo senza cascade"
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "cascade DB + activity log + ruoli"
+    },
+    {
+      "id": "menu-fissi-persistenza",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "create/update + permessi"
+    },
+    {
+      "id": "menu-fissi-ordine-liste",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "ordinamento categorie/menù/piatti"
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito — crash daemon",
+      "atteso": "etichette IT, no stringhe EN vietate"
+    }
+  ]
+}
