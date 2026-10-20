@@ -64,6 +64,9 @@ import {
   MENU_FISSI_FORM_DISHES_EMPTY,
   MENU_FISSI_FORM_DISHES_LEGEND,
   MENU_FISSI_FORM_EDIT_TITLE,
+  MENU_FISSI_FORM_SECTION_AVAILABILITY,
+  MENU_FISSI_FORM_SECTION_CATEGORY_VISIBILITY,
+  MENU_FISSI_FORM_SECTION_DATA,
   MENU_FISSI_FORM_NAME,
   MENU_FISSI_FORM_NAME_EN,
   MENU_FISSI_FORM_NEW_SUBTITLE,
@@ -222,10 +225,12 @@ export function FixedMenuFormSheet({
           ) : (
             <>
               <SheetTitle>
-                {mode === 'new' ? MENU_FISSI_FORM_NEW_TITLE : `${MENU_FISSI_FORM_EDIT_TITLE} (${editName})`}
+                {mode === 'new' ? MENU_FISSI_FORM_NEW_TITLE : MENU_FISSI_FORM_EDIT_TITLE}
               </SheetTitle>
               {mode === 'new' ? (
                 <p className="text-sm text-muted-foreground">{MENU_FISSI_FORM_NEW_SUBTITLE}</p>
+              ) : editName ? (
+                <p className="text-sm text-muted-foreground">{editName}</p>
               ) : null}
             </>
           )}
@@ -289,132 +294,138 @@ export function FixedMenuFormSheet({
             </FieldGroup>
           ) : (
             <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.name}>{MENU_FISSI_FORM_NAME}</FieldLabel>
-                <Input
-                  id={FIXED_MENU_FIELD_DOM_IDS.name}
-                  value={values.name}
-                  onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
-                  aria-invalid={Boolean(fieldErrors.name)}
-                />
-                <FieldError>{fieldErrors.name}</FieldError>
-              </Field>
+              <FieldSet>
+                <FieldLegend>{MENU_FISSI_FORM_SECTION_DATA}</FieldLegend>
+                <Field>
+                  <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.name}>{MENU_FISSI_FORM_NAME}</FieldLabel>
+                  <Input
+                    id={FIXED_MENU_FIELD_DOM_IDS.name}
+                    value={values.name}
+                    onChange={(e) => setValues((v) => ({ ...v, name: e.target.value }))}
+                    aria-invalid={Boolean(fieldErrors.name)}
+                  />
+                  <FieldError>{fieldErrors.name}</FieldError>
+                </Field>
 
-              <Field>
-                <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.description}>
-                  {MENU_FISSI_FORM_DESCRIPTION}
-                </FieldLabel>
-                <Textarea
-                  id={FIXED_MENU_FIELD_DOM_IDS.description}
-                  value={values.description}
-                  onChange={(e) => setValues((v) => ({ ...v, description: e.target.value }))}
-                />
-              </Field>
+                <Field>
+                  <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.description}>
+                    {MENU_FISSI_FORM_DESCRIPTION}
+                  </FieldLabel>
+                  <Textarea
+                    id={FIXED_MENU_FIELD_DOM_IDS.description}
+                    value={values.description}
+                    onChange={(e) => setValues((v) => ({ ...v, description: e.target.value }))}
+                  />
+                </Field>
 
-              <Field>
-                <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.price}>{MENU_FISSI_FORM_PRICE}</FieldLabel>
-                <Input
-                  id={FIXED_MENU_FIELD_DOM_IDS.price}
-                  inputMode="decimal"
-                  value={values.priceInput}
-                  aria-invalid={Boolean(fieldErrors.price)}
-                  onChange={(e) => setValues((v) => ({ ...v, priceInput: e.target.value }))}
-                />
-                <FieldError>{fieldErrors.price}</FieldError>
-              </Field>
+                <Field>
+                  <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.price}>{MENU_FISSI_FORM_PRICE}</FieldLabel>
+                  <Input
+                    id={FIXED_MENU_FIELD_DOM_IDS.price}
+                    inputMode="decimal"
+                    value={values.priceInput}
+                    aria-invalid={Boolean(fieldErrors.price)}
+                    onChange={(e) => setValues((v) => ({ ...v, priceInput: e.target.value }))}
+                  />
+                  <FieldError>{fieldErrors.price}</FieldError>
+                </Field>
+              </FieldSet>
 
-              <Field>
-                <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.categoryId}>
-                  {MENU_FISSI_FORM_CATEGORY}
-                </FieldLabel>
-                <Select
-                  items={categorySelectItems}
-                  value={values.categoryId || undefined}
-                  disabled={!hasCategories}
-                  onValueChange={(value) => {
-                    const categoryId = value ?? ''
-                    setValues((v) => {
-                      const cat = categoryById.get(categoryId)
-                      const prefilled = cat
-                        ? prefillMenuVisibilityFromCategory(cat.visibility, v.visibilityTouched)
-                        : null
-                      return {
-                        ...v,
-                        categoryId,
-                        ...(prefilled ? { visibility: prefilled } : {}),
-                      }
-                    })
-                  }}
-                >
-                  <SelectTrigger
-                    id={FIXED_MENU_FIELD_DOM_IDS.categoryId}
-                    className="w-full"
-                    aria-invalid={Boolean(fieldErrors.categoryId)}
+              <FieldSet>
+                <FieldLegend>{MENU_FISSI_FORM_SECTION_CATEGORY_VISIBILITY}</FieldLegend>
+                <Field>
+                  <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.categoryId}>
+                    {MENU_FISSI_FORM_CATEGORY}
+                  </FieldLabel>
+                  <Select
+                    items={categorySelectItems}
+                    value={values.categoryId || undefined}
+                    disabled={!hasCategories}
+                    onValueChange={(value) => {
+                      const categoryId = value ?? ''
+                      setValues((v) => {
+                        const cat = categoryById.get(categoryId)
+                        const prefilled = cat
+                          ? prefillMenuVisibilityFromCategory(cat.visibility, v.visibilityTouched)
+                          : null
+                        return {
+                          ...v,
+                          categoryId,
+                          ...(prefilled ? { visibility: prefilled } : {}),
+                        }
+                      })
+                    }}
                   >
-                    <SelectValue
-                      placeholder={
-                        hasCategories ? MENU_FISSI_FORM_CATEGORY_PLACEHOLDER : MENU_FISSI_FORM_CATEGORY_EMPTY
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(categorySelectItems).map(([id, label]) => (
-                      <SelectItem key={id} value={id}>
-                        {label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FieldError>{fieldErrors.categoryId}</FieldError>
-              </Field>
+                    <SelectTrigger
+                      id={FIXED_MENU_FIELD_DOM_IDS.categoryId}
+                      className="w-full"
+                      aria-invalid={Boolean(fieldErrors.categoryId)}
+                    >
+                      <SelectValue
+                        placeholder={
+                          hasCategories ? MENU_FISSI_FORM_CATEGORY_PLACEHOLDER : MENU_FISSI_FORM_CATEGORY_EMPTY
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(categorySelectItems).map(([id, label]) => (
+                        <SelectItem key={id} value={id}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldError>{fieldErrors.categoryId}</FieldError>
+                </Field>
 
-              <Field>
-                <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.visibility}>
-                  {MENU_FISSI_COLUMN_VISIBILITY}
-                </FieldLabel>
-                <Select
-                  items={visibilityItems}
-                  value={values.visibility}
-                  onValueChange={(value) =>
-                    setValues((v) => ({
-                      ...v,
-                      visibility: (value ?? 'always') as FixedMenuFormValues['visibility'],
-                      visibilityTouched: true,
-                    }))
-                  }
-                >
-                  <SelectTrigger id={FIXED_MENU_FIELD_DOM_IDS.visibility} className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MENU_VISIBILITY_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FieldDescription>{MENU_FISSI_FORM_VISIBILITY_DESCRIPTION}</FieldDescription>
-              </Field>
+                <Field>
+                  <FieldLabel htmlFor={FIXED_MENU_FIELD_DOM_IDS.visibility}>
+                    {MENU_FISSI_COLUMN_VISIBILITY}
+                  </FieldLabel>
+                  <Select
+                    items={visibilityItems}
+                    value={values.visibility}
+                    onValueChange={(value) =>
+                      setValues((v) => ({
+                        ...v,
+                        visibility: (value ?? 'always') as FixedMenuFormValues['visibility'],
+                        visibilityTouched: true,
+                      }))
+                    }
+                  >
+                    <SelectTrigger id={FIXED_MENU_FIELD_DOM_IDS.visibility} className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MENU_VISIBILITY_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldDescription>{MENU_FISSI_FORM_VISIBILITY_DESCRIPTION}</FieldDescription>
+                </Field>
 
-              {selectedCategory ? (
-                <FixedMenuVisibilityAlerts
-                  menuVisibility={values.visibility}
-                  categoryVisibility={selectedCategory.visibility}
-                  categoryName={selectedCategory.name}
-                />
-              ) : null}
+                {selectedCategory ? (
+                  <FixedMenuVisibilityAlerts
+                    menuVisibility={values.visibility}
+                    categoryVisibility={selectedCategory.visibility}
+                    categoryName={selectedCategory.name}
+                  />
+                ) : null}
 
-              <Field orientation="horizontal">
-                <Switch
-                  checked={values.specialOnly}
-                  onCheckedChange={(checked) => setValues((v) => ({ ...v, specialOnly: checked }))}
-                />
-                <div>
-                  <FieldLabel>{MENU_FISSI_FORM_SPECIAL_ONLY}</FieldLabel>
-                  <FieldDescription>{MENU_FISSI_FORM_SPECIAL_ONLY_DESCRIPTION}</FieldDescription>
-                </div>
-              </Field>
+                <Field orientation="horizontal">
+                  <Switch
+                    checked={values.specialOnly}
+                    onCheckedChange={(checked) => setValues((v) => ({ ...v, specialOnly: checked }))}
+                  />
+                  <div>
+                    <FieldLabel>{MENU_FISSI_FORM_SPECIAL_ONLY}</FieldLabel>
+                    <FieldDescription>{MENU_FISSI_FORM_SPECIAL_ONLY_DESCRIPTION}</FieldDescription>
+                  </div>
+                </Field>
+              </FieldSet>
 
               <FieldSet id="fixed-menu-dishes-section">
                 <FieldLegend>{MENU_FISSI_FORM_DISHES_LEGEND}</FieldLegend>
@@ -592,38 +603,48 @@ export function FixedMenuFormSheet({
                 <FieldDescription>{MENU_FISSI_FORM_TRANSLATION_HINT}</FieldDescription>
               </LocalizedTranslationCollapsible>
 
-              <Field orientation="horizontal">
-                <Switch
-                  checked={values.disabled}
-                  onCheckedChange={(checked) => setValues((v) => ({ ...v, disabled: checked }))}
-                />
-                <div>
-                  <FieldLabel>{MENU_FISSI_FORM_DISABLED_LABEL}</FieldLabel>
-                  <FieldDescription>{MENU_FISSI_FORM_DISABLED_DESCRIPTION}</FieldDescription>
-                </div>
-              </Field>
+              <FieldSet>
+                <FieldLegend>{MENU_FISSI_FORM_SECTION_AVAILABILITY}</FieldLegend>
+                <Field orientation="horizontal">
+                  <Switch
+                    checked={values.disabled}
+                    onCheckedChange={(checked) => setValues((v) => ({ ...v, disabled: checked }))}
+                  />
+                  <div>
+                    <FieldLabel>{MENU_FISSI_FORM_DISABLED_LABEL}</FieldLabel>
+                    <FieldDescription>{MENU_FISSI_FORM_DISABLED_DESCRIPTION}</FieldDescription>
+                  </div>
+                </Field>
+              </FieldSet>
             </FieldGroup>
           )}
         </div>
 
-        <SheetFooter className="border-t border-border px-4 py-4">
+        <SheetFooter className="flex-row gap-2 border-t border-border px-4 py-4">
           {view === 'picker' ? (
             <>
-              <Button type="button" variant="outline" size="lg" onClick={() => setView('form')}>
-                {MENU_FISSI_FORM_CANCEL}
-              </Button>
-              <Button type="button" size="lg" onClick={applyPicker}>
+              <Button type="button" size="lg" className="flex-1" onClick={applyPicker}>
                 {menuFissiPickerDoneLabel(pickerSelected.size)}
+              </Button>
+              <Button type="button" variant="outline" size="lg" className="flex-1" onClick={() => setView('form')}>
+                {MENU_FISSI_FORM_CANCEL}
               </Button>
             </>
           ) : (
             <>
-              <Button type="button" variant="outline" size="lg" disabled={saving} onClick={() => onOpenChange(false)}>
-                {MENU_FISSI_FORM_CANCEL}
-              </Button>
-              <Button type="button" size="lg" disabled={saving} onClick={() => onSubmit(values)}>
+              <Button type="button" size="lg" className="flex-1" disabled={saving} onClick={() => onSubmit(values)}>
                 {saving ? <Spinner className="size-4" aria-hidden /> : null}
                 {saving ? MENU_FISSI_FORM_SAVE_PENDING : MENU_FISSI_FORM_SAVE}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="flex-1"
+                disabled={saving}
+                onClick={() => onOpenChange(false)}
+              >
+                {MENU_FISSI_FORM_CANCEL}
               </Button>
             </>
           )}

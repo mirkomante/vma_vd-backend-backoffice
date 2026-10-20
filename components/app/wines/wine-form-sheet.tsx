@@ -531,12 +531,12 @@ export function WineFormSheet({
         </div>
 
         <SheetFooter className="flex-row gap-2">
-          <Button type="button" variant="outline" size="lg" className="flex-1" disabled={saving} onClick={() => onOpenChange(false)}>
-            {VINI_FORM_CANCEL}
-          </Button>
           <Button type="button" size="lg" className="flex-1" disabled={saving} onClick={() => onSubmit(values)}>
             {saving ? <Spinner className="size-4" aria-hidden /> : null}
             {saving ? VINI_FORM_SAVE_PENDING : VINI_FORM_SAVE}
+          </Button>
+          <Button type="button" variant="outline" size="lg" className="flex-1" disabled={saving} onClick={() => onOpenChange(false)}>
+            {VINI_FORM_CANCEL}
           </Button>
         </SheetFooter>
       </SheetContent>

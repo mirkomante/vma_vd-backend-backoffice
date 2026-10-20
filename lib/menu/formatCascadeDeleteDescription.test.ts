@@ -37,4 +37,17 @@ describe('formatFixedMenuDeleteDescription', () => {
     assert.match(text, /2 giorni speciali/)
     assert.match(text, /Non si può annullare/)
   })
+
+  it('un giorno speciale senza doppio conteggio', () => {
+    const text = formatFixedMenuDeleteDescription(['2027-02-14'])
+    assert.match(text, /^Verrà tolto anche da 1 giorno speciale: .+\. Non si può annullare\.$/)
+    assert.doesNotMatch(text, /1 1 giorno/)
+  })
+
+  it('tre giorni speciali', () => {
+    const text = formatFixedMenuDeleteDescription(['2027-03-01', '2027-02-14', '2027-01-10'])
+    assert.match(text, /^Verrà tolto anche da 3 giorni speciali:/)
+    assert.doesNotMatch(text, /3 3 giorni/)
+    assert.match(text, /Non si può annullare/)
+  })
 })

@@ -10,6 +10,10 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Changed
+
+- **F4 (passo 21) — rilievi P1–P7 Servizi, Menù fissi e cataloghi** — Titolo e sottotitolo nei sei fogli di modifica (Vini, Distillati, Bevande, Servizi, menù fisso, categoria); piè con «Salva» e «Annulla» affiancati (`flex-row gap-2`). Menù fissi: titoli di sezione nel modulo, schede a sottolineatura con azione «Nuovo…» / «Nuova categoria» sotto il conteggio nella scheda, etichetta «Attiva» sotto l'interruttore sul telefono, riga «Disabilitata» nel foglio categoria allineata a Servizi. `formatFixedMenuDeleteDescription`: `pluralizeIt` senza numero duplicato nei giorni speciali.
+
 ### Tests
 
 - **T1c bis e2e (WIP) — Servizi e Menù fissi** — Fixture per worker (`payload.nome`, `registerCreated`, seed `pranzo`/`sempre`/`cat`); matrice senza skip profilo (`grep` per progetto); progetto `simulazioni` serial con server dev sequenziale (limite un solo `next dev` per repo); setup/teardown in-process (`provisionTestUser`, `deleteAllVerifyUiPrefix`); `e2e/lib/menu-list/payload-actions.ts`; smoke **~10 s** reali. Giro completo **non accettato**: ~409 OK, 73 falliti, 28/45 screenshot, ~6,5 min; checkpoint Servizi 141 OK, 1 FALLITO (C2 dialogo 42 px), 1 ERRORE-STRUMENTO sim; rapporto `docs/design/verifica/esiti/2026-10-19-T1c/`.

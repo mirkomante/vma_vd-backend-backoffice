@@ -69,6 +69,7 @@ type CatalogListPageProps<TRow extends CatalogListRowBase> = {
   filterSheet: ReactNode
   formSheet: ReactNode
   showPageHeader?: boolean
+  listToolbarAction?: ReactNode
 }
 
 export function CatalogListPage<TRow extends CatalogListRowBase>({
@@ -100,6 +101,7 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
   filterSheet,
   formSheet,
   showPageHeader = true,
+  listToolbarAction,
 }: CatalogListPageProps<TRow>) {
   const features = { ...DEFAULT_CATALOG_LIST_FEATURES, ...featuresProp }
   const { texts } = config
@@ -231,8 +233,13 @@ export function CatalogListPage<TRow extends CatalogListRowBase>({
         />
       ) : (
         <div className="flex flex-col gap-6">
-          {listCountLabel ? (
-            <p className="text-sm text-muted-foreground" role="status">{listCountLabel}</p>
+          {listCountLabel || listToolbarAction ? (
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              {listCountLabel ? (
+                <p className="text-sm text-muted-foreground" role="status">{listCountLabel}</p>
+              ) : null}
+              {listToolbarAction}
+            </div>
           ) : null}
           {groups.map((group) =>
             group.rows.length > 0 ? (

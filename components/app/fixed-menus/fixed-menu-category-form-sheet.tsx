@@ -88,12 +88,12 @@ export function FixedMenuCategoryFormSheet({
       <SheetContent side={isMobile ? 'bottom' : 'right'} className="flex flex-col gap-0 p-0 sm:max-w-lg">
         <SheetHeader className="border-b border-border px-4 py-4 text-left">
           <SheetTitle>
-            {mode === 'new'
-              ? MENU_FISSI_CATEGORY_FORM_NEW_TITLE
-              : `${MENU_FISSI_CATEGORY_FORM_EDIT_TITLE} (${editName})`}
+            {mode === 'new' ? MENU_FISSI_CATEGORY_FORM_NEW_TITLE : MENU_FISSI_CATEGORY_FORM_EDIT_TITLE}
           </SheetTitle>
           {mode === 'new' ? (
             <p className="text-sm text-muted-foreground">{MENU_FISSI_CATEGORY_FORM_NEW_SUBTITLE}</p>
+          ) : editName ? (
+            <p className="text-sm text-muted-foreground">{editName}</p>
           ) : null}
         </SheetHeader>
 
@@ -166,26 +166,38 @@ export function FixedMenuCategoryFormSheet({
               <FieldDescription>{MENU_FISSI_CATEGORY_FORM_VISIBILITY_DESCRIPTION}</FieldDescription>
             </Field>
 
-            <Field orientation="horizontal">
-              <Switch
-                checked={values.disabled}
-                onCheckedChange={(checked) => setValues((v) => ({ ...v, disabled: checked }))}
-              />
-              <div>
-                <FieldLabel>{MENU_FISSI_CATEGORY_FORM_DISABLED_LABEL}</FieldLabel>
-                <FieldDescription>{MENU_FISSI_CATEGORY_FORM_DISABLED_DESCRIPTION}</FieldDescription>
+            <Field>
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <FieldLabel htmlFor="fixed-menu-category-field-disabled">
+                    {MENU_FISSI_CATEGORY_FORM_DISABLED_LABEL}
+                  </FieldLabel>
+                  <FieldDescription>{MENU_FISSI_CATEGORY_FORM_DISABLED_DESCRIPTION}</FieldDescription>
+                </div>
+                <Switch
+                  id="fixed-menu-category-field-disabled"
+                  checked={values.disabled}
+                  onCheckedChange={(checked) => setValues((v) => ({ ...v, disabled: checked }))}
+                />
               </div>
             </Field>
           </FieldGroup>
         </div>
 
-        <SheetFooter className="border-t border-border px-4 py-4">
-          <Button type="button" variant="outline" size="lg" disabled={saving} onClick={() => onOpenChange(false)}>
-            {MENU_FISSI_FORM_CANCEL}
-          </Button>
-          <Button type="button" size="lg" disabled={saving} onClick={() => onSubmit(values)}>
+        <SheetFooter className="flex-row gap-2 border-t border-border px-4 py-4">
+          <Button type="button" size="lg" className="flex-1" disabled={saving} onClick={() => onSubmit(values)}>
             {saving ? <Spinner className="size-4" aria-hidden /> : null}
             {saving ? MENU_FISSI_FORM_SAVE_PENDING : MENU_FISSI_FORM_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="flex-1"
+            disabled={saving}
+            onClick={() => onOpenChange(false)}
+          >
+            {MENU_FISSI_FORM_CANCEL}
           </Button>
         </SheetFooter>
       </SheetContent>

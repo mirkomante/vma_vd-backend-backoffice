@@ -33,7 +33,7 @@ export function formatFixedMenuDeleteDescription(specialDayDates: readonly strin
   }
   const sorted = [...specialDayDates].sort()
   const labels = sorted.map((d) => formatSpecialDayDateLong(d))
-  const noun = pluralizeIt(count, '1 giorno speciale', `${count} giorni speciali`)
+  const noun = pluralizeIt(count, 'giorno speciale', 'giorni speciali')
   const listed = formatListedReferences(
     labels,
     3,

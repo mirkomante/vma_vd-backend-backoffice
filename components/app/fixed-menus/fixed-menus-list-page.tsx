@@ -160,12 +160,12 @@ export function FixedMenusListPage({ context }: FixedMenusListPageProps) {
   )
 
   return (
-    <FixedMenusShell
-      activeTab="menus"
-      tabAction={emptyDatabase && !loading && !loadError ? undefined : newMenuButton}
-    >
+    <FixedMenusShell activeTab="menus">
       <CatalogListPage
         showPageHeader={false}
+        listToolbarAction={
+          emptyDatabase && !loading && !loadError ? undefined : newMenuButton
+        }
         config={fixedMenusCatalogConfig}
         features={LIST_FEATURES}
         groups={groups}

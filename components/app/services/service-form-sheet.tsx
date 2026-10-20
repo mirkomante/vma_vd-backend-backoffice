@@ -72,11 +72,11 @@ export function ServiceFormSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side={isMobile ? 'bottom' : 'right'} className="flex flex-col gap-0 p-0 sm:max-w-lg">
         <SheetHeader className="border-b border-border px-4 py-4 text-left">
-          <SheetTitle>
-            {mode === 'new' ? SERVIZI_FORM_NEW_TITLE : `${SERVIZI_FORM_EDIT_TITLE} (${editName})`}
-          </SheetTitle>
+          <SheetTitle>{mode === 'new' ? SERVIZI_FORM_NEW_TITLE : SERVIZI_FORM_EDIT_TITLE}</SheetTitle>
           {mode === 'new' ? (
             <p className="text-sm text-muted-foreground">{SERVIZI_FORM_NEW_SUBTITLE}</p>
+          ) : editName ? (
+            <p className="text-sm text-muted-foreground">{editName}</p>
           ) : null}
         </SheetHeader>
 
@@ -145,18 +145,26 @@ export function ServiceFormSheet({
           </FieldGroup>
         </div>
 
-        <SheetFooter className="border-t border-border px-4 py-4">
-          <Button type="button" variant="outline" size="lg" disabled={saving} onClick={() => onOpenChange(false)}>
-            {SERVIZI_FORM_CANCEL}
-          </Button>
+        <SheetFooter className="flex-row gap-2 border-t border-border px-4 py-4">
           <Button
             type="button"
             size="lg"
+            className="flex-1"
             disabled={saving}
             onClick={() => onSubmit(values)}
           >
             {saving ? <Spinner className="size-4" aria-hidden /> : null}
             {saving ? SERVIZI_FORM_SAVE_PENDING : SERVIZI_FORM_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="flex-1"
+            disabled={saving}
+            onClick={() => onOpenChange(false)}
+          >
+            {SERVIZI_FORM_CANCEL}
           </Button>
         </SheetFooter>
       </SheetContent>

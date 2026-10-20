@@ -152,10 +152,7 @@ export function FixedMenuCategoriesPage({ context }: FixedMenuCategoriesPageProp
   )
 
   return (
-    <FixedMenusShell
-      activeTab="categories"
-      tabAction={emptyDatabase && !loading && !loadError ? undefined : newCategoryButton}
-    >
+    <FixedMenusShell activeTab="categories">
       {notice ? (
         <>
           <MenuOutcomeAlert
@@ -203,10 +200,15 @@ export function FixedMenuCategoriesPage({ context }: FixedMenuCategoriesPageProp
         />
       ) : (
         <div className="flex flex-col gap-4">
-          {countLabel ? (
-            <p className="text-sm text-muted-foreground" role="status">
-              {countLabel}
-            </p>
+          {countLabel || (!emptyDatabase && !loading && !loadError) ? (
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              {countLabel ? (
+                <p className="text-sm text-muted-foreground" role="status">
+                  {countLabel}
+                </p>
+              ) : null}
+              {emptyDatabase && !loading && !loadError ? null : newCategoryButton}
+            </div>
           ) : null}
           <div className="flex flex-col gap-2">
             {rows.map((row) => {
@@ -226,27 +228,31 @@ export function FixedMenuCategoriesPage({ context }: FixedMenuCategoriesPageProp
                       ) : null}
                     </div>
                     <div className="flex items-center gap-1">
-                      <Switch
-                        checked={!disabledRow}
-                        disabled={pendingRowId === String(row.id)}
-                        onCheckedChange={async (checked) => {
-                          setNotice(null)
-                          setPendingRowId(String(row.id))
-                          const result = await patchFixedMenuCategoryDisabledAction(
-                            String(row.id),
-                            !checked,
-                          )
-                          setPendingRowId(null)
-                          if (!result.ok) {
-                            setActionError(true)
-                            return
-                          }
-                          setNotice({ kind: checked ? 'enabled' : 'disabled' })
-                          void reload()
-                        }}
-                        aria-label={`${MENU_FISSI_CATEGORY_TOGGLE_LABEL}: ${row.name}`}
-                      />
-                      <span className="sr-only md:not-sr-only md:text-sm">{MENU_FISSI_CATEGORY_TOGGLE_LABEL}</span>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <Switch
+                          checked={!disabledRow}
+                          disabled={pendingRowId === String(row.id)}
+                          onCheckedChange={async (checked) => {
+                            setNotice(null)
+                            setPendingRowId(String(row.id))
+                            const result = await patchFixedMenuCategoryDisabledAction(
+                              String(row.id),
+                              !checked,
+                            )
+                            setPendingRowId(null)
+                            if (!result.ok) {
+                              setActionError(true)
+                              return
+                            }
+                            setNotice({ kind: checked ? 'enabled' : 'disabled' })
+                            void reload()
+                          }}
+                          aria-label={`${MENU_FISSI_CATEGORY_TOGGLE_LABEL}: ${row.name}`}
+                        />
+                        <span className="text-xs text-muted-foreground md:hidden">
+                          {MENU_FISSI_CATEGORY_TOGGLE_LABEL}
+                        </span>
+                      </div>
                       <Button
                         type="button"
                         variant="ghost"
