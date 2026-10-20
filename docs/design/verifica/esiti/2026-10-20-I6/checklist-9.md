@@ -143,14 +143,14 @@
 | Giorni speciali §9.3 Colonna e elenco | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.4 Prossimi e Passati | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.5 Azioni di riga | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
-| Giorni speciali §9.6 Attiva e disattiva | OK | verify:menu-6_3 OK sovrapposizione server; e2e giorni-speciali-sovrapposizione OK (2026-10-20-I6) | L2 |
+| Giorni speciali §9.6 Attiva e disattiva | NON PROVATO | Parte provata: e2e `giorni-speciali-attivazione` OK (avviso, riga attenuata, badge, `disabled` nel database, in entrambe le direzioni). Non provati: la frase sulla ricompilazione (6.5) e `giorni-speciali-nessuna-scrittura-file` (comando non eseguito) | V6 (file) / 6.5 |
 | Giorni speciali §9.7 Modulo | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.8 Sovrapposizione | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.9 Data passata | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.10 Data scritta | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.11 Lingue | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
-| Giorni speciali §9.12 Eliminazione | OK | verify:menu-6_3 delete/registro; e2e elimina-registro-permessi OK | L2 |
-| Giorni speciali §9.13 Persistenza e permessi | OK | verify:menu-6_3 delete/registro; e2e elimina-registro-permessi OK | L2 |
+| Giorni speciali §9.12 Eliminazione | NON PROVATO | Parte provata: e2e `giorni-speciali-elimina-registro-permessi` (Indietro, Elimina, avviso «Giorno speciale eliminato», giorno assente) e verify:menu-6_3 (cancellazioni di manager, admin e super-admin con riga di registro). Non asserito: il testo della finestra con data e ambito | V6/L2 |
+| Giorni speciali §9.13 Persistenza e permessi | OK | e2e `giorni-speciali-persistenza` OK (2026-10-20-I6): creazione dalla pagina e rilettura con la Local API come manager (`overrideAccess` false) | L2 |
 | Giorni speciali §9.14 Stati e testi | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Giorni speciali §9.15 Temi, accesso, `pnpm ui:check` | NON PROVATO | Copertura parziale: pnpm ui:check L0 pre-commit; C3/C4 runtime non in questo giro | L1 |
 | Giorni speciali §9.16 Confronto visivo | NON PROVATO | C10 non eseguito (né lanciatore né screenshot) | V6 |
@@ -158,7 +158,7 @@
 | Messaggio globale §9.2 Aree di tocco | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Messaggio globale §9.3 Pulsanti di pagina | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Messaggio globale §9.4 A capo | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
-| Messaggio globale §9.5 Salvataggio e pubblicazione | OK | e2e messaggio-globale salva/togli/file-non-leggibile OK (2026-10-20-I6) | L2 |
+| Messaggio globale §9.5 Salvataggio e pubblicazione | NON PROVATO | Parte provata: e2e `messaggio-globale-salvataggio` OK (avviso «Messaggio salvato» e rilettura del Global; in locale-prod il file non è leggibile). Non provati: l'ora del file e «In pubblicazione…» (`messaggio-globale-pubblicazione`, server di sviluppo con storage in memoria) | V6 |
 | Messaggio globale §9.6 File non leggibile | OK | e2e messaggio-globale salva/togli/file-non-leggibile OK (2026-10-20-I6) | L2 |
 | Messaggio globale §9.7 Lettura del file lato server | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |
 | Messaggio globale §9.8 Il file riceve il messaggio | NON PROVATO | Nessuna prova dedicata in questo giro | V6/L2 |

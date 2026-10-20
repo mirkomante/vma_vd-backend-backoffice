@@ -28,9 +28,17 @@ Log: `verify-*.log` in questa cartella.
 | Verify | Esito | Prima riga di errore | Classe |
 |--------|-------|----------------------|--------|
 | `verify:menu-6_1` | OK | — | — |
-| `verify:menu-6_2` | FALLITO | `Verifica 6.2 non riuscita: REST fallback-locale=none: description doveva essere vuota` | (iii) REST dopo F-EN restituisce `description` non vuota con `fallback-locale=none` (fixture IT «Solo IT», `verify-menu-6_2.ts` ~1794–1796; Local API pre-F-EN OK) |
-| `verify:menu-6_3` | OK | — | — |
-| `verify:menu-6_4` | FALLITO | `Error: Conteggio dishes cambiato: 9 → 44` | (i) precondizione: DB non allineato al baseline del roundtrip (9 piatti residui); reimport snapshot porta 44 (`verify-menu-6_4.ts` ~1015–1016) |
-| `verify:menu-availability-final-proofs` | dev **FAIL** / standalone **NON PROVATO** | `FINAL_PROOF\|1 dev lingua step1 ?locale=en\|FAIL undefined` | (i) dev avviato con mirror 6_4, non `/tmp/vma-final-dev-*` dell'intestazione dello script; `ECONNREFUSED` su :3002 = ambiente standalone assente |
+| `verify:menu-6_2` | FALLITO | `Verifica 6.2 non riuscita: REST fallback-locale=none: description doveva essere vuota` | **causa non determinata** (correzione della chat di design). Dopo l'ultimo OK noto (F-EN, 18/10) `collections/`, hook e dipendenze non sono cambiati; il blocco REST gira solo con `pnpm dev` acceso, quindi potrebbe non essere mai stato esercitato prima (non verificato). Asserzione in `verify-menu-6_2.ts` ~1794–1796 (fixture IT «Solo IT»). Da diagnosticare in V6 con una `curl` su `/api/dishes/<id>?locale=en&fallback-locale=none&depth=0` |
+| `verify:menu-6_3` | OK | — | il FALLITO della prima sessione (menù fissi 1→3) non è stato riprodotto: causa non determinata |
+| `verify:menu-6_4` | FALLITO | `Error: Conteggio dishes cambiato: 9 → 44` | (i) precondizione, **dimostrata dal log**: `import contenuto prima wipe` = `5e7e8e70…`, `dopo reimport` = `d2cd0cc6…`, diverse; `verify-menu-6_4.ts` ~473 lancia «Impronta contenuto roundtrip» e il `finally` lo sostituisce con il conteggio (~1015–1016). Stesso schema del 18/10 (47→12) |
+| `verify:menu-availability-final-proofs` | **NON PROVATO** (ambiente) | `FINAL_PROOF\|1 dev lingua step1 ?locale=en\|FAIL undefined` | il dev è stato avviato con le variabili di 6_4 per l'indicazione del prompt, non con quelle di `final-proofs` (`/tmp/vma-final-dev-*`): il FAIL non è evidenza. `ECONNREFUSED` su :3002 = standalone assente |
 
 **Criteri**: (a) tutti i verify misurati; (b) 0 ERRORE-STRUMENTO sui passi verify; (c) post-commit atteso: porte libere, `count-verify-ui` 0.
+
+## Note e debiti (correzione della chat di design, dopo il controllo del commit `78dba31`)
+
+- **Da fare in V6** (backend, non UI): `verify:menu-6_4` una seconda volta a database allineato allo snapshot; diagnosi di 6_2 con `curl`; `final-proofs` con il dev avviato con le sue variabili.
+- **Non spiegato**: la prima sessione di I6 lasciò 25 piatti dopo 6_4, questa 44, a parità di snapshot.
+- **Difetto dello script** (`scripts/`, fuori perimetro qui): in 6_4 il `finally` sostituisce il primo errore con il conteggio finale; è lo stesso schema del 18/10 e di oggi.
+- **Terminale di Cursor**: `PLAYWRIGHT_BROWSERS_PATH` punta a una cache vuota; probabile causa del «Chromium assente» del lanciatore (non provata). Per i giri di V6 va impostata su `$HOME/Library/Caches/ms-playwright`.
+- **Checklist**: dopo il controllo del commit tre righe sono passate da OK a NON PROVATO (Giorni speciali §9.6 e §9.12, Messaggio globale §9.5: la voce non è coperta per intero); totali 3 OK / 0 FALLITO / 164 NON PROVATO su 167.
