@@ -1,58 +1,178 @@
 {
-  "commit": "140c15253f16",
+  "commit": "22b66b87ad86",
   "launcher": "e2e/T1c-playwright",
   "browser": "chromium (Playwright)",
   "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
-  "durataSecondi": 131,
+  "durataSecondi": 41,
   "riepilogo": {
-    "OK": 0,
+    "OK": 2,
     "FALLITO": 0,
     "AVVISO": 0,
     "NON PROVATO": 0,
-    "ERRORE-STRUMENTO": 2
+    "ERRORE-STRUMENTO": 7
   },
   "esiti": [
     {
-      "id": "@sim/ C1 telefono-390-chiaro",
-      "schermata": "@sim/ servizi/errore-caricamento",
-      "profiloTema": "simulazioni",
-      "esito": "ERRORE-STRUMENTO",
-      "misurato": "Error: ENOENT: no such file or directory, open '/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/e2e/.sim-isolates/3201/.next/e2e-run.json'",
-      "atteso": "nessuna eccezione fuori asserzione",
-      "evidenza": "failed",
-      "seconds": 0.1
+      "id": "screenshot servizi-eliminato [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
     },
     {
-      "id": "@sim/ C1 telefono-390-chiaro",
-      "schermata": "@sim/ servizi/errore-caricamento",
-      "profiloTema": "simulazioni",
+      "id": "screenshot vini-origine-senza-regioni [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
       "esito": "ERRORE-STRUMENTO",
-      "misurato": "tempo",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
       "atteso": "nessuna eccezione fuori asserzione",
-      "evidenza": "timedOut",
-      "seconds": 0
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "screenshot vini-errore-anno [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "screenshot menu-fissi-scegli-piatti [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "screenshot menu-fissi-eliminato [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.9
+    },
+    {
+      "id": "screenshot vini-errore-geografia [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.5
+    },
+    {
+      "id": "screenshot menu-fissi-visibilita-categoria [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "screenshot menu-fissi-visibilita-avviso [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "screenshot menu-fissi-scegli-piatti [notebook-1280-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
     }
   ],
   "erroriStrumento": [
     {
-      "id": "@sim/ C1 telefono-390-chiaro",
-      "schermata": "@sim/ servizi/errore-caricamento",
-      "profiloTema": "simulazioni",
+      "id": "screenshot vini-origine-senza-regioni [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
       "esito": "ERRORE-STRUMENTO",
-      "misurato": "Error: ENOENT: no such file or directory, open '/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/e2e/.sim-isolates/3201/.next/e2e-run.json'",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
       "atteso": "nessuna eccezione fuori asserzione",
       "evidenza": "failed",
-      "seconds": 0.1
+      "seconds": 12.6
     },
     {
-      "id": "@sim/ C1 telefono-390-chiaro",
-      "schermata": "@sim/ servizi/errore-caricamento",
-      "profiloTema": "simulazioni",
+      "id": "screenshot vini-errore-anno [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
       "esito": "ERRORE-STRUMENTO",
-      "misurato": "tempo",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
       "atteso": "nessuna eccezione fuori asserzione",
-      "evidenza": "timedOut",
-      "seconds": 0
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "screenshot menu-fissi-scegli-piatti [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "screenshot vini-errore-geografia [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.5
+    },
+    {
+      "id": "screenshot menu-fissi-visibilita-categoria [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "screenshot menu-fissi-visibilita-avviso [telefono-390-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "screenshot menu-fissi-scegli-piatti [notebook-1280-chiaro]",
+      "schermata": "controlli/servizi-menu-fissi-matrix.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
     }
   ],
   "anomalie": [],

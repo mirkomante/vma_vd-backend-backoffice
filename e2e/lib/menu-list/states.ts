@@ -25,7 +25,12 @@ export function matrixStates(screenId: MenuListScreenId): string[] {
   return [...(s.stati_c1_c2 ?? [])]
 }
 
+const SIM_STATES = new Set(['caricamento', 'errore-caricamento', 'errore-azione'])
+
 export function nonProvatoReason(screenId: MenuListScreenId, statoId: string): string | null {
+  if (SIM_STATES.has(statoId)) {
+    return 'le riprova V6 con un dev server alla volta'
+  }
   if (statoId === 'vuoto') {
     return 'NON PROVABILE con dati presenti: il database di sviluppo non viene svuotato'
   }
@@ -38,7 +43,13 @@ export function nonProvatoReason(screenId: MenuListScreenId, statoId: string): s
   return null
 }
 
-export type ShotPlan = { statoId: string; profilo: string; tema: 'chiaro' | 'scuro'; refFile: string }
+export type ShotPlan = {
+  statoId: string
+  shotKey: string
+  profilo: string
+  tema: 'chiaro' | 'scuro'
+  refFile: string
+}
 
 export function screenshotPlan(screenId: MenuListScreenId): ShotPlan[] {
   const s = screenJson(screenId)
@@ -46,24 +57,47 @@ export function screenshotPlan(screenId: MenuListScreenId): ShotPlan[] {
   const out: ShotPlan[] = []
   for (const [statoId, files] of Object.entries(refs)) {
     for (const refFile of files) {
-      const parsed = parseRefFilename(refFile)
+      const parsed = parseRefFilename(refFile, statoId)
       if (!parsed) continue
-      out.push({ statoId, profilo: parsed.profilo, tema: parsed.tema, refFile })
+      out.push({
+        statoId,
+        shotKey: parsed.shotKey,
+        profilo: parsed.profilo,
+        tema: parsed.tema,
+        refFile,
+      })
     }
   }
   return out
 }
 
-function parseRefFilename(name: string): { profilo: string; tema: 'chiaro' | 'scuro' } | null {
+function parseRefFilename(
+  name: string,
+  statoId: string,
+): { profilo: string; tema: 'chiaro' | 'scuro'; shotKey: string } | null {
   const m = name.match(/^(\d+)-(.+)\.(png)$/)
   if (!m) return null
   const width = m[1]
   const rest = m[2]
   const profilo = width === '390' ? 'telefono-390' : width === '1280' ? 'notebook-1280' : null
   if (!profilo) return null
-  const temaMatch = rest.match(/(chiaro|scuro)$/)
-  if (!temaMatch) return null
-  return { profilo, tema: temaMatch[1] as 'chiaro' | 'scuro' }
+  let tema: 'chiaro' | 'scuro'
+  let withoutTema: string
+  if (rest === 'chiaro' || rest === 'scuro') {
+    tema = rest
+    withoutTema = ''
+  } else {
+    const temaMatch = rest.match(/-(chiaro|scuro)$/)
+    if (!temaMatch) return null
+    tema = temaMatch[1] as 'chiaro' | 'scuro'
+    withoutTema = rest.slice(0, -(tema.length + 1))
+  }
+  const shotKey = withoutTema.length > 0 ? withoutTema : statoId
+  return { profilo, tema, shotKey }
+}
+
+export function screenshotFileName(screenId: string, shot: ShotPlan): string {
+  return `${screenId}-${shot.shotKey}-${shot.profilo}-${shot.tema}.png`
 }
 
 export function expectedScreenshotCount(screenId: MenuListScreenId): number {

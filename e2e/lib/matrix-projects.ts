@@ -29,11 +29,6 @@ export const C3_NO_LAMPO_PROJECTS = MATRIX_PROJECTS.filter((p) => p.endsWith('-s
 
 export const C3_CAMBIO_SISTEMA_PROJECTS = ['telefono-390-chiaro', 'telefono-390-scuro'] as const
 
-/** Stati con server dev dedicato (progetto `simulazioni`). */
-export const SIM_MATRIX_STATES = new Set(['caricamento', 'errore-caricamento', 'errore-azione'])
-
-export const SIM_SCREENSHOT_PROJECTS = ['telefono-390-chiaro'] as const
-
 export function grepForProject(projectName: string): RegExp {
   return new RegExp(`\\[${projectName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\]$`)
 }

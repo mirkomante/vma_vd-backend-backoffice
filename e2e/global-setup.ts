@@ -18,6 +18,7 @@ import {
   REPO_ROOT,
 } from './lib/paths'
 import { generateTestPassword, provisionTestUser, withPayloadForSetup } from './lib/provision-test-user'
+import { freeE2ePortsBeforeRun } from './lib/kill-ports'
 import { waitForUrl } from './lib/wait-url'
 
 const PROD_PORT = '3100'
@@ -38,6 +39,7 @@ function startProdServer(): ChildProcess {
 
 export default async function globalSetup(): Promise<void> {
   process.env.PAYLOAD_DISABLE_PUSH = '1'
+  await freeE2ePortsBeforeRun()
   acquireE2eLock()
 
   const runId = randomBytes(4).toString('hex')

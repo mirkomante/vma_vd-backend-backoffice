@@ -10,7 +10,6 @@ import {
   checkTemaClasse,
   installNoLampoObserver,
 } from '../lib/checks'
-import { loginAppOnBase } from '../lib/login-dev'
 import {
   C1_PROJECTS,
   C2_MOUSE_PROJECTS,
@@ -19,31 +18,32 @@ import {
   C3_NO_LAMPO_PROJECTS,
   MATRIX_PROJECTS,
   projectTag,
-  SIM_MATRIX_STATES,
 } from '../lib/matrix-projects'
 import { MENU_LIST_SCREENS, type MenuListScreenId } from '../lib/menu-list/config'
 import { assertStateVisible, prepareMenuListState } from '../lib/menu-list/prepare-state'
-import { matrixStates, nonProvatoReason, screenshotPlan } from '../lib/menu-list/states'
+import {
+  matrixStates,
+  nonProvatoReason,
+  screenshotFileName,
+  screenshotPlan,
+} from '../lib/menu-list/states'
 import { E2E_ESITI_DIR } from '../lib/paths'
 import { assertPrepared } from '../lib/prepare-assert'
 import { parseProjectName } from '../lib/project-meta'
-import { ensureConsoleDevServer } from '../lib/sim-dev-servers'
+import { frameStateForScreenshot } from '../lib/screenshot-frame'
 import { applyThemeCookie, htmlDarkForTema } from '../lib/theme'
 
 const SCREEN_IDS: MenuListScreenId[] = ['servizi', 'menu-fissi']
 
-function prodStates(screenId: MenuListScreenId): string[] {
-  return matrixStates(screenId).filter((s) => !SIM_MATRIX_STATES.has(s))
+function matrixStateIds(screenId: MenuListScreenId): string[] {
+  return matrixStates(screenId).filter((s) => !nonProvatoReason(screenId, s))
 }
 
 for (const screenId of SCREEN_IDS) {
   const config = MENU_LIST_SCREENS[screenId]
-  const stateIds = prodStates(screenId)
+  const stateIds = matrixStateIds(screenId)
 
   for (const statoId of stateIds) {
-    const np = nonProvatoReason(screenId, statoId)
-    if (np) continue
-
     test.describe(`${screenId}/${statoId}`, () => {
       for (const project of C1_PROJECTS) {
         test(`${screenId} C1 ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
@@ -123,8 +123,17 @@ for (const screenId of SCREEN_IDS) {
     })
   }
 
-  for (const statoId of ['vuoto', 'nuovo-senza-categorie'] as const) {
+  const npStates = new Set([
+    'vuoto',
+    'categorie-vuoto',
+    'nuovo-senza-categorie',
+    'caricamento',
+    'errore-caricamento',
+    'errore-azione',
+  ])
+  for (const statoId of npStates) {
     if (statoId === 'nuovo-senza-categorie' && screenId !== 'menu-fissi') continue
+    if (statoId === 'categorie-vuoto' && screenId !== 'menu-fissi') continue
     const reason = nonProvatoReason(screenId, statoId)
     if (!reason) continue
     test(`${screenId} NON PROVATO ${statoId} ${projectTag('telefono-390-chiaro')}`, async ({}, testInfo) => {
@@ -133,12 +142,18 @@ for (const screenId of SCREEN_IDS) {
     })
   }
 
-  const shots = screenshotPlan(screenId).filter(
-    (s) => !SIM_MATRIX_STATES.has(s.statoId) && !nonProvatoReason(screenId, s.statoId),
-  )
+  test(`${screenId}-console NON PROVATO ${projectTag('telefono-390-chiaro')}`, async ({}, testInfo) => {
+    testInfo.annotations.push({
+      type: 'skip',
+      description: 'le riprova V6 con un dev server alla volta',
+    })
+    test.skip(true, 'le riprova V6 con un dev server alla volta')
+  })
+
+  const shots = screenshotPlan(screenId).filter((s) => !nonProvatoReason(screenId, s.statoId))
   for (const shot of shots) {
     const project = `${shot.profilo}-${shot.tema}`
-    test(`screenshot ${screenId}-${shot.statoId} ${projectTag(project)}`, async ({
+    test(`screenshot ${screenId}-${shot.shotKey} ${projectTag(project)}`, async ({
       page,
       baseURL,
       payload,
@@ -148,44 +163,12 @@ for (const screenId of SCREEN_IDS) {
       const prep = await prepareMenuListState(page, config, shot.statoId, payload, payloadWorker)
       assertPrepared(prep)
       await assertStateVisible(page, config, shot.statoId)
+      await frameStateForScreenshot(page, shot.shotKey)
       mkdirSync(join(E2E_ESITI_DIR, 'img'), { recursive: true })
       await page.screenshot({
-        path: join(E2E_ESITI_DIR, 'img', `${screenId}-${shot.statoId}-${shot.profilo}-${shot.tema}.png`),
+        path: join(E2E_ESITI_DIR, 'img', screenshotFileName(screenId, shot)),
         fullPage: true,
       })
     })
   }
 }
-
-test(`servizi-console ${projectTag('telefono-390-chiaro')}`, async ({ page }) => {
-  const devUrl = await ensureConsoleDevServer()
-  await loginAppOnBase(page, devUrl)
-  const bag = { errors: [] as string[], warnings: [] as string[], failed: [] as string[] }
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') bag.errors.push(msg.text())
-    if (msg.type() === 'warning') bag.warnings.push(msg.text())
-  })
-  page.on('pageerror', (e) => bag.errors.push(String(e)))
-  await page.goto(`${devUrl}/app/menu/services`, { waitUntil: 'domcontentloaded' })
-  await page.getByRole('button', { name: 'Nuovo servizio' }).click()
-  await page.keyboard.press('Escape')
-  const misurato = `err:${bag.errors.length} warn:${bag.warnings.length} http:${bag.failed.length}`
-  expect(bag.errors, `misurato: ${misurato}; atteso: err:0 warn:0 http:0`).toEqual([])
-  expect(bag.warnings, `misurato: ${misurato}; atteso: err:0 warn:0 http:0`).toEqual([])
-})
-
-test(`menu-fissi-console ${projectTag('telefono-390-chiaro')}`, async ({ page }) => {
-  const devUrl = await ensureConsoleDevServer()
-  await loginAppOnBase(page, devUrl)
-  const bag = { errors: [] as string[], warnings: [] as string[] }
-  page.on('console', (msg) => {
-    if (msg.type() === 'error') bag.errors.push(msg.text())
-    if (msg.type() === 'warning') bag.warnings.push(msg.text())
-  })
-  await page.goto(`${devUrl}/app/menu/fixed`, { waitUntil: 'domcontentloaded' })
-  await page.getByRole('button', { name: 'Nuovo menù fisso' }).click()
-  await page.keyboard.press('Escape')
-  const misurato = `err:${bag.errors.length} warn:${bag.warnings.length}`
-  expect(bag.errors, `misurato: ${misurato}; atteso: err:0 warn:0`).toEqual([])
-  expect(bag.warnings, `misurato: ${misurato}; atteso: err:0 warn:0`).toEqual([])
-})

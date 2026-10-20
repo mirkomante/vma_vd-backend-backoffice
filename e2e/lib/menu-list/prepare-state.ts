@@ -180,7 +180,7 @@ export async function prepareMenuListState(
       case 'eliminato':
         await gotoMenuList(page, config)
         await clickRowAction(page, nome('serv-gone'), 'delete')
-        await page.getByRole('button', { name: 'Elimina' }).click()
+        await page.locator('[role=alertdialog]').getByRole('button', { name: 'Elimina' }).click()
         await page.locator('[role=alertdialog]').waitFor({ state: 'hidden', timeout: 12_000 })
         return { ok: true }
       case 'errore-azione':
@@ -240,7 +240,7 @@ export async function prepareMenuListState(
       case 'scegli-piatti':
         await gotoMenuList(page, config)
         await clickRowAction(page, nome('menu-scelta'), 'edit')
-        await page.getByRole('button', { name: /Scegli piatti|Aggiungi piatti/i }).click()
+        await page.getByRole('button', { name: /Scegli piatti|Aggiungi.*piatti/i }).click()
         await page.locator('[data-slot=sheet-content]').last().waitFor({ timeout: 15_000 })
         return { ok: true }
       case 'nuovo':
@@ -261,7 +261,11 @@ export async function prepareMenuListState(
         await page.locator('[data-slot=sheet-content]').waitFor({ timeout: 15_000 })
         await selectComboboxOption(page, 'Categoria', nome('pranzo'))
         if (statoId === 'visibilita-categoria') {
-          await page.getByText(nome('pranzo')).waitFor({ timeout: 10_000 })
+          await page
+            .locator('[data-slot=sheet-content]')
+            .getByText(nome('pranzo'))
+            .first()
+            .waitFor({ timeout: 10_000 })
           return { ok: true }
         }
         await selectComboboxOption(page, 'Visibilità', 'Solo cena')
@@ -269,8 +273,7 @@ export async function prepareMenuListState(
         return { ok: true }
       case 'disponibilita':
         await gotoMenuList(page, config)
-        await clickRowAction(page, nome('menu-disp'), 'edit')
-        await page.locator('[data-slot=sheet-content]').waitFor({ timeout: 15_000 })
+        await page.getByRole('switch', { name: `Disponibile: ${nome('menu-disp')}` }).click()
         return { ok: true }
       case 'elimina':
         await gotoMenuList(page, config)
@@ -285,7 +288,7 @@ export async function prepareMenuListState(
       case 'eliminato':
         await gotoMenuList(page, config)
         await clickRowAction(page, nome('menu-gone'), 'delete')
-        await page.getByRole('button', { name: 'Elimina' }).click()
+        await page.locator('[role=alertdialog]').getByRole('button', { name: 'Elimina' }).click()
         await page.locator('[role=alertdialog]').waitFor({ state: 'hidden', timeout: 12_000 })
         return { ok: true }
       case 'errore-azione':

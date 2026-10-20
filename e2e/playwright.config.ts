@@ -45,34 +45,10 @@ const matrixProjects = profiles.flatMap((profile) =>
   }),
 )
 
-const simProjects = isControlliSuite
-  ? [
-      {
-        name: 'simulazioni',
-        grep: /@sim\//,
-        fullyParallel: false,
-        workers: 1,
-        timeout: 120_000,
-        use: {
-          ...devices['Desktop Chrome'],
-          viewport: { width: 390, height: 844 },
-          deviceScaleFactor: 3,
-          isMobile: true,
-          hasTouch: true,
-          colorScheme: 'light' as const,
-          baseURL: BASE_URL,
-          storageState: E2E_STORAGE_STATE,
-        },
-      },
-    ]
-  : []
-
 export default defineConfig({
   testDir: '.',
   testMatch: isControlliSuite ? ['controlli/**/*.spec.ts'] : ['smoke/**/*.spec.ts'],
-  testIgnore: isControlliSuite
-    ? ['**/.sim-isolates/**']
-    : ['**/strumento.spec.ts', '**/.sim-isolates/**'],
+  testIgnore: isControlliSuite ? [] : ['**/strumento.spec.ts'],
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,
@@ -88,16 +64,5 @@ export default defineConfig({
   globalSetup: './global-setup.ts',
   globalTeardown: './global-teardown.ts',
   reporter: [['list'], ['./reporter/e2e-reporter.ts']],
-  projects: [...matrixProjects, ...simProjects],
-  webServer: {
-    command: 'pnpm start',
-    url: BASE_URL,
-    timeout: 120_000,
-    reuseExistingServer: true,
-    env: {
-      PORT: '3100',
-      PAYLOAD_DISABLE_PUSH: '1',
-      NODE_ENV: 'production',
-    },
-  },
+  projects: matrixProjects,
 })
