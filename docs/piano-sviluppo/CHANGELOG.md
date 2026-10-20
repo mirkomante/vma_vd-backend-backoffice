@@ -16,6 +16,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- **Passo 24b (I5) — Messaggio globale e Giorni speciali** — File `disponibilita.json` non leggibile (storage assente, oggetto assente o non valido): `readPublishedGlobalMessageForUi` restituisce `ok: false` tramite `isPublishedGlobalMessageReadable`; niente «In pubblicazione…» né polling dopo «Salva modifiche». Giorni speciali: sovrapposizione calcolata in diretta nel modulo (`anticipateSpecialDayOverlap` sotto Ambito, Salva disabilitato); focus sulla prima casella menù se mancano solo i menù fissi; lint su `specialDayFormEditTitle`.
+
 - **Lanciatore `ui:verify` — daemon `menu-payload` EADDRINUSE** — `waitMenuPayloadDaemonReady` non richiama più `killOrphanMenuPayloadDaemons` a ogni invocazione (`orphansHandled` + attesa fino a 10 s dopo la prima pulizia); evita di terminare il daemon del giro corrente e il secondo spawn su `:31997` (V-MF giro 3).
 
 - **F-TOCCO (passo 21b) — P8 area di tocco schede Menù fissi e A8 filtro Stato cataloghi** — Schede «Menù fissi» / «Categorie»: estensione hit area con `pointer-coarse:after` (insets come `switch.tsx`), senza altezza visibile extra; rimosso `overflow-x-auto` dal `tablist` (due etichette brevi, niente scroll orizzontale necessario a 320–390 px — l’overflow tagliava il pseudo-elemento e rischiava scroll verticale). Filtro «Stato» con `items` in Vini, Distillati e Bevande; Distillati e Bevande: `items` anche su Tipologia e Paese. Helper `catalogStatusFilterItems` in `lib/menu/catalog/disabledStatusFilter.ts`.
@@ -25,6 +27,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 - **Menù fissi (`fixed-menus-shell`)** — `ui-check-allow`: deviazione D6: area di tocco delle schede con `pointer-coarse` fuori da `components/ui` (P8). Il registro D6 in design non è aggiornato in questo passo.
 
 ### Tests
+
+- **I5 (passo 24b)** — L0: `pnpm typecheck` (radice + e2e) **0 errori**; `pnpm lint` **0 errori** (104 warning preesistenti; **0 warning** sui file toccati); `pnpm ui:check` ok; unitari `lib/**/*.test.ts` **130/130**. L1 `pnpm ui:verify locale-prod --livello 1 --schermata giorni-speciali,messaggio-globale --controlli controlli-6.6.json` (~14,5 min): **50/50 NON PROVATO** («controllo non eseguito dal lanciatore in questa esecuzione»); esiti in `docs/design/verifica/esiti/2026-10-19-locale-prod/` poi ripristinati con `git checkout -- docs/design/verifica/esiti`. Criteri (a)(b) comportamentali **NON PROVATO** in dev (nessuna sessione browser manuale).
 
 - **I5 (passo 24)** — L0: `pnpm typecheck` (radice + e2e) 0 errori; `pnpm lint` 0 errori (105 warning preesistenti); `pnpm ui:check` ok (2 eccezioni `ui-check-allow`); unitari `lib/**/*.test.ts` **103/103** (`node --import ./scripts/node-test-resolve.mjs --experimental-strip-types --test`); `pnpm payload run scripts/verify-lib-app-8_2.ts` OK; grep `overrideAccess: true` in `special-days` / `message` 0 match. L1 `navigazione` (`controlli-6.6.json`, ~15 s build+giro): righe schermata `navigazione` tutte **OK** (incluse voci e titoli per `/app/menu/special-days` e `/app/menu/message`); L1 `shell` (`controlli-8.2.json`): righe schermata `shell` **0 FALLITO**; L1 `giorni-speciali,messaggio-globale` atteso **NON PROVATO** (lanciatore senza modulo). Prove manuali dev (sovrapposizione, messaggio, `MENU_AVAILABILITY_IN_MEMORY=1`) **non eseguite** in questa sessione.
 

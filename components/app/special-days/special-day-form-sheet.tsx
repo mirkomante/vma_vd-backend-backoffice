@@ -64,7 +64,11 @@ import {
   specialDayFormEditSubtitle,
   specialDayFormEditTitle,
 } from '@/lib/menu/specialDays/copy'
-import { SPECIAL_DAY_SCOPE_OPTIONS } from '@/lib/menu/validateSpecialDayOverlap'
+import {
+  anticipateSpecialDayOverlap,
+  type SpecialDayOverlapExisting,
+} from '@/lib/menu/specialDays/anticipateSpecialDayOverlap'
+import { SPECIAL_DAY_SCOPE_OPTIONS, type SpecialDayScope } from '@/lib/menu/validateSpecialDayOverlap'
 
 type SpecialDayFormSheetProps = {
   open: boolean
@@ -75,6 +79,8 @@ type SpecialDayFormSheetProps = {
   saving: boolean
   actionError: boolean
   fieldErrors: SpecialDayFieldErrors
+  existingDays: SpecialDayOverlapExisting[]
+  editingId: string | null
   onOpenChange: (open: boolean) => void
   onSubmit: (values: SpecialDayFormValues) => void
 }
@@ -88,12 +94,27 @@ export function SpecialDayFormSheet({
   saving,
   actionError,
   fieldErrors,
+  existingDays,
+  editingId,
   onOpenChange,
   onSubmit,
 }: SpecialDayFormSheetProps) {
   const isMobile = useIsMobile()
   const [values, setValues] = useState(initialValues)
   const [translationOpen, setTranslationOpen] = useState(() => hasEnglishSpecialDayMessage(initialValues))
+
+  const liveOverlapMessage = useMemo(
+    () =>
+      anticipateSpecialDayOverlap(existingDays, {
+        id: editingId ?? undefined,
+        date: values.dateInput,
+        scope: values.scope as SpecialDayScope,
+        disabled: values.disabled,
+      }),
+    [existingDays, editingId, values.dateInput, values.scope, values.disabled],
+  )
+
+  const overlapMessage = liveOverlapMessage ?? fieldErrors.overlap ?? null
 
   const scopeItems = useMemo(
     () => Object.fromEntries(SPECIAL_DAY_SCOPE_OPTIONS.map((o) => [o.value, o.label])),
@@ -112,13 +133,14 @@ export function SpecialDayFormSheet({
   }, [fixedMenuOptions])
 
   const showPastWarning = isSpecialDayDateBeforeToday(values.dateInput)
+  const firstFixedMenuId = menuGroups[0]?.options[0]?.id
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side={isMobile ? 'bottom' : 'right'} className="flex flex-col gap-0 p-0 sm:max-w-lg">
         <SheetHeader className="border-b border-border px-4 py-4 text-left">
           <SheetTitle>
-            {mode === 'new' ? SPECIAL_DAYS_FORM_NEW_TITLE : specialDayFormEditTitle(values.dateInput)}
+            {mode === 'new' ? SPECIAL_DAYS_FORM_NEW_TITLE : specialDayFormEditTitle()}
           </SheetTitle>
           {mode === 'new' ? (
             <p className="text-sm text-muted-foreground">{SPECIAL_DAYS_FORM_NEW_SUBTITLE}</p>
@@ -169,7 +191,7 @@ export function SpecialDayFormSheet({
                   <SelectTrigger
                     id={SPECIAL_DAY_FIELD_DOM_IDS.scope}
                     className="w-full"
-                    aria-invalid={Boolean(fieldErrors.scope || fieldErrors.overlap)}
+                    aria-invalid={Boolean(fieldErrors.scope || overlapMessage)}
                   >
                     <SelectValue placeholder={SPECIAL_DAYS_FORM_SCOPE_PLACEHOLDER} />
                   </SelectTrigger>
@@ -181,7 +203,7 @@ export function SpecialDayFormSheet({
                 </Select>
                 <FieldDescription>{SPECIAL_DAYS_FORM_SCOPE_HINT}</FieldDescription>
                 <FieldError>{fieldErrors.scope}</FieldError>
-                <FieldError>{fieldErrors.overlap}</FieldError>
+                <FieldError>{overlapMessage}</FieldError>
               </Field>
             </FieldSet>
 
@@ -192,9 +214,13 @@ export function SpecialDayFormSheet({
                   <FieldLegend>{group.categoryName}</FieldLegend>
                   {group.options.map((menu) => {
                     const checked = values.fixedMenuIds.includes(menu.id)
+                    const isFirstFixedMenu = menu.id === firstFixedMenuId
                     return (
                       <Field key={menu.id} orientation="horizontal">
                         <Checkbox
+                          id={
+                            isFirstFixedMenu ? SPECIAL_DAY_FIELD_DOM_IDS.firstFixedMenu : undefined
+                          }
                           checked={checked}
                           onCheckedChange={(next) => {
                             setValues((v) => {
@@ -275,7 +301,12 @@ export function SpecialDayFormSheet({
             <Button type="button" variant="outline" size="lg" disabled={saving} onClick={() => onOpenChange(false)}>
               {SPECIAL_DAYS_FORM_CANCEL}
             </Button>
-            <Button type="button" size="lg" disabled={saving} onClick={() => onSubmit(values)}>
+            <Button
+              type="button"
+              size="lg"
+              disabled={saving || Boolean(liveOverlapMessage)}
+              onClick={() => onSubmit(values)}
+            >
               {saving ? (
                 <>
                   <Spinner className="size-4" aria-hidden />

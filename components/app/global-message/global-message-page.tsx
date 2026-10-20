@@ -134,7 +134,7 @@ export function GlobalMessagePage({ initialData }: GlobalMessagePageProps) {
             }
             setPublishedReadable(true)
             setPublished(result.summary)
-            const nextEffective = result.summary?.effectiveIt ?? ''
+            const nextEffective = result.summary.effectiveIt ?? ''
             if (nextEffective === savedEffectiveRef.current) {
               setPublishWatchActive(false)
               clearTimer()
@@ -185,16 +185,17 @@ export function GlobalMessagePage({ initialData }: GlobalMessagePageProps) {
     setSavedValues(result.values)
     setValues(result.values)
     setNotice({ kind: 'saved' })
-    watchStartedAtRef.current = Date.now()
-    setPublishWatchActive(true)
     void readPublishedGlobalMessageAction().then((read) => {
       queueMicrotask(() => {
         if (!read.ok) {
           setPublishedReadable(false)
+          setPublishWatchActive(false)
           return
         }
         setPublishedReadable(true)
         setPublished(read.summary)
+        watchStartedAtRef.current = Date.now()
+        setPublishWatchActive(true)
       })
     })
   }, [values])

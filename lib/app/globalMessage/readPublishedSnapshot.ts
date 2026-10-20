@@ -1,12 +1,13 @@
 import { applyDevPublishReadDelay } from '@/lib/app/globalMessage/devPublishReadDelay'
 import { resolveAvailabilityStorage } from '@/lib/menu/availability/gcsAvailabilityWriter'
+import { isPublishedGlobalMessageReadable } from '@/lib/menu/globalMessage/isPublishedGlobalMessageReadable'
 import {
   summarizePublishedGlobalMessageFromRaw,
   type PublishedGlobalMessageSummary,
 } from '@/lib/menu/globalMessage/summarizePublishedGlobalMessage'
 
 export type PublishedSnapshotReadResult =
-  | { ok: true; summary: PublishedGlobalMessageSummary | null }
+  | { ok: true; summary: PublishedGlobalMessageSummary }
   | { ok: false; error: 'read' }
 
 /** Lettura grezza del file (senza ritardo simulato). */
@@ -26,6 +27,9 @@ export async function readPublishedGlobalMessageForUi(
   try {
     const actual = await readActualPublishedGlobalMessageSnapshot()
     const summary = applyDevPublishReadDelay(actual, nowMs)
+    if (!isPublishedGlobalMessageReadable(summary)) {
+      return { ok: false, error: 'read' }
+    }
     return { ok: true, summary }
   } catch {
     return { ok: false, error: 'read' }

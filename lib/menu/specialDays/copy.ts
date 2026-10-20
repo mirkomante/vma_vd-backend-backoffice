@@ -74,7 +74,7 @@ export const SPECIAL_DAYS_TOAST_DELETED_REBUILD_HINT =
 export const SPECIAL_DAYS_FORM_NEW_TITLE = 'Nuovo giorno speciale'
 export const SPECIAL_DAYS_FORM_NEW_SUBTITLE =
   'Compare nel menù pubblico dopo la ricompilazione.'
-export function specialDayFormEditTitle(date: string): string {
+export function specialDayFormEditTitle(): string {
   return `Modifica giorno speciale`
 }
 export function specialDayFormEditSubtitle(date: string): string {

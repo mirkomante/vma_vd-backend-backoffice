@@ -30,6 +30,7 @@ import { anticipateSpecialDayOverlap } from '@/lib/menu/specialDays/anticipateSp
 import type { SpecialDayScope } from '@/lib/menu/validateSpecialDayOverlap'
 import {
   firstInvalidSpecialDayField,
+  SPECIAL_DAY_FIELD_DOM_IDS,
   validateSpecialDayForm,
   type SpecialDayFieldErrors,
 } from '@/lib/app/specialDays/formModel'
@@ -300,9 +301,13 @@ export function SpecialDaysPage({ context }: SpecialDaysPageProps) {
       setFormFieldErrors(fieldErrors)
       const first = firstInvalidSpecialDayField(fieldErrors)
       if (first === 'dateInput') {
-        document.getElementById('special-day-field-date')?.focus()
+        document.getElementById(SPECIAL_DAY_FIELD_DOM_IDS.dateInput)?.focus()
       } else if (first === 'scope' || first === 'overlap') {
-        document.getElementById('special-day-field-scope')?.focus()
+        document.getElementById(SPECIAL_DAY_FIELD_DOM_IDS.scope)?.focus()
+      } else if (first === 'fixedMenuIds') {
+        const el = document.getElementById(SPECIAL_DAY_FIELD_DOM_IDS.firstFixedMenu)
+        el?.scrollIntoView({ block: 'nearest' })
+        el?.focus()
       }
       return
     }
@@ -479,6 +484,13 @@ export function SpecialDaysPage({ context }: SpecialDaysPageProps) {
         saving={formSaving}
         actionError={formActionError}
         fieldErrors={formFieldErrors}
+        existingDays={allDays.map((d) => ({
+          id: d.id,
+          date: d.date,
+          scope: d.scope,
+          disabled: d.disabled,
+        }))}
+        editingId={editId}
         onOpenChange={setFormOpen}
         onSubmit={handleSave}
       />

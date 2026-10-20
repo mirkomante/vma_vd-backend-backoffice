@@ -15,6 +15,7 @@ export type SpecialDayFieldErrors = Partial<
 export const SPECIAL_DAY_FIELD_DOM_IDS = {
   dateInput: 'special-day-field-date',
   scope: 'special-day-field-scope',
+  firstFixedMenu: 'special-day-field-first-fixed-menu',
 } as const
 
 export function isSpecialDayDateBeforeToday(
