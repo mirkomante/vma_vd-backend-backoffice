@@ -1,0 +1,64 @@
+{
+  "istanza": "V-MF-rilancio-3",
+  "fix": "scripts/ui-verify/lib/menu-payload.mjs — orphansHandled (una sola killOrphan per processo)",
+  "PAYLOAD_DISABLE_PUSH": false,
+  "durataSecondi": 51,
+  "exitCode": 1,
+  "erroreStrumento": "locator.click Timeout 20000ms — getByRole('button', { name: 'Elimina verify-ui-menu-libero' }) in menu-fissi-elimina-senza-uso; eccezione non gestita, giro interrotto",
+  "esiti": [
+    {
+      "id": "menu-fissi-colonna-elenco",
+      "esito": "NON PROVATO",
+      "misurato": "giro interrotto prima di runMenuListSupplementaryFlows (crash su elimina-senza-uso)",
+      "atteso": "layout elenco per profilo (390 schede, 1280 tabella col 976px)"
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione",
+      "esito": "NON PROVATO",
+      "misurato": "non raggiunto (ordine flussi: supplementary dopo elimina)",
+      "atteso": "porzione IT + modulo EN + API locale=en"
+    },
+    {
+      "id": "menu-fissi-servizi-piatti",
+      "esito": "NON PROVATO",
+      "misurato": "non raggiunto",
+      "atteso": "servizi M2M + stati piatti in elenco e scelta"
+    },
+    {
+      "id": "menu-fissi-elimina-usato",
+      "esito": "NON PROVATO",
+      "misurato": "non eseguito (bloccato da crash sul controllo precedente)",
+      "atteso": "dialogo cascade giorni speciali + elimina"
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso",
+      "esito": "NON PROVATO",
+      "misurato": "TimeoutError 20000ms: pulsante «Elimina verify-ui-menu-libero» non trovato/cliccabile (run-menu-list-flows.mjs:368, clickRowAction)",
+      "atteso": "dialogo «Eliminare verify-ui-menu-libero?» con sola «Non si può annullare.»"
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
+      "esito": "NON PROVATO",
+      "misurato": "non raggiunto",
+      "atteso": "cascade DB + activity log delete + permessi ruoli"
+    },
+    {
+      "id": "menu-fissi-persistenza",
+      "esito": "NON PROVATO",
+      "misurato": "non raggiunto",
+      "atteso": "create/update verify-ui-menu-nuovo + permessi"
+    },
+    {
+      "id": "menu-fissi-ordine-liste",
+      "esito": "NON PROVATO",
+      "misurato": "non raggiunto",
+      "atteso": "ordinamento categorie/menù per nome (italiano)"
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili",
+      "esito": "NON PROVATO",
+      "misurato": "non raggiunto",
+      "atteso": "etichette IT; assenza stringhe inglesi vietate in pagina/aria-label"
+    }
+  ]
+}

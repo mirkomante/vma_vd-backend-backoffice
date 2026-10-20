@@ -12,6 +12,8 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- **Lanciatore `ui:verify` — daemon `menu-payload` EADDRINUSE** — `waitMenuPayloadDaemonReady` non richiama più `killOrphanMenuPayloadDaemons` a ogni invocazione (`orphansHandled` + attesa fino a 10 s dopo la prima pulizia); evita di terminare il daemon del giro corrente e il secondo spawn su `:31997` (V-MF giro 3).
+
 - **F-TOCCO (passo 21b) — P8 area di tocco schede Menù fissi e A8 filtro Stato cataloghi** — Schede «Menù fissi» / «Categorie»: estensione hit area con `pointer-coarse:after` (insets come `switch.tsx`), senza altezza visibile extra; rimosso `overflow-x-auto` dal `tablist` (due etichette brevi, niente scroll orizzontale necessario a 320–390 px — l’overflow tagliava il pseudo-elemento e rischiava scroll verticale). Filtro «Stato» con `items` in Vini, Distillati e Bevande; Distillati e Bevande: `items` anche su Tipologia e Paese. Helper `catalogStatusFilterItems` in `lib/menu/catalog/disabledStatusFilter.ts`.
 
 ### Componenti
@@ -24,6 +26,7 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 - **V-MF (passo 21c)** — e2e C2 `elenco`/`categorie` telefono-390 chiaro e scuro **OK** (~27 s, nessun elemento &lt; 44 px). `ui:verify --solo` (9 flussi Menù fissi): **ERRORE-STRUMENTO** (~43 s, stesso crash daemon `:31997` prima di qualsiasi flusso; criterio (a) non soddisfatto). Ambiente finale: porte libere, `verify-ui-` a 0 dopo `delete-prefix`. Rapporto `docs/design/verifica/esiti/2026-10-20-V-MF/`.
 - **V-MF rilancio** — `PAYLOAD_DISABLE_PUSH=1 pnpm ui:verify … --solo` (9 flussi): **ERRORE-STRUMENTO** (~45 s, stesso exit 1); stderr completo daemon `listen EADDRINUSE: address already in use 127.0.0.1:31997` (doppio spawn in sequenza lanciatore). Esiti `flussi2-*` in `2026-10-20-V-MF/`.
+- **V-MF giro 3** — Fix lanciatore `menu-payload.mjs` (`orphansHandled`: kill orfani una sola volta per processo). `ui:verify --solo` (9 flussi): daemon OK; **ERRORE-STRUMENTO** Playwright timeout su `Elimina verify-ui-menu-libero` (`menu-fissi-elimina-senza-uso`); nove controlli **NON PROVATO** nel giro. Esiti `flussi3-*`.
 
 ### Changed
 

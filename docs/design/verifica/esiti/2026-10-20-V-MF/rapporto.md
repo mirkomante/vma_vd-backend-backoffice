@@ -9,8 +9,9 @@
 | 1 C2 e2e | `E2E_ESITI=2026-10-20-V-MF pnpm exec node e2e/scripts/playwright-cli.mjs --workers=4 --grep "menu-fissi/(elenco\|categorie).+C2"` | **27,2 s** | 0 |
 | 2 flussi | `pnpm ui:verify locale-prod … --solo` (9 id) | **43,3 s** | 1 |
 | 2b flussi (rilancio) | `PAYLOAD_DISABLE_PUSH=1 pnpm ui:verify locale-prod … --solo` (9 id) | **45,5 s** | 1 |
+| 3 flussi (fix daemon) | `pnpm ui:verify locale-prod … --solo` (9 id), fix `menu-payload.mjs` | **50,5 s** | 1 |
 
-Artefatti: `c2-e2e-*`, `flussi-risultati.json`, `flussi2-risultati.json`, `flussi2-rapporto.md`, `flussi2-run.log`.
+Artefatti: `c2-e2e-*`, `flussi*`, `flussi3-risultati.json`, `flussi3-rapporto.md`, `flussi3-run.log`.
 
 ## C2 schede (elenco + categorie, telefono-390 chiaro/scuro)
 
@@ -76,4 +77,5 @@ Elementi sotto 44 px sui quattro C2 a 390 px: **nessuno** (evidenza: `misurato: 
 
 - Nessun commit git (per istruzione V-MF).
 - Rilancio unico con `PAYLOAD_DISABLE_PUSH=1` (2026-10-20 pomeriggio): fallito come giro 1; nessun terzo tentativo.
-- **Piano (da aggiungere)**: il vecchio lanciatore va usato con `PAYLOAD_DISABLE_PUSH=1` **e** va corretta la sequenza del daemon `menu-payload` (non rispawnare su :31997 se già in ascolto / non killare il daemon vivo tra warmup e flussi).
+- **Giro 3**: fix `orphansHandled` in `menu-payload.mjs` — daemon OK, nuovo **ERRORE-STRUMENTO** Playwright su `menu-fissi-elimina-senza-uso` (timeout pulsante «Elimina verify-ui-menu-libero»). `PAYLOAD_DISABLE_PUSH` non necessario per il daemon.
+- **Fix daemon**: `orphansHandled` in `scripts/ui-verify/lib/menu-payload.mjs` (commit dedicato).

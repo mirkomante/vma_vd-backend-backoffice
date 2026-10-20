@@ -11,6 +11,8 @@ const USE_LEGACY_PAYLOAD = process.env.UI_VERIFY_MENU_PAYLOAD_LEGACY === '1'
 let daemonChild = null
 let daemonBootStderr = ''
 let daemonBootStdout = ''
+/** Pulizia orfani su :31997 una sola volta per processo ui:verify (evita di killare il daemon del giro corrente). */
+let orphansHandled = false
 
 const DAEMON_READY_MS = Number(process.env.UI_VERIFY_MENU_PAYLOAD_READY_MS ?? '20000')
 
@@ -136,7 +138,14 @@ function spawnMenuPayloadDaemon() {
 
 /** Attesa asincrona (non blocca timer/Playwright). Errore esplicito dopo `ms` ms. */
 export async function waitMenuPayloadDaemonReady(ms = DAEMON_READY_MS) {
-  killOrphanMenuPayloadDaemons()
+  if (!orphansHandled) {
+    killOrphanMenuPayloadDaemons()
+    orphansHandled = true
+    const portFreeDeadline = Date.now() + 10_000
+    while (isDaemonPortOpen() && Date.now() < portFreeDeadline) {
+      await sleepMs(250)
+    }
+  }
   spawnMenuPayloadDaemon()
   if (isDaemonPortOpen()) return
   const start = Date.now()

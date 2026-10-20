@@ -1,5 +1,5 @@
 # Esito verifica — locale-prod — 2026-10-19
-Commit: 082ba3d55be2 · Lanciatore: 3.9.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 27 s
+Commit: 25369d093582 · Lanciatore: 3.9.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 26 s
 
 Avanzamento live: `tail -f .next/ui-verify-progress.log`
 
