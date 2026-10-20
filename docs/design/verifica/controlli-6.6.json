@@ -1,7 +1,7 @@
 {
  "versione": 1,
  "fase": "6.6",
- "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande,servizi,menu-fissi}/spec.md (le altre schermate si aggiungono una alla volta) e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
+ "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande,servizi,menu-fissi,giorni-speciali,messaggio-globale}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
  "fonti": [
   "docs/design/schermate/integrazione/spec.md",
   "docs/design/schermate/piatti/spec.md",
@@ -12,7 +12,9 @@
   "docs/design/schermate/distillati/spec.md",
   "docs/design/schermate/bevande/spec.md",
   "docs/design/schermate/servizi/spec.md",
-  "docs/design/schermate/menu-fissi/spec.md"
+  "docs/design/schermate/menu-fissi/spec.md",
+  "docs/design/schermate/giorni-speciali/spec.md",
+  "docs/design/schermate/messaggio-globale/spec.md"
  ],
  "ambienti": {
   "locale-dev": {
@@ -5013,6 +5015,1234 @@
      ],
      "vuoto": [
       "390-vuoto-chiaro.png"
+     ]
+    }
+   }
+  },
+  {
+   "id": "giorni-speciali",
+   "percorso": "/app/menu/special-days",
+   "auth": "manager di prova",
+   "nota": "Una sola rotta. Giorni speciali non ha ricerca né filtri né elenco parziale. I controlli sul pulsante «Ricompila» sono NON PROVATI, rinviati alla 6.5; gli avvisi hanno solo il titolo finché la bandiera è spenta. Un giorno speciale non ha un nome: i giorni di prova puntano SEMPRE e SOLO a menù fissi di prova «verify-ui-…» (categoria «verify-ui-cat»), e si cancellano in try/finally PRIMA dei menù che contengono, come fa già scripts/cleanup-verify-ui-menu-fixtures.ts (cancella i giorni speciali che puntano a menù di prova); il messaggio, quando c'è, comincia con «verify-ui-» per riconoscerli a occhio. Date di prova: giorni ATTIVI lontani e distinti tra loro (2099-… nel futuro, 2001-… nel passato) per non violare la regola di sovrapposizione con i giorni reali del database di sviluppo; i giorni di prova con data vicina a oggi (ieri, oggi, domani in Europe/Rome) si creano DISATTIVATI, perché un giorno disattivato non conta per la sovrapposizione. «Oggi» si calcola con la funzione dell'App (todayRomeAsSpecialDayDate), non con l'orologio del browser. Gli stati con il database popolato (vuoto) e gli stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATI in L1 e nella chat I5: li riprova l'agente di verifica in V6 (passo 28), un dev server alla volta. Nel mockup e negli screenshot di riferimento «oggi» è il 15 ottobre 2026: il confronto visivo non confronta le date, confronta struttura, testi, ordine, icone e aree di tocco.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "«Prossimi» (dal più vicino, con «Oggi») e «Passati» (dal più recente), righe disattivate attenuate"
+    },
+    {
+     "id": "attivazione",
+     "come": "interruttore «Attivo» toccato su un giorno di prova"
+    },
+    {
+     "id": "modulo",
+     "come": "matita su un giorno di prova"
+    },
+    {
+     "id": "modulo-menu",
+     "come": "modulo aperto e scorso fino alle caselle dei menù fissi raggruppate per categoria"
+    },
+    {
+     "id": "modulo-inglese-aperto",
+     "come": "traduzione inglese aperta"
+    },
+    {
+     "id": "nuovo",
+     "come": "«Nuovo giorno speciale» (ambito «Solo cena» preselezionato)"
+    },
+    {
+     "id": "nuovo-errori",
+     "come": "«Salva» a modulo vuoto"
+    },
+    {
+     "id": "sovrapposizione",
+     "come": "data e ambito uguali a quelli di un giorno attivo di prova: messaggio del server sotto Ambito"
+    },
+    {
+     "id": "data-passata",
+     "come": "data nel passato: avviso non bloccante sotto la data"
+    },
+    {
+     "id": "elimina",
+     "come": "cestino su un giorno di prova"
+    },
+    {
+     "id": "eliminato",
+     "come": "conferma di «Elimina»"
+    },
+    {
+     "id": "errore-azione",
+     "come": "errore del server simulato",
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato",
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato",
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento"
+    },
+    {
+     "id": "vuoto",
+     "come": "nessun giorno speciale",
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo, dove ci sono giorni speciali reali; esito NON PROVATO con questo motivo. Lo stato si giudica nel confronto visivo con 390-vuoto-chiaro.png; lo riprova V6 solo se dispone di un database di sviluppo vuoto"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "modulo",
+    "modulo-menu",
+    "modulo-inglese-aperto",
+    "nuovo",
+    "nuovo-errori",
+    "sovrapposizione",
+    "data-passata",
+    "elimina",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento"
+   ],
+   "controlli": [
+    {
+     "id": "giorni-speciali-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Giorni speciali",
+      "descrizione": "Un giorno, o un solo servizio, con un menù che sostituisce l’offerta normale.",
+      "pulsante_principale": "Nuovo giorno speciale",
+      "gruppi": "«Prossimi» e «Passati», ciascuno con «{1 giorno | N giorni}» (conteggio uguale alle righe del gruppo); un gruppo senza righe non compare",
+      "colonne_tabella": [
+       "Data",
+       "Ambito",
+       "Menù fissi",
+       "Attivo",
+       "Azioni (solo per lo screen reader)"
+      ],
+      "riga": "data in lettere con la prima lettera maiuscola (formato it-IT: giorno della settimana, giorno, mese per esteso, anno; il formato si legge da lib/, non si copia); etichetta «Oggi» se è oggi; badge «Disattivato»; sotto la data, in tabella, «Messaggio: {testo}» se c'è; ambito «Giornata intera | Solo pranzo | Solo cena»; menù fissi separati da virgole; su telefono «{ambito} · {menù}» troncato con i puntini",
+      "singolare_plurale": "«1 giorno» al singolare, negli altri casi «N giorni»"
+     },
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6, §9 punti 14 e 4"
+    },
+    {
+     "id": "giorni-speciali-senza-ricerca-filtri",
+     "tipo": "assenza",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nessun campo di ricerca, nessun pulsante «Filtri», nessuna etichetta di filtro e nessun avviso di elenco parziale: la schermata ha solo i due gruppi Prossimi e Passati",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §5 (ultimo paragrafo)"
+    },
+    {
+     "id": "giorni-speciali-colonna-elenco",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna larga 976 px (mai più di 1024); tabella, non schede",
+      "telefono-390": "schede, non tabella; margine di 16 px; la scheda occupa la colonna (358 px)",
+      "soglia-767": "schede",
+      "soglia-768": "tabella"
+     },
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4, §9 punto 3"
+    },
+    {
+     "id": "giorni-speciali-colonne-fisse",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": {
+      "notebook-1280": "Data 16 rem (256 px), Ambito 9 rem (144 px), Attivo 7 rem (112 px), azioni 6 rem (96 px); il resto ai menù fissi; stesso bordo sinistro per ogni colonna in tutte le righe, sia in «Prossimi» sia in «Passati»"
+     },
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4"
+    },
+    {
+     "id": "giorni-speciali-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "«Nuovo giorno speciale» largo quanto la colonna del contenuto (358 px a 390 px), alto almeno 44 px, sotto il titolo e la descrizione",
+      "notebook-1280": "«Nuovo giorno speciale» a destra del titolo, in riga"
+     },
+     "rinviato": "la coppia con «Ricompila il menù pubblico» (in colonna su telefono con «Nuovo giorno speciale» per prima; in riga da 768 px con «Ricompila» a sinistra) è NON PROVATA, rinviata alla 6.5",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4"
+    },
+    {
+     "id": "giorni-speciali-righe-azioni",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "interruttore": "«Attivo: {data}, {ambito}» (data in lettere in minuscolo, come nel testo della specifica), etichetta visibile «Attivo» su telefono; resta attivo sulle righe disattivate",
+      "matita": "«Modifica il giorno speciale di {data}»",
+      "cestino": "«Elimina il giorno speciale di {data}»",
+      "aree_di_tocco": "44 px con il tocco, interruttore, matita e cestino",
+      "assenti": "collegamento sulla data, scheda tappabile, menu «⋯», testo visibile nei pulsanti icona",
+      "riga_disattivata": "attenuata, badge «Disattivato»"
+     },
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6 (Stato, Azioni di riga), §9 punto 5"
+    },
+    {
+     "id": "giorni-speciali-prossimi-passati",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea, ciascuno con un menù fisso di prova, quattro giorni attivi futuri e distinti (messaggio «verify-ui-p1» … «verify-ui-p4»: 2099-03-10, 2099-03-12 «Solo pranzo», 2099-03-12 «Solo cena», 2099-07-01) e due passati («verify-ui-x1» 2001-05-05, «verify-ui-x2» 2001-09-09)",
+      "apri la pagina e leggi i due gruppi",
+      "leggi gli stessi giorni con la Local API (sort date, scope) e confronta l'ordine"
+     ],
+     "atteso": [
+      "tutti i giorni con data da oggi in poi stanno in «Prossimi» in ordine CRESCENTE di data (a parità di data, nell'ordine della richiesta: scope); tutti gli altri in «Passati» in ordine DECRESCENTE; questo vale per l'intero elenco (anche per i giorni reali del database di sviluppo), non solo per i giorni di prova",
+      "il conteggio dell'intestazione di ogni gruppo è uguale al numero di righe e al numero di giorni letti con la Local API; «1 giorno» al singolare",
+      "l'ordine arriva dalla richiesta (due richieste con where e sort della Local API), non dal browser: le righe dei giorni di prova hanno lo stesso ordine della lettura con la Local API",
+      "disabilitati compresi; nessuna riga tronca in silenzio"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Interrogazioni), §7 punti 2 e 10, §9 punto 4"
+    },
+    {
+     "id": "giorni-speciali-oggi-e-mezzanotte",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "calcola ieri, oggi e domani in Europe/Rome con la funzione dell'App (todayRomeAsSpecialDayDate), non con l'orologio del browser",
+      "crea tre giorni di prova DISATTIVATI con quelle date, ciascuno con un menù fisso di prova (messaggio «verify-ui-ieri», «verify-ui-oggi», «verify-ui-domani»; disattivati perché un giorno disattivato non conta per la sovrapposizione e un giorno reale non può farli rifiutare)",
+      "apri la pagina"
+     ],
+     "atteso": [
+      "«verify-ui-ieri» sta in «Passati»; «verify-ui-oggi» e «verify-ui-domani» stanno in «Prossimi», con «oggi» prima di «domani»",
+      "solo la riga di oggi ha l'etichetta «Oggi»; ha anche il badge «Disattivato» e la riga attenuata",
+      "il confine è quello di Roma, non quello UTC: il controllo vale in qualunque ora del giorno in cui gira"
+     ],
+     "nota": "Le ore a cavallo della mezzanotte (22:30–23:59 UTC e 00:00–01:59 UTC, con ora legale e solare) le copre il test unitario di lib/ della divisione in prossimi e passati; qui si prova la schermata con la data di oggi vera.",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §7 punto 2, §9 punto 4"
+    },
+    {
+     "id": "giorni-speciali-attivazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea un giorno attivo di prova (messaggio «verify-ui-att», 2099-04-04, «Solo cena») con almeno un menù fisso di prova",
+      "tocca l'interruttore «Attivo» della riga",
+      "tocca di nuovo l'interruttore"
+     ],
+     "atteso": [
+      "avviso «Giorno speciale disattivato» (con la bandiera spenta solo il titolo, senza la frase su «Ricompila il menù pubblico»); l'interruttore cambia subito; la riga si attenua e compare il badge «Disattivato»; disabled vero con la Local API; nessuna conferma",
+      "avviso «Giorno speciale attivato», riga normale, disabled falso",
+      "nessuna scrittura su disponibilita.json (vedi giorni-speciali-nessuna-scrittura-file)"
+     ],
+     "nota": "Un errore dell'azione (nulla cambia, compare l'errore) è lo stato simulato: NON PROVATO, lo riprova V6 (giorni-speciali-stati-ui).",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §7 punto 1, §9 punto 6"
+    },
+    {
+     "id": "giorni-speciali-nessuna-scrittura-file",
+     "tipo": "comando",
+     "livello": 1,
+     "comando": "grep -rn \"resolveAvailabilityStorage\\|writeObject\\|gcsAvailabilityWriter\\|buildAvailabilityDocument\" <cartelle della schermata Giorni speciali>",
+     "atteso": "nessuna corrispondenza (codice di uscita 1 di grep): i giorni speciali non sono in disponibilita.json e la schermata non lo scrive mai, né direttamente né indirettamente",
+     "nota": "Le cartelle sono quelle che la chat I5 dichiara in Parte A (di norma le cartelle della schermata sotto app/(app)/app/(shell)/menu/special-days e components/app/menu). Se non esistono ancora, si ignora.",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Effetti sul menù pubblico), §9 punto 6"
+    },
+    {
+     "id": "giorni-speciali-modulo-campi",
+     "tipo": "attributi",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": {
+      "titolo": "Nuovo giorno speciale / Compare nel menù pubblico dopo la ricompilazione.",
+      "riquadro": "«Il giorno speciale sostituisce l’offerta normale (alla carta e menù fissi) per la data e l’ambito scelti.»",
+      "sezioni_in_ordine": [
+       "Quando: «Data» (campo data nativo, input type=date) e «Ambito» (segnaposto «Scegli»; voci «Giornata intera», «Solo pranzo», «Solo cena»; sotto «La giornata intera sostituisce pranzo e cena; pranzo o cena lasciano l’altro servizio sul menù normale.»)",
+       "Menù fissi: una casella per menù, raggruppate per categoria, con badge «Solo giorni speciali» e «Disabilitato»",
+       "Messaggio: «Messaggio sul giorno speciale» («Facoltativo: un banner sul giorno speciale.»), «Traduzione inglese (facoltativa)» con badge «Manca» o «Presente», Message (segnaposto o suggerimento «Facoltativa. Se resta vuota, il menù mostra il testo italiano.»)",
+       "Stato: «Disattivato» («Assente a tempo indefinito: il giorno speciale non si applica e non conta per la sovrapposizione.»)"
+      ],
+      "pulsanti": [
+       "Salva (in salvataggio «Salvataggio…»)",
+       "Annulla"
+      ],
+      "modifica": "titolo «Modifica giorno speciale» con la data in lettere come sottotitolo"
+     },
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6 (Modulo), §3"
+    },
+    {
+     "id": "giorni-speciali-nuovo-preselezione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo giorno speciale»"
+     ],
+     "atteso": "il modulo si apre con l'ambito «Solo cena» già selezionato e gli altri campi vuoti (data vuota, nessun menù fisso scelto, messaggio e traduzione vuoti, «Disattivato» spento)",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §7 punto 3, §10 assunzione 7"
+    },
+    {
+     "id": "giorni-speciali-menu-fissi-caselle",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea la categoria «verify-ui-cat» e tre menù fissi di prova: «verify-ui-menu-1» (abilitato), «verify-ui-menu-2» (disabilitato) e «verify-ui-menu-gs» (visibilità «Solo giorni speciali»)",
+      "apri «Nuovo giorno speciale» e guarda le caselle dei menù fissi",
+      "scegli «verify-ui-menu-2» (disabilitato), compila data e salva",
+      "apri il giorno in modifica"
+     ],
+     "atteso": [
+      "le caselle sono raggruppate per categoria (la categoria «verify-ui-cat» ha un gruppo con le sue caselle); «verify-ui-menu-gs» ha il badge «Solo giorni speciali»; «verify-ui-menu-2» ha il badge «Disabilitato»; ogni casella con nome accessibile in italiano e area di tocco di 44 px",
+      "un menù disabilitato si può scegliere e il salvataggio riesce (nessun avviso di compatibilità né di effetto)",
+      "in modifica la casella di «verify-ui-menu-2» è selezionata; un valore già salvato resta visibile anche se ora fuori elenco"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Menù fissi del modulo), §7 punto 7, §10 assunzioni 2 e 3"
+    },
+    {
+     "id": "giorni-speciali-modulo-validazione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo giorno speciale» e premi «Salva» a modulo vuoto",
+      "scegli una data e un ambito ma nessun menù fisso e premi «Salva»"
+     ],
+     "atteso": [
+      "nessuna richiesta al server; un modulo vuoto dà DUE errori: «Scegli una data.» sotto la data e «Scegli almeno un menù fisso.» sotto i menù (l'ambito parte da «Solo cena»); il primo campo non valido è in vista e ha il focus",
+      "con data e ambito ma senza menù resta solo «Scegli almeno un menù fisso.»; nessun salvataggio"
+     ],
+     "nota": "«Scegli un ambito.» non è raggiungibile dall'interfaccia (l'ambito parte da «Solo cena» e la tendina non ha una voce vuota): se non c'è un test unitario di lib/ che lo copre, resta NON PROVATO con questo motivo.",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6 (Errori del modulo), §7 punto 9, §9 punto 7"
+    },
+    {
+     "id": "giorni-speciali-sovrapposizione",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "crea un giorno attivo di prova (messaggio «verify-ui-sov», 2099-06-01, «Solo cena», un menù fisso di prova)",
+      "apri «Nuovo giorno speciale», scegli la data 2099-06-01 e l'ambito «Solo cena»; poi cambia l'ambito in «Giornata intera»; poi in «Solo pranzo»; poi torna a «Solo cena» e cambia la data in 2099-06-02",
+      "con data e ambito di nuovo in conflitto, scegli un menù fisso, premi «Salva», poi attiva «Disattivato» nel modulo",
+      "apri «verify-ui-sov» in modifica senza cambiare nulla e premi «Salva»"
+     ],
+     "atteso": [
+      "con «Solo cena» e con «Giornata intera» compare, sotto Ambito e appena data e ambito sono scelti, il messaggio del server «Esiste già un giorno speciale attivo per questa data e questo servizio. La giornata intera non può sovrapporsi a pranzo o cena, e viceversa.» (testo da SPECIAL_DAY_OVERLAP_MESSAGE in lib/menu/validateSpecialDayOverlap.ts, testo_da: non si copia); con «Solo pranzo» e con un'altra data non compare",
+      "con l'errore presente «Salva» non salva (nessun giorno nuovo nel database) e il primo campo non valido ha il focus",
+      "attivando «Disattivato» nel modulo il messaggio sparisce e il salvataggio riesce (un giorno disattivato non conta); il giorno creato si cancella a fine controllo",
+      "modificando «verify-ui-sov» il giorno non confligge con se stesso: nessun errore e salvataggio riuscito"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Controllo di sovrapposizione), §7 punto 6, §9 punto 8"
+    },
+    {
+     "id": "giorni-speciali-sovrapposizione-server",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "con «verify-ui-sov» attivo (2099-06-01, «Solo cena») crea con la Local API (utente manager, overrideAccess false, un menù fisso di prova) un secondo giorno attivo con la stessa data e «Giornata intera»; poi uno con «Solo cena»; poi uno con «Solo pranzo»",
+      "disattiva «verify-ui-sov» e ripeti il primo tentativo"
+     ],
+     "atteso": [
+      "«Giornata intera» e «Solo cena» sono rifiutati con lo stesso messaggio della costante SPECIAL_DAY_OVERLAP_MESSAGE; «Solo pranzo» è accettato (e si cancella a fine controllo)",
+      "con «verify-ui-sov» disattivato il primo tentativo è accettato"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Controllo di sovrapposizione), §9 punto 8 (richiesta diretta)"
+    },
+    {
+     "id": "giorni-speciali-data-passata",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri «Nuovo giorno speciale» e scegli la data 2001-01-01 (passata) con un menù fisso di prova e il messaggio «verify-ui-passata»",
+      "premi «Salva»"
+     ],
+     "atteso": [
+      "sotto la data compare l'avviso non bloccante «La data è passata: il giorno speciale non avrà effetto.»; nessun errore di modulo",
+      "il salvataggio riesce con l'avviso «Giorno speciale aggiunto» (con la bandiera spenta solo il titolo) e il giorno compare nei «Passati»"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6 (Modulo, Quando), §7 punto 5, §9 punto 9"
+    },
+    {
+     "id": "giorni-speciali-data-scritta",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "per ciascuno dei fusi del browser Europe/Rome, Pacific/Kiritimati (UTC+14) e Pacific/Pago_Pago (UTC-11): apri «Nuovo giorno speciale», scegli la data 2099-03-31 con un menù fisso di prova e il messaggio «verify-ui-data-<fuso>» (date diverse per fuso, per non confliggere: 2099-03-31, 2099-04-01, 2099-04-02), salva",
+      "rileggi ogni giorno con la Local API (depth 1)",
+      "ripeti con il giorno di oggi in Europe/Rome (disattivato) scelto dal campo data"
+     ],
+     "atteso": [
+      "il valore scritto è AAAA-MM-GG e la lettura dà lo stesso giorno di calendario a mezzogiorno UTC (…T12:00:00.000Z), in tutti e tre i fusi: nessuno slittamento di un giorno",
+      "il giorno di oggi compare in «Prossimi» con l'etichetta «Oggi»"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Data), §9 punto 10"
+    },
+    {
+     "id": "giorni-speciali-modulo-inglese",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "apri un giorno di prova senza messaggio inglese",
+      "apri un giorno di prova con messaggio inglese",
+      "leggi il giorno senza inglese con locale=en (cercalo per id)"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese del messaggio ricade sull'italiano"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §7 punto 8, §9 punto 11; decisioni D10"
+    },
+    {
+     "id": "giorni-speciali-modulo-footer",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 1,
+     "atteso": "«Salva» e «Annulla» restano agganciati al fondo scorrendo il foglio (anche con le caselle dei menù fissi), affiancati e alti 44 px; il foglio non supera il 90 % dello schermo",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4 (Foglio del modulo)"
+    },
+    {
+     "id": "giorni-speciali-elimina",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "crea un giorno di prova (messaggio «verify-ui-del», 2099-05-05, «Solo pranzo», un menù fisso di prova)",
+      "tocca il cestino della riga",
+      "premi «Indietro»",
+      "tocca di nuovo il cestino e premi «Elimina»"
+     ],
+     "atteso": [
+      "finestra «Eliminare il giorno speciale di {data}?» con «Solo pranzo. Non si può annullare.» e i pulsanti «Indietro» / «Elimina»; nessun testo suggerisce di disattivare; nessuna frase sul cascade (nessuna relazione punta ai giorni speciali)",
+      "«Indietro» chiude la finestra e il giorno resta",
+      "dopo «Elimina»: finestra chiusa, riga tolta, avviso «Giorno speciale eliminato» (con la bandiera spenta solo il titolo); mentre elimina i pulsanti sono disabilitati con lo Spinner",
+      "i giorni passati si possono eliminare allo stesso modo"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6 (Elimina), §7 punto 4, §9 punto 12"
+    },
+    {
+     "id": "giorni-speciali-elimina-registro-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dopo l'eliminazione dalla pagina di «verify-ui-del» leggi il registro attività con la Local API",
+      "manager: elimina dalla pagina; admin e super-admin: con la Local API passando il documento utente; utente senza ruolo: con la Local API (overrideAccess false)"
+     ],
+     "atteso": [
+      "il giorno non esiste più (cancellazione fisica); esiste una riga con eventType delete, area app, collection special-days, documentId, user il manager, e nel dettaglio data e ambito, senza dati personali",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato e il giorno resta"
+     ],
+     "precondizione": "chat I0a della 6.6 chiusa",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Effetti sul menù pubblico), §9 punto 12; ADR-115"
+    },
+    {
+     "id": "giorni-speciali-persistenza",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "dalla pagina crea «verify-ui-nuovo» con data, ambito, due menù fissi di prova, messaggio e messaggio inglese",
+      "rileggilo con la Local API (utente manager, overrideAccess false, depth 1)",
+      "modificalo dalla pagina (data, ambito, un solo menù, messaggio) e rileggilo",
+      "admin e super-admin leggono e scrivono un giorno di prova con la Local API; utente senza ruolo prova a crearne uno"
+     ],
+     "atteso": [
+      "i valori letti coincidono con quelli inseriti (data come giorno di calendario, ambito, menù e loro ordine, messaggio it e en, disabled)",
+      "dopo la modifica restano solo il menù scelto e i nuovi valori; il giorno cambia gruppo se la data attraversa oggi",
+      "manager, admin e super-admin riescono; l'utente senza ruolo è rifiutato"
+     ],
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §9 punto 13"
+    },
+    {
+     "id": "giorni-speciali-stati-ui",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: blocchi Skeleton, come le altre liste",
+      "errore di caricamento: solo l'avviso «Impossibile caricare i giorni speciali» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione: avviso rosso «Operazione non riuscita / Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.» nel foglio o nella finestra che l'ha avviata; nulla cambia (anche con l'interruttore «Attivo»: torna com'era)"
+     ],
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §5, §6"
+    },
+    {
+     "id": "giorni-speciali-stato-vuoto",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": [
+      "con nessun giorno speciale: «Nessun giorno speciale.» e il pulsante «Nuovo giorno speciale»",
+      "con solo giorni passati: sopra «Passati» compare «Nessun giorno speciale in programma.» e il gruppo «Prossimi» non compare"
+     ],
+     "stato_prova": "NON PROVABILE con dati presenti: il lanciatore non svuota il database di sviluppo e non cancella i giorni speciali reali; esito NON PROVATO con il motivo, e lo stato si giudica nel confronto visivo con 390-vuoto-chiaro.png. La frase «Nessun giorno speciale in programma.» si prova solo se un database di sviluppo contiene soli giorni passati",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4 (Gruppo vuoto), §5, §6"
+    },
+    {
+     "id": "giorni-speciali-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano; nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "giorni-speciali-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/special-days",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3)",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §1 (Accesso)",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "giorni-speciali-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: apri il modulo (anche con la traduzione aperta e scorso fino ai menù fissi), scegli data e ambito (anche in conflitto e passata), apri la finestra di eliminazione, tocca l'interruttore «Attivo», apri il menu utente; zero error e warning, compresi quelli di Base UI (campo data, Select, Checkbox, Collapsible, AlertDialog)",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "giorni-speciali-ricompila",
+     "tipo": "presenza",
+     "livello": 2,
+     "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti; gli avvisi di salvataggio, attivazione ed eliminazione con la frase «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».»",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §1, §5 e §9",
+     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
+     "rinviato_a": "6.5"
+    },
+    {
+     "id": "giorni-speciali-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, scattati con il contesto touch dei profili con tocco: la chat di design li confronta con i PNG (C10). Gli stati NON PROVATI (simulati e vuoto) senza screenshot si dichiarano, non si saltano in silenzio",
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §9 punto 16"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome giorni-speciali-<stato>-<profilo>-<tema>.png",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "attivazione": [
+      "390-attivazione-chiaro.png"
+     ],
+     "modulo": [
+      "390-modulo-chiaro.png",
+      "1280-modulo-chiaro.png"
+     ],
+     "modulo-menu": [
+      "390-modulo-menu-chiaro.png"
+     ],
+     "modulo-inglese-aperto": [
+      "390-modulo-inglese-aperto-chiaro.png"
+     ],
+     "nuovo": [
+      "390-nuovo-chiaro.png"
+     ],
+     "nuovo-errori": [
+      "390-nuovo-errori-chiaro.png"
+     ],
+     "sovrapposizione": [
+      "390-sovrapposizione-chiaro.png"
+     ],
+     "data-passata": [
+      "390-data-passata-chiaro.png"
+     ],
+     "elimina": [
+      "390-elimina-chiaro.png"
+     ],
+     "eliminato": [
+      "390-eliminato-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
+     ],
+     "vuoto": [
+      "390-vuoto-chiaro.png"
+     ]
+    }
+   }
+  },
+  {
+   "id": "messaggio-globale",
+   "percorso": "/app/menu/message",
+   "auth": "manager di prova",
+   "nota": "Non è un elenco: una pagina con un solo campo (modello dei moduli di pagina, come gli Orari). Nessun pulsante «Ricompila il menù pubblico» in questa schermata, mai (controllo messaggio-globale-senza-ricompila). Dati di prova: il Global menu-general non ha righe da creare; ogni controllo che lo modifica ne SALVA i due testi (italiano e inglese) prima e li RIPRISTINA in try/finally, come per il Global degli Orari; i testi di prova cominciano con «verify-ui». Il file disponibilita.json dipende dall'ambiente: in locale-prod non c'è il bucket e il file non è leggibile (la pagina mostra «Messaggio salvato: «{testo}»» senza ora); in locale-dev con MENU_AVAILABILITY_IN_MEMORY=1 (server di sviluppo separato, porta 3200) il file è leggibile dopo la prima scrittura di disponibilità e, con MENU_AVAILABILITY_MIRROR_FILE=<file temporaneo>, il lanciatore può leggere quello che il server scrive. Gli stati che mostrano l'ora del file (elenco, salvato) si fanno quindi solo sul server di sviluppo, e in quegli screenshot si ignora l'indicatore di sviluppo di Next. Gli stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATI in L1 e nella chat I5: li riprova V6. Lo stato «pubblicazione» è NON PROVATO senza una simulazione del ritardo di scrittura del file (nessuna esiste oggi). Nel mockup e negli screenshot di riferimento «oggi» è il 15 ottobre 2026.",
+   "stati": [
+    {
+     "id": "elenco",
+     "come": "messaggio attivo: riquadro «Sul menù pubblico» con il testo e «Menù pubblico aggiornato alle {ora}»; campo con lo stesso testo; «Salva modifiche» e «Annulla modifiche» disabilitati; «Togli il messaggio» attivo",
+     "ambiente": "locale-dev con MENU_AVAILABILITY_IN_MEMORY=1 (server di sviluppo separato, porta 3200) e almeno una scrittura di disponibilità già avvenuta nel processo (il salvataggio di un messaggio la fa): in locale-prod il bucket non c'è e il file non è leggibile"
+    },
+    {
+     "id": "modificato",
+     "come": "testo del campo cambiato: «Salva modifiche» e «Annulla modifiche» attivi"
+    },
+    {
+     "id": "inglese-aperto",
+     "come": "traduzione inglese aperta"
+    },
+    {
+     "id": "salvato",
+     "come": "«Salva modifiche» con un testo nuovo: avviso «Messaggio salvato»; il riquadro mostra il nuovo testo e l'ora del file",
+     "ambiente": "locale-dev con MENU_AVAILABILITY_IN_MEMORY=1 (server di sviluppo separato, porta 3200) e almeno una scrittura di disponibilità già avvenuta nel processo (il salvataggio di un messaggio la fa): in locale-prod il bucket non c'è e il file non è leggibile"
+    },
+    {
+     "id": "pubblicazione",
+     "come": "il file non ha ancora il testo salvato: riquadro con il testo vecchio, «In pubblicazione…» e lo Spinner",
+     "stato_prova": "NON PROVABILE: nessuna simulazione di sviluppo ritarda la scrittura di disponibilita.json (le variabili sono LOAD_ERROR, SAVE_ERROR e LOAD_DELAY_MS, che ritardano la lettura delle liste, non la scrittura del file). Esito NON PROVATO con questo motivo. Lo riprova V6 solo se la chat I5 ha aggiunto una simulazione del ritardo di pubblicazione; altrimenti resta nei debiti e si guarda nel giro L3 su Cloud Run"
+    },
+    {
+     "id": "file-non-leggibile",
+     "come": "file non leggibile: nessuna ora e nessun «In pubblicazione…»; il riquadro dice «Messaggio salvato: «{testo}»»",
+     "ambiente": "locale-prod (nessun bucket configurato) o locale-dev senza MENU_AVAILABILITY_IN_MEMORY"
+    },
+    {
+     "id": "nessun-messaggio",
+     "come": "Global con i due testi vuoti: riquadro «Nessun messaggio.», campo vuoto, nessun «Togli il messaggio»"
+    },
+    {
+     "id": "togli",
+     "come": "«Togli il messaggio» su un messaggio salvato"
+    },
+    {
+     "id": "tolto",
+     "come": "conferma di «Togli»"
+    },
+    {
+     "id": "errore-azione",
+     "come": "errore del server simulato",
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento"
+    },
+    {
+     "id": "caricamento",
+     "come": "caricamento lento simulato",
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento"
+    },
+    {
+     "id": "errore-caricamento",
+     "come": "errore di lettura simulato",
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento"
+    }
+   ],
+   "stati_c1_c2": [
+    "elenco",
+    "modificato",
+    "inglese-aperto",
+    "file-non-leggibile",
+    "nessun-messaggio",
+    "togli",
+    "errore-azione",
+    "caricamento",
+    "errore-caricamento"
+   ],
+   "controlli": [
+    {
+     "id": "messaggio-globale-testi",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": {
+      "h1": "Messaggio globale",
+      "descrizione": "Un avviso breve sul menù pubblico, per esempio «oggi cucina chiusa». Compare senza ricompilare.",
+      "riquadro": "«Sul menù pubblico» / «{testo del file}» oppure «Nessun messaggio.»",
+      "campo": "Messaggio («Un avviso breve, per esempio «oggi cucina chiusa». Vuoto vuol dire nessun messaggio.»); «Traduzione inglese (facoltativa)» con «Manca» o «Presente», Message («Facoltativa. Se resta vuota, il menù mostra il testo italiano.»)",
+      "pulsanti": [
+       "Salva modifiche (in salvataggio «Salvataggio…»)",
+       "Annulla modifiche",
+       "Togli il messaggio"
+      ]
+     },
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §6, §9 punto 12"
+    },
+    {
+     "id": "messaggio-globale-colonna",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280",
+      "soglia-767",
+      "soglia-768"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "notebook-1280": "colonna centrata larga 672 px (max-w-2xl, 42 rem), mai di più",
+      "telefono-390": "colonna a tutta larghezza con margine di 16 px (358 px)",
+      "soglia-767": "tutta la larghezza meno il margine",
+      "soglia-768": "colonna centrata larga al massimo 672 px"
+     },
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §4"
+    },
+    {
+     "id": "messaggio-globale-azioni-pagina",
+     "tipo": "misura",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "tolleranza_px": 2,
+     "atteso": {
+      "telefono-390": "tre pulsanti in colonna a tutta larghezza (358 px), alti almeno 44 px, nell'ordine «Salva modifiche», «Annulla modifiche», «Togli il messaggio»",
+      "notebook-1280": "in riga: «Salva modifiche» e «Annulla modifiche» a sinistra, «Togli il messaggio» a destra (ml-auto)",
+      "area_di_testo": "tre righe di testo, a tutta larghezza della colonna, a 390 e a 1280 px"
+     },
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §4"
+    },
+    {
+     "id": "messaggio-globale-senza-ricompila",
+     "tipo": "assenza",
+     "livello": 1,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nessun pulsante «Ricompila il menù pubblico» e nessuna frase che lo nomini, in nessuno stato della schermata: il messaggio cambia disponibilita.json e non serve ricompilare. Vale sempre, anche dopo la 6.5",
+     "nota": "A differenza di RICOMPILA-ASSENTE, che vale solo finché la bandiera è spenta, questo controllo non ha scadenza.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §1 (ultimo punto), §9 punto 12; integrazione/spec.md §5"
+    },
+    {
+     "id": "messaggio-globale-pulsanti-pagina",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "imposta con la Local API il messaggio salvato «verify-ui-msg» (italiano) e apri la pagina",
+      "scrivi nel campo «verify-ui-msg 2»",
+      "premi «Annulla modifiche»",
+      "scrivi di nuovo e riporta il testo a quello salvato",
+      "imposta con la Local API i due testi vuoti e ricarica"
+     ],
+     "atteso": [
+      "senza modifiche «Salva modifiche» e «Annulla modifiche» sono disabilitati; «Togli il messaggio» è presente e attivo",
+      "con una modifica «Salva modifiche» e «Annulla modifiche» sono attivi",
+      "«Annulla modifiche» ripristina il testo salvato e disabilita di nuovo i due pulsanti",
+      "tornando al testo salvato i due pulsanti si disabilitano (attivi solo se qualcosa è cambiato rispetto al salvato)",
+      "senza messaggio salvato «Togli il messaggio» non c'è; il salvataggio non chiede conferma"
+     ],
+     "nota": "Il Global menu-general si salva prima (italiano e inglese) e si ripristina in try/finally.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §7 punto 1, §9 punto 3"
+    },
+    {
+     "id": "messaggio-globale-a-capo",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "nel campo scrivi «verify-ui Domani chiusi», premi Invio, scrivi «per ferie.»",
+      "incolla nel campo (evento paste) un testo con due ritorni a capo e spazi ai bordi: «  verify-ui riga uno\\nriga due\\n  »",
+      "premi «Salva modifiche» e rileggi il Global con la Local API"
+     ],
+     "atteso": [
+      "il campo mostra «verify-ui Domani chiusi per ferie.»: il ritorno a capo diventa uno spazio mentre si scrive",
+      "anche incollando i ritorni a capo diventano spazi (nessun ritorno a capo nel campo)",
+      "il valore salvato non ha spazi ai bordi e nessun ritorno a capo (cosa letta con la Local API)"
+     ],
+     "nota": "Il Global menu-general si salva prima e si ripristina in try/finally. Nel prototipo l'incolla non era stata provata: qui sì.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §2, §7 punti 5 e 6, §9 punto 4"
+    },
+    {
+     "id": "messaggio-globale-nessun-limite",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "nel campo inserisci un testo di 1500 caratteri (inizia con «verify-ui»)",
+      "premi «Salva modifiche» e rileggi il Global con la Local API"
+     ],
+     "atteso": [
+      "nessun contatore, nessun attributo maxlength, nessun errore: il testo si accetta intero",
+      "il testo salvato è identico a quello inserito (1500 caratteri, a capo a parte)"
+     ],
+     "nota": "Scelta di Mirko (2026-10-15); la lunghezza nel banner del menù pubblico è un debito dell'uso reale (spec §10), non un controllo di questa schermata.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §7 punto 7, §10 (Scelte confermate)"
+    },
+    {
+     "id": "messaggio-globale-salvataggio",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "con un messaggio salvato scrivi un testo nuovo («verify-ui-nuovo») e premi «Salva modifiche»",
+      "osserva i pulsanti durante il salvataggio e il riquadro dopo",
+      "rileggi il Global con la Local API (utente manager, overrideAccess false)"
+     ],
+     "atteso": [
+      "mentre salva i pulsanti sono disabilitati e c'è lo Spinner con «Salvataggio…»",
+      "avviso «Messaggio salvato» con «Il menù pubblico lo mostra entro pochi minuti.»; il campo e i pulsanti tornano allo stato «senza modifiche»",
+      "il Global ha il nuovo testo italiano e lo stesso testo inglese di prima",
+      "con il file leggibile (locale-dev con storage in memoria) il riquadro mostra il nuovo testo con «Menù pubblico aggiornato alle {HH:mm}» (ora del file in Europe/Rome) e «Chi ha la pagina aperta lo vede entro circa cinque minuti.»; con il file non leggibile (locale-prod) il riquadro mostra «Messaggio salvato: «verify-ui-nuovo»» senza ora e senza «In pubblicazione…»"
+     ],
+     "nota": "«In pubblicazione…» non si prova qui: vedi lo stato «pubblicazione», NON PROVATO. Il Global menu-general si salva prima e si ripristina in try/finally.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §2, §5, §6, §7 punti 2 e 3, §9 punti 5 e 6"
+    },
+    {
+     "id": "messaggio-globale-file-non-leggibile",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "ambienti": [
+      "locale-prod"
+     ],
+     "passi": [
+      "con un messaggio salvato («verify-ui-nl») apri la pagina senza bucket configurato (locale-prod)",
+      "poi imposta i due testi vuoti e ricarica"
+     ],
+     "atteso": [
+      "il riquadro dice «Messaggio salvato: «verify-ui-nl»» senza ora e senza «In pubblicazione…»; nessun errore a schermo",
+      "con i testi vuoti il riquadro dice «Nessun messaggio.» e nessuna riga sull'ora"
+     ],
+     "nota": "È il ripiego quando il file non si può leggere (storage non configurato o errore): la lettura lato server non deve mai rompere la pagina.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §2 (Cosa si legge), §5, §6 (Riquadro), §9 punto 6"
+    },
+    {
+     "id": "messaggio-globale-lettura-file",
+     "tipo": "flusso",
+     "livello": 2,
+     "atteso": [
+      "con il bucket configurato la schermata legge disponibilita.json lato server con le credenziali del servizio e mostra updatedAt in Europe/Rome",
+      "con un oggetto non valido o assente si comporta come «file non leggibile»"
+     ],
+     "stato_prova": "NON PROVABILE in locale: manca il bucket (MENU_AVAILABILITY_GCS_BUCKET) e con NODE_ENV=production la memoria non è ammessa; esito NON PROVATO con questo motivo. Lo copre il passo 30 (L3, sessione reale su Cloud Run) e, per la parte «oggetto non valido o assente», il test unitario del riassunto (messaggio-globale-riassunto-file)",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §9 punto 7, §10 (Debiti: lettura lato server)"
+    },
+    {
+     "id": "messaggio-globale-riassunto-file",
+     "tipo": "comando",
+     "livello": 1,
+     "comando": "node --import ./scripts/node-test-resolve.mjs --experimental-strip-types --test $(git ls-files 'lib/**/*.test.ts')",
+     "atteso": "codice di uscita 0, e tra i test ci sono quelli degli helper della schermata: riassunto del file pubblicato (messaggio italiano effettivo e updatedAt; null se il file non è leggibile o non è valido; oggetto senza globalMessage = nessun messaggio), testo effettivo di un messaggio (stessa regola di buildGlobalMessage: it = italiano oppure inglese; en = inglese oppure italiano; nessuno dei due = nessun messaggio), pulizia del testo (ritorni a capo e spazi ai bordi) e formato dell'ora in Europe/Rome (ora legale e solare)",
+     "nota": "Se uno di questi casi non ha un test, il controllo è FALLITO per il caso mancante.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §8 (Logica pura in lib/), §9 punto 7"
+    },
+    {
+     "id": "messaggio-globale-file-riceve-messaggio",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "passi": [
+      "avvia il server di sviluppo separato con MENU_AVAILABILITY_IN_MEMORY=1 e MENU_AVAILABILITY_MIRROR_FILE=<file temporaneo>",
+      "dalla pagina salva un messaggio con italiano e inglese («verify-ui-it», «verify-ui-en»)",
+      "salva solo l'italiano («verify-ui-it») con l'inglese vuoto",
+      "salva solo l'inglese («verify-ui-en») con l'italiano vuoto",
+      "premi «Togli il messaggio» e conferma"
+     ],
+     "atteso": [
+      "il file speculare contiene globalMessage.it e globalMessage.en con i due testi",
+      "con il solo italiano il file ripete l'italiano in globalMessage.en",
+      "con il solo inglese il file ha l'inglese in entrambe (it ed en) e l'indicatore, finché il file non ha il testo, confronta l'inglese",
+      "dopo «Togli» la chiave globalMessage non c'è nel file"
+     ],
+     "nota": "Il generatore del file (buildAvailabilityDocument) è già coperto da verify:menu-6_4; qui si prova che la schermata lo faccia scattare. Il file temporaneo si cancella a fine controllo.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §2 (Operazioni), §9 punto 8"
+    },
+    {
+     "id": "messaggio-globale-togli",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "passi": [
+      "con un messaggio salvato («verify-ui-tg» in italiano, «verify-ui-tg-en» in inglese) tocca «Togli il messaggio»",
+      "premi «Indietro»",
+      "tocca di nuovo «Togli il messaggio» e premi «Togli»",
+      "rileggi il Global con la Local API"
+     ],
+     "atteso": [
+      "finestra «Togliere il messaggio?» con «Il testo si perde.» e i pulsanti «Indietro» / «Togli»",
+      "«Indietro» chiude la finestra e il messaggio resta",
+      "dopo «Togli»: finestra chiusa, avviso «Messaggio tolto» con «Il menù pubblico non lo mostra più entro pochi minuti.»; il riquadro dice «Nessun messaggio.»; il campo è vuoto; il pulsante «Togli il messaggio» sparisce; mentre toglie i pulsanti sono disabilitati con lo Spinner",
+      "i due testi del Global (italiano e inglese) sono vuoti"
+     ],
+     "nota": "Il Global menu-general si salva prima e si ripristina in try/finally. L'errore dell'azione (nulla cambia) è lo stato simulato: NON PROVATO, lo riprova V6 (messaggio-globale-stati-ui).",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §6 (Togli), §7 punto 4, §9 punto 9"
+    },
+    {
+     "id": "messaggio-globale-modulo-lingue",
+     "tipo": "flusso",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "passi": [
+      "con il solo italiano salvato apri la pagina",
+      "con italiano e inglese salvati apri la pagina",
+      "leggi il Global con locale=en quando l'inglese è vuoto"
+     ],
+     "atteso": [
+      "traduzione chiusa e badge «Manca»",
+      "traduzione aperta e badge «Presente»",
+      "con l'inglese vuoto la lettura in inglese ricade sull'italiano"
+     ],
+     "nota": "Il Global menu-general si salva prima e si ripristina in try/finally.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §9 punto 10; decisioni D10"
+    },
+    {
+     "id": "messaggio-globale-permessi",
+     "tipo": "flusso",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev",
+      "locale-prod"
+     ],
+     "passi": [
+      "manager: salva e togli un messaggio dalla pagina",
+      "admin e super-admin: salvano e tolgono con la Local API passando il documento utente (overrideAccess false)",
+      "utente senza ruolo: prova a salvare con la Local API (overrideAccess false)",
+      "leggi nel codice della pagina come legge il Global"
+     ],
+     "atteso": [
+      "manager, admin e super-admin riescono",
+      "l'utente senza ruolo è rifiutato (canUpdateMenuGeneralRequest) e il messaggio resta quello di prima",
+      "la lettura del Global per la pagina usa la sessione dell'utente (overrideAccess false), mai overrideAccess true"
+     ],
+     "nota": "Il Global menu-general si salva prima e si ripristina in try/finally.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §1 (Accesso), §9 punto 11"
+    },
+    {
+     "id": "messaggio-globale-stati-ui",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "simulazione": "errore_server, errore_caricamento, caricamento_lento",
+     "atteso": [
+      "caricamento: due blocchi Skeleton",
+      "errore di caricamento: solo l'avviso «Impossibile caricare il messaggio» / «Riprova tra qualche istante; se il problema continua, avvisa l’amministratore.» e il pulsante «Riprova»",
+      "errore dell'azione (salva e togli): avviso rosso «Operazione non riuscita / Non è stato modificato nulla. Controlla la connessione e riprova; se il problema continua, avvisa l’amministratore.»; il campo resta com'è e il messaggio salvato non cambia"
+     ],
+     "stato_prova": "NON PROVABILE in L1 e nel passo I5: lo stato simulato richiede un server di sviluppo separato con la variabile APP_MENU_DEV_SIMULATE_*; esito NON PROVATO con questo motivo. Lo riprova l'agente di verifica in V6 (passo 28), un dev server alla volta, e lo stato si giudica nel confronto visivo con il PNG di riferimento",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §5, §6, §7 punto 2"
+    },
+    {
+     "id": "messaggio-globale-nomi-accessibili",
+     "tipo": "testo",
+     "livello": 1,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "atteso": "nomi accessibili in italiano (campo Messaggio con la sua etichetta, pulsanti, finestra di conferma); nessuna di queste stringhe inglesi nella pagina o negli aria-label: Close, Edit, Delete, Remove, Save, Cancel, Add, Toggle",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §6, decisioni T1"
+    },
+    {
+     "id": "messaggio-globale-accesso",
+     "tipo": "reindirizzamento",
+     "livello": 2,
+     "da": "/app/menu/message",
+     "con_sessione": "utente senza ruolo",
+     "atteso": "stesso esito di /app/hours per lo stesso utente (guardia di 8.3)",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §1 (Accesso)",
+     "stato_prova": "NON PROVABILE: nessun utente di prova ha accesso all'App ma non alla sezione Menù (il manager vede tutte le sezioni); la guardia canAccessSection è coperta da scripts/verify-roles-8_3.ts. Esito NON PROVATO con questo motivo"
+    },
+    {
+     "id": "messaggio-globale-console",
+     "tipo": "console-pulita",
+     "livello": 1,
+     "ambienti": [
+      "locale-dev"
+     ],
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "passi": "oltre al caricamento: scrivi nel campo, apri la traduzione inglese, apri la finestra «Togliere il messaggio?», salva, apri il menu utente; zero error e warning, compresi quelli di Base UI (Collapsible, AlertDialog)",
+     "fonte": "regola UI 01, sezione Insidie note"
+    },
+    {
+     "id": "messaggio-globale-confronto-visivo",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390",
+      "notebook-1280"
+     ],
+     "temi": [
+      "chiaro",
+      "scuro"
+     ],
+     "atteso": "screenshot di ogni stato con riferimento (sezione immagini) a 390 e 1280 px, in chiaro e scuro, scattati con il contesto touch dei profili con tocco: la chat di design li confronta con i PNG (C10). Gli stati NON PROVATI (simulati e «pubblicazione») senza screenshot si dichiarano, non si saltano in silenzio",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §9 punto 14"
+    }
+   ],
+   "immagini": {
+    "regola": "un file per stato, nome messaggio-globale-<stato>-<profilo>-<tema>.png",
+    "profili": [
+     "telefono-390",
+     "notebook-1280"
+    ],
+    "temi": [
+     "chiaro",
+     "scuro"
+    ],
+    "stati_con_riferimento": {
+     "elenco": [
+      "390-chiaro.png",
+      "390-scuro.png",
+      "1280-chiaro.png",
+      "1280-scuro.png"
+     ],
+     "modificato": [
+      "390-modificato-chiaro.png"
+     ],
+     "inglese-aperto": [
+      "390-inglese-aperto-chiaro.png"
+     ],
+     "salvato": [
+      "390-salvato-chiaro.png"
+     ],
+     "pubblicazione": [
+      "390-pubblicazione-chiaro.png"
+     ],
+     "file-non-leggibile": [
+      "390-file-non-leggibile-chiaro.png"
+     ],
+     "nessun-messaggio": [
+      "390-nessun-messaggio-chiaro.png"
+     ],
+     "togli": [
+      "390-togli-chiaro.png"
+     ],
+     "tolto": [
+      "390-tolto-chiaro.png"
+     ],
+     "errore-azione": [
+      "390-errore-azione-chiaro.png"
+     ],
+     "caricamento": [
+      "390-caricamento-chiaro.png"
+     ],
+     "errore-caricamento": [
+      "390-errore-caricamento-chiaro.png"
      ]
     }
    }

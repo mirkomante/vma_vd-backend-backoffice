@@ -1,6 +1,6 @@
 # Messaggio globale — specifica di schermata (`/app/menu/message`, voce Messaggio globale)
 
-**Stato**: design chiuso il 2026-10-15 con le risposte di Mirko alle sei domande di impostazione (messaggio senza limite di lunghezza, «Togli il messaggio» con conferma, indicatore di pubblicazione con l'ora quando il file è leggibile) e la conferma della demo; restano da confermare le assunzioni della sezione 10. È l'unica schermata del Menù che **non è un elenco**: una pagina con un solo campo, nel modello dei moduli di pagina (D7, come gli Orari).
+**Stato**: design chiuso il 2026-10-15 con le risposte di Mirko alle sei domande di impostazione (messaggio senza limite di lunghezza, «Togli il messaggio» con conferma, indicatore di pubblicazione con l'ora quando il file è leggibile) e la conferma della demo; le assunzioni della sezione 10 sono state confermate da Mirko il 2026-10-20. È l'unica schermata del Menù che **non è un elenco**: una pagina con un solo campo, nel modello dei moduli di pagina (D7, come gli Orari).
 
 **Si implementa in**: `fase-6` sottofase 6.6 (backoffice «Menù»; non ancora nel repo). Dipende da 8.2 (shell), 8.3 (guardia), 6.1 (Global `menu-general`), 6.4 (`disponibilita.json`: il messaggio vi entra e cambia senza ricompilare) e dalla lettura del file di disponibilità lato server (sezione 2).
 
@@ -138,7 +138,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 - **Indicatore di pubblicazione con l'ora** letta da `disponibilita.json`, se possibile; altrimenti senza ora (verificato nel codice: possibile lato server; ripiego «file non leggibile»).
 - **«Entro pochi minuti»** al posto di «entro pochi secondi» in tutti gli avvisi (anche delle altre schermate).
 
-**Assunzioni ancora da confermare** (il design le usa; vanno confermate prima di consegnare la schermata a Cursor)
+**Assunzioni confermate da Mirko il 2026-10-20** (il design le usa)
 1. **Area di testo di tre righe** e non un campo di una riga, perché senza limite il testo può essere lungo; i ritorni a capo si tolgono.
 2. **Etichetta «Menù pubblico aggiornato alle {ora}»**: è l'ora del file (che cambia anche per altre modifiche di disponibilità), non quella del messaggio.
 3. **«In pubblicazione…» senza tempo massimo**: nessun avviso di ritardo oltre l'indicatore.

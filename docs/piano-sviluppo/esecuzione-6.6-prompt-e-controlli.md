@@ -88,9 +88,9 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 21 | ✅ `22b66b8` | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 21b | ✅ `5615003` | Solo il prompt del passo 21b | F-TOCCO | Composer | **Area di tocco delle schede di Menù fissi (P8, ex A6) e filtro Stato dei cataloghi (A8, `items`)** | L0 + **L1** (obbligatorio) | tocco senza FALLITO; tre `Select` con `items`; tu pushi |
 | 21c | ✅ `082ba3d`, `fab9f5d` | Solo il prompt del passo 21c | V-MF | Agente di verifica | **Prova di funzionamento di Menù fissi dopo F4** (nove controlli di flusso) più C2 delle schede; un solo giro, tetto 30 minuti | L1 mirato, motore esistente | nove controlli con esito misurato; C2 delle schede senza FALLITO; ambiente pulito |
-| 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
+| 22 | ✅ D6 (hash dopo il push) | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
 | 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(eliminato il 2026-10-20: i controlli di Giorni speciali e Messaggio globale si scrivono dentro V6, passo 28)** | lint e typecheck | tu committi e pushi |
-| 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
+| 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `navigazione,shell` (i controlli delle due schermate nuove: NON PROVATO, li implementa V6) | L1 senza FALLITO nuovo; **eccezione di prova: push di Composer** |
 | 25 | 🔲 | — | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
 | 26 | 🔲 | Blocco comune + prompt del passo 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
 | 27 | 🔲 | — (istruzioni del passo) | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
@@ -100,7 +100,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-20 (commit `fab9f5d`). Passo 20 e la sua coda **chiusi**: 21b (F-TOCCO, `5615003`) e 21c (V-MF: C2 delle schede OK, nove flussi NON PROVATO, guasto del daemon corretto in `fab9f5d`). **Prossimo passo: 22 (D6)**: la chat di design scrive i controlli di Giorni speciali e Messaggio globale; poi **24 (I5)** con Composer. I debiti (A1–A12 e dello strumento) sono in 2.3 e si chiudono in F6 (passo 29) e in V6 (passo 28).
+**Ultimo aggiornamento**: 2026-10-20 (commit `9234ad7` più il pacchetto D6). Passo 22 (D6) **chiuso**: `controlli-6.6.json` ha ora anche Giorni speciali (30 controlli) e Messaggio globale (20); la scheda del passo 24 è stata corretta (perimetro, tetto, tre criteri, L1 per ciò che il lanciatore sa fare), con l'eccezione di prova che permette a Composer il push; le assunzioni della §10 delle due specifiche sono confermate (2026-10-20). **Prossimo passo: 24 (I5)** con Composer; il 23 è eliminato. Poi D7 (25) e I6 (26). I debiti (A1–A12 e dello strumento) sono in 2.3 e si chiudono in F6 (passo 29) e in V6 (passo 28), che implementa anche i controlli delle due nuove schermate e riprova i loro stati simulati.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1895,6 +1895,8 @@ criteri.
 
 ### Passo 22 — D6: controlli per Giorni speciali e Messaggio globale
 
+> **Esito (2026-10-20)**: ✅ consegnato come pacchetto (l'hash si scrive dopo il push). `controlli-6.6.json` ottiene `giorni-speciali` (30 controlli, 15 stati) e `messaggio-globale` (20 controlli, 12 stati), con lo stesso formato di Servizi e Menù fissi; nessun controllo esistente è cambiato (diff in sola aggiunta, più le due specifiche in `fonti` e nella nota di apertura). Totale: 230 controlli nelle schermate (242 id con i 12 comuni). **NON PROVATO con il motivo**: gli stati con il database popolato (vuoto) e i tre stati simulati di ogni schermata (li riprova V6); «pubblicazione» di Messaggio globale (nessuna simulazione del ritardo di scrittura del file); la lettura del file sul bucket (L3, passo 30); l'accesso con utente senza ruolo; «Ricompila» (6.5). **Scelte di prova**: i giorni speciali non hanno un nome, quindi quelli di prova puntano solo a menù fissi di prova «verify-ui-…» (come già fa `scripts/cleanup-verify-ui-menu-fixtures.ts`); date attive lontane (2099 e 2001); i giorni vicini a oggi solo disattivati, perché non contano per la sovrapposizione; il Global `menu-general` si salva e si ripristina in try/finally. Il file `disponibilita.json` è leggibile solo in sviluppo con `MENU_AVAILABILITY_IN_MEMORY=1` (l'ora si vede solo lì; in `locale-prod` vale lo stato «file non leggibile»).
+
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 22»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
 
@@ -1947,6 +1949,10 @@ sempre OK, FALLITO, AVVISO e NON PROVATO.
 
 ### Passo 24 — I5: Giorni speciali e Messaggio globale
 
+**Correzioni del 2026-10-20 al prompt** (dopo aver letto repo, policy e controlli di D6): (1) mancavano perimetro dei file, tetto di tempo e tre criteri di accettazione sul risultato per l'app; (2) i controlli delle due schermate (`controlli-6.6.json`) non erano tra le letture; (3) L1 «su `giorni-speciali,messaggio-globale`» non è eseguibile: il passo 23 è eliminato e il vecchio lanciatore (congelato) non ha un modulo per queste schermate, quindi ora L1 resta **obbligatorio** ma si fa su ciò che il lanciatore sa misurare (navigazione e shell, che le due voci accese toccano) e il resto è NON PROVATO con il motivo, senza prove manuali al suo posto (Blocco comune, regola 5); (4) le due schermate devono rispettare le simulazioni di sviluppo di `lib/app/menu/devSimulate.ts`, altrimenti V6 non può provarne gli stati simulati; (5) «Nuovo giorno speciale» preseleziona «Solo cena» (§7 punto 3); (6) la regola di `buildGlobalMessage` si **replica** in un helper nuovo con un test di coincidenza con `buildAvailabilityDocument`, senza toccare `lib/menu/availability/**` (così non serve `verify:menu-6_4`); (7) una domanda in Parte A sulla simulazione del ritardo di pubblicazione, senza implementarla senza il «procedi»; (8) **eccezione di prova sul push**, solo per questo passo (decisa da Mirko il 2026-10-20). Le assunzioni della §10 delle due specifiche sono confermate (2026-10-20).
+
+**Quando**: ora. **Chi**: Composer (modifica l'app): **non gira insieme a nessun agente di verifica**. **Stima**: 120 minuti; **tetto**: 240. **Commit e push**: **ECCEZIONE DI PROVA solo per questo passo** (Mirko, 2026-10-20): Composer fa il commit e UN push su `origin main` a chiusura, alle condizioni scritte nel prompt; negli altri passi resta la regola «il push lo fa Mirko». Ogni push su `main` avvia Cloud Build (deploy automatico): il codice di I5 va quindi in deploy prima del mio controllo, ed è per questo che il push è condizionato a L0 a 0 errori e a L1 senza FALLITO nuovi.
+
 **Incolla in Cursor**, in una chat nuova, nello stesso primo messaggio e in quest'ordine: **(1)** il Blocco comune (§3), **(2)** il prompt qui sotto.
 
 ```text
@@ -1954,42 +1960,99 @@ PASSO 24 (I5). Questo prompt segue il Blocco comune incollato qui sopra, nello s
 
 CHAT I5: schermate Giorni speciali (/app/menu/special-days) e Messaggio globale (/app/menu/message).
 
+PERIMETRO. Puoi creare o modificare: app/(app)/app/(shell)/menu/special-days/** e app/(app)/app/(shell)/menu/message/** (pagine e
+azioni); components/app/** (componenti nuovi delle due schermate, e la sola estrazione di ciò che le altre liste già condividono,
+senza cambiarne il comportamento); lib/app/** e lib/menu/** FUORI da lib/menu/availability/** (helper puri con i loro test unitari),
+in particolare lib/app/navigation.ts (solo le due voci) e lib/app/breadcrumb.ts se serve; scripts/verify-lib-app-8_2.ts; components/ui/**
+solo se manca un componente elencato in §8 delle due specifiche (installazione come da docs/design/installazione-componenti-ui.md);
+le voci di docs/piano-sviluppo/CHANGELOG.md, fase-6 e la riga del passo 24 come dice la Parte D. VIETATO: collections/**, globals/**,
+hook, lib/menu/availability/** (buildAvailabilityDocument.ts compreso), docs/design/**, controlli JSON, scripts/ui-verify/**, e2e/**,
+dipendenze, migrazioni, «Ricompila» visibile.
+
 LEGGI
 - docs/design/schermate/giorni-speciali/spec.md e messaggio-globale/spec.md, per intero, con i mockup.
+- docs/design/verifica/controlli-6.6.json, SOLO le schermate giorni-speciali e messaggio-globale (e i controlli comuni): è come verranno
+  misurate. NON modificarlo. I controlli di queste due schermate non sono ancora implementati nel lanciatore: li implementa l'agente
+  di verifica in V6 (passo 28).
 - docs/design/decisioni-layout-app.md (D7, D8, D9, D10, D13, D14, A47, A48).
 - docs/piano-sviluppo/fase-6-menu-digitale.md: 6.3 (giorni speciali) e 6.4; ADR-112 §3 (disponibilita.json).
-- Codice: lib/menu/validateSpecialDayOverlap.ts (SPECIAL_DAY_OVERLAP_MESSAGE, specialDayScopesOverlap),
-  lib/menu/specialDayDate.ts (todayRomeAsSpecialDayDate), collections/menu/specialDays.ts, globals/MenuGeneral.ts,
-  lib/menu/access.ts (canUpdateMenuGeneralRequest), lib/menu/availability/ (gcsAvailabilityWriter.ts:
-  resolveAvailabilityStorage e readCurrentObject; canonicalJson.ts: parseAvailabilityJsonFromGcs;
-  buildAvailabilityDocument.ts: la regola di buildGlobalMessage, che non è esportata), app/(app)/app/(shell)/hours/
-  (modello di pagina con «Salva modifiche» e «Annulla modifiche»).
+- Codice: lib/menu/validateSpecialDayOverlap.ts (SPECIAL_DAY_OVERLAP_MESSAGE, specialDayScopesOverlap), lib/menu/specialDayDate.ts
+  (todayRomeAsSpecialDayDate), collections/menu/specialDays.ts, globals/MenuGeneral.ts, lib/menu/access.ts (canUpdateMenuGeneralRequest),
+  lib/menu/availability/ (gcsAvailabilityWriter.ts: resolveAvailabilityStorage e readCurrentObject; canonicalJson.ts:
+  parseAvailabilityJsonFromGcs; buildAvailabilityDocument.ts: la regola di buildGlobalMessage, che non è esportata),
+  lib/app/menu/devSimulate.ts (le simulazioni di sviluppo), app/(app)/app/(shell)/hours/ (modello di pagina con «Salva modifiche» e
+  «Annulla modifiche»), e come Servizi e Menù fissi (I4) gestiscono elenco, foglio, conferma e avvisi.
 
 COSA FARE
 1. Giorni speciali: «Prossimi» (data crescente) e «Passati» (decrescente) con la data di oggi in Europe/Rome
-   (todayRomeAsSpecialDayDate), due richieste con where e sort; interruttore «Attivo»; modulo con campo data nativo
-   (l'App scrive sempre AAAA-MM-GG), ambito, caselle dei menù fissi raggruppate per categoria con badge, almeno un
-   menù, messaggio con traduzione; controllo di sovrapposizione anticipato nel modulo con
-   specialDayScopesOverlap e SPECIAL_DAY_OVERLAP_MESSAGE (il testo del server, non riscriverlo), che blocca il
-   salvataggio e non conta i giorni disattivati né il giorno che si sta modificando; data passata ammessa con
-   avviso non bloccante; conferma di eliminazione semplice. Nessuna scrittura di disponibilita.json.
-2. Messaggio globale: pagina con un solo campo (globalMessage, italiano e inglese), nessun limite di lunghezza, i
-   ritorni a capo diventano spazi; «Salva modifiche», «Annulla modifiche», «Togli il messaggio» con conferma.
-3. Indicatore di pubblicazione: lettura LATO SERVER di disponibilita.json con resolveAvailabilityStorage e
-   readCurrentObject + parseAvailabilityJsonFromGcs, solo in lettura; mostra «Menù pubblico aggiornato alle {HH:mm}»
-   (updatedAt del file, Europe/Rome) e «In pubblicazione…» finché il testo del file non coincide con quello salvato
-   (confronto con la regola di buildGlobalMessage: estraila o replicala in un helper esportato e testato). Se il
-   file non è leggibile (storage non configurato o errore) la pagina va senza ora né «In pubblicazione…».
-4. Accendi in navigazione le due voci (enabled: true) e aggiorna scripts/verify-lib-app-8_2.ts con le voci abilitate. Con tutte le otto voci accese i controlli nav-pannello-telefono (L2) diventano eseguibili.
+   (todayRomeAsSpecialDayDate), due richieste con where e sort; interruttore «Attivo»; modulo con campo data nativo (l'App scrive
+   sempre AAAA-MM-GG), ambito, caselle dei menù fissi raggruppate per categoria con badge, almeno un menù, messaggio con traduzione;
+   «Nuovo giorno speciale» apre il modulo con l'ambito «Solo cena» preselezionato e gli altri campi vuoti; controllo di sovrapposizione
+   anticipato nel modulo con specialDayScopesOverlap e SPECIAL_DAY_OVERLAP_MESSAGE (il testo del server, non riscriverlo), che blocca il
+   salvataggio e non conta i giorni disattivati né il giorno che si sta modificando; data passata ammessa con avviso non bloccante;
+   conferma di eliminazione semplice. Nessuna scrittura di disponibilita.json.
+2. Messaggio globale: pagina con un solo campo (globalMessage, italiano e inglese), nessun limite di lunghezza, i ritorni a capo
+   diventano spazi (anche incollando), gli spazi ai bordi si tolgono al salvataggio; «Salva modifiche», «Annulla modifiche», «Togli il
+   messaggio» con conferma (presente solo se c'è un messaggio salvato). Nessun pulsante «Ricompila» in questa schermata, mai.
+3. Indicatore di pubblicazione: lettura LATO SERVER di disponibilita.json con resolveAvailabilityStorage e readCurrentObject +
+   parseAvailabilityJsonFromGcs, solo in lettura; mostra «Menù pubblico aggiornato alle {HH:mm}» (updatedAt del file, Europe/Rome) e
+   «In pubblicazione…» finché il testo del file non coincide con quello salvato. La regola di buildGlobalMessage la REPLICHI in un helper
+   nuovo e testato (NON toccare buildAvailabilityDocument.ts), con un test unitario che ne prova la coincidenza con
+   buildAvailabilityDocument per le quattro combinazioni italiano/inglese (entrambi, solo italiano, solo inglese, nessuno). Se il file non
+   è leggibile (storage non configurato, errore, oggetto non valido o assente) la pagina va senza ora né «In pubblicazione…» e mostra
+   «Messaggio salvato: «{testo}»»: non deve mai rompersi.
+4. Simulazioni di sviluppo: le due schermate rispettano le variabili di lib/app/menu/devSimulate.ts (LOAD_ERROR, SAVE_ERROR,
+   LOAD_DELAY_MS) come le altre schermate del Menù (caricamento, errore di caricamento, errore dell'azione; per l'interruttore «Attivo»
+   un errore riporta l'interruttore com'era). Serve a V6 per provarli.
+5. Accendi in navigazione le due voci (enabled: true) e aggiorna scripts/verify-lib-app-8_2.ts con le voci abilitate.
+Funzioni pure in lib/ con test unitari: divisione in prossimi e passati con la data di oggi in Europe/Rome (comprese le ore a cavallo
+della mezzanotte, con ora legale e solare), formato della data in lettere, anticipo del controllo di sovrapposizione, testi con
+singolare e plurale, pulizia del testo del messaggio, riassunto del file pubblicato (null se non leggibile o non valido), testo effettivo
+di un messaggio, formato dell'ora in Europe/Rome.
 
-NON FARE: «Ricompila» visibile, modifiche a hook o a disponibilita.json, scritture dirette sul file dalla schermata.
+PARTE A, solo proposta: oltre a quanto chiede il Blocco comune, dimmi (1) come la pagina Messaggio globale condivide lo storage in
+memoria di sviluppo con l'hook che scrive il file (stesso modulo? stessa istanza?), perché in sviluppo con MENU_AVAILABILITY_IN_MEMORY=1
+il file è leggibile solo dopo la prima scrittura nel processo; (2) se conviene aggiungere in lib/app/menu/devSimulate.ts una simulazione
+di sviluppo del RITARDO di scrittura del file (per esempio APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS, mai attiva con NODE_ENV=production)
+per poter provare «In pubblicazione…»: NON aggiungerla senza il mio «procedi». Poi FERMATI.
 
-VERIFICHE: L0; L1 su `giorni-speciali,messaggio-globale`. In sviluppo prova la lettura del file con lo storage
-in memoria (dichiaralo). La lettura sul bucket vero NON si prova qui: va nei NON PROVATO e nel passo 30 (L3).
+DOPO IL «PROCEDI»: implementa e poi VERIFICA. L1 È OBBLIGATORIO e non si salta:
+- L0: pnpm typecheck (radice ed e2e) e pnpm lint sull'INTERO repo a 0 errori, pnpm ui:check, test unitari di lib/, e il controllo
+  NO-OVERRIDE (grep di overrideAccess: true nelle cartelle delle schermate) senza corrispondenze.
+- L1 sulla navigazione e sulla shell (le due voci accese le toccano), UNO ALLA VOLTA, tetto 10 minuti ciascuno:
+  `pnpm ui:verify locale-prod --livello 1 --schermata navigazione --controlli controlli-6.6.json` e
+  `pnpm ui:verify locale-prod --livello 1 --schermata shell --controlli controlli-8.2.json`. Atteso: nessun FALLITO nuovo.
+- L1 delle due schermate nuove: `pnpm ui:verify locale-prod --livello 1 --schermata giorni-speciali,messaggio-globale
+  --controlli controlli-6.6.json`, un giro, tetto 10 minuti. I loro controlli non sono implementati nel lanciatore (passo 23 eliminato,
+  scripts/ui-verify congelato: non modificarlo e non scrivere script di verifica nuovi). Riporta che cosa produce; ogni controllo senza
+  esito misurato è NON PROVATO con il motivo «controlli non implementati nel lanciatore: li implementa V6 (passo 28)». Se il comando si
+  blocca o fallisce per il lanciatore, riportalo come ERRORE-STRUMENTO e non rilanciarlo. Mai una prova manuale al posto di un controllo.
+- Prove a mano da dev, dichiarate come tue e non come L1 o L2: un giorno di prova futuro e uno passato compaiono in «Prossimi» e in
+  «Passati»; la sovrapposizione con un giorno attivo blocca il salvataggio con il testo del server; salvare e togliere il messaggio
+  cambia il Global; con MENU_AVAILABILITY_IN_MEMORY=1 il riquadro mostra l'ora del file, senza storage mostra «Messaggio salvato:
+  «{testo}»». Cancella i dati di prova «verify-ui-…» (i giorni di prova puntano a menù di prova: scripts/cleanup-verify-ui-menu-fixtures.ts
+  li toglie) e ripristina il messaggio che c'era nel Global.
+Un solo giro di correzione dopo i FALLITO di L1; al secondo FERMATI e riporta. Il tetto totale è 240 minuti: se lo superi FERMATI e
+riporta a che punto sei.
+
+TRE CRITERI DI ACCETTAZIONE (riporta i numeri): (a) le due schermate funzionano come dice la specifica: Prossimi e Passati con la
+data di oggi in Europe/Rome, sovrapposizione anticipata che blocca con il testo del server, campo data nativo con AAAA-MM-GG,
+Messaggio globale con Salva, Annulla e Togli, a capo come spazi, indicatore con file leggibile e con file non leggibile, e i testi della
+sezione «Testi» senza riscritture; (b) le due voci sono accese, nessun overrideAccess: true, nessuna scrittura di disponibilita.json
+da Giorni speciali, nessun «Ricompila» visibile, e le simulazioni di sviluppo agiscono sulle due schermate; (c) typecheck e lint
+dell'intero repo a 0 errori, test unitari dei nuovi helper verdi, L1 di navigazione e shell senza FALLITO nuovo, e nessun file fuori
+perimetro (git diff --name-only).
+GIT, ECCEZIONE DI PROVA SOLO PER QUESTO PASSO (decisa da Mirko il 2026-10-20; sostituisce la regola 7 del Blocco comune «MAI git push»):
+dopo il commit locale della Parte D, SOLO se L0 è a 0 errori e L1 di navigazione e shell non ha FALLITO nuovi, esegui UN
+`git push origin main` di quel commit. Mai --force, mai altri push, nessun altro comando git che cambi il repo (reset, stash, rebase,
+checkout di file). Se la condizione non è soddisfatta o il push è rifiutato, NON riprovare e NON aggirare: fermati e riporta il
+motivo. Nella risposta finale scrivi l'hash del commit, l'output del push e `git log origin/main --oneline -1` dopo il push.
+RISPOSTA FINALE (Blocco comune, regola 8): tabella «Esiti reali» con comando e numeri di L0 e di L1, i NON PROVATO con il motivo,
+le deviazioni dalla specifica, e l'elenco dei file toccati.
 ```
 
 **Quando Cursor ha scritto la Parte A** (e aspetta il tuo «procedi»): incollami qui la sua proposta. Io ti rispondo con le correzioni e il «procedi» da incollare a Cursor.
-**Quando Cursor ha chiuso** (tabella «Esiti reali» e commit locale): incollami qui la sua risposta finale, fai tu il push e scrivimi «push fatto». Cursor ha segnato la riga del passo 🔶 nel commit finale; io controllo il repo e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅.
+**Quando Cursor ha chiuso** (tabella «Esiti reali»; commit e push li ha fatti Cursor, per l'eccezione di prova): incollami qui la sua risposta finale. Io faccio `git fetch` e `git log` per verificare che il commit sia davvero su origin, poi `tsc`, ESLint, test unitari e perimetro, e ti do il prompt di aggiornamento stato (§1.3) per segnare ✅. Se qualcosa non va ti preparo un pacchetto di correzione. L'esito del test («push da Composer: sì o no», e se il deploy automatico ha creato problemi) lo scriviamo nel CHANGELOG.
 
 ### Passo 25 — D7: controlli di chiusura (L2 completo e L3)
 

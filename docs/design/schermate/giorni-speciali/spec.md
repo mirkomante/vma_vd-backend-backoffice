@@ -1,6 +1,6 @@
 # Giorni speciali, elenco e modulo — specifica di schermata (`/app/menu/special-days`, voce Giorni speciali)
 
-**Stato**: design chiuso il 2026-10-15 con le risposte di Mirko alle sei domande di impostazione (Prossimi e Passati, date passate con avviso, interruttore «Attivo», messaggio senza limite, «Togli» con conferma, indicatore di pubblicazione) e la conferma della demo; restano da confermare le assunzioni della sezione 10. Struttura e comportamenti comuni sono quelli di `schermate/servizi/spec.md` e `schermate/menu-fissi/spec.md`; qui si dicono per intero testi e differenze.
+**Stato**: design chiuso il 2026-10-15 con le risposte di Mirko alle sei domande di impostazione (Prossimi e Passati, date passate con avviso, interruttore «Attivo», messaggio senza limite, «Togli» con conferma, indicatore di pubblicazione) e la conferma della demo; le assunzioni della sezione 10 sono state confermate da Mirko il 2026-10-20. Struttura e comportamenti comuni sono quelli di `schermate/servizi/spec.md` e `schermate/menu-fissi/spec.md`; qui si dicono per intero testi e differenze.
 
 **Si implementa in**: `fase-6` sottofase 6.6 (backoffice «Menù»; non ancora nel repo). Dipende da 8.2 (shell), 8.3 (guardia), 6.2 e 6.3 (collection `special-days`, `fixed-menus`), 6.5 (ricompilazione) e dalla Parte 0 di 6.6 (permessi di cancellazione e registro). La nota di `ADR-112` dice che **orari, chiusure e giorni speciali non sono in `disponibilita.json`**: ogni loro modifica richiede la ricompilazione del menù pubblico.
 
@@ -165,7 +165,7 @@ Si verifica con Playwright. Controlli comuni **C1–C10** di `modello-specifica-
 - **Interruttore «Attivo»** (non «Disponibile»).
 - Come le altre liste: matita, cestino, conferma, ricompilazione (D13, D14).
 
-**Assunzioni ancora da confermare** (il design le usa; vanno confermate prima di consegnare la schermata a Cursor)
+**Assunzioni confermate da Mirko il 2026-10-20** (il design le usa)
 1. **Ambito**: un elenco a tendina con la spiegazione (non tre pulsanti), preselezionato su «Solo cena».
 2. **Menù fissi**: tutti scegliibili, anche i disabilitati (con il badge, senza effetto) e anche quelli non «Solo giorni speciali».
 3. **Nessun avviso di compatibilità** tra la visibilità del menù («Solo pranzo») e l'ambito del giorno («Solo cena»).
