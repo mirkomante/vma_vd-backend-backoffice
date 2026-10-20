@@ -5236,12 +5236,12 @@
      "passi": [
       "crea, ciascuno con un menù fisso di prova, quattro giorni attivi futuri e distinti (messaggio «verify-ui-p1» … «verify-ui-p4»: 2099-03-10, 2099-03-12 «Solo pranzo», 2099-03-12 «Solo cena», 2099-07-01) e due passati («verify-ui-x1» 2001-05-05, «verify-ui-x2» 2001-09-09)",
       "apri la pagina e leggi i due gruppi",
-      "leggi gli stessi giorni con la Local API (sort date, scope) e confronta l'ordine"
+      "leggi gli stessi giorni con la Local API (sort date, -date) e confronta l'ordine per data; a parità di data confronta con «giornata intera, pranzo, cena»"
      ],
      "atteso": [
-      "tutti i giorni con data da oggi in poi stanno in «Prossimi» in ordine CRESCENTE di data (a parità di data, nell'ordine della richiesta: scope); tutti gli altri in «Passati» in ordine DECRESCENTE; questo vale per l'intero elenco (anche per i giorni reali del database di sviluppo), non solo per i giorni di prova",
+      "tutti i giorni con data da oggi in poi stanno in «Prossimi» in ordine CRESCENTE di data (a parità di data: giornata intera, pranzo, cena, come SPECIAL_DAY_SCOPE_OPTIONS); tutti gli altri in «Passati» in ordine DECRESCENTE (a parità di data, lo stesso ordine degli ambiti); questo vale per l'intero elenco (anche per i giorni reali del database di sviluppo), non solo per i giorni di prova",
       "il conteggio dell'intestazione di ogni gruppo è uguale al numero di righe e al numero di giorni letti con la Local API; «1 giorno» al singolare",
-      "l'ordine arriva dalla richiesta (due richieste con where e sort della Local API), non dal browser: le righe dei giorni di prova hanno lo stesso ordine della lettura con la Local API",
+      "le due liste arrivano da due richieste con where (data >= oggi e data < oggi) e sort (date e -date) della Local API; a parità di data l'ordine NON è quello alfabetico della Local API: con i giorni di prova del 2099-03-12 «Solo pranzo» sta prima di «Solo cena»",
       "disabilitati compresi; nessuna riga tronca in silenzio"
      ],
      "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Interrogazioni), §7 punti 2 e 10, §9 punto 4"
@@ -5384,7 +5384,7 @@
      ],
      "atteso": [
       "nessuna richiesta al server; un modulo vuoto dà DUE errori: «Scegli una data.» sotto la data e «Scegli almeno un menù fisso.» sotto i menù (l'ambito parte da «Solo cena»); il primo campo non valido è in vista e ha il focus",
-      "con data e ambito ma senza menù resta solo «Scegli almeno un menù fisso.»; nessun salvataggio"
+      "con data e ambito ma senza menù resta solo «Scegli almeno un menù fisso.»; nessun salvataggio; il focus va alla prima casella dei menù fissi, che resta in vista"
      ],
      "nota": "«Scegli un ambito.» non è raggiungibile dall'interfaccia (l'ambito parte da «Solo cena» e la tendina non ha una voce vuota): se non c'è un test unitario di lib/ che lo copre, resta NON PROVATO con questo motivo.",
      "fonte": "docs/design/schermate/giorni-speciali/spec.md §6 (Errori del modulo), §7 punto 9, §9 punto 7"
@@ -5402,13 +5402,13 @@
      "passi": [
       "crea un giorno attivo di prova (messaggio «verify-ui-sov», 2099-06-01, «Solo cena», un menù fisso di prova)",
       "apri «Nuovo giorno speciale», scegli la data 2099-06-01 e l'ambito «Solo cena»; poi cambia l'ambito in «Giornata intera»; poi in «Solo pranzo»; poi torna a «Solo cena» e cambia la data in 2099-06-02",
-      "con data e ambito di nuovo in conflitto, scegli un menù fisso, premi «Salva», poi attiva «Disattivato» nel modulo",
+      "con data e ambito di nuovo in conflitto, scegli un menù fisso e controlla che «Salva» sia disabilitato (un clic non salva nulla), poi attiva «Disattivato» nel modulo",
       "apri «verify-ui-sov» in modifica senza cambiare nulla e premi «Salva»"
      ],
      "atteso": [
       "con «Solo cena» e con «Giornata intera» compare, sotto Ambito e appena data e ambito sono scelti, il messaggio del server «Esiste già un giorno speciale attivo per questa data e questo servizio. La giornata intera non può sovrapporsi a pranzo o cena, e viceversa.» (testo da SPECIAL_DAY_OVERLAP_MESSAGE in lib/menu/validateSpecialDayOverlap.ts, testo_da: non si copia); con «Solo pranzo» e con un'altra data non compare",
-      "con l'errore presente «Salva» non salva (nessun giorno nuovo nel database) e il primo campo non valido ha il focus",
-      "attivando «Disattivato» nel modulo il messaggio sparisce e il salvataggio riesce (un giorno disattivato non conta); il giorno creato si cancella a fine controllo",
+      "con l'errore presente il pulsante «Salva» è disabilitato (nessun giorno nuovo nel database; il messaggio sotto Ambito spiega perché)",
+      "attivando «Disattivato» nel modulo, o cambiando data o ambito, il messaggio sparisce subito (in diretta, non resta quello di un tentativo precedente), «Salva» torna attivo e il salvataggio riesce (un giorno disattivato non conta); il giorno creato si cancella a fine controllo",
       "modificando «verify-ui-sov» il giorno non confligge con se stesso: nessun errore e salvataggio riuscito"
      ],
      "fonte": "docs/design/schermate/giorni-speciali/spec.md §2 (Controllo di sovrapposizione), §7 punto 6, §9 punto 8"
@@ -5736,7 +5736,7 @@
    "id": "messaggio-globale",
    "percorso": "/app/menu/message",
    "auth": "manager di prova",
-   "nota": "Non è un elenco: una pagina con un solo campo (modello dei moduli di pagina, come gli Orari). Nessun pulsante «Ricompila il menù pubblico» in questa schermata, mai (controllo messaggio-globale-senza-ricompila). Dati di prova: il Global menu-general non ha righe da creare; ogni controllo che lo modifica ne SALVA i due testi (italiano e inglese) prima e li RIPRISTINA in try/finally, come per il Global degli Orari; i testi di prova cominciano con «verify-ui». Il file disponibilita.json dipende dall'ambiente: in locale-prod non c'è il bucket e il file non è leggibile (la pagina mostra «Messaggio salvato: «{testo}»» senza ora); in locale-dev con MENU_AVAILABILITY_IN_MEMORY=1 (server di sviluppo separato, porta 3200) il file è leggibile dopo la prima scrittura di disponibilità e, con MENU_AVAILABILITY_MIRROR_FILE=<file temporaneo>, il lanciatore può leggere quello che il server scrive. Gli stati che mostrano l'ora del file (elenco, salvato) si fanno quindi solo sul server di sviluppo, e in quegli screenshot si ignora l'indicatore di sviluppo di Next. Gli stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATI in L1 e nella chat I5: li riprova V6. Lo stato «pubblicazione» è NON PROVATO senza una simulazione del ritardo di scrittura del file (nessuna esiste oggi). Nel mockup e negli screenshot di riferimento «oggi» è il 15 ottobre 2026.",
+   "nota": "Non è un elenco: una pagina con un solo campo (modello dei moduli di pagina, come gli Orari). Nessun pulsante «Ricompila il menù pubblico» in questa schermata, mai (controllo messaggio-globale-senza-ricompila). Dati di prova: il Global menu-general non ha righe da creare; ogni controllo che lo modifica ne SALVA i due testi (italiano e inglese) prima e li RIPRISTINA in try/finally, come per il Global degli Orari; i testi di prova cominciano con «verify-ui». Il file disponibilita.json dipende dall'ambiente: in locale-prod non c'è il bucket e il file non è leggibile (la pagina mostra «Messaggio salvato: «{testo}»» senza ora); in locale-dev con MENU_AVAILABILITY_IN_MEMORY=1 (server di sviluppo separato, porta 3200) il file è leggibile dopo la prima scrittura di disponibilità e, con MENU_AVAILABILITY_MIRROR_FILE=<file temporaneo>, il lanciatore può leggere quello che il server scrive. Gli stati che mostrano l'ora del file (elenco, salvato) si fanno quindi solo sul server di sviluppo, e in quegli screenshot si ignora l'indicatore di sviluppo di Next. Gli stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATI in L1 e nella chat I5: li riprova V6. Lo stato «pubblicazione» si prova con APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS (simulazione in sola lettura, aggiunta nel passo 24): serve un primo salvataggio che renda leggibile il file e poi un secondo; lo riprova V6. Nel mockup e negli screenshot di riferimento «oggi» è il 15 ottobre 2026.",
    "stati": [
     {
      "id": "elenco",
@@ -5759,7 +5759,8 @@
     {
      "id": "pubblicazione",
      "come": "il file non ha ancora il testo salvato: riquadro con il testo vecchio, «In pubblicazione…» e lo Spinner",
-     "stato_prova": "NON PROVABILE: nessuna simulazione di sviluppo ritarda la scrittura di disponibilita.json (le variabili sono LOAD_ERROR, SAVE_ERROR e LOAD_DELAY_MS, che ritardano la lettura delle liste, non la scrittura del file). Esito NON PROVATO con questo motivo. Lo riprova V6 solo se la chat I5 ha aggiunto una simulazione del ritardo di pubblicazione; altrimenti resta nei debiti e si guarda nel giro L3 su Cloud Run"
+     "stato_prova": "NON PROVATO in L1 e nel passo 24: richiede un server di sviluppo con la simulazione del ritardo; esito NON PROVATO con questo motivo. Lo riprova V6 (controllo messaggio-globale-pubblicazione)",
+     "ambiente": "locale-dev con MENU_AVAILABILITY_IN_MEMORY=1 e APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS=8000, dopo un primo salvataggio che rende leggibile il file"
     },
     {
      "id": "file-non-leggibile",
@@ -5981,7 +5982,7 @@
       "il Global ha il nuovo testo italiano e lo stesso testo inglese di prima",
       "con il file leggibile (locale-dev con storage in memoria) il riquadro mostra il nuovo testo con «Menù pubblico aggiornato alle {HH:mm}» (ora del file in Europe/Rome) e «Chi ha la pagina aperta lo vede entro circa cinque minuti.»; con il file non leggibile (locale-prod) il riquadro mostra «Messaggio salvato: «verify-ui-nuovo»» senza ora e senza «In pubblicazione…»"
      ],
-     "nota": "«In pubblicazione…» non si prova qui: vedi lo stato «pubblicazione», NON PROVATO. Il Global menu-general si salva prima e si ripristina in try/finally.",
+     "nota": "«In pubblicazione…» non si prova qui: vedi messaggio-globale-pubblicazione (L2, lo riprova V6). Il Global menu-general si salva prima e si ripristina in try/finally.",
      "fonte": "docs/design/schermate/messaggio-globale/spec.md §2, §5, §6, §7 punti 2 e 3, §9 punti 5 e 6"
     },
     {
@@ -5999,14 +6000,47 @@
      ],
      "passi": [
       "con un messaggio salvato («verify-ui-nl») apri la pagina senza bucket configurato (locale-prod)",
-      "poi imposta i due testi vuoti e ricarica"
+      "poi imposta i due testi vuoti e ricarica",
+      "con il file non leggibile premi «Salva modifiche» con un testo nuovo («verify-ui-nl2») e osserva la pagina e le richieste di rete per 20 secondi"
      ],
      "atteso": [
       "il riquadro dice «Messaggio salvato: «verify-ui-nl»» senza ora e senza «In pubblicazione…»; nessun errore a schermo",
-      "con i testi vuoti il riquadro dice «Nessun messaggio.» e nessuna riga sull'ora"
+      "con i testi vuoti il riquadro dice «Nessun messaggio.» e nessuna riga sull'ora",
+      "dopo il salvataggio il riquadro dice «Messaggio salvato: «verify-ui-nl2»»; non compaiono «In pubblicazione…» né lo Spinner e non partono richieste ripetute di lettura del file (nessuna azione del server periodica nei 20 secondi)"
      ],
-     "nota": "È il ripiego quando il file non si può leggere (storage non configurato o errore): la lettura lato server non deve mai rompere la pagina.",
+     "nota": "È il ripiego quando il file non si può leggere: storage non configurato, oggetto assente o non valido, errore di lettura. La lettura lato server non deve mai rompere la pagina. Con il file non leggibile non c'è pubblicazione da attendere (passo 24b).",
      "fonte": "docs/design/schermate/messaggio-globale/spec.md §2 (Cosa si legge), §5, §6 (Riquadro), §9 punto 6"
+    },
+    {
+     "id": "messaggio-globale-pubblicazione",
+     "tipo": "flusso",
+     "livello": 2,
+     "profili": [
+      "telefono-390"
+     ],
+     "temi": [
+      "chiaro"
+     ],
+     "ambienti": [
+      "locale-dev"
+     ],
+     "simulazione": "ritardo_pubblicazione",
+     "passi": [
+      "avvia il server di sviluppo separato (porta 3200, mai in production) con MENU_AVAILABILITY_IN_MEMORY=1 e APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS=8000",
+      "PRIMO salvataggio («verify-ui-pub-1»): serve solo a rendere leggibile il file in memoria; attendi che il riquadro mostri l'ora (fino a 15 secondi)",
+      "SECONDO salvataggio con un testo diverso («verify-ui-pub-2»): osserva il riquadro subito dopo",
+      "attendi la fine del ritardo e il controllo successivo (al massimo 3 secondi dopo gli 8)",
+      "premi «Togli il messaggio» e conferma"
+     ],
+     "atteso": [
+      "dopo il primo salvataggio il riquadro mostra il testo con «Menù pubblico aggiornato alle {HH:mm}»; se compare «Messaggio salvato: «…»» senza ora il file non è leggibile: FALLITO, e si riporta che lo storage in memoria non è condiviso tra la pagina e l'hook di scrittura",
+      "subito dopo il secondo salvataggio il riquadro mostra il testo VECCHIO («verify-ui-pub-1»), «In pubblicazione…» e lo Spinner; «Salva modifiche» e «Annulla modifiche» sono disabilitati perché il campo coincide con il salvato",
+      "finito il ritardo, entro il controllo successivo il riquadro mostra «verify-ui-pub-2» con la nuova ora, senza «In pubblicazione…»; le richieste di lettura si fermano",
+      "dopo «Togli» il riquadro dice subito «Nessun messaggio.», senza «In pubblicazione…» e senza richieste ripetute"
+     ],
+     "stato_prova": "NON PROVATO in L1 e nel passo 24: richiede un server di sviluppo con la simulazione del ritardo; esito NON PROVATO con questo motivo. Lo riprova V6 (passo 28)",
+     "nota": "Il primo salvataggio è indispensabile: con lo storage in memoria appena avviato il file non esiste e la pagina lo tratta come non leggibile. Il ritardo agisce solo in lettura (lib/app/globalMessage/devPublishReadDelay.ts), non tocca la scrittura del file e non vale con NODE_ENV production. Il Global menu-general si salva prima e si ripristina in try/finally.",
+     "fonte": "docs/design/schermate/messaggio-globale/spec.md §5, §9 punto 6; passo 24 (lib/app/menu/devSimulate.ts)"
     },
     {
      "id": "messaggio-globale-lettura-file",
