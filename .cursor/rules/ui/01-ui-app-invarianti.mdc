@@ -35,6 +35,8 @@ Nelle schermate (`app/(app)/**`) e nei componenti di composizione (`components/a
 - **R5** elementi nativi `<button>`, `<input>`, `<select>`, `<textarea>`, `<label>`, `<table>`, `<dialog>`: usare `Button`, `Input`, `Select`, `Textarea`, `FieldLabel`, `Table`, `Sheet`/`AlertDialog`.
 - **R7** import da `@base-ui/react`, `@radix-ui/*`, `sonner`, `vaul`, `cmdk` o altre librerie UI: si importa solo da `@/components/ui/...`.
 - **R9** file CSS di schermata; **C2** classi CSS personalizzate in `app-ui.css` (nessuna: i token stanno in `app-ui.css`, il resto sono componenti).
+- **R11** `<Select>` senza `items` (il trigger mostra il valore grezzo, per esempio «all» invece di «Tutti»: A8); **R12** `overrideAccess: true` nelle schermate e nei loro helper (`app/(app)`, `components/app`, `lib/app`, `lib/menu/ui`): si legge e si scrive con la sessione dell'utente.
+- **R13** file di esito già versionati in `docs/design/verifica/esiti/` modificati (un giro scrive in una cartella nuova, mai sopra un esito esistente); **R14** contratto del nucleo di L1 in `controlli-6.6.json`: `livello` solo 1 o 2, al massimo otto controlli di livello 1 per schermata (esclusi i `comando`), nessun controllo con `stato_prova` in livello 1.
 - Nessuna modifica a `app/globals.css`, condiviso con `(frontend)`.
 
 Un'eccezione puntuale si dichiara con un commento `ui-check-allow: <motivo>` sulla riga (o su una riga di solo commento subito sopra). Il motivo è obbligatorio e va riportato nella sezione «Componenti di composizione» della specifica. Esempio ammesso: l'intera scheda tappabile di un elenco che apre il dettaglio con un tocco sulla riga (prenotazioni, D9; `<button type="button">` che contiene una `Card`), non degli elenchi di contenuto del menù, dove la scheda non è tappabile (D13).
@@ -84,5 +86,5 @@ Se serve un componente che non c'è in `components/ui`, o un comportamento che i
 
 ## Verifica
 
-- `pnpm ui:check` fallisce (uscita 1) su R1–R10, sulle deviazioni D6 mancanti nei componenti installati, sui testi inglesi rimasti nei componenti (T1) e su `app-ui.css` non allineato (C1, C2).
+- `pnpm ui:check` fallisce (uscita 1) su R1–R14, sulle deviazioni D6 mancanti nei componenti installati, sui testi inglesi rimasti nei componenti (T1) e su `app-ui.css` non allineato (C1, C2).
 - Il confronto visivo con il mockup lo fa la chat di design, sugli screenshot prodotti dal lanciatore (`docs/design/verifica/esiti/`): i rilievi sono etichettati **P** (da correggere prima della fase successiva) e **A** (non bloccanti). Su telefono il confronto è sulle misure geometriche, non sulla differenza di pixel.

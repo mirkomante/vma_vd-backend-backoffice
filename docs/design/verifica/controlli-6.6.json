@@ -899,7 +899,7 @@
     {
      "id": "piatti-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -917,7 +917,7 @@
     {
      "id": "piatti-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -937,7 +937,7 @@
     {
      "id": "piatti-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -980,7 +980,7 @@
     {
      "id": "piatti-disabilita",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1022,7 +1022,7 @@
     {
      "id": "piatti-elimina-registro",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -1037,7 +1037,7 @@
     {
      "id": "piatti-elimina-bloccato",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1101,7 +1101,7 @@
     {
      "id": "piatti-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1152,7 +1152,7 @@
     {
      "id": "piatti-modulo-inglese",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1174,7 +1174,7 @@
     {
      "id": "piatti-modulo-footer",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1188,7 +1188,7 @@
     {
      "id": "piatti-casella-misure",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1204,7 +1204,7 @@
     {
      "id": "piatti-allergeni-selezione",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1227,7 +1227,7 @@
     {
      "id": "piatti-tassonomie",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1267,7 +1267,7 @@
     {
      "id": "piatti-filtri-ricerca",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -1312,7 +1312,7 @@
     {
      "id": "piatti-stati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1640,7 +1640,7 @@
     {
      "id": "vini-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -1662,7 +1662,7 @@
     {
      "id": "vini-colonne-fisse",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -1678,7 +1678,7 @@
     {
      "id": "vini-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -1697,7 +1697,7 @@
     {
      "id": "vini-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1782,7 +1782,7 @@
     {
      "id": "vini-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1831,7 +1831,7 @@
     {
      "id": "vini-modulo-inglese",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1853,7 +1853,7 @@
     {
      "id": "vini-modulo-footer",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1867,7 +1867,7 @@
     {
      "id": "vini-formati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1887,7 +1887,7 @@
     {
      "id": "vini-formati-server",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -1908,7 +1908,7 @@
     {
      "id": "vini-modulo-anno",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1931,7 +1931,7 @@
     {
      "id": "vini-origine-cascata",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1956,7 +1956,7 @@
     {
      "id": "vini-origine-opzioni-query",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1976,7 +1976,7 @@
     {
      "id": "vini-origine-fuori-filtro",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -1994,7 +1994,7 @@
     {
      "id": "vini-coerenza-geografica",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2018,7 +2018,7 @@
     {
      "id": "vini-filtri-origine",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2040,7 +2040,7 @@
     {
      "id": "vini-tassonomie",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2081,7 +2081,7 @@
     {
      "id": "vini-filtri-ricerca",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -2126,7 +2126,7 @@
     {
      "id": "vini-stati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2420,7 +2420,7 @@
     {
      "id": "distillati-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -2442,7 +2442,7 @@
     {
      "id": "distillati-colonne-fisse",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -2458,7 +2458,7 @@
     {
      "id": "distillati-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -2477,7 +2477,7 @@
     {
      "id": "distillati-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2562,7 +2562,7 @@
     {
      "id": "distillati-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2611,7 +2611,7 @@
     {
      "id": "distillati-modulo-inglese",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2633,7 +2633,7 @@
     {
      "id": "distillati-modulo-footer",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2647,7 +2647,7 @@
     {
      "id": "distillati-formati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2667,7 +2667,7 @@
     {
      "id": "distillati-formati-server",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -2688,7 +2688,7 @@
     {
      "id": "distillati-capacita-non-gestita",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -2713,7 +2713,7 @@
     {
      "id": "distillati-tassonomie",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2734,7 +2734,7 @@
     {
      "id": "distillati-paese-fuori-filtro",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -2773,7 +2773,7 @@
     {
      "id": "distillati-filtri-ricerca",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -2818,7 +2818,7 @@
     {
      "id": "distillati-stati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3097,7 +3097,7 @@
     {
      "id": "bevande-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -3119,7 +3119,7 @@
     {
      "id": "bevande-colonne-fisse",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -3135,7 +3135,7 @@
     {
      "id": "bevande-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -3154,7 +3154,7 @@
     {
      "id": "bevande-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3239,7 +3239,7 @@
     {
      "id": "bevande-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3288,7 +3288,7 @@
     {
      "id": "bevande-modulo-inglese",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3310,7 +3310,7 @@
     {
      "id": "bevande-modulo-footer",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3324,7 +3324,7 @@
     {
      "id": "bevande-formati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3344,7 +3344,7 @@
     {
      "id": "bevande-formati-server",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -3365,7 +3365,7 @@
     {
      "id": "bevande-paese-facoltativo",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3386,7 +3386,7 @@
     {
      "id": "bevande-tassonomie",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3407,7 +3407,7 @@
     {
      "id": "bevande-paese-fuori-filtro",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3446,7 +3446,7 @@
     {
      "id": "bevande-filtri-ricerca",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -3491,7 +3491,7 @@
     {
      "id": "bevande-stati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3750,7 +3750,7 @@
     {
      "id": "servizi-senza-ricerca-filtri",
      "tipo": "assenza",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -3764,7 +3764,7 @@
     {
      "id": "servizi-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -3786,7 +3786,7 @@
     {
      "id": "servizi-colonne-fisse",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -3802,7 +3802,7 @@
     {
      "id": "servizi-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -3821,7 +3821,7 @@
     {
      "id": "servizi-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3887,7 +3887,7 @@
     {
      "id": "servizi-elimina-senza-uso",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3924,7 +3924,7 @@
     {
      "id": "servizi-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3971,7 +3971,7 @@
     {
      "id": "servizi-modulo-inglese",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -3993,7 +3993,7 @@
     {
      "id": "servizi-modulo-footer",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4027,7 +4027,7 @@
     {
      "id": "servizi-ordine",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -4040,7 +4040,7 @@
     {
      "id": "servizi-stati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4345,7 +4345,7 @@
     {
      "id": "menu-fissi-schede-percorsi",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -4370,7 +4370,7 @@
     {
      "id": "menu-fissi-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -4392,7 +4392,7 @@
     {
      "id": "menu-fissi-colonne-fisse",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -4408,7 +4408,7 @@
     {
      "id": "menu-fissi-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -4427,7 +4427,7 @@
     {
      "id": "menu-fissi-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4467,7 +4467,7 @@
     {
      "id": "menu-fissi-categorie-elenco",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4485,7 +4485,7 @@
     {
      "id": "menu-fissi-categoria-modulo",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4508,7 +4508,7 @@
     {
      "id": "menu-fissi-categorie-niente-eliminazione",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -4529,7 +4529,7 @@
     {
      "id": "menu-fissi-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4578,7 +4578,7 @@
     {
      "id": "menu-fissi-composizione",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4602,7 +4602,7 @@
     {
      "id": "menu-fissi-ordine-piatti",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4625,7 +4625,7 @@
     {
      "id": "menu-fissi-doppioni",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -4643,7 +4643,7 @@
     {
      "id": "menu-fissi-porzione-traduzione",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4665,7 +4665,7 @@
     {
      "id": "menu-fissi-visibilita-categoria",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4704,7 +4704,7 @@
     {
      "id": "menu-fissi-servizi-piatti",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -4729,7 +4729,7 @@
     {
      "id": "menu-fissi-tassonomie",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4770,7 +4770,7 @@
     {
      "id": "menu-fissi-elimina-senza-uso",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -4827,7 +4827,7 @@
     {
      "id": "menu-fissi-ordine-liste",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -4840,7 +4840,7 @@
     {
      "id": "menu-fissi-stati-ui",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5135,7 +5135,7 @@
     {
      "id": "giorni-speciali-senza-ricerca-filtri",
      "tipo": "assenza",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -5149,7 +5149,7 @@
     {
      "id": "giorni-speciali-colonna-elenco",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -5171,7 +5171,7 @@
     {
      "id": "giorni-speciali-colonne-fisse",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "notebook-1280"
      ],
@@ -5187,7 +5187,7 @@
     {
      "id": "giorni-speciali-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -5206,7 +5206,7 @@
     {
      "id": "giorni-speciali-righe-azioni",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5226,7 +5226,7 @@
     {
      "id": "giorni-speciali-prossimi-passati",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5249,7 +5249,7 @@
     {
      "id": "giorni-speciali-oggi-e-mezzanotte",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5304,7 +5304,7 @@
     {
      "id": "giorni-speciali-modulo-campi",
      "tipo": "attributi",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5332,7 +5332,7 @@
     {
      "id": "giorni-speciali-nuovo-preselezione",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5348,7 +5348,7 @@
     {
      "id": "giorni-speciali-menu-fissi-caselle",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5416,7 +5416,7 @@
     {
      "id": "giorni-speciali-sovrapposizione-server",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -5434,7 +5434,7 @@
     {
      "id": "giorni-speciali-data-passata",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5454,7 +5454,7 @@
     {
      "id": "giorni-speciali-data-scritta",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "ambienti": [
       "locale-dev",
       "locale-prod"
@@ -5473,7 +5473,7 @@
     {
      "id": "giorni-speciali-modulo-inglese",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5495,7 +5495,7 @@
     {
      "id": "giorni-speciali-modulo-footer",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5509,7 +5509,7 @@
     {
      "id": "giorni-speciali-elimina",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5833,7 +5833,7 @@
     {
      "id": "messaggio-globale-colonna",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280",
@@ -5855,7 +5855,7 @@
     {
      "id": "messaggio-globale-azioni-pagina",
      "tipo": "misura",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -5874,7 +5874,7 @@
     {
      "id": "messaggio-globale-senza-ricompila",
      "tipo": "assenza",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390",
       "notebook-1280"
@@ -5889,7 +5889,7 @@
     {
      "id": "messaggio-globale-pulsanti-pagina",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5916,7 +5916,7 @@
     {
      "id": "messaggio-globale-a-capo",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -5939,7 +5939,7 @@
     {
      "id": "messaggio-globale-nessun-limite",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],
@@ -6114,7 +6114,7 @@
     {
      "id": "messaggio-globale-modulo-lingue",
      "tipo": "flusso",
-     "livello": 1,
+     "livello": 2,
      "profili": [
       "telefono-390"
      ],

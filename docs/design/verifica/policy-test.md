@@ -1,106 +1,185 @@
-# Policy dei test dell'Area App
+# Policy dei test dell'Area App (versione 2)
 
-**Stato**: **in vigore, provvisoria** dal 2026-10-11. Si segna «validata» dopo le prime due schermate nuove (sezione 9). Regola operativa per chi implementa: `.cursor/rules/ui/03-ui-test-policy.mdc`.
+**Stato**: **approvata** da Mirko con il commit che la introduce (2026-10-20). Sostituisce la versione 1 (in vigore, provvisoria, dal 2026-10-11). La **numerazione delle sezioni 2, 4, 5, 6, 7 e 9 è quella della v1**: il piano, il CHANGELOG e le decisioni la citano una trentina di volte (per esempio «policy-test §5: un FALLITO è un rilievo P»), e la v2 non deve far puntare quei riferimenti a un altro testo. Regola operativa per chi implementa: `.cursor/rules/ui/03-ui-test-policy.mdc`. Controlli statici: `scripts/ui-check.mjs` (R11–R14, sezione 10).
 
-**Principio**: la verifica automatica costa poco e non ferma nessuno; la verifica estesa costa di più e si fa solo quando il raggio d'impatto è largo; l'umano interviene solo dove nessun automatismo arriva. Questa policy integra `core/03-validazione-testing.mdc` e `core/04-changelog-commit.mdc`, non le sostituisce (sezione 8). `core/03` ha un paragrafo di rinvio per la UI dell'Area App.
+## 0. Principio guida
 
-## 1. Livelli
+**Il rigore di un test è proporzionato a quanto costa l'errore che previene e a come l'app viene usata.** Il costo del test (tempo dell'agente, manutenzione dello strumento) non supera mai il valore di ciò che protegge.
 
-| Livello | Quando | Cosa | Chi lo esegue | Durata obiettivo |
+**Profilo dell'applicazione**: backoffice interno, usato da telefono (390 px) e da notebook (1280 px), con i ruoli admin e super-admin. Quello che si salva alimenta il menù pubblicato sul sito.
+
+| Cosa può andare storto | Costo dell'errore | Rigore del test |
+|---|---|---|
+| Dati persi o corrotti, cancellazioni a cascata, permessi, pubblicazione sul sito | **Alto** | Prova di funzionamento: azione dall'interfaccia, poi controllo del database. **Sta nel nucleo di L1** (sezione 3), non solo in L2 |
+| Flusso che non si completa, console con errori, tocco o scorrimento rotti | **Medio** | Nucleo di L1 su ogni schermata |
+| Differenze estetiche dalla demo | **Basso** a livello di singolo difetto, **alto in somma**: nel confronto del 2026-10-20, su cinque schermate, P1–P7 più P8 (ex A6) e A1–A12 (di cui A6 diventato P8 e A8 chiuso in 21b) | Confronto visivo con la demo a ogni schermata (L1v), non a fine fase |
+| Prestazioni, browser rari, schermi insoliti | **Basso** | Solo in L2 e solo a trigger |
+
+## 1. Livelli e budget
+
+I budget sono un **contratto**: chi li supera si ferma e semplifica, non allunga.
+
+| Livello | Quando | Cosa | Chi | Budget |
 |---|---|---|---|---|
-| **L0** Validazione di codice | A ogni passaggio, anche piccolo | Rilettura, `pnpm typecheck`, `pnpm lint`, `pnpm ui:check`, test unitari di `lib/` (è il primo livello di `03`) | Agente di implementazione | meno di 2 minuti |
-| **L1** Mirato | Fine di ogni passaggio che tocca una schermata o un componente | `pnpm ui:verify --livello 1 --schermata <id>`: solo le schermate toccate, `telefono-390` e `notebook-1280`, temi `chiaro` e `scuro`, solo i controlli di livello 1 (sezione 3) | Agente di implementazione: lancia, non modifica i controlli | 3 minuti |
-| **L2** Esteso | Solo ai trigger della sezione 4 | `pnpm ui:verify --livello 2`: tutte le schermate, tutti i profili e i temi, WebKit, tema, guardie, flussi; più i controlli online senza credenziali dopo il deploy; giudizio visivo della chat di design (C10, rilievi P e A) | **Agente di verifica in chat pulita** (indipendente da chi ha scritto il codice) | 15 minuti |
-| **L3** Sessione reale | Fine fase e prima del primo uso reale | Controlli con sessione reale su Cloud Run (Esci, Admin, ruoli admin e super-admin, registro attività) fatti dalla chat di design con il browser di Mirko; giro su iPhone vero (tocco, tastiera, campo ora nativo) fatto da Mirko | Chat di design + Mirko | un'ora, di cui 15 minuti di Mirko |
-| **S** Smoke post-deploy | Dopo ogni deploy | `pnpm ui:verify online`: i controlli senza credenziali, solo richieste HTTP | Chiunque, anche Mirko | 1 minuto |
+| **L0** | A ogni passaggio | Rilettura, `pnpm typecheck`, `pnpm lint`, `pnpm ui:check` (include R11–R14), test unitari di `lib/` | Agente di implementazione | 2 min |
+| **L1** | Fine di **ogni** passo che tocca una schermata | Il **nucleo** della schermata (sezione 3) a 390 e 1280, tema chiaro | Agente di implementazione | 3 min |
+| **L1v** | Subito dopo L1, per le schermate nuove o cambiate nel layout | Confronto visivo con la demo (sezione 3.1) | Agente di verifica, chat pulita | 10 min per schermata |
+| **L2** | Solo ai trigger della sezione 4 | Tutti i controlli, tutti i profili e i temi | Agente di verifica, chat pulita | 15 min |
+| **L3** | Fine fase e prima del primo uso reale | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko | 1 ora |
+| **S** | Dopo ogni deploy | `pnpm ui:verify online`: solo richieste HTTP | Chiunque | 1 min |
 
-Le durate sono **obiettivi rivisti sui dati della quarta esecuzione** (2026-10-11): `locale-prod` completo 5 min 30 s, `locale-dev` con WebKit 44 s, `online` circa 1 minuto. Il rapporto riporta la durata di ogni esecuzione; si ricalibrano dopo la prima fase completa. Misure della 8.5 (2026-10-11): L1 su Orari in `locale-prod` 3 min 13 s; L2 in `locale-prod` (Orari con tutti i profili e i temi più regressione della shell) 12 min 1 s; di conseguenza i budget sono ora 3 e 15 minuti.
+**L1 non si vieta mai nei prompt di implementazione** (è successo con F4: la regressione di P8 è nata così).
 
 ## 2. Chi fa che cosa, per non bloccare nessuno
 
-- **L0 e L1 non richiedono l'umano**: l'agente di implementazione li esegue da solo e riporta l'esito. Mirko non fa screenshot e non apre pagine.
-- **L2 si fa in una chat pulita**: chi ha scritto il codice non è il più adatto a giudicarlo. È una chat dedicata, con la regola `02-ui-verifica-agente.mdc`.
+- **L0 e L1 non richiedono l'umano**: li esegue l'agente di implementazione e riporta l'esito. Mirko non fa screenshot e non apre pagine.
+- **L1 è obbligatorio a fine passo e il prompt non lo vieta mai.** Se un controllo del nucleo non è implementato nel motore, L1 non è eseguibile **per quel controllo**: l'agente lo dichiara NON PROVATO, il passo non si marca ✅ ma 🔶 (sezione 6), e **non si fa mai una prova manuale al suo posto né chiesta all'umano**.
+- **L1v e L2 si fanno in una chat pulita**, con `02-ui-verifica-agente.mdc`: chi ha scritto il codice non è il più adatto a giudicarlo.
 - **L3 si fa una volta per fase**, non ogni sottofase.
-- Chi lancia L1 **non cambia mai un controllo** per farlo passare: se il controllo sembra sbagliato lo scrive nel rapporto come «controllo dubbio» e lo passa alla chat di design.
+- Chi lancia L1 **non cambia mai un controllo** per farlo passare: se sembra sbagliato lo scrive come «controllo dubbio» e lo passa alla chat di design.
+- **Il git lo fa Mirko.** Un'eccezione (push di Composer) vale solo se il prompt del passo la scrive e solo per quel passo; nel passo 24 ha funzionato, ma tre scostamenti dalla specifica e 15 file riscritti dal lanciatore sono arrivati su `main` prima del controllo della chat di design.
 
-## 3. Quali controlli stanno in L1 e quali solo in L2
+## 3. Il nucleo di L1 e il resto in L2
 
-Ogni controllo di `controlli-*.json` avrà un campo `livello` (1 o 2). Regola per assegnarlo: **L1 è ciò che una modifica a una singola schermata può rompere**; **L2 è ciò che si rompe solo con modifiche condivise o richiede tutta la matrice**.
+L1 è ciò che una modifica a **una sola schermata** può rompere e che costa molto se si rompe. Ogni schermata ha un **nucleo** di al massimo **otto controlli propri** (campo `livello: 1` in `controlli-6.6.json`); tutto il resto sta in L2. Il tetto è controllato da `pnpm ui:check` (R14).
 
-| In L1 (schermata toccata) | Solo in L2 |
-|---|---|
-| `AMBIENTE` (niente indicatore di sviluppo) | Profili `telefono-360`, `soglia-767`, `soglia-768`, `tablet-820` |
-| `C1` scorrimento orizzontale (390 e 1280) | Temi `sistema-chiaro` e `sistema-scuro`, `C3-no-lampo`, `C3-cambio-sistema`, persistenza del tema |
-| `C2` aree di tocco (390), con menu e fogli aperti | WebKit |
-| `C3` classe del tema (chiaro e scuro) | Guardie, uscita, controlli della shell condivisi (sticky, passaggio a 768 px, menu, blocco utente) |
-| Testi, attributi, misure e stati della schermata | `CONSOLE` su tutte le pagine in `locale-dev` |
-| `CONSOLE` della sola schermata toccata | `C9` completo, controlli online `on1`–`on6` |
-| Screenshot di 390 e 1280, chiaro e scuro, della sola schermata | Screenshot di tutte le schermate |
+**Gli otto posti del nucleo**, in quest'ordine di priorità:
 
-Un L1 su una schermata con tre stati, due profili e due temi sono dodici combinazioni, contro le circa 1760 righe della prima esecuzione completa.
+| # | Posto | Perché | Dove sta il controllo |
+|---|---|---|---|
+| 1 | Testi chiave della schermata | Titolo, azioni, etichette | `<schermata>-testi` |
+| 2 | Console senza errori né avvisi (sviluppo) | Regressioni di Base UI e React | `<schermata>-console` |
+| 3 | Errore visibile e comprensibile | Validazione del modulo, o l'errore tipico della schermata | `-modulo-validazione`; per Messaggio globale `-file-non-leggibile` |
+| 4 | Azione principale e persistenza | L'azione riesce dall'interfaccia e il dato è nel database | `-persistenza` o `-salvataggio` |
+| 5 | Nomi accessibili in italiano | Testi ed etichette per lo screen reader | `-nomi-accessibili` |
+| 6 | Cancellazione | Dati persi, cascata, blocco se in uso | `-elimina`, `-elimina-usato`, `-togli` |
+| 7 | Permessi e registro della cancellazione | Chi può farlo e che resti traccia | `-elimina-registro-permessi`, `-permessi` |
+| 8 | Ciò che cambia il menù pubblico | Interruttore «Disponibile», «Attivo», «Terminato», o il file che riceve il messaggio | `-disponibilita`, `-attivazione`, `-terminato`, `-file-riceve-messaggio` |
+
+Per Giorni speciali il posto 8 è l'interruttore «Attivo» e il posto 3 la **sovrapposizione** (la regola che, se sbagliata, pubblica due menù per lo stesso servizio) più la validazione del modulo. Home e navigazione hanno meno di otto controlli e restano interamente in L1.
+
+**Fuori dal tetto**: i controlli di tipo `comando` (unitari o statici: costano secondi) e i controlli **comuni**, che si applicano agli stati del nucleo: `C1` (nessuno scorrimento orizzontale), `C2` (aree di tocco di almeno 44 px a 390 px, con fogli e menu aperti), `C3` (classe del tema, una volta in chiaro e una in scuro), `CONSOLE`, `AMBIENTE`, `NO-OVERRIDE`.
+
+**Cosa non sta nel nucleo, e perché**
+- **Lo stato vuoto**: con il database di sviluppo popolato non si può riprodurre, e infatti tutti i controlli `*-stato-vuoto` hanno `stato_prova` e restano NON PROVATI. Un controllo che non può mai essere provato non sta in L1 (R14). Lo stato si giudica in L1v con il PNG.
+- **Lo screenshot**: è un prodotto di L1v, non un controllo.
+- **Gli stati simulati** (caricamento, errore di caricamento, errore dell'azione): sezione 7.
+- **Il tema scuro su ogni stato**: una volta sullo stato principale (`C3`).
+
+**Dato di fatto, corretto il 2026-10-20**: L1 contava 189 dei 231 controlli delle schermate (da 4 per Home a 27 per Menù fissi; con i 12 comuni, 198 su 243): l'etichetta «livello 1» si era allargata fino a coprire quasi tutto. Con il nucleo diventano **76** (8 per ciascuna delle otto schermate di catalogo e di sezione, più 2 controlli `comando` di Giorni speciali e Messaggio globale, più Home 4 e Navigazione 6, compreso un `comando`). I controlli che cambiano livello sono 113; nessun'altra proprietà dei controlli è cambiata.
+
+**Che cosa il nucleo non prende** (lo dice l'esperienza, non la speranza): i difetti di **specifica** di dettaglio, come il focus sul primo campo non valido o l'ordine delle etichette, non stanno in otto controlli. Li prendono L1v (confronto con la demo), L2 e la revisione del codice contro la specifica. Nel passo 24 la revisione del codice ha trovato tre difetti che L0 non vedeva: due sarebbero stati presi dal nucleo (`file-non-leggibile`, `sovrapposizione`), uno (il focus sui menù fissi) no.
+
+### 3.1 Confronto visivo con la demo (L1v)
+
+Il confronto visivo con le demo ha trovato in un'ora più difetti di tutti i giri automatici della settimana. Va fatto **a ogni schermata**, non alla fine.
+
+- L'agente di verifica prende gli screenshot di 390 e 1280 chiaro degli stati principali e li confronta con i PNG di riferimento in `docs/design/schermate/<schermata>/`.
+- Produce una **tabella di differenze** (cosa, dove, gravità proposta P o A). Non giudica l'estetica in astratto.
+- La chat di design **classifica** la tabella (P o A); non rilegge tutti gli screenshot.
+- *Da provare una volta*: che l'agente di verifica di Cursor legga bene le immagini. Se non basta, il confronto resta alla chat di design, ma sempre a schermata e mai a fine fase.
 
 ## 4. Trigger del livello 2
 
-Si fa L2 (non L1) quando la modifica ha raggio largo:
+Si fa L2 (non L1) quando la modifica ha raggio largo: `components/ui/**`, `components.json`, il tema in `app/(app)/app-ui.css`, `app/(app)/layout.tsx`, `components/app/shell/**`, `lib/app/theme.ts`, `lib/auth/**`, login e logout, `collections/Users.ts`, aggiornamento di Next, React, Base UI, shadcn, Tailwind o Payload, primo esemplare di un **tipo** di schermata, chiusura di fase, primo uso reale, bug trovato in produzione (prima si aggiunge il controllo che l'avrebbe preso).
 
-| Cosa è cambiato | Perché |
-|---|---|
-| `components/ui/**`, `components.json`, il tema in `app/(app)/app-ui.css` | Toccano tutte le schermate |
-| `app/(app)/layout.tsx`, `components/app/shell/**`, `lib/app/theme.ts` | Shell, tema e script anti-lampo sono di tutte le pagine |
-| `lib/auth/**`, endpoint di login e logout, `collections/Users.ts` | Accesso e sessione |
-| Aggiornamento di Next, React, Base UI, shadcn, Tailwind o Payload | Comportamenti che cambiano senza che il codice cambi |
-| Primo esemplare di un **tipo** di schermata (primo elenco, primo modulo, primo foglio) | Si prova il tipo, poi basta L1 sulle schermate dello stesso tipo |
-| Chiusura di una fase del piano | Punto di controllo |
-| Prima del primo uso reale | Punto di controllo |
-| Correzione di un bug trovato in produzione | Prima si aggiunge il controllo che l'avrebbe preso, poi si corregge |
+Una modifica solo a documenti non attiva nulla oltre L0. Una modifica solo al backend (`collections/**`, hook, `lib/**` non UI) attiva L0 e gli script `verify-*.ts`, non L1.
 
-Una modifica solo a documenti non attiva nessun livello oltre L0. Una modifica solo al backend (`collections/**`, hook, `lib/**` non UI) attiva L0 e gli script `verify-*.ts` esistenti, non L1.
+**Un esito L2 resta valido** finché non cambia un file del raggio largo: il rapporto riporta il commit, e se dall'ultimo L2 nessun file della lista è cambiato non si ripete. **Nessun L2 o L3 «per scrupolo».**
 
-**Un esito L2 resta valido** finché non cambia un file del raggio largo: il rapporto riporta il commit, e se dall'ultimo L2 nessun file della tabella è cambiato non si ripete.
-
-## 5. Quando un controllo fallisce
+## 5. Esiti e classificazione
 
 | Esito | Effetto |
 |---|---|
-| **FALLITO** su un controllo di livello 1 | Blocca la chiusura del passaggio. Si corregge e si rilanciano **solo i controlli falliti** (massimo due giri; al terzo si ferma e si chiama la chat di design) |
-| **FALLITO** in L2 | Rilievo **P** (decide la chat di design): blocca la fase successiva |
+| **FALLITO** di un controllo del nucleo di L1 | Blocca il passo. Si rilanciano **solo i controlli falliti**, al massimo due giri; al terzo si ferma e si chiama la chat di design |
+| **FALLITO** in L2 | Rilievo **P**, blocca la fase successiva |
 | **AVVISO** | Non blocca; si registra come rilievo **A** |
-| **NON PROVATO** | Non blocca ma va nei debiti della fase, con scritto in quale livello verrà provato |
-| Controllo dubbio | Lo risolve la chat di design, non chi esegue |
+| **ERRORE-STRUMENTO** su un controllo del **nucleo** | Non è un difetto dell'app, ma **il controllo non è stato eseguito**: il passo non si accetta (percorso-test-v2 §5) e il controllo passa a NON PROVATO con scadenza |
+| **ERRORE-STRUMENTO** fuori dal nucleo | Non entra nei conteggi dei difetti; si registra come debito dello strumento con la scadenza della sezione 6 |
+| **NON PROVATO** | Va nei debiti con il livello e il passo in cui si salda (sezione 6) |
 
-## 6. Chi scrive i controlli
+**Un rilievo è P** se vale **uno** di questi casi: impedisce di usare la schermata, di salvare o rischia di perdere o corrompere dati; riguarda permessi o pubblicazione sul sito; è un FALLITO di `C1`, `C2` o console; è una differenza dalla specifica nella schermata principale. **Altrimenti è A.** La classificazione non cambia per chiudere un passo: chi la modifica scrive il motivo. Un controllo dubbio lo risolve la chat di design, non chi esegue.
 
-La chat di design scrive i controlli **insieme alla specifica** di ogni schermata (specifica, mockup e controlli sono un unico pacchetto). Una schermata senza i suoi controlli non si implementa: Composer si ferma e chiede, come per un componente mancante. Così Composer sa in anticipo come verrà misurato.
+## 6. Chi scrive i controlli, in che ordine, e il debito di verifica
 
-**Ordine per ogni schermata nuova** (aggiunto il 2026-10-11 dopo la 8.5, dove L1 non era eseguibile perché il lanciatore non implementava ancora i controlli di Orari):
-1. La chat di design consegna specifica, mockup e `controlli-<fase>.json`.
-2. L'**agente di verifica implementa i controlli nel lanciatore** (chat pulita), **prima** che parta la chat di implementazione.
-3. La chat di implementazione fa L0 e **L1** con i controlli già pronti.
-4. Se la schermata attiva un trigger di L2, l'agente di verifica fa L2 in chat pulita.
+La chat di design scrive i controlli **insieme alla specifica** di ogni schermata. Una schermata senza i suoi controlli non si implementa: Composer si ferma e chiede, come per un componente mancante.
 
-Se, nonostante questo, un controllo non è implementato quando l'implementazione finisce, **L1 non è eseguibile da chi implementa**: lo dichiara e lo passa all'agente di verifica. **Mai** una prova manuale chiesta all'umano al suo posto: l'umano interviene solo per L3 e per le decisioni.
+**Ordine per ogni schermata nuova** (dal 2026-10-11): (1) specifica, mockup e `controlli-<fase>.json`; (2) l'**agente di verifica implementa i controlli del nucleo nel motore, prima** che parta la chat di implementazione; (3) la chat di implementazione fa L0 e L1 con i controlli già pronti; (4) se la schermata attiva un trigger, L2 in chat pulita. Se i controlli non sono pronti, **si ferma l'implementazione**, non si rinuncia a L1.
 
-## 7. Cosa la policy non fa
+**Il debito ha una scadenza.** Un passo che tocca una schermata e non ha eseguito L1 **non si marca ✅**: si marca **🔶 implementato, non verificato**. Il debito si salda **entro i due passi successivi della tabella del piano**. **V6 non è il posto dove si accumulano i debiti**: è la verifica di fase e riceve solo ciò che è L2 (stati simulati, matrice completa, WebKit, online).
 
-- Nessun confronto pixel per pixel e nessun giudizio estetico automatico: l'aspetto lo giudica la chat di design guardando gli screenshot.
-- Nessun test con credenziali di produzione e nessun utente di prova su Cloud SQL.
-- Nessun L2 o L3 «per scrupolo»: ogni esecuzione estesa deve avere un trigger della sezione 4.
+**Debiti aperti all'approvazione (2026-10-20)**
+
+| Origine | Debito | Scadenza (due passi) | Stato |
+|---|---|---|---|
+| 21c | Nove flussi di Menù fissi dopo F4: **mai partiti**; il primo (`menu-fissi-elimina-senza-uso`) va in timeout, causa non determinata | **Scaduta**: dopo il 21c sono chiusi 22, 24 e 24b | Proposta: passo 24d, solo i nove flussi con il vecchio lanciatore (`--solo`), un giro, tetto 30 minuti; un flusso in timeout diventa ERRORE-STRUMENTO e gli altri proseguono. **Decide Mirko** |
+| 24, 24b | Giorni speciali e Messaggio globale: nucleo non eseguito (51 controlli delle due schermate NON PROVATI; comportamento nel browser mai provato) | Passo **24c** (il successivo) | Scheda del 24c: nucleo in Playwright, tetto 60 minuti, un giro |
+| 20 | Tre stati simulati per schermata, bulk da 101, sette screenshot mancanti, confronto visivo a 1280 px | V6 | Sono L2 (sezione 7): non sono debito di L1 |
+
+Se, nonostante questo, un controllo non è implementato quando l'implementazione finisce, **L1 non è eseguibile da chi implementa per quel controllo**: lo dichiara, il passo è 🔶 e il controllo passa all'agente di verifica (debito con scadenza, tabella sopra). **Mai** una prova manuale chiesta all'umano al suo posto: l'umano interviene solo per L3 e per le decisioni.
+
+## 7. Cosa non si fa e cosa si prova a runtime
+
+- **A runtime** si provano i flussi che toccano dati, permessi e pubblicazione (costo alto).
+- **Stati simulati** (caricamento, errore di caricamento, errore dell'azione): **una volta per tipo di schermata** o con un test sul componente; non si ripetono su ogni schermata. Stanno in L2 (V6).
+- **Mai**: confronto pixel per pixel, giudizio estetico automatico, test con credenziali di produzione, utenti di prova su Cloud SQL, prove manuali chieste all'umano al posto di un controllo, L2 o L3 «per scrupolo».
 
 ## 8. Integrazione con le regole esistenti
 
-- **`03-validazione-testing.mdc`**: L0 è la sua «validazione di codice». Per la **UI** dell'Area App il «test in ambiente dev con l'umano» è sostituito da L1 e L2: la regola ha ora un paragrafo di rinvio a `ui/03-ui-test-policy.mdc`. Per le funzioni non UI non cambia nulla.
-- **`04-changelog-commit.mdc`**: la voce `Tests` del CHANGELOG riporta il livello eseguito, il percorso del rapporto, gli esiti negativi e i NON PROVATO.
-- **`00-come-eseguire-il-piano.md`**: una chat per sottofase e un commit per sottofase restano; L1 si fa dentro la chat di sottofase prima del commit, L2 in una chat pulita a parte.
-- **`01-ui-app-invarianti.mdc`** (passi 5 e 6, oggi «`pnpm ui:check` e consegnare gli screenshot»): diventano «`pnpm ui:check` e L1 sulla schermata; gli screenshot li produce il lanciatore».
+- **`core/03-validazione-testing.mdc`**: L0 è la sua «validazione di codice»; per la UI dell'Area App il test in ambiente dev con l'umano è sostituito da L1 e L2 (paragrafo di rinvio già presente).
+- **`core/04-changelog-commit.mdc`**: la voce `Tests` del CHANGELOG riporta il livello eseguito, il percorso del rapporto, ogni FALLITO e ogni NON PROVATO.
+- **`ui/01-ui-app-invarianti.mdc`**: elenca R11–R14 (sezione 10). **`ui/03-ui-test-policy.mdc`**: versione operativa di questa policy.
+- **`00-come-eseguire-il-piano.md`**: una chat per sottofase e un commit per sottofase restano.
 
-## 9. Messa in opera
+## 9. Messa in opera e strumento
 
-1. ~~Chiudere la prima esecuzione corretta~~ Fatto (quarta esecuzione, 2026-10-11: un solo FALLITO, instabile).
-2. ~~Scrivere la regola operativa e aggiornare `01` e `03`~~ Fatto: `ui/03-ui-test-policy.mdc`, passi 5 e 6 e chiusura di un passo in `01`, paragrafo di rinvio in `core/03`. Controlli v3 con il campo `livello`.
-3. ~~I flag del lanciatore `--livello`, `--schermata`, `--profili`, `--temi`, `--controlli`, la riga di avanzamento e il tempo massimo per ambiente~~ Fatto (verificato il 2026-10-16 in `scripts/ui-verify/lib/cli.mjs` e `run.mjs`): la clausola di transizione della regola non si applica più.
-4. Dopo le prime due schermate nuove (Orari e il primo elenco): ricalibrare i tempi, rivedere i trigger e segnare lo stato «validata».
+**Stato del motore, misurato il 2026-10-20**
+- **Playwright** (`e2e/`, `pnpm e2e`) implementa oggi: la matrice `C1`, `C2`, `C2-mouse`, `C3`, `C3-no-lampo` e `C3-cambio-sistema` per Servizi e Menù fissi, gli screenshot dei cataloghi, la suite di fumo. **Non implementa nessun controllo di flusso** (persistenza, cancellazione, validazione, permessi) **né la console**, e il suo registro `e2e/controlli/wire-registry.json` ha `tests: []`: `pnpm e2e:wire` passa solo perché ogni id è NON PROVATO per default. Il cablaggio oggi non prova nulla.
+- Il **vecchio lanciatore** (`scripts/ui-verify`, congelato) è l'unico posto dove i flussi esistono.
 
-## 10. Punti aperti
+**Regole**
+- **Controlli nuovi: solo in Playwright**, con un commento `// control:<id>` nel test e il titolo che termina con `[profilo-tema]`. Il lanciatore non riceve controlli nuovi.
+- **Controlli esistenti solo nel lanciatore**: si lanciano con quello (`--solo`), una volta, dopo la pulizia di `§2.1` del piano, e **alla fine si esegue `git checkout -- docs/design/verifica/esiti`** (il lanciatore riscrive gli esiti anche quando muore: R13 lo segnala). Se si blocca: ERRORE-STRUMENTO, **mai rilanciarlo**. Il nucleo di una schermata passa in Playwright **quando la schermata è la prossima toccata** (24c per le due nuove), non con un passo dedicato allo strumento.
+- **Dimensione**: `e2e/` conta **3.053 righe** (2.691 di motore e 362 di spec dei controlli e di fumo; la v2 stimava «circa 2.200»). Il limite di 3.000 vale sul **motore** (`e2e` senza `controlli/` e `smoke/`): **margine 309 righe**. Oltre si ferma tutto e si decide se semplificare. I passi di verifica aggiungono spec, non motore.
+- **Esiti**: ogni giro in una **cartella sua** (`E2E_ESITI=<data>-<nome>`); `risultati.json` non si sovrascrive mai. Attenzione: senza `E2E_ESITI` il motore scrive in `esiti/2026-10-19-T0/`, cioè sopra un esito esistente: ogni comando di L1 lo imposta, e R13 segnala la violazione.
+- **Due tentativi**: se lo strumento fallisce due volte per cause diverse, si rivede il disegno prima del terzo prompt. Un passo, un obiettivo: sviluppo dello strumento e giri lunghi non stanno nella stessa chat. Una sola chat modifica `e2e/` alla volta (R9 del percorso v2).
 
-- **Automazione in Cloud Build** (L0 e S a ogni push): non ho visto la configurazione di Cloud Build, quindi non so se sia fattibile senza appesantire il deploy. Da valutare dopo il passo 3.
-- La tabella dei trigger (sezione 4) è provvisoria: si rivede dopo la prima fase completa.
+**Messa in opera**
+1. ~~Prima esecuzione corretta~~ Fatto (2026-10-11).
+2. ~~Regola operativa e aggiornamento di `01` e `03`~~ Fatto; la v2 aggiorna `03` e aggiunge R11–R14 a `01`.
+3. ~~Flag del lanciatore~~ Fatto (2026-10-16).
+4. ~~Dopo le prime due schermate nuove: ricalibrare e segnare «validata»~~ **Validata con la v2** (2026-10-20).
+5. Il 24c porta in Playwright il nucleo di Giorni speciali e Messaggio globale: primo esemplare di controlli di flusso nel motore.
+
+## 10. Un difetto trovato due volte diventa un controllo che costa zero
+
+Quando una classe di difetto compare per la seconda volta, si aggiunge **un controllo statico o unitario**, non un test di interfaccia.
+
+| Classe | Dove è comparsa | Controllo |
+|---|---|---|
+| `Select` senza `items` (il trigger mostra «all») | A8: Vini, Distillati, Bevande. **La regola non era scritta da nessuna parte** (la v2 la dava per scritta) | **R11** in `ui:check` + regola in `01` |
+| Schermate che leggono o scrivono con `overrideAccess: true` | Controllo `NO-OVERRIDE`, fatto a mano ad ogni passo (anche nella revisione del passo 24) | **R12** in `ui:check` (stesso perimetro: `app/(app)`, `components/app`, `lib/app`, `lib/menu/ui`) |
+| Esiti versionati riscritti | Giri del lanciatore: T1e (risultati sovrascritti da ogni giro successivo) e passo 24 (15 file riscritti) | **R13** in `ui:check` (`git status` su `docs/design/verifica/esiti`; file nuovi ammessi) |
+| Nucleo di L1 che si allarga di nuovo | I 189 controlli di livello 1 | **R14** in `ui:check` (livello 1 o 2, al più otto per schermata esclusi i `comando`, nessun `stato_prova` in L1) |
+| Area di tocco sotto 44 px | P8 | `C2` comune e i marcatori D6 già in `ui:check` |
+| `pluralizeIt` che duplicava il numero | P6 | Test unitario in `lib/` (già fatto) |
+
+Ogni controllo è stato provato su casi negativi costruiti apposta (e R14 dà 8 violazioni sul file dei controlli di prima della riassegnazione).
+
+## 11. Accettazione di un passo di verifica
+
+Al massimo **tre criteri, tutti sul risultato per l'app**: (a) i controlli richiesti hanno un **esito misurato** (OK, FALLITO o AVVISO) oppure un NON PROVATO con motivo e scadenza; (b) **zero ERRORE-STRUMENTO sul nucleo**; (c) ambiente pulito (porte, record `verify-ui-`, nessun file di esito versionato modificato). I FALLITO dell'app **non sono un motivo per rifiutare il passo di verifica**: sono il suo risultato, vanno classificati P o A e non si modificano controlli né app per farli sparire. Tempo e perfezione dello strumento sono **obiettivi**, non motivi di rifiuto. Un passo che supera il doppio della stima (R10) si ferma e riporta.
+
+## 12. Punti aperti
+
+- **Automazione in Cloud Build** (L0 e S a ogni push): la configurazione non è stata esaminata; da valutare dopo il 24c. Ogni push su `main` avvia già la build e il deploy.
+- **L1v**: da provare una volta che l'agente di verifica di Cursor legga bene gli screenshot.
+- **Debito 21c** (nove flussi di Menù fissi): decisione sul passo 24d (sezione 6).
+- **Cablaggio `e2e:wire`**: oggi vuoto. Dal 24c ogni test porta `// control:<id>`; resta da decidere, dopo il 24c, se `wire` debba fallire per un controllo del nucleo senza test.
+
+## Appendice: come si riproducono le cifre
+
+- Livelli: `python3 -c` sul JSON, conteggio di `livello` per schermata (prima 189 di 231; dopo 76).
+- Righe di `e2e/`: `find e2e -type f \( -name '*.ts' -o -name '*.mjs' \) -not -path '*/node_modules/*' | xargs cat | wc -l` (3.053); `controlli/` e `smoke/` 362.
+- Rilievi del confronto del 2026-10-20: `docs/piano-sviluppo/esecuzione-6.6-prompt-e-controlli.md` §2.2 e §2.3 (P1–P8, A1–A12).
+- Debito del 21c e del 24: esiti nelle schede 21c e 24 dello stesso file.

@@ -92,6 +92,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(eliminato il 2026-10-20: i controlli di Giorni speciali e Messaggio globale si scrivono dentro V6, passo 28)** | lint e typecheck | tu committi e pushi |
 | 24 | ✅ `77c07f3` | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `navigazione,shell` (i controlli delle due schermate nuove: NON PROVATO, li implementa V6) | L1 senza FALLITO nuovo; **eccezione di prova: push di Composer** |
 | 24b | ✅ `e2b77c4` | Solo il prompt del passo 24b | I5 (coda) | Composer | **Correzioni di Giorni speciali e Messaggio globale dopo la revisione del 24** | L0; L1 su queste due schermate: NON PROVATO | revisione del patch senza rilievi; tu pushi |
+| 24c | 🔲 | Solo il prompt del passo 24c | V-GM | Agente di verifica | **Nucleo di Giorni speciali e Messaggio globale in Playwright**: sei controlli richiesti, un giro, tetto 60 minuti (salda il debito del 24, policy-test §6) | L1 mirato, motore Playwright | sei controlli con esito misurato; zero ERRORE-STRUMENTO sul nucleo; ambiente pulito |
 | 25 | 🔲 | — | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
 | 26 | 🔲 | Blocco comune + prompt del passo 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
 | 27 | 🔲 | — (istruzioni del passo) | M2 | Tu | Deploy in produzione | **S** (smoke) | smoke verde |
@@ -101,7 +102,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-20 (commit `e2b77c4`). Passi 22 (D6), 24 (I5) e 24b (coda di I5) **chiusi**. Il 24 è arrivato su `main` con l'eccezione di prova sul push (vedi l'esito nella scheda); la revisione ha trovato tre scostamenti dalla specifica, corretti dal 24b. I controlli di Giorni speciali e Messaggio globale in `controlli-6.6.json` sono 51 (uno nuovo: `messaggio-globale-pubblicazione`, L2) e li implementa V6 (passo 28). **Prossimo passo: 25 (D7)**, il 23 è eliminato. I debiti (A1–A12 e dello strumento) sono in 2.3 e si chiudono in F6 (passo 29) e in V6 (passo 28).
+**Ultimo aggiornamento**: 2026-10-20 (commit `9682fab` più il pacchetto «policy v2»). **Policy dei test v2 approvata** (`docs/design/verifica/policy-test.md`, stessa numerazione delle sezioni della v1; regola operativa `ui/03-ui-test-policy.mdc`; controlli statici R11–R14 in `ui:check`). In `controlli-6.6.json` L1 passa da 189 a 76 controlli (nucleo di otto per schermata). **Debito di verifica** (policy §6): il 24 e il 24b sono ✅ ma il nucleo di Giorni speciali e Messaggio globale non è stato eseguito → **passo 24c** (Playwright, 60 minuti, un giro); il debito del 21c (nove flussi di Menù fissi) è **scaduto**: proposta 24d, decide Mirko. **Prossimo passo: 24c**, poi 25 (D7). Il 23 è eliminato. I debiti A1–A12 e dello strumento sono in 2.3 e si chiudono in F6 (passo 29) e V6 (passo 28), che ricevono solo ciò che è L2.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -165,7 +166,7 @@ La verifica resta completa e i controlli dei file JSON restano la fonte di verit
 | A11 | Modulo del menù fisso | «Aggiungi o togli piatti» senza l'icona «+» del riferimento; etichetta «Porzione» nera e più grande che nel riferimento | bassa |
 | A12 | Modulo delle Bevande | Frase in più sotto Capacità e Grado («Un valore non in elenco resta finché non lo cambi.») che il riferimento non ha: toglierla o approvarla | bassa |
 
-**Debiti dello strumento, per V6** (li svolge l'agente, non Mirko). **Primo compito di V6**: diagnosticare con traccia e screenshot al fallimento il timeout del flusso `menu-fissi-elimina-senza-uso` (pulsante «Elimina verify-ui-menu-libero» non trovato nel vecchio lanciatore; la fixture `menuCreateFixedMenuFixture` o la pagina), poi i nove flussi di Menù fissi. Un flusso che va in timeout deve diventare ERRORE-STRUMENTO per quel flusso e non fermare gli altri (oggi il giro si ferma). I giri del vecchio lanciatore riscrivono i file in `esiti/<data>-locale-prod/` anche quando muoiono (rumore nei commit). A8 non è stato verificato da L1 su Vini (guasto del daemon, ora corretto): lo vedono gli screenshot di V6. Elenco: (1) 7 screenshot mancanti per ERRORE-STRUMENTO: `scegli-piatti` (390 e 1280), `visibilita-categoria`, `visibilita-avviso` di Menù fissi, e `origine-senza-regioni`, `errore-geografia`, `errore-anno` di Vini; (2) gli stati `modulo-fondo` non scorrono fino in fondo (mostrano l'inizio del foglio); (3) il giro completo di T1e ha dato 116 ERRORE-STRUMENTO (preparazioni dei cataloghi e stati in parallelo di Menù fissi) e i suoi esiti non sono nel repo (ogni giro successivo sovrascrive `risultati.json`: salvarli in cartelle diverse); (4) i tre stati simulati di ogni schermata, il bulk da 101, e i flussi di Menù fissi non provati (2.2); (5) confronto visivo non fatto per Servizi a 1280 px, i moduli a 1280 px e gli stati in scuro dei cataloghi. (6) Nel passo 24 un giro L1 è rimasto fermo circa 11 minuti su `AMBIENTE goto /app/login` (il secondo giro è andato); e i 50 controlli di Giorni speciali e Messaggio globale non sono implementati nel vecchio lanciatore: V6 li implementa, compreso `messaggio-globale-pubblicazione` (serve `APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS` e un primo salvataggio).
+**Debiti dello strumento, per V6** (li svolge l'agente, non Mirko). **Primo compito di V6**: diagnosticare con traccia e screenshot al fallimento il timeout del flusso `menu-fissi-elimina-senza-uso` (pulsante «Elimina verify-ui-menu-libero» non trovato nel vecchio lanciatore; la fixture `menuCreateFixedMenuFixture` o la pagina), poi i nove flussi di Menù fissi. Un flusso che va in timeout deve diventare ERRORE-STRUMENTO per quel flusso e non fermare gli altri (oggi il giro si ferma). I giri del vecchio lanciatore riscrivono i file in `esiti/<data>-locale-prod/` anche quando muoiono (rumore nei commit). A8 non è stato verificato da L1 su Vini (guasto del daemon, ora corretto): lo vedono gli screenshot di V6. Elenco: (1) 7 screenshot mancanti per ERRORE-STRUMENTO: `scegli-piatti` (390 e 1280), `visibilita-categoria`, `visibilita-avviso` di Menù fissi, e `origine-senza-regioni`, `errore-geografia`, `errore-anno` di Vini; (2) gli stati `modulo-fondo` non scorrono fino in fondo (mostrano l'inizio del foglio); (3) il giro completo di T1e ha dato 116 ERRORE-STRUMENTO (preparazioni dei cataloghi e stati in parallelo di Menù fissi) e i suoi esiti non sono nel repo (ogni giro successivo sovrascrive `risultati.json`: salvarli in cartelle diverse); (4) i tre stati simulati di ogni schermata, il bulk da 101, e i flussi di Menù fissi non provati (2.2); (5) confronto visivo non fatto per Servizi a 1280 px, i moduli a 1280 px e gli stati in scuro dei cataloghi. (6) Nel passo 24 un giro L1 è rimasto fermo circa 11 minuti su `AMBIENTE goto /app/login` (il secondo giro è andato); e i 50 controlli di Giorni speciali e Messaggio globale non sono implementati nel vecchio lanciatore: V6 li implementa, compreso `messaggio-globale-pubblicazione` (serve `APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS` e un primo salvataggio). **Policy v2 §6**: i nove flussi di Menù fissi (21c) non possono più aspettare V6: il debito è scaduto e la proposta è un passo 24d; il nucleo di Giorni speciali e Messaggio globale è il passo 24c.
 
 ## 3. Blocco comune (da incollare PRIMA del prompt di ogni chat di implementazione)
 
@@ -204,7 +205,7 @@ REGOLE
    controllo: dichiaralo NON PROVATO (lo completa e lo esegue l'agente di verifica nel passo V successivo) e vai
    avanti con il resto, senza prove manuali al suo posto; non è un motivo per fermare la chat. Se un L1 fallisce, correggi e rilancia solo i controlli falliti;
    al terzo giro fermati e riportami.
-5c. L1 della schermata toccata a fine passo è OBBLIGATORIO (policy-test §2): se il prompt non lo chiede, eseguilo comunque; i FALLITO di L1 bloccano la chiusura del passo (§5).
+5c. L1 della schermata toccata a fine passo è OBBLIGATORIO (policy-test §2): se il prompt non lo chiede, eseguilo comunque; i FALLITO di L1 bloccano la chiusura del passo (§5). L1 è il NUCLEO di otto controlli (policy v2, §3; regola ui/03-ui-test-policy.mdc, che dà anche il comando). Subito dopo L1 esegui `git checkout -- docs/design/verifica/esiti`. Se un controllo del nucleo non è eseguibile, il passo è 🔶 e non ✅ (§6).
 5b. PRIMA DI OGNI COMMIT, anche di soli script o documenti: pnpm typecheck e pnpm lint sull'INTERO repo. La build di Cloud
    Build (next build) controlla anche scripts/**: un commit senza controllo dei tipi ha già fatto fallire la build di
    produzione (F-EN, script di servizio). Non lasciare correzioni locali non committate. Giri di ui:verify: UNO alla
@@ -2094,6 +2095,62 @@ salvataggio, e con soli menù mancanti il focus va alla prima casella; (c) typec
 contiene solo file del perimetro (nessun file in docs/design).
 GIT: NON fare git push e NON fare altri comandi git che cambiano il repo; il commit locale lo fai solo se serve a mostrare il diff, e lo dichiari.
 RISPOSTA FINALE: tabella «Esiti reali» con comandi e numeri, i NON PROVATO con il motivo, l'elenco dei file toccati.
+```
+
+### Passo 24c — V-GM: nucleo di Giorni speciali e Messaggio globale in Playwright (coda del 24)
+
+**Perché (2026-10-20)**: il 24 e il 24b sono ✅, ma i 51 controlli delle due schermate non sono stati eseguiti da nessuno (il passo 23 è eliminato e il lanciatore non li conosce) e il loro comportamento nel browser non è mai stato provato. Per la policy v2 (§6) è un debito con scadenza: **questo passo**, non V6. Il nucleo delle due schermate (otto controlli ciascuna, `livello: 1` in `controlli-6.6.json`) è il primo esempio di controlli di flusso in Playwright: il motore oggi ha solo la matrice `C1`/`C2`/`C3` e gli screenshot.
+
+**Quando**: dopo il push del pacchetto «policy v2»; **mai insieme a una chat di Composer** (la verifica costruisce l'app dalla stessa cartella). **Chi**: agente di verifica, chat pulita. **Stima e tetto**: 60 minuti, **un solo giro completo**; a 120 minuti FERMATI e riporta (R10). **Motore**: Playwright; il lanciatore non si usa.
+
+**Controlli richiesti (sei)**: `giorni-speciali-persistenza`, `giorni-speciali-sovrapposizione`, `giorni-speciali-elimina-registro-permessi` (la parte con l'utente di prova; la matrice dei ruoli è già in `scripts/verify-roles-8_3.ts`), `messaggio-globale-salvataggio`, `messaggio-globale-togli`, `messaggio-globale-file-non-leggibile` (nel server di produzione locale non c'è il bucket: è proprio lo stato da provare). **Se avanza tempo**, in quest'ordine: `giorni-speciali-attivazione`, `giorni-speciali-modulo-validazione`, `*-testi`, `*-nomi-accessibili`, `C1` e `C2` sullo stato `elenco` di Giorni speciali e sulla pagina di Messaggio globale. **NON PROVATO con motivo**: `*-console` e `messaggio-globale-file-riceve-messaggio` (server di sviluppo con storage in memoria), `messaggio-globale-permessi` e la matrice dei ruoli (utenti diversi dal manager di prova), `messaggio-globale-pubblicazione` (L2, V6).
+
+**Cosa fai tu**: apri una chat nuova di Cursor (agente di verifica) **dopo** aver pushato il pacchetto della policy v2 e senza altre chat attive; esegui in un terminale la pulizia della prima riga del prompt, poi incolla il prompt; a fine passo incollami qui la risposta finale. **Commit e push**: nessun push dell'agente; i file nuovi (due spec, helper, cartella degli esiti) li committi tu dopo il mio controllo.
+
+```text
+PASSO 24c (V-GM): nucleo di Giorni speciali e Messaggio globale in Playwright. Rispondi in italiano. Sei l'agente di verifica: PROVI l'app, non la modifichi.
+
+PRIMA, in un terminale: pkill -f "next dev"; pkill -f "menu-payload"; lsof -nP -iTCP:3100,3200,3201,3202,3203,31997 -sTCP:LISTEN | tail -n +2;
+rm -f .next/e2e.lock .next/ui-verify.lock  (se lsof stampa ancora qualcosa, kill del PID). Un solo giro alla volta, mai insieme a Composer.
+
+PERIMETRO. Puoi creare o modificare: e2e/controlli/giorni-speciali.spec.ts e e2e/controlli/messaggio-globale.spec.ts (nuovi), helper NUOVI in
+e2e/lib/special-days/ e e2e/lib/global-message/ (se riusi helper esistenti, solo aggiungendo, senza cambiarne il comportamento), le voci di
+e2e/controlli/wire-registry.json strettamente necessarie, e una voce Tests in docs/piano-sviluppo/CHANGELOG.md sotto [Unreleased]. VIETATO: app/, components/,
+lib/, collections/, globals/ (se un test trova un difetto lo RIPORTI, non lo correggi), scripts/ui-verify/** (congelato), docs/design/** tranne la cartella nuova
+degli esiti (E2E_ESITI), controlli-6.6.json, e2e/playwright.config.ts, dipendenze. Limite di dimensione: massimo +600 righe in e2e/ in tutto; se serve di più FERMATI.
+
+LEGGI: docs/design/verifica/policy-test.md (§3, §5, §9, §11) e percorso-test-v2.md (§3, §4 regole R1-R10), e2e/README.md, e2e/fixtures/index.ts (payload.crea,
+payload.nome, registerCreated, managerEmail), e2e/lib/menu-list/payload-actions.ts, e2e/lib/cleanup-fixtures.ts, e2e/controlli/servizi-menu-fissi-matrix.spec.ts (modello
+dei titoli: terminano con ` [profilo-tema]`), e i controlli di giorni-speciali e messaggio-globale in docs/design/verifica/controlli-6.6.json (campo atteso: è la tua
+fonte, e le costanti di lib/ come SPECIAL_DAY_OVERLAP_MESSAGE si importano, non si copiano). Anche i file delle due specifiche in docs/design/schermate/.
+
+FAI, in quest'ordine, fermandoti al tetto:
+1. SEI CONTROLLI RICHIESTI, un test ciascuno, titolo `<id-del-controllo> [telefono-390-chiaro]` dentro test.describe('<schermata>') e commento `// control:<id>`:
+   giorni-speciali-persistenza, giorni-speciali-sovrapposizione, giorni-speciali-elimina-registro-permessi (solo parte manager di prova + riga del registro),
+   messaggio-globale-salvataggio, messaggio-globale-togli, messaggio-globale-file-non-leggibile. Azione dall'interfaccia, poi controllo del database con la Local API.
+   Dati di prova: nomi da payload.nome(), giorni speciali che puntano SOLO a menù fissi di prova «verify-ui-…», date 2099 e 2001 (mai vicine a oggi se attivi).
+   Messaggio globale: il Global menu-general si SALVA prima (italiano e inglese) e si RIPRISTINA in try/finally, anche se il test fallisce.
+2. SE AVANZA TEMPO, nell'ordine: giorni-speciali-attivazione, giorni-speciali-modulo-validazione, i testi e i nomi accessibili delle due schermate, C1 e C2 sullo
+   stato elenco di Giorni speciali e sulla pagina di Messaggio globale (riusa checkScrollOrizzontale e la fixture touch; nessuna preparazione di stati nuova).
+3. NON PROVATO con motivo scritto nel test (test.skip con descrizione): console e file-riceve-messaggio (serve il server di sviluppo con storage in memoria),
+   messaggio-globale-permessi e la matrice dei ruoli, messaggio-globale-pubblicazione (V6). Ogni controllo non fatto per il tetto: NON PROVATO «tetto di 60 minuti».
+Regole del motore (R1-R10): nessuna chiamata sincrona in e2e/ (spawnSync, execSync, execFileSync, Atomics.wait, readSync), nessun waitForTimeout come attesa di uno
+stato, nessun networkidle da solo, una eccezione fuori da un'asserzione è ERRORE-STRUMENTO, non FALLITO. Mentre scrivi puoi lanciare un singolo test con --grep; il giro
+COMPLETO delle due spec è UNO SOLO, alla fine.
+
+COMANDO DEL GIRO (conferma che funziona e riportalo, oppure riporta quello corretto): E2E_SUITE=controlli E2E_ESITI=2026-10-20-24c pnpm e2e --grep "giorni-speciali|messaggio-globale"
+Avanzamento: tail -f .next/e2e-progress.log (una riga per test, scritta a fine test). Se un test si blocca, il runner lo uccide: non rilanciare l'intero giro.
+
+VERIFICHE FINALI: pnpm typecheck (radice ed e2e) e pnpm lint sull'INTERO repo a 0 errori, pnpm ui:check, pnpm e2e:wire, e dopo il giro ps -wweo e lsof (porte 3100-3203 e
+31997 libere) e `pnpm payload run e2e/scripts/count-verify-ui.ts` a zero. `git status --short` non deve mostrare nessun file di esito già versionato modificato.
+
+TRE CRITERI DI ACCETTAZIONE (riporta i numeri): (a) i sei controlli richiesti hanno un esito misurato (OK, FALLITO o AVVISO) oppure un NON PROVATO con motivo e scadenza;
+(b) zero ERRORE-STRUMENTO sui controlli richiesti; (c) ambiente pulito: porte libere, zero record verify-ui-, Global menu-general ripristinato, nessun file versionato modificato.
+I FALLITO dell'app NON sono un motivo per rifiutare il passo: sono il risultato. Per ognuno scrivi controllo, misurato, atteso, evidenza e gravità proposta (P o A secondo
+policy-test §5), senza cambiare controlli, app o soglie per farlo sparire.
+GIT: NON fare git (nessun commit, nessun push).
+RISPOSTA FINALE: tabella «Esiti reali» (controllo, esito, secondi), tabella dei FALLITO con gravità proposta, i NON PROVATO con motivo, il comando L1 confermato, le righe
+di e2e/ aggiunte, l'elenco dei file toccati e il percorso della cartella degli esiti.
 ```
 
 ### Passo 25 — D7: controlli di chiusura (L2 completo e L3)

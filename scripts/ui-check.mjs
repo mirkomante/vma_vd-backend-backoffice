@@ -6,7 +6,9 @@
  * Controlla:
  *  - le schermate (`app/(app)/**`) e i componenti di composizione (`components/app/**`);
  *  - le deviazioni delle dimensioni di tocco (D6) e dei testi in italiano (T1) nei file di `components/ui` (docs/design/decisioni-layout-app.md);
- *  - `app/(app)/app-ui.css` (patch di docs/design/patch-app-ui-css.md).
+ *  - `app/(app)/app-ui.css` (patch di docs/design/patch-app-ui-css.md);
+ *  - controlli statici della policy dei test v2 (docs/design/verifica/policy-test.md §10): R11 `Select` senza `items`,
+ *    R12 `overrideAccess: true` nelle schermate, R13 file di esito modificati, R14 contratto del nucleo di L1.
  *
  * Eccezione puntuale: un commento `ui-check-allow: <motivo>` sulla riga o sulla riga precedente.
  * Il motivo è obbligatorio e va riportato nella sezione «componenti di composizione» della specifica.
@@ -14,6 +16,7 @@
  * Uso: node scripts/ui-check.mjs [--root=<cartella>] [--list-allows]
  * Esce con 1 se trova violazioni.
  */
+import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 
@@ -62,6 +65,12 @@ const LINE_RULES = [
     name: 'libreria UI importata fuori da components/ui',
     test: (l) => /from\s+['"](?:@base-ui\/react|@radix-ui\/|vaul|sonner|cmdk|react-aria|@headlessui\/)/.test(l),
     hint: 'si importano solo componenti da `@/components/ui/...`',
+  },
+  {
+    id: 'R12',
+    name: '`overrideAccess: true` nella schermata',
+    test: (l) => /overrideAccess\s*:\s*true/.test(l),
+    hint: 'le schermate leggono e scrivono con la sessione dell\'utente (`overrideAccess: false`)',
   },
   {
     id: 'R8',
@@ -156,6 +165,63 @@ for (const dir of SCREEN_DIRS) {
   }
 }
 
+/* 1-bis. R11: `Select` senza `items` (A8: il trigger mostra «all» invece dell'etichetta) */
+function selectsWithoutItems(src) {
+  const found = []
+  const rx = /<Select(?![A-Za-z0-9])/g
+  let m
+  while ((m = rx.exec(src))) {
+    let depth = 0
+    let end = src.length
+    for (let i = m.index + m[0].length; i < src.length; i++) {
+      const ch = src[i]
+      if (ch === '{') depth++
+      else if (ch === '}') depth--
+      else if (ch === '>' && depth === 0) {
+        end = i
+        break
+      }
+    }
+    const tag = src.slice(m.index, end)
+    if (!/\bitems\s*=/.test(tag) && !/\{\s*\.\.\./.test(tag)) found.push(src.slice(0, m.index).split('\n').length)
+  }
+  return found
+}
+for (const dir of SCREEN_DIRS) {
+  for (const file of walk(join(ROOT, dir))) {
+    if (!file.endsWith('.tsx')) continue
+    const lines = readFileSync(file, 'utf8').split('\n')
+    for (const ln of selectsWithoutItems(lines.join('\n'))) {
+      const allow = allowOn(lines, ln - 1)
+      if (allow) {
+        allows.push({ file: rel(file), line: ln, rule: 'R11', reason: allow[1] })
+        if (allow[1].length < 5) add(rel(file), ln, 'R11', 'ui-check-allow senza motivo', 'scrivere il motivo (almeno 5 caratteri)')
+        continue
+      }
+      add(rel(file), ln, 'R11', '`Select` senza `items`', 'passare `items` al `Select`: senza, il trigger mostra il valore grezzo (A8)')
+    }
+  }
+}
+
+/* 1-ter. R12 anche negli helper delle schermate fuori da SCREEN_DIRS (come il controllo NO-OVERRIDE di controlli-6.6.json) */
+for (const dir of ['lib/app', 'lib/menu/ui']) {
+  for (const file of walk(join(ROOT, dir))) {
+    if (!/\.(?:ts|tsx)$/.test(file)) continue
+    const lines = readFileSync(file, 'utf8').split('\n')
+    lines.forEach((line, i) => {
+      if (isComment(line) && !/ui-check-allow/.test(line)) return
+      if (!/overrideAccess\s*:\s*true/.test(line)) return
+      const allow = allowOn(lines, i)
+      if (allow) {
+        allows.push({ file: rel(file), line: i + 1, rule: 'R12', reason: allow[1] })
+        if (allow[1].length < 5) add(rel(file), i + 1, 'R12', 'ui-check-allow senza motivo', 'scrivere il motivo (almeno 5 caratteri)')
+        return
+      }
+      add(rel(file), i + 1, 'R12', '`overrideAccess: true` in un helper delle schermate', 'leggere e scrivere con la sessione dell\'utente (`overrideAccess: false`)')
+    })
+  }
+}
+
 /* 2. Deviazioni D6 nei componenti installati */
 for (const [name, rx, min, label] of UI_MARKERS) {
   const p = join(ROOT, UI_DIR, name)
@@ -189,6 +255,37 @@ if (existsSync(cssPath)) {
   css.split('\n').forEach((line, i) => {
     if (/^\.[a-zA-Z]/.test(line) && !/^\.dark\b/.test(line)) add(APP_CSS, i + 1, 'C2', 'classe CSS personalizzata', `${line.trim().slice(0, 80)}  →  nessuna classe personalizzata: usare i componenti di components/ui`)
   })
+}
+
+/* 4. R13: i file di esito già versionati non si modificano (ogni giro scrive in una cartella nuova; policy-test §9) */
+try {
+  const out = execFileSync('git', ['-C', ROOT, 'status', '--porcelain', '--', 'docs/design/verifica/esiti'], { encoding: 'utf8', timeout: 10_000, stdio: ['ignore', 'pipe', 'ignore'] })
+  for (const l of out.split('\n').filter(Boolean)) {
+    const st = l.slice(0, 2)
+    if (st === '??') continue // cartella o file nuovo: va bene
+    add(l.slice(3).trim(), 1, 'R13', 'file di esito versionato modificato', 'un giro non riscrive un esito esistente: `git checkout -- docs/design/verifica/esiti` e usa una cartella nuova (E2E_ESITI)')
+  }
+} catch {
+  // non è un repository git o git non c'è: il controllo non si applica
+}
+
+/* 5. R14: contratto del nucleo di L1 in controlli-6.6.json (policy-test §3) */
+const CONTROLLI_66 = 'docs/design/verifica/controlli-6.6.json'
+if (existsSync(join(ROOT, CONTROLLI_66))) {
+  try {
+    const data = JSON.parse(readFileSync(join(ROOT, CONTROLLI_66), 'utf8'))
+    for (const screen of data.schermate ?? []) {
+      let nucleo = 0
+      for (const c of screen.controlli ?? []) {
+        if (c.livello !== 1 && c.livello !== 2) add(CONTROLLI_66, 1, 'R14', 'livello non valido', `${c.id}: livello ${JSON.stringify(c.livello)} (ammessi 1 e 2)`)
+        if (c.livello === 1 && c.tipo !== 'comando') nucleo++
+        if (c.livello === 1 && c.stato_prova) add(CONTROLLI_66, 1, 'R14', 'controllo non provabile in L1', `${c.id}: ha \`stato_prova\`, resterebbe sempre NON PROVATO; va in L2`)
+      }
+      if (nucleo > 8) add(CONTROLLI_66, 1, 'R14', 'nucleo di L1 oltre otto', `${screen.id}: ${nucleo} controlli di livello 1 (esclusi i \`comando\`); il tetto è otto (policy-test §3)`)
+    }
+  } catch (e) {
+    add(CONTROLLI_66, 1, 'R14', 'JSON non leggibile', String(e.message).slice(0, 100))
+  }
 }
 
 /* Esito */
