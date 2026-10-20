@@ -1,0 +1,66 @@
+{
+  "istanza": "V-MF",
+  "ambiente": "locale-prod",
+  "launcher": "scripts/ui-verify/run.mjs 3.5.x",
+  "controlli": "controlli-6.6.json",
+  "durataSecondi": 43,
+  "comando": "pnpm ui:verify locale-prod --livello 1 --controlli controlli-6.6.json --schermata menu-fissi --profili telefono-390,notebook-1280 --temi chiaro --solo menu-fissi-colonna-elenco,menu-fissi-porzione-traduzione,menu-fissi-servizi-piatti,menu-fissi-elimina-usato,menu-fissi-elimina-senza-uso,menu-fissi-elimina-cascade-registro-permessi,menu-fissi-persistenza,menu-fissi-ordine-liste,menu-fissi-nomi-accessibili",
+  "exitCode": 1,
+  "erroreStrumento": "menu-payload daemon exit 1 prima di :31997 (seconda spawn dopo avvio prod-server); nessun controllo --solo eseguito",
+  "esiti": [
+    {
+      "id": "menu-fissi-colonna-elenco",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "giro interrotto: daemon menu-payload exit 1 su porta 31997",
+      "atteso": "layout elenco per profilo (390 schede ~172px nome; 1280 tabella col 976px)"
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "porzione IT salvata; modulo EN con Porzioni; API locale=en ricade su IT"
+    },
+    {
+      "id": "menu-fissi-servizi-piatti",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "servizi M2M; piatti con stato Disabilitato/Terminato ancora scegliibili"
+    },
+    {
+      "id": "menu-fissi-elimina-usato",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "dialogo cascade giorni speciali e eliminazione con avviso"
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "dialogo «Non si può annullare.» senza elenco giorni"
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "cascade DB; activity log delete; permessi manager/admin/super-admin vs norole"
+    },
+    {
+      "id": "menu-fissi-persistenza",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "create/update verify-ui-menu-nuovo coerente con Local API; norole rifiutato"
+    },
+    {
+      "id": "menu-fissi-ordine-liste",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "ordinamento categorie/menù per nome (italiano); piatti per ordine scelto"
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "non eseguito (crash daemon prima dei flussi)",
+      "atteso": "etichette IT; assenza stringhe inglesi Close/Edit/Delete/… in pagina e aria-label"
+    }
+  ]
+}

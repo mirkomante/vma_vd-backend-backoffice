@@ -1,0 +1,99 @@
+{
+  "commit": "5615003b2a8f",
+  "launcher": "e2e/T1c-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
+  "durataSecondi": 26,
+  "riepilogo": {
+    "OK": 8,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 0,
+    "ERRORE-STRUMENTO": 0
+  },
+  "esiti": [
+    {
+      "id": "menu-fissi C2 [telefono-390-scuro]",
+      "schermata": "menu-fissi/categorie",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.6
+    },
+    {
+      "id": "menu-fissi C2 [telefono-390-chiaro]",
+      "schermata": "menu-fissi/categorie",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.6
+    },
+    {
+      "id": "menu-fissi C2 [telefono-390-chiaro]",
+      "schermata": "menu-fissi/elenco",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.6
+    },
+    {
+      "id": "menu-fissi C2 [telefono-390-scuro]",
+      "schermata": "menu-fissi/elenco",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.7
+    },
+    {
+      "id": "menu-fissi C2-mouse [notebook-1280-chiaro]",
+      "schermata": "menu-fissi/elenco",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "menu-fissi C2-mouse [notebook-1280-scuro]",
+      "schermata": "menu-fissi/elenco",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "menu-fissi C2-mouse [notebook-1280-scuro]",
+      "schermata": "menu-fissi/categorie",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "menu-fissi C2-mouse [notebook-1280-chiaro]",
+      "schermata": "menu-fissi/categorie",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    }
+  ],
+  "erroriStrumento": [],
+  "anomalie": [],
+  "exitCode": "passed"
+}

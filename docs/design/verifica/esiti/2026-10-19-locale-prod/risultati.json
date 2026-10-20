@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-19",
-    "commit": "ff68c7591cd9",
+    "commit": "5615003b2a8f",
     "launcherVersion": "3.9.0",
     "launcherHeader": "3.9.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
-    "controlliBasename": "controlli-8.2.json",
+    "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L1",
-    "controlliVersion": 4,
-    "durataMs": 38848,
+    "controlliVersion": 1,
+    "durataMs": 26445,
     "invalidRun": false
   },
   "counts": {
-    "OK": 698,
-    "FALLITO": 17,
+    "OK": 696,
+    "FALLITO": 13,
     "AVVISO": 1,
-    "NON PROVATO": 70
+    "NON PROVATO": 73
   },
-  "distinctControls": 12,
+  "distinctControls": 9,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -2291,26 +2291,6 @@
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "menu-fissi-elimina-senza-uso",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-elimina-usato",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
       "id": "menu-fissi-ordine-piatti",
       "schermata": "menu-fissi",
       "profiloTema": "telefono-390/chiaro",
@@ -2327,46 +2307,6 @@
       "esito": "OK",
       "misurato": "ok",
       "atteso": "testi",
-      "evidenza": "/app/menu/fixed",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "menu-fissi-colonna-elenco",
-      "schermata": "menu-fissi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "{\"tableVisible\":false,\"colW\":358,\"nameW\":0}",
-      "atteso": "layout",
-      "evidenza": "/app/menu/fixed",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "menu-fissi-colonna-elenco",
-      "schermata": "menu-fissi",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "FALLITO",
-      "misurato": "{\"tableVisible\":false,\"colW\":976,\"nameW\":0}",
-      "atteso": "layout",
-      "evidenza": "/app/menu/fixed",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "menu-fissi-colonna-elenco",
-      "schermata": "menu-fissi",
-      "profiloTema": "soglia-767/chiaro",
-      "esito": "OK",
-      "misurato": "{\"tableVisible\":false,\"colW\":735,\"nameW\":0}",
-      "atteso": "layout",
-      "evidenza": "/app/menu/fixed",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "menu-fissi-colonna-elenco",
-      "schermata": "menu-fissi",
-      "profiloTema": "soglia-768/chiaro",
-      "esito": "FALLITO",
-      "misurato": "{\"tableVisible\":false,\"colW\":464,\"nameW\":0}",
-      "atteso": "layout",
       "evidenza": "/app/menu/fixed",
       "pacchetto": "menu"
     },
@@ -2461,26 +2401,6 @@
       "pacchetto": "menu"
     },
     {
-      "id": "menu-fissi-porzione-traduzione",
-      "schermata": "menu-fissi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "en name=undefined; desc=undefined",
-      "atteso": "porzione+en",
-      "evidenza": "/app/menu/fixed",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "menu-fissi-servizi-piatti",
-      "schermata": "menu-fissi",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "FALLITO",
-      "misurato": "services=0",
-      "atteso": "servizi salvati",
-      "evidenza": "API",
-      "pacchetto": "menu"
-    },
-    {
       "id": "menu-fissi-tassonomie",
       "schermata": "menu-fissi",
       "profiloTema": "telefono-390/chiaro",
@@ -2491,47 +2411,7 @@
       "pacchetto": "menu"
     },
     {
-      "id": "menu-fissi-elimina-cascade-registro-permessi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
       "id": "menu-fissi-nessuna-categoria",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-nomi-accessibili",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-ordine-liste",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-persistenza",
       "schermata": "—",
       "profiloTema": "—",
       "pacchetto": "menu",
@@ -7879,18 +7759,137 @@
       "atteso": "≤1024 px, centrata; 1280 riempie area; 1920 ferma a 1024",
       "evidenza": "/app",
       "pacchetto": "shell"
+    },
+    {
+      "id": "menu-fissi-colonna-elenco",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-elimina-usato",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-ordine-liste",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-persistenza",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-servizi-piatti",
+      "schermata": "—",
+      "profiloTema": "—",
+      "pacchetto": "menu",
+      "esito": "NON PROVATO",
+      "misurato": "—",
+      "atteso": "—",
+      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
   "nonProvato": [
     {
-      "id": "verify-link-valido",
-      "motivo": "facoltativo: token reale monouso non ottenuto"
+      "id": "menu-fissi-colonna-elenco",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-elimina-usato",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-ordine-liste",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-persistenza",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
+    },
+    {
+      "id": "menu-fissi-servizi-piatti",
+      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
-  "anomalie": [
-    "shell-menu trigger telefono-390: mountEvents=0 remounts=0 postHydration=0 (observe 2800ms, hydration 1200ms)",
-    "shell-percorso-voce-attiva diagnostica (Piatti @1280px): attributi={\"data-slot\":\"sidebar-menu-button\",\"data-sidebar\":\"menu-button\",\"data-size\":\"default\",\"data-active\":\"\",\"class\":\"peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&_svg]:size-4 [&_svg]:shrink-0 [&>span:last-child]:truncate hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 pointer-coarse:h-11 text-sm\",\"href\":\"/app/menu\"}; outerHTML=<a data-slot=\"sidebar-menu-button\" data-sidebar=\"menu-button\" data-size=\"default\" data-active=\"\" class=\"peer/menu-button group/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left ring-sidebar-ring outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-open:hover:bg-sidebar-accent data-open:hover:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 [&amp;&gt;span:last-child]:truncate hover:bg-sidebar-accent hover:text-sidebar-accent-foreground h-8 pointer-coarse:h-11 text-sm\" href=\"/app/menu\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-utensils-crossed lucide-fork-knife-crossed\" aria-hidden=\"true\"><path d=\"m16 2-2.3 2.3a3 3 0 0 0 0 4.2l1.8 1.8a3 3 0 0 0 4.2 0L22 8\"></path><path d=\"M15 15 3.3 3.3a4.2 4.2 0 0 0 0 6l7.3 7.3c.7.7 2 .7 2.8 0L15 15Zm0 0 7 7\"></path><path d=\"m2.1 21.8 6.4-6.3\"></path><path d=\"m19 5-7 7\"></path></svg><span>Piatti</span></a>"
-  ],
+  "anomalie": [],
   "screenshotHashes": [
     {
       "name": "piatti-modulo-allergeni-telefono-390-chiaro",
