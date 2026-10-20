@@ -2,23 +2,23 @@
   "meta": {
     "ambiente": "locale-prod",
     "data": "2026-10-19",
-    "commit": "eb774a43c30b",
+    "commit": "25369d093582",
     "launcherVersion": "3.9.0",
     "launcherHeader": "3.9.0 (L1)",
     "browsers": "Chromium 140.0.7339.186",
     "controlliBasename": "controlli-6.6.json",
     "livelloEseguito": "L1",
     "controlliVersion": 1,
-    "durataMs": 937,
+    "durataMs": 25661,
     "invalidRun": false
   },
   "counts": {
-    "OK": 707,
+    "OK": 696,
     "FALLITO": 13,
     "AVVISO": 1,
-    "NON PROVATO": 124
+    "NON PROVATO": 73
   },
-  "distinctControls": 49,
+  "distinctControls": 9,
   "rows": [
     {
       "id": "AMBIENTE",
@@ -4641,6 +4641,106 @@
       "pacchetto": "menu"
     },
     {
+      "id": "nav-voci-menu",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "attese 8; mancanti —; extra —",
+      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-icone",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "icone ok",
+      "atteso": "classi lucide attese per voci abilitate",
+      "evidenza": "sidebar",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voce-attiva",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "una voce attiva per caso",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-briciole",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "briciole in ordine",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-titoli-pagina",
+      "schermata": "navigazione",
+      "profiloTema": "telefono-390/chiaro",
+      "esito": "OK",
+      "misurato": "titoli ok",
+      "atteso": "{Pagina} · Area App",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voci-menu",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "attese 8; mancanti —; extra —",
+      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
+      "evidenza": "/app",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-icone",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "icone ok",
+      "atteso": "classi lucide attese per voci abilitate",
+      "evidenza": "sidebar",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-voce-attiva",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "una voce attiva per caso",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-briciole",
+      "schermata": "navigazione",
+      "profiloTema": "notebook-1280/chiaro",
+      "esito": "OK",
+      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "atteso": "briciole in ordine",
+      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message, /app/reservations/day-exceptions",
+      "pacchetto": "menu"
+    },
+    {
+      "id": "nav-casi-unit",
+      "schermata": "navigazione",
+      "profiloTema": "—",
+      "esito": "OK",
+      "misurato": "exit 0",
+      "atteso": "exit 0",
+      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
+      "pacchetto": "menu"
+    },
+    {
       "id": "AMBIENTE",
       "schermata": "/app/login",
       "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
@@ -7081,346 +7181,6 @@
       "evidenza": "facoltativo: token reale monouso non ottenuto"
     },
     {
-      "id": "menu-fissi-colonna-elenco",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-elimina-cascade-registro-permessi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-elimina-senza-uso",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-elimina-usato",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-nomi-accessibili",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-ordine-liste",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-persistenza",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-porzione-traduzione",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "menu-fissi-servizi-piatti",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "menu",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—",
-      "pacchetto": "accesso"
-    },
-    {
-      "id": "C9",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "pnpm ui:check",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "verify-link-valido",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "shell-admin-link",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
-    },
-    {
-      "id": "NO-OVERRIDE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 1",
-      "atteso": "nessuna corrispondenza (exit 1)",
-      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-ASSENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "assente in UI con bandiera spenta",
-      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—",
-      "pacchetto": "accesso"
-    },
-    {
-      "id": "C9",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "pnpm ui:check",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "verify-link-valido",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "shell-admin-link",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
-    },
-    {
-      "id": "NO-OVERRIDE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 1",
-      "atteso": "nessuna corrispondenza (exit 1)",
-      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-ASSENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "assente in UI con bandiera spenta",
-      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "attese 10; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Giorni speciali\",\"href\":\"/app/menu/special-days\"},{\"etichetta\":\"Messaggio globale\",\"href\":\"/app/menu/message\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-titoli-pagina",
-      "schermata": "navigazione",
-      "profiloTema": "telefono-390/chiaro",
-      "esito": "OK",
-      "misurato": "titoli ok",
-      "atteso": "{Pagina} · Area App",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voci-menu",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "attese 10; mancanti —; extra —",
-      "atteso": "[{\"etichetta\":\"Piatti\",\"href\":\"/app/menu\"},{\"etichetta\":\"Vini\",\"href\":\"/app/menu/wines\"},{\"etichetta\":\"Bevande\",\"href\":\"/app/menu/drinks\"},{\"etichetta\":\"Distillati\",\"href\":\"/app/menu/spirits\"},{\"etichetta\":\"Menù fissi\",\"href\":\"/app/menu/fixed\"},{\"etichetta\":\"Servizi\",\"href\":\"/app/menu/services\"},{\"etichetta\":\"Giorni speciali\",\"href\":\"/app/menu/special-days\"},{\"etichetta\":\"Messaggio globale\",\"href\":\"/app/menu/message\"},{\"etichetta\":\"Orari\",\"href\":\"/app/hours\"},{\"etichetta\":\"Elenco\",\"href\":\"/app/reservations\"}]",
-      "evidenza": "/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-icone",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "icone ok",
-      "atteso": "classi lucide attese per voci abilitate",
-      "evidenza": "sidebar",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-voce-attiva",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "atteso": "una voce attiva per caso",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-briciole",
-      "schermata": "navigazione",
-      "profiloTema": "notebook-1280/chiaro",
-      "esito": "OK",
-      "misurato": "casi ok; saltati: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "atteso": "briciole in ordine",
-      "evidenza": "NON PROVATO parziale: /app/menu/fixed/categories, /app/reservations/day-exceptions",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "nav-casi-unit",
-      "schermata": "navigazione",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "$ cross-env NODE_OPTIONS=--no-deprecation payload run scripts/verify-lib-app-8_2.ts\n",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—",
-      "pacchetto": "accesso"
-    },
-    {
-      "id": "C9",
-      "schermata": "—",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "pnpm ui:check",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "verify-link-valido",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
       "id": "C1",
       "schermata": "shell/home",
       "profiloTema": "telefono-390/chiaro",
@@ -7515,7 +7275,7 @@
       "schermata": "shell/home",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (12 elementi)",
+      "misurato": "tutte in [28,48] (10 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
       "evidenza": "/app",
       "pacchetto": "shell"
@@ -7635,7 +7395,7 @@
       "schermata": "shell/home",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (12 elementi)",
+      "misurato": "tutte in [28,48] (10 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
       "evidenza": "/app",
       "pacchetto": "shell"
@@ -7725,7 +7485,7 @@
       "schermata": "shell/segnaposto-menu",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (147 elementi)",
+      "misurato": "tutte in [28,48] (145 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
       "evidenza": "/app/menu",
       "pacchetto": "shell"
@@ -7805,7 +7565,7 @@
       "schermata": "shell/segnaposto-menu",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (147 elementi)",
+      "misurato": "tutte in [28,48] (145 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
       "evidenza": "/app/menu",
       "pacchetto": "shell"
@@ -7885,7 +7645,7 @@
       "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/chiaro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (12 elementi)",
+      "misurato": "tutte in [28,48] (10 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
       "evidenza": "/app/reservations",
       "pacchetto": "shell"
@@ -7965,7 +7725,7 @@
       "schermata": "shell/segnaposto-reservations",
       "profiloTema": "notebook-1280/scuro",
       "esito": "OK",
-      "misurato": "tutte in [28,48] (12 elementi)",
+      "misurato": "tutte in [28,48] (10 elementi)",
       "atteso": "altezze in [28, 48] px (no collegamenti di testo)",
       "evidenza": "/app/reservations",
       "pacchetto": "shell"
@@ -8001,470 +7761,90 @@
       "pacchetto": "shell"
     },
     {
-      "id": "AMBIENTE",
-      "schermata": "/app/login",
-      "profiloTema": "notebook-1280/chiaro/Chromium 140.0.7339.186",
-      "esito": "OK",
-      "misurato": "assente",
-      "atteso": "assente (nessun indicatore dev Next)",
-      "evidenza": "—",
-      "pacchetto": "accesso"
-    },
-    {
-      "id": "C9",
+      "id": "menu-fissi-colonna-elenco",
       "schermata": "—",
       "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 0",
-      "atteso": "exit 0",
-      "evidenza": "pnpm ui:check",
-      "pacchetto": "completo"
-    },
-    {
-      "id": "verify-link-valido",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "shell-admin-link",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "NON PROVABILE con utente solo App (adminRole none)"
-    },
-    {
-      "id": "NO-OVERRIDE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "OK",
-      "misurato": "exit 1",
-      "atteso": "nessuna corrispondenza (exit 1)",
-      "evidenza": "grep -rn overrideAccess: true app/(app) components/app lib/app",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "RICOMPILA-ASSENTE",
-      "schermata": "comuni",
-      "profiloTema": "—",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "assente in UI con bandiera spenta",
-      "evidenza": "eseguito con schermata piatti (runRicompilaAssenteCheck)",
-      "pacchetto": "menu"
-    },
-    {
-      "id": "giorni-speciali-attivazione",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-azioni-pagina",
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-colonna-elenco",
+      "id": "menu-fissi-elimina-senza-uso",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-colonne-fisse",
+      "id": "menu-fissi-elimina-usato",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-console",
+      "id": "menu-fissi-nomi-accessibili",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-data-passata",
+      "id": "menu-fissi-ordine-liste",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-data-scritta",
+      "id": "menu-fissi-persistenza",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-elimina",
+      "id": "menu-fissi-porzione-traduzione",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
       "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-elimina-registro-permessi",
+      "id": "menu-fissi-servizi-piatti",
       "schermata": "—",
       "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-menu-fissi-caselle",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-campi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-footer",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-inglese",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-validazione",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-nessuna-scrittura-file",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-nomi-accessibili",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-nuovo-preselezione",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-oggi-e-mezzanotte",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-persistenza",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-prossimi-passati",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-righe-azioni",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-senza-ricerca-filtri",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-sovrapposizione",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-sovrapposizione-server",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-testi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-a-capo",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-azioni-pagina",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-colonna",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-console",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-file-non-leggibile",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-file-riceve-messaggio",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-modulo-lingue",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-nessun-limite",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-nomi-accessibili",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-permessi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-pulsanti-pagina",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-riassunto-file",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-salvataggio",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-senza-ricompila",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-testi",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
-      "esito": "NON PROVATO",
-      "misurato": "—",
-      "atteso": "—",
-      "evidenza": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-togli",
-      "schermata": "—",
-      "profiloTema": "—",
-      "pacchetto": "completo",
+      "pacchetto": "menu",
       "esito": "NON PROVATO",
       "misurato": "—",
       "atteso": "—",
@@ -8473,175 +7853,39 @@
   ],
   "nonProvato": [
     {
-      "id": "verify-link-valido",
-      "motivo": "facoltativo: token reale monouso non ottenuto"
-    },
-    {
-      "id": "shell-admin-link",
-      "motivo": "NON PROVABILE con utente solo App (adminRole none)"
-    },
-    {
-      "id": "giorni-speciali-attivazione",
+      "id": "menu-fissi-colonna-elenco",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-azioni-pagina",
+      "id": "menu-fissi-elimina-cascade-registro-permessi",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-colonna-elenco",
+      "id": "menu-fissi-elimina-senza-uso",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-colonne-fisse",
+      "id": "menu-fissi-elimina-usato",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-console",
+      "id": "menu-fissi-nomi-accessibili",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-data-passata",
+      "id": "menu-fissi-ordine-liste",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-data-scritta",
+      "id": "menu-fissi-persistenza",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-elimina",
+      "id": "menu-fissi-porzione-traduzione",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     },
     {
-      "id": "giorni-speciali-elimina-registro-permessi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-menu-fissi-caselle",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-campi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-footer",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-inglese",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-modulo-validazione",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-nessuna-scrittura-file",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-nomi-accessibili",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-nuovo-preselezione",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-oggi-e-mezzanotte",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-persistenza",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-prossimi-passati",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-righe-azioni",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-senza-ricerca-filtri",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-sovrapposizione",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-sovrapposizione-server",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "giorni-speciali-testi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-a-capo",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-azioni-pagina",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-colonna",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-console",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-file-non-leggibile",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-file-riceve-messaggio",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-modulo-lingue",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-nessun-limite",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-nomi-accessibili",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-permessi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-pulsanti-pagina",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-riassunto-file",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-salvataggio",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-senza-ricompila",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-testi",
-      "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
-    },
-    {
-      "id": "messaggio-globale-togli",
+      "id": "menu-fissi-servizi-piatti",
       "motivo": "controllo non eseguito dal lanciatore in questa esecuzione"
     }
   ],
@@ -8731,81 +7975,6 @@
       "name": "shell-home-schermo-1920-chiaro",
       "temaKey": "chiaro",
       "hash": "a6d093de999bdccb4d2ce5fdf919e433e4ea76339aebb520a69f2c31c89b1590"
-    },
-    {
-      "name": "shell-home-telefono-390-chiaro",
-      "temaKey": "chiaro",
-      "hash": "965d578e9708c0efb0559ebf2646825d85b47814c15c461cd37e70d08c129160"
-    },
-    {
-      "name": "shell-home-menu-aperto-telefono-390-chiaro",
-      "temaKey": "chiaro",
-      "hash": "b8f2db1f9784cf70bee85b1983874e13f8af2360ec100259aaa7aa86d370e8bc"
-    },
-    {
-      "name": "shell-home-menu-utente-telefono-390-chiaro",
-      "temaKey": "chiaro",
-      "hash": "9291d3e7dc2547d7445b7b245b25abc0df6a1f5ff7fa602c16d28ea0326badfb"
-    },
-    {
-      "name": "shell-home-notebook-1280-chiaro",
-      "temaKey": "chiaro",
-      "hash": "195d110527ce99b7981356bf79d634317e629544c94727ef1b1a4e40b2885b0c"
-    },
-    {
-      "name": "shell-home-menu-utente-notebook-1280-chiaro",
-      "temaKey": "chiaro",
-      "hash": "3294f7413dfe8f45951607218731a070bb31b3cd742567c5e5544dc77c52ac06"
-    },
-    {
-      "name": "shell-home-telefono-390-scuro",
-      "temaKey": "scuro",
-      "hash": "3cfca3642dc90be47fe36d65cb3a43081cc360521aad28de8f047326ef3f4493"
-    },
-    {
-      "name": "shell-home-menu-aperto-telefono-390-scuro",
-      "temaKey": "scuro",
-      "hash": "bc92baa1ab896a8c13c5d9c3e20e9ea63c98f3496ef40e9bfa6b285ddac9f4fc"
-    },
-    {
-      "name": "shell-home-menu-utente-telefono-390-scuro",
-      "temaKey": "scuro",
-      "hash": "0eb197023fc9f3585ca9d2639dfac1b73547d76d9c923a5791ccd0f4a5aec3b2"
-    },
-    {
-      "name": "shell-home-notebook-1280-scuro",
-      "temaKey": "scuro",
-      "hash": "71c788ef84b2b27193ebbf2d3b403b104046a0d4c1c3aa6ebf810ba56ef9e84b"
-    },
-    {
-      "name": "shell-home-menu-utente-notebook-1280-scuro",
-      "temaKey": "scuro",
-      "hash": "4199106fc1fa370cdce31dfe4c1f6cae99a144e91f6af2cd62aaf45543d7cfa0"
-    },
-    {
-      "name": "shell-segnaposto-menu-telefono-390-chiaro",
-      "temaKey": "chiaro",
-      "hash": "d992e103299c35a24c8bf2748a91043f1c9365d8a5395333287e6264abad2698"
-    },
-    {
-      "name": "shell-segnaposto-menu-notebook-1280-chiaro",
-      "temaKey": "chiaro",
-      "hash": "7f9062928bc628234ec2377a7b03cb03c5265c15a1c858cc8c77ddc111f3689d"
-    },
-    {
-      "name": "shell-segnaposto-menu-telefono-390-scuro",
-      "temaKey": "scuro",
-      "hash": "d06491e77e91f0be31448308a7223f12c94ad20dca63e706ccc1d0d8b0bcb286"
-    },
-    {
-      "name": "shell-segnaposto-menu-notebook-1280-scuro",
-      "temaKey": "scuro",
-      "hash": "9c6876f25de3194b0d14797a8b64b8faa122735313429fc11a5831708aaffbb5"
-    },
-    {
-      "name": "shell-home-schermo-1920-chiaro",
-      "temaKey": "chiaro",
-      "hash": "9ed1df55e45905b32726a046422e93565e9595e77a9d1222905b65c727e164af"
     }
   ]
 }

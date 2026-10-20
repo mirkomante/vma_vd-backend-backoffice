@@ -1,13 +1,13 @@
 # Esito verifica — locale-prod — 2026-10-19
-Commit: eb774a43c30b · Lanciatore: 3.9.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 1 s
+Commit: 25369d093582 · Lanciatore: 3.9.0 (L1) · Browser: Chromium 140.0.7339.186 · Controlli: controlli-6.6.json v1 · Durata: 26 s
 
 Avanzamento live: `tail -f .next/ui-verify-progress.log`
 
 ## Riepilogo (tutti i pacchetti in cartella)
-OK: 707 · FALLITO: 13 · AVVISO: 1 · NON PROVATO: 124 · Controlli distinti nel JSON corrente: 49
+OK: 696 · FALLITO: 13 · AVVISO: 1 · NON PROVATO: 73 · Controlli distinti nel JSON corrente: 9
 
 ## Pacchetto: accesso
-Righe: 20 · OK: 20 · FALLITO: 0
+Righe: 16 · OK: 16 · FALLITO: 0
 
 ### FALLITO (accesso)
 - (nessuno)
@@ -19,7 +19,7 @@ Righe: 58 · OK: 58 · FALLITO: 0
 - (nessuno)
 
 ## Pacchetto: menu
-Righe: 673 · OK: 610 · FALLITO: 13
+Righe: 667 · OK: 607 · FALLITO: 13
 
 ### FALLITO (menu)
 - **home-riga-menu-casi** | home | telefono-390/chiaro | misurato `dopo creazione: «3 piatti terminati» atteso «NaN piatti terminati» | dopo p1 non terminato: «2 piatti terminati» atteso «NaN piatti terminati» | dopo p2/p3 disabilitati: «Nessun piatto terminato» atteso «undefined piatti terminati» | singolare: N=undefined (serve N=1 isolato)` | atteso `conteggio e singolare/plurale come da specifica` | evidenza: /app
@@ -37,7 +37,7 @@ Righe: 673 · OK: 610 · FALLITO: 13
 - **servizi-persistenza** | servizi | telefono-390/chiaro | misurato `create read; norole: coperto in elimina-cascade` | atteso `persistenza` | evidenza: /app/menu/services
 
 ## Pacchetto: completo
-Righe: 94 · OK: 19 · FALLITO: 0
+Righe: 42 · OK: 15 · FALLITO: 0
 
 ### FALLITO (completo)
 - (nessuno)
@@ -45,13 +45,13 @@ Righe: 94 · OK: 19 · FALLITO: 0
 ## Esiti compatti (esecuzione corrente)
 
 ### OK (raggruppati)
-- **AMBIENTE**: OK in 19/19 combinazioni
+- **AMBIENTE**: OK in 15/15 combinazioni
 - **C1**: OK in 188/188 combinazioni
 - **C2**: OK in 106/106 combinazioni
 - **C2-mouse**: OK in 94/94 combinazioni
 - **C3**: OK in 188/188 combinazioni
 - **C3-cambio-sistema**: OK in 1/1 combinazioni
-- **C9**: OK in 19/19 combinazioni
+- **C9**: OK in 15/15 combinazioni
 - **home-colonne**: OK in 2/2 combinazioni
 - **home-larghezza**: OK in 4/4 combinazioni
 - **home-righe-di-stato**: OK in 2/2 combinazioni
@@ -77,7 +77,7 @@ Righe: 94 · OK: 19 · FALLITO: 0
 - **nav-titoli-pagina**: OK in 1/1 combinazioni
 - **nav-voce-attiva**: OK in 2/2 combinazioni
 - **nav-voci-menu**: OK in 2/2 combinazioni
-- **NO-OVERRIDE**: OK in 17/17 combinazioni
+- **NO-OVERRIDE**: OK in 14/14 combinazioni
 - **piatti-allergeni-selezione**: OK in 2/2 combinazioni
 - **piatti-azioni-pagina**: OK in 2/2 combinazioni
 - **piatti-casella-misure**: OK in 2/2 combinazioni
@@ -105,7 +105,7 @@ Righe: 94 · OK: 19 · FALLITO: 0
 - **servizi-righe-azioni**: OK in 1/1 combinazioni
 - **servizi-senza-ricerca-filtri**: OK in 1/1 combinazioni
 - **servizi-testi**: OK in 1/1 combinazioni
-- **RICOMPILA-ASSENTE**: OK in 1/12 combinazioni (con fallimenti o avvisi su altre combinazioni)
+- **RICOMPILA-ASSENTE**: OK in 1/9 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **servizi-colonna-elenco**: OK in 3/4 combinazioni (con fallimenti o avvisi su altre combinazioni)
 - **home-riga-menu-altezza**: OK in 1/2 combinazioni (con fallimenti o avvisi su altre combinazioni)
 
@@ -201,111 +201,20 @@ Righe: 94 · OK: 19 · FALLITO: 0
 - **menu-fissi-persistenza** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **menu-fissi-porzione-traduzione** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 - **menu-fissi-servizi-piatti** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
-- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **RICOMPILA-ASSENTE** | comuni | — | misurato `—` | atteso `assente in UI con bandiera spenta` | evidenza: eseguito con schermata piatti (runRicompilaAssenteCheck)
-- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
-- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **RICOMPILA-ASSENTE** | comuni | — | misurato `—` | atteso `assente in UI con bandiera spenta` | evidenza: eseguito con schermata piatti (runRicompilaAssenteCheck)
-- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
-- **verify-link-valido** | — | — | misurato `—` | atteso `—` | evidenza: facoltativo: token reale monouso non ottenuto
-- **shell-admin-link** | — | — | misurato `—` | atteso `—` | evidenza: NON PROVABILE con utente solo App (adminRole none)
-- **RICOMPILA-ASSENTE** | comuni | — | misurato `—` | atteso `assente in UI con bandiera spenta` | evidenza: eseguito con schermata piatti (runRicompilaAssenteCheck)
-- **giorni-speciali-attivazione** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-azioni-pagina** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-colonna-elenco** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-colonne-fisse** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-data-passata** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-data-scritta** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-elimina** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-elimina-registro-permessi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-menu-fissi-caselle** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-modulo-campi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-modulo-footer** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-modulo-inglese** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-modulo-validazione** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-nessuna-scrittura-file** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-nomi-accessibili** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-nuovo-preselezione** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-oggi-e-mezzanotte** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-persistenza** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-prossimi-passati** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-righe-azioni** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-senza-ricerca-filtri** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-sovrapposizione** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-sovrapposizione-server** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **giorni-speciali-testi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-a-capo** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-azioni-pagina** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-colonna** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-console** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-file-non-leggibile** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-file-riceve-messaggio** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-modulo-lingue** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-nessun-limite** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-nomi-accessibili** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-permessi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-pulsanti-pagina** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-riassunto-file** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-salvataggio** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-senza-ricompila** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-testi** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
-- **messaggio-globale-togli** | — | — | misurato `—` | atteso `—` | evidenza: controllo non eseguito dal lanciatore in questa esecuzione
 
 
 ## Tabella controlli distinti (JSON corrente)
 | Id | Esito sintetico (OK/totale combinazioni) |
 |---|---|
-| AMBIENTE | OK (19/19) |
-| C1 | OK (188/188) |
-| C2 | OK (106/106) |
-| C2-mouse | OK (94/94) |
-| C3 | OK (188/188) |
-| C9 | OK (19/19) |
-| NO-OVERRIDE | OK (17/17) |
-| RICOMPILA-ASSENTE | NON PROVATO (1/12) |
-| giorni-speciali-attivazione | NON PROVATO (0/1) |
-| giorni-speciali-azioni-pagina | NON PROVATO (0/1) |
-| giorni-speciali-colonna-elenco | NON PROVATO (0/1) |
-| giorni-speciali-colonne-fisse | NON PROVATO (0/1) |
-| giorni-speciali-console | NON PROVATO (0/1) |
-| giorni-speciali-data-passata | NON PROVATO (0/1) |
-| giorni-speciali-data-scritta | NON PROVATO (0/1) |
-| giorni-speciali-elimina | NON PROVATO (0/1) |
-| giorni-speciali-elimina-registro-permessi | NON PROVATO (0/1) |
-| giorni-speciali-menu-fissi-caselle | NON PROVATO (0/1) |
-| giorni-speciali-modulo-campi | NON PROVATO (0/1) |
-| giorni-speciali-modulo-footer | NON PROVATO (0/1) |
-| giorni-speciali-modulo-inglese | NON PROVATO (0/1) |
-| giorni-speciali-modulo-validazione | NON PROVATO (0/1) |
-| giorni-speciali-nessuna-scrittura-file | NON PROVATO (0/1) |
-| giorni-speciali-nomi-accessibili | NON PROVATO (0/1) |
-| giorni-speciali-nuovo-preselezione | NON PROVATO (0/1) |
-| giorni-speciali-oggi-e-mezzanotte | NON PROVATO (0/1) |
-| giorni-speciali-persistenza | NON PROVATO (0/1) |
-| giorni-speciali-prossimi-passati | NON PROVATO (0/1) |
-| giorni-speciali-righe-azioni | NON PROVATO (0/1) |
-| giorni-speciali-senza-ricerca-filtri | NON PROVATO (0/1) |
-| giorni-speciali-sovrapposizione | NON PROVATO (0/1) |
-| giorni-speciali-sovrapposizione-server | NON PROVATO (0/1) |
-| giorni-speciali-testi | NON PROVATO (0/1) |
-| messaggio-globale-a-capo | NON PROVATO (0/1) |
-| messaggio-globale-azioni-pagina | NON PROVATO (0/1) |
-| messaggio-globale-colonna | NON PROVATO (0/1) |
-| messaggio-globale-console | NON PROVATO (0/1) |
-| messaggio-globale-file-non-leggibile | NON PROVATO (0/1) |
-| messaggio-globale-file-riceve-messaggio | NON PROVATO (0/1) |
-| messaggio-globale-modulo-lingue | NON PROVATO (0/1) |
-| messaggio-globale-nessun-limite | NON PROVATO (0/1) |
-| messaggio-globale-nomi-accessibili | NON PROVATO (0/1) |
-| messaggio-globale-permessi | NON PROVATO (0/1) |
-| messaggio-globale-pulsanti-pagina | NON PROVATO (0/1) |
-| messaggio-globale-riassunto-file | NON PROVATO (0/1) |
-| messaggio-globale-salvataggio | NON PROVATO (0/1) |
-| messaggio-globale-senza-ricompila | NON PROVATO (0/1) |
-| messaggio-globale-testi | NON PROVATO (0/1) |
-| messaggio-globale-togli | NON PROVATO (0/1) |
+| menu-fissi-colonna-elenco | NON PROVATO (0/1) |
+| menu-fissi-elimina-cascade-registro-permessi | NON PROVATO (0/1) |
+| menu-fissi-elimina-senza-uso | NON PROVATO (0/1) |
+| menu-fissi-elimina-usato | NON PROVATO (0/1) |
+| menu-fissi-nomi-accessibili | NON PROVATO (0/1) |
+| menu-fissi-ordine-liste | NON PROVATO (0/1) |
+| menu-fissi-persistenza | NON PROVATO (0/1) |
+| menu-fissi-porzione-traduzione | NON PROVATO (0/1) |
+| menu-fissi-servizi-piatti | NON PROVATO (0/1) |
 
 ## Tabella completa (fallimenti, avvisi, non provato)
 | Id | Schermata/stato | Profilo/tema | Esito | Misurato | Atteso | Evidenza |
@@ -397,102 +306,17 @@ Righe: 94 · OK: 19 · FALLITO: 0
 | menu-fissi-persistenza | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | menu-fissi-porzione-traduzione | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 | menu-fissi-servizi-piatti | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
-| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| RICOMPILA-ASSENTE | comuni | — | NON PROVATO | — | assente in UI con bandiera spenta | eseguito con schermata piatti (runRicompilaAssenteCheck) |
-| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
-| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| RICOMPILA-ASSENTE | comuni | — | NON PROVATO | — | assente in UI con bandiera spenta | eseguito con schermata piatti (runRicompilaAssenteCheck) |
-| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
-| verify-link-valido | — | — | NON PROVATO | — | — | facoltativo: token reale monouso non ottenuto |
-| shell-admin-link | — | — | NON PROVATO | — | — | NON PROVABILE con utente solo App (adminRole none) |
-| RICOMPILA-ASSENTE | comuni | — | NON PROVATO | — | assente in UI con bandiera spenta | eseguito con schermata piatti (runRicompilaAssenteCheck) |
-| giorni-speciali-attivazione | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-azioni-pagina | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-colonna-elenco | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-colonne-fisse | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-data-passata | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-data-scritta | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-elimina | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-elimina-registro-permessi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-menu-fissi-caselle | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-modulo-campi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-modulo-footer | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-modulo-inglese | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-modulo-validazione | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-nessuna-scrittura-file | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-nomi-accessibili | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-nuovo-preselezione | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-oggi-e-mezzanotte | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-persistenza | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-prossimi-passati | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-righe-azioni | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-senza-ricerca-filtri | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-sovrapposizione | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-sovrapposizione-server | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| giorni-speciali-testi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-a-capo | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-azioni-pagina | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-colonna | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-console | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-file-non-leggibile | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-file-riceve-messaggio | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-modulo-lingue | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-nessun-limite | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-nomi-accessibili | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-permessi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-pulsanti-pagina | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-riassunto-file | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-salvataggio | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-senza-ricompila | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-testi | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
-| messaggio-globale-togli | — | — | NON PROVATO | — | — | controllo non eseguito dal lanciatore in questa esecuzione |
 
 ## Non provato (e perché)
-- verify-link-valido: facoltativo: token reale monouso non ottenuto
-- shell-admin-link: NON PROVABILE con utente solo App (adminRole none)
-- giorni-speciali-attivazione: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-azioni-pagina: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-colonna-elenco: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-colonne-fisse: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-console: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-data-passata: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-data-scritta: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-elimina: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-elimina-registro-permessi: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-menu-fissi-caselle: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-modulo-campi: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-modulo-footer: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-modulo-inglese: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-modulo-validazione: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-nessuna-scrittura-file: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-nomi-accessibili: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-nuovo-preselezione: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-oggi-e-mezzanotte: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-persistenza: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-prossimi-passati: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-righe-azioni: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-senza-ricerca-filtri: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-sovrapposizione: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-sovrapposizione-server: controllo non eseguito dal lanciatore in questa esecuzione
-- giorni-speciali-testi: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-a-capo: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-azioni-pagina: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-colonna: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-console: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-file-non-leggibile: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-file-riceve-messaggio: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-modulo-lingue: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-nessun-limite: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-nomi-accessibili: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-permessi: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-pulsanti-pagina: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-riassunto-file: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-salvataggio: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-senza-ricompila: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-testi: controllo non eseguito dal lanciatore in questa esecuzione
-- messaggio-globale-togli: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-colonna-elenco: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-elimina-cascade-registro-permessi: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-elimina-senza-uso: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-elimina-usato: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-nomi-accessibili: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-ordine-liste: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-persistenza: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-porzione-traduzione: controllo non eseguito dal lanciatore in questa esecuzione
+- menu-fissi-servizi-piatti: controllo non eseguito dal lanciatore in questa esecuzione
 
 ## Anomalie dell'ambiente
 - (nessuna)
