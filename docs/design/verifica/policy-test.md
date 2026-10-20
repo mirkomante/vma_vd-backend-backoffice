@@ -112,9 +112,14 @@ La chat di design scrive i controlli **insieme alla specifica** di ogni schermat
 
 | Origine | Debito | Scadenza (due passi) | Stato |
 |---|---|---|---|
-| 21c | Nove flussi di Menù fissi dopo F4: **mai partiti**; il primo (`menu-fissi-elimina-senza-uso`) va in timeout, causa non determinata | **Scaduta**: dopo il 21c sono chiusi 22, 24 e 24b | Proposta: passo 24d, solo i nove flussi con il vecchio lanciatore (`--solo`), un giro, tetto 30 minuti; un flusso in timeout diventa ERRORE-STRUMENTO e gli altri proseguono. **Decide Mirko** |
+| 21c | Nove flussi di Menù fissi dopo F4: **mai partiti**; il primo (`menu-fissi-elimina-senza-uso`) va in timeout, causa non determinata | **Scaduta**: dopo il 21c sono chiusi 22, 24 e 24b | **Passo 24d, dopo il 24c** (scelta di Mirko, 2026-10-20): **nucleo di Menù fissi in Playwright**, non il vecchio lanciatore. Condizionato al 24c (rete di sicurezza qui sotto). La scheda si scrive dopo l'esito del 24c |
 | 24, 24b | Giorni speciali e Messaggio globale: nucleo non eseguito (51 controlli delle due schermate NON PROVATI; comportamento nel browser mai provato) | Passo **24c** (il successivo) | Scheda del 24c: nucleo in Playwright, tetto 60 minuti, un giro |
 | 20 | Tre stati simulati per schermata, bulk da 101, sette screenshot mancanti, confronto visivo a 1280 px | V6 | Sono L2 (sezione 7): non sono debito di L1 |
+
+**Passo 24d: regole già decise** (la scheda completa si scrive dopo il 24c)
+- **Che cosa**: il nucleo di Menù fissi in Playwright. Dei nove flussi del 21c il nucleo ne contiene quattro (persistenza, eliminazione di un menù in uso, registro e permessi della cascata, nomi accessibili); gli altri cinque sono L2 e vanno a V6 (sezione 7).
+- **Il primo test è l'eliminazione** `menu-fissi-elimina-senza-uso` (è L2, ma è il test diagnostico: è quello che non ha mai girato). Si esegue **con traccia di Playwright, screenshot e DOM dell'elenco** al fallimento. Se il pulsante «Elimina …» non si trova, **in deroga a R4 del percorso v2** si riporta come **POSSIBILE DIFETTO DELL'APP**, non come ERRORE-STRUMENTO, con la traccia: lo classifica la chat di design.
+- **Rete di sicurezza**: se il **24c supera 120 minuti** (R10) o ha **tre o più ERRORE-STRUMENTO tra i sei controlli richiesti**, il 24d **non parte**. Il debito del 21c diventa **un'eccezione scritta**: Mirko la firma in questa tabella con data e motivo, i flussi vanno a V6 con la scadenza dichiarata, e **non si ritorna al vecchio lanciatore**, per nessun motivo.
 
 Se, nonostante questo, un controllo non è implementato quando l'implementazione finisce, **L1 non è eseguibile da chi implementa per quel controllo**: lo dichiara, il passo è 🔶 e il controllo passa all'agente di verifica (debito con scadenza, tabella sopra). **Mai** una prova manuale chiesta all'umano al suo posto: l'umano interviene solo per L3 e per le decisioni.
 
@@ -174,7 +179,7 @@ Al massimo **tre criteri, tutti sul risultato per l'app**: (a) i controlli richi
 
 - **Automazione in Cloud Build** (L0 e S a ogni push): la configurazione non è stata esaminata; da valutare dopo il 24c. Ogni push su `main` avvia già la build e il deploy.
 - **L1v**: da provare una volta che l'agente di verifica di Cursor legga bene gli screenshot.
-- **Debito 21c** (nove flussi di Menù fissi): decisione sul passo 24d (sezione 6).
+- **Debito 21c** (nove flussi di Menù fissi): passo 24d condizionato al 24c, con la rete di sicurezza della sezione 6.
 - **Cablaggio `e2e:wire`**: oggi vuoto. Dal 24c ogni test porta `// control:<id>`; resta da decidere, dopo il 24c, se `wire` debba fallire per un controllo del nucleo senza test.
 
 ## Appendice: come si riproducono le cifre
