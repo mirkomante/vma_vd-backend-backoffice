@@ -32,6 +32,12 @@ export type PayloadFixture = {
     collection: CollectionSlug,
     data: Record<string, unknown>,
   ) => Promise<{ id: number | string }>
+  /** Nome record isolato per giro e worker: verify-ui-<runId>-w<n>-<slug> */
+  nome: (slug: string) => string
+  /** Registra un id creato fuori da `crea` (es. menu-payload) per la pulizia in afterEach. */
+  registerCreated: (collection: CollectionSlug, id: number | string) => void
+  workerIndex: number
+  managerEmail: string
   runId: string
   defaultDishCategoryId: number
 }
@@ -63,8 +69,13 @@ export const test = base.extend<
     { scope: 'worker' },
   ],
 
-  payload: async ({ payloadWorker }, use) => {
+  payload: async ({ payloadWorker }, use, testInfo) => {
     const meta = loadRunMeta()
+    const rawMeta = JSON.parse(readFileSync(E2E_RUN_META, 'utf8')) as { userEmail?: string }
+    const managerEmail = rawMeta.userEmail
+    if (!managerEmail) throw new Error('userEmail mancante in e2e-run.json')
+    const workerIndex = testInfo.workerIndex
+    const nome = (slug: string) => `verify-ui-${meta.runId}-w${workerIndex}-${slug}`
     const registry: CreatedRecord[] = []
 
     const cat = await payloadWorker.find({
@@ -89,8 +100,16 @@ export const test = base.extend<
       return { id: doc.id }
     }
 
+    const registerCreated = (collection: CollectionSlug, id: number | string) => {
+      registry.push({ collection, id })
+    }
+
     await use({
       crea,
+      nome,
+      registerCreated,
+      workerIndex,
+      managerEmail,
       runId: meta.runId,
       defaultDishCategoryId: Number(categoryId),
     })

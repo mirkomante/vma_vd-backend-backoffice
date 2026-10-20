@@ -29,7 +29,10 @@ export function nonProvatoReason(screenId: MenuListScreenId, statoId: string): s
   if (statoId === 'vuoto') {
     return 'NON PROVABILE con dati presenti: il database di sviluppo non viene svuotato'
   }
-  if (screenId === 'menu-fissi' && (statoId === 'categorie-vuoto' || statoId === 'nuovo-senza-categorie')) {
+  if (screenId === 'menu-fissi' && statoId === 'categorie-vuoto') {
+    return 'stato non preparabile senza svuotare le categorie di prova nel database'
+  }
+  if (screenId === 'menu-fissi' && statoId === 'nuovo-senza-categorie') {
     return 'stato non preparabile senza svuotare le categorie di prova nel database'
   }
   return null

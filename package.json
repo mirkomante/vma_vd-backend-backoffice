@@ -16,7 +16,7 @@
     "ui:verify": "node scripts/ui-verify/run.mjs",
     "e2e": "node e2e/scripts/playwright-cli.mjs",
     "e2e:smoke": "node e2e/scripts/playwright-cli.mjs smoke --project=telefono-390-chiaro",
-    "e2e:t1c": "cross-env E2E_SUITE=controlli E2E_ESITI=2026-10-19-T1c node e2e/scripts/playwright-cli.mjs --workers=4",
+    "e2e:t1c": "cross-env E2E_SUITE=controlli E2E_ESITI=2026-10-19-T1c E2E_START_SIM_SERVERS=1 node e2e/scripts/playwright-cli.mjs --workers=4",
     "e2e:wire": "node e2e/scripts/wire-controlli.mjs",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",

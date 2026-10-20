@@ -14,7 +14,7 @@ export async function gotoMenuList(
 
 export async function clickRowAction(page: Page, name: string, action: 'edit' | 'delete'): Promise<void> {
   const label = action === 'edit' ? `Modifica ${name}` : `Elimina ${name}`
-  await page.locator('main').getByRole('button', { name: label }).first().click({ timeout: 20_000 })
+  await page.locator('main').getByRole('button', { name: label, exact: true }).click({ timeout: 20_000 })
 }
 
 export async function selectComboboxOption(page: Page, fieldLabel: string, optionText: string): Promise<void> {

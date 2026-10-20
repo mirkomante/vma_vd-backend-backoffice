@@ -4,6 +4,7 @@ import { config as loadEnv } from 'dotenv'
 import { defineConfig, devices } from '@playwright/test'
 import { join } from 'node:path'
 
+import { grepForProject } from './lib/matrix-projects'
 import { E2E_STORAGE_STATE, REPO_ROOT } from './lib/paths'
 
 loadEnv({ path: join(REPO_ROOT, '.env') })
@@ -18,27 +19,53 @@ const profiles = [
 ] as const
 
 const themes = [
-  { suffix: 'chiaro', colorScheme: 'light' as const, cookie: 'light' },
-  { suffix: 'scuro', colorScheme: 'dark' as const, cookie: 'dark' },
+  { suffix: 'chiaro', colorScheme: 'light' as const },
+  { suffix: 'scuro', colorScheme: 'dark' as const },
 ]
 
 const isControlliSuite = process.env.E2E_SUITE === 'controlli'
 
-const projects = profiles.flatMap((profile) =>
-  themes.map((theme) => ({
-    name: `${profile.name}-${theme.suffix}`,
-    use: {
-      ...devices['Desktop Chrome'],
-      viewport: { width: profile.width, height: profile.height },
-      deviceScaleFactor: profile.scale,
-      isMobile: profile.touch,
-      hasTouch: profile.touch,
-      colorScheme: theme.colorScheme,
-      baseURL: BASE_URL,
-      storageState: E2E_STORAGE_STATE,
-    },
-  })),
+const matrixProjects = profiles.flatMap((profile) =>
+  themes.map((theme) => {
+    const name = `${profile.name}-${theme.suffix}`
+    return {
+      name,
+      ...(isControlliSuite ? { grep: grepForProject(name) } : {}),
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: profile.width, height: profile.height },
+        deviceScaleFactor: profile.scale,
+        isMobile: profile.touch,
+        hasTouch: profile.touch,
+        colorScheme: theme.colorScheme,
+        baseURL: BASE_URL,
+        storageState: E2E_STORAGE_STATE,
+      },
+    }
+  }),
 )
+
+const simProjects = isControlliSuite
+  ? [
+      {
+        name: 'simulazioni',
+        grep: /@sim\//,
+        fullyParallel: false,
+        workers: 1,
+        timeout: 120_000,
+        use: {
+          ...devices['Desktop Chrome'],
+          viewport: { width: 390, height: 844 },
+          deviceScaleFactor: 3,
+          isMobile: true,
+          hasTouch: true,
+          colorScheme: 'light' as const,
+          baseURL: BASE_URL,
+          storageState: E2E_STORAGE_STATE,
+        },
+      },
+    ]
+  : []
 
 export default defineConfig({
   testDir: '.',
@@ -59,7 +86,7 @@ export default defineConfig({
   globalSetup: './global-setup.ts',
   globalTeardown: './global-teardown.ts',
   reporter: [['list'], ['./reporter/e2e-reporter.ts']],
-  projects,
+  projects: [...matrixProjects, ...simProjects],
   webServer: {
     command: 'pnpm start',
     url: BASE_URL,

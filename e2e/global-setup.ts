@@ -9,7 +9,6 @@ import { chromium } from '@playwright/test'
 import { markBuildSuccess, resolveBuildReuse } from './lib/build-fingerprint'
 import { acquireE2eLock, updateLockRunId } from './lib/lock'
 import { runProcess } from './lib/exec'
-import { parsePayloadStdout, payloadRun } from './lib/payload-cli'
 import {
   E2E_ESITI_DIR,
   E2E_PROGRESS_LOG,
@@ -18,14 +17,11 @@ import {
   NEXT_DIR,
   REPO_ROOT,
 } from './lib/paths'
+import { generateTestPassword, provisionTestUser, withPayloadForSetup } from './lib/provision-test-user'
 import { waitForUrl } from './lib/wait-url'
 
 const PROD_PORT = '3100'
 const BASE_URL = `http://localhost:${PROD_PORT}`
-
-function generateTestPassword(): string {
-  return `Aa1${randomBytes(16).toString('base64url')}`
-}
 
 function startProdServer(): ChildProcess {
   return spawn('pnpm', ['start'], {
@@ -36,7 +32,7 @@ function startProdServer(): ChildProcess {
       PAYLOAD_DISABLE_PUSH: '1',
       NODE_ENV: 'production',
     },
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: 'ignore',
   })
 }
 
@@ -65,13 +61,7 @@ export default async function globalSetup(): Promise<void> {
   }
 
   const password = generateTestPassword()
-  const created = parsePayloadStdout(
-    await payloadRun(
-      ['scripts/ui-verify/provision-user.ts', '--', 'create'],
-      { UI_VERIFY_USER_PASSWORD: password },
-    ),
-  )
-  const userEmail = String(created.email)
+  const created = await withPayloadForSetup((payload) => provisionTestUser(payload, password))
 
   const setupServer = startProdServer()
   await waitForUrl(BASE_URL)
@@ -80,7 +70,7 @@ export default async function globalSetup(): Promise<void> {
   const context = await browser.newContext({ baseURL: BASE_URL })
   const page = await context.newPage()
   await page.goto('/app/login', { waitUntil: 'domcontentloaded', timeout: 30_000 })
-  await page.fill('input[name=email]', userEmail)
+  await page.fill('input[name=email]', created.email)
   await page.fill('input[name=password]', password)
   await page.getByRole('button', { name: 'Accedi' }).click()
   await page.waitForURL(/\/app\/?$/, { timeout: 30_000 })
@@ -91,9 +81,8 @@ export default async function globalSetup(): Promise<void> {
     E2E_RUN_META,
     JSON.stringify({
       runId,
-      userEmail,
+      userEmail: created.email,
       userId: created.id,
-      /** Solo in .next/e2e-run.json locale: login sul server dev (porta 3200) per simulazioni. */
       probePassword: password,
       startedAt: new Date().toISOString(),
       buildReuse: build.reuse,
@@ -102,4 +91,5 @@ export default async function globalSetup(): Promise<void> {
     }),
     'utf8',
   )
+
 }
