@@ -114,6 +114,10 @@ Gli screenshot si confrontano con i PNG di `docs/design/schermate/`. Predefinito
 ### T4: pensionamento del vecchio lanciatore (stima 60 minuti)
 Quando T1 e T2 eguagliano i controlli del vecchio lanciatore: `pnpm ui:verify` diventa un alias di `pnpm e2e`, si rimuove `scripts/ui-verify` (tranne ciò che serve, come `provision-user.ts`), si aggiornano `README.md` e `policy-test.md`.
 
+### Criteri di accettazione dei passi sullo strumento (semplificati il 2026-10-20)
+
+Tre al massimo, e tutti sul **risultato per l'app**: (1) i prodotti richiesti esistono (per esempio gli screenshot degli stati con riferimento, con il conteggio atteso e quello salvato); (2) i controlli già OK restano OK in un giro completo, senza difetti nuovi dell'app; (3) l'ambiente è pulito a fine giro. Tempi, giri doppi e perfezione dello strumento sono obiettivi, non condizioni di rifiuto: un passo non si ripete per una cifra mancata. Le **simulazioni** (caricamento, errore di caricamento, errore dell'azione) restano NON PROVATE nelle schermate che usano i blocchi condivisi già verificati su Piatti, e si provano a mano nel giro L3. Motivazione: nella settimana del 2026-10-14 i passi sullo strumento non hanno trovato difetti dell'app, mentre il confronto visivo degli screenshot già disponibili ne ha trovati sette in un'ora.
+
 ## 7. Dati di prova: come si evitano i residui
 
 - Nome: `verify-ui-<giro>-w<worker>-<nome>`. Il giro è un identificativo breve creato da `global-setup`.

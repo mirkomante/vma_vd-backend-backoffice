@@ -84,10 +84,10 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 17 | ✅ c498377 | — | D5 | Design | Controlli per Servizi e Menù fissi, in parallelo con la chat I3 | — | file pronto prima del passo 18 |
 | 18 | ✅ f76c347 | Solo il prompt del passo 18 | VC4 | Agente di verifica | Implementa i controlli di Servizi e Menù fissi | lint e typecheck | tu committi e pushi |
 | 19 | ✅ 2f3f932 | Blocco comune + prompt del passo 19 | I4 | Composer | **Servizi e Menù fissi** con Categorie | L0 + **L1** `servizi,menu-fissi` | L1 verde; tu pushi |
-| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(dal 2026-10-19 si chiude con T1c e T2a: vedi 2.1 e 2.2)** | **L2** mirato | rapporto scritto |
+| 20 | 🔶 | Solo il prompt del passo 20 | V4 | Agente di verifica | **L2 mirato** sui tipi nuovi: schede come percorsi, vista di scelta, conferme con cascade **(si chiude con F4 e T1e senza P aperti: vedi 2.1 e 2.2)** | **L2** mirato | rapporto scritto |
 | 21 | 🔲 | Solo il prompt del passo 21, se ci sono P | RL4/F4 | Design, Composer | Rilievi di V4 e correzione dei P | L0 + L1 dei falliti | nessun P aperto |
 | 22 | 🔲 | — | D6 | Design | Controlli per Giorni speciali e Messaggio globale | — | file pronto |
-| 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(dal 2026-10-19 sostituito da T2d: i controlli si scrivono nel nuovo framework)** | lint e typecheck | tu committi e pushi |
+| 23 | 🔲 | Solo il prompt del passo 23 | VC5 | Agente di verifica | Implementa i controlli di Giorni speciali e Messaggio globale **(eliminato il 2026-10-20: i controlli di Giorni speciali e Messaggio globale si scrivono dentro V6, passo 28)** | lint e typecheck | tu committi e pushi |
 | 24 | 🔲 | Blocco comune + prompt del passo 24 | I5 | Composer | **Giorni speciali e Messaggio globale** | L0 + **L1** `giorni-speciali,messaggio-globale` | L1 verde; tu pushi |
 | 25 | 🔲 | — | D7 | Design | Controlli di chiusura: L2 completo e L3 in `controlli-6.6.json`; i controlli online nuovi li completa V6 | — | file pronto |
 | 26 | 🔲 | Blocco comune + prompt del passo 26 | I6 | Composer | **Chiusura**: tabella completa delle checklist di §9, tutti i `verify:*`, CHANGELOG di sottofase | L0 + L1 su tutte le schermate + `verify:*` | tabella senza FALLITO; tu pushi |
@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-20 (commit `05619f5`). **Prossimo passo: T1d** (già «T1c bis», in corso: seguito 1 con le correzioni sotto), poi il confronto visivo (C10) di Servizi e Menù fissi, T2a, T1b, T2b, T1a, T2c.
+**Ultimo aggiornamento**: 2026-10-20 (commit `cf754c5`). **Chiusura del passo 20 e della serie T in una sessione**: (1) applica questo pacchetto; (2) **F4** (passo 21: sette rilievi P e fogli dei cataloghi, senza giri di verifica); (3) **T1e** (screenshot di Servizi, Menù fissi e cataloghi); (4) confronto visivo (C10) a cura della chat di design; ciò che resta diventa rilievo A o debito annotato. Un solo giro di F4 più T1e. F4 e T1e non girano mai insieme.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -110,27 +110,30 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 
 La verifica resta completa e i controlli dei file JSON restano la fonte di verità: cambia il motore (Playwright Test al posto del vecchio `ui:verify`). Descrizione, regole anti-blocco, esiti e criteri di accettazione: **`docs/design/verifica/percorso-test-v2.md`**. Il vecchio lanciatore è **congelato da subito** (regola R9): il passo 20g è stato annullato (vedi 2.2).
 
-| Passo | Chi | Cosa | Stima | Accettazione |
-|---|---|---|---|---|
-| **T0** | Agente di verifica | Spike (Local API nello stesso processo, o REST) e scheletro `e2e/` con suite di fumo | 90 min | fumo sotto 60 s; test bloccato ucciso; fixture ripulita; reporter |
-| **T1a** | Agente di verifica | Idem: home, navigazione, Piatti (già verificati visivamente in V2 quater: serve a tarare il nuovo motore) | 60 min | idem; i risultati di C2 su Piatti coincidono con quelli noti |
-| **T1b** | Agente di verifica | Idem: Vini, Distillati, Bevande | 60 min | idem |
-| **T1c** | Agente di verifica | C1–C3, console e screenshot: **Servizi e Menù fissi** (chiude V4; per primo perché mai verificati visivamente) | 60 min | sotto 10 min; screenshot completi; 0 ERRORE-STRUMENTO; poi confronto visivo (C10) a cura della chat di design |
-| **T1d** | Agente di verifica | Chiusura di T1c (già «T1c bis»): fixture per worker, simulazioni raggruppate per configurazione, setup in-process, giro completo due volte sotto 10 minuti | 60 min (tetto 120) | 45 screenshot; 0 ERRORE-STRUMENTO; fumo sotto 60 s |
-| **T2a** | Agente di verifica | Flussi di Servizi e Menù fissi | 90 min | 0 ERRORE-STRUMENTO; i controlli già corretti tornano OK |
-| **T2b** | Agente di verifica | Flussi dei cataloghi (Vini, Distillati, Bevande) | 90 min | idem |
-| **T2c** | Agente di verifica | Flussi di Piatti e home | 90 min | idem |
-| **T2d** | Agente di verifica | Flussi di Giorni speciali e Messaggio globale (dopo il passo 24) | 90 min | idem |
-| **T3** | Design (e chiave API, se la si usa) | Confronto visivo (C10) di tutti gli stati | 60 min | nessun P aperto |
-| **T4** | Agente di verifica | Pensionamento del vecchio lanciatore, `ui:verify` come alias di `pnpm e2e` | 60 min | parità con il vecchio, docs aggiornate |
+| Passo | Cosa | Stato | Decisione (2026-10-20) |
+|---|---|---|---|
+| **T0** | Spike e scheletro `e2e/` con suite di fumo | ✅ `76578ea` | **chiuso** |
+| **T1a** | Controlli comuni e screenshot: home, navigazione, Piatti | non eseguito | **eliminato**: Piatti ha L2 e C10 chiusi (V2 quater), home e navigazione L1 OK; nulla del raggio largo è cambiato (policy-test §4) |
+| **T1b** | Idem: Vini, Distillati, Bevande | non eseguito | **assorbito in T1e (Parte B)**: mai confrontati con le demo, è il rischio maggiore |
+| **T1c** | Idem: Servizi e Menù fissi | 🔶 struttura in repo (`0bb6847`) | **chiuso**: assorbito da T1e (Parte A) |
+| **T1d** | Chiusura di T1c (già «T1c bis») | 🔶 chiuso al tetto (`cf754c5`) | **chiuso**: le simulazioni passano a V6, il resto a T1e |
+| **T1e** | Screenshot: Parte A Servizi e Menù fissi, Parte B Vini, Distillati e Bevande | 🔲 dopo F4 | **eseguire**: un solo passo, due parti con un arresto in mezzo; tre criteri |
+| **T2a** | Flussi di Servizi e Menù fissi | non eseguito | **eliminato**: già provati in 20d (22 flussi OK) e nei giri di V4 ter; F4 tocca solo la presentazione; i flussi non provati di Menù fissi (2.2) si provano in V6 |
+| **T2b** | Flussi dei cataloghi | non eseguito | **eliminato**: provati in V3 e V3 bis; il resto a V6 |
+| **T2c** | Flussi di Piatti e home | non eseguito | **eliminato**: provati in V2 quater |
+| **T2d** | Flussi di Giorni speciali e Messaggio globale | non eseguito | **rinviato a V6** (passo 28): si scrivono dentro V6, dopo I5 e I6 |
+| **T3** | Confronto visivo (C10) | 🔶 fatto per 28 screenshot (Servizi e Menù fissi) | **chiude con T1e**: la chat di design confronta gli screenshot nuovi; i P residui non bloccanti diventano A |
+| **T4** | Pensionamento del vecchio lanciatore | non eseguito | **rinviato a dopo V6** (non ora) |
 
-**Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine di esecuzione** (le righe e le schede sono sempre in ordine ascendente per identificativo; questo è l'ordine in cui si eseguono): T0 → T1c e T1d (Servizi e Menù fissi per primi, mai verificati visivamente) → confronto visivo (C10) a cura mia → T2a → passo 21 (se ci sono P) → T1b → T2b → T1a → T2c → passi 22–26 con T2d al posto del 23 → V6 con la suite completa.
+**Regola di arresto (R10)**: un passo che supera il doppio della stima si ferma e riporta. **Ordine di esecuzione** (le righe e le schede sono sempre in ordine ascendente per identificativo; questo è l'ordine in cui si eseguono): applicare il pacchetto → **F4** (passo 21, Composer) → push → **T1e** (agente di verifica) → push → confronto visivo (C10, chat di design) → passi 22–26 (D6, I5, D7, I6; il 23 è eliminato) → V6 con la suite completa. **F4 e T1e non girano mai insieme** (la verifica costruisce l'app dalla stessa cartella).
+
+**Regole di chiusura (2026-10-20)**: (1) il passo 20 si chiude con F4 e T1e senza P aperti, non con T2a; (2) **un solo giro** di F4 più T1e: ciò che resta dopo diventa rilievo A o debito annotato, salvo difetti che impediscono l'uso; (3) i tre stati simulati (caricamento, errore di caricamento, errore dell'azione) sono NON PROVATO con il motivo e li riprova V6 dall'agente, non a mano; (4) criteri di accettazione al massimo tre, tutti sul risultato per l'app; tempi e perfezione dello strumento sono obiettivi, non motivi di rifiuto; (5) un esito L2 resta valido finché non cambia un file del raggio largo (policy-test §4), e non si fanno verifiche per scrupolo (§7).
 
 ### 2.2 Stato della serie 20 (aggiornato il 2026-10-19)
 
 | Passo | Cosa | Stato | Note |
 |---|---|---|---|
-| 20 | V4: L2 di Servizi e Menù fissi | 🔶 eseguito, incompleto | nessun difetto nuovo dell'app; 4 FALLITO del lanciatore |
+| 20 | V4: L2 di Servizi e Menù fissi | 🔶 funzionale provato, visivo con 7 rilievi P | **si chiude con F4 e T1e** (2026-10-20). Funzionale: Servizi provato (20d: righe, cascata con registro, disponibilità, eliminazione, modulo, persistenza, ordine; V4 ter: matrice C1–C3 OK); Menù fissi provato per schede, ordine con frecce, visibilità, composizione, validazione, categorie, doppioni, tassonomie, disponibilità. **NON provati a runtime in Menù fissi** (debito per V6, dall'agente): `colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-usato`, `elimina-senza-uso`, `elimina-cascade-registro-permessi`, `persistenza`, `ordine-liste`, `nomi-accessibili`, `stati-ui` (la parte di database è coperta da `verify:menu-6_2`, `6_3` e `verify-fixed-menu-en-locale.ts`). Visivo: C10 di 28 screenshot (7 P, vedi `esiti/2026-10-19-T1c/rilievi.md`) |
 | 20b | F-SEL: tendine facoltative | ✅ `ed64db5` | |
 | 20c | F-TAB: schede con `Link` | ✅ `6ae1f34` | |
 | 20d | V4 bis: helper Payload persistente e fix dei flussi | ✅ parziale `a7114d8` | 22 controlli OK; matrice e screenshot non fatti |
@@ -1679,8 +1682,55 @@ italiano con la tabella OK / FALLITO / AVVISO / NON PROVATO.
 
 ### Passo 21 — RL4/F4: rilievi di V4 e correzione dei P (solo se ci sono)
 
+> **F4 compilato (2026-10-20): UN SOLO prompt, senza Parte A.** Cartella dei rilievi `2026-10-19-T1c`. Perimetro: `components/app/**`, `lib/menu/**` (testi e funzioni di formato), `lib/app/**` se serve e i test di `lib/`. Perché senza Parte A: la verifica visiva successiva (T1e e C10) è già il controllo; un giro in meno. **Quando**: dopo aver applicato il pacchetto di chiusura. **Chi**: Composer (modifica l'app: **non gira insieme a T1e**). **Commit e push**: li fai tu.
+>
+> ```text
+> Sei Composer nel repository VMA VD (Payload CMS e Next.js). Chat F4 (unica): correzione dei rilievi P1-P7 del confronto visivo di
+> Servizi e Menù fissi, con P1 e P2 estesi ai fogli dei cataloghi. Fai solo questo. Le regole di .cursor/rules si caricano da sole.
+> Procedi direttamente: NESSUNA proposta preliminare. Se un punto richiede una scelta di design non coperta dalla specifica o dal
+> PNG di riferimento, NON decidere: lascialo com'è e riportalo come rilievo A nella risposta finale.
+>
+> PERIMETRO: components/app/**, lib/menu/** (solo testi e funzioni di formato), lib/app/** se serve, test unitari di lib/ e una voce
+> in docs/piano-sviluppo/CHANGELOG.md. VIETATO: docs/design/**, i controlli JSON, scripts/ui-verify/**, e2e/**, collections/**,
+> dipendenze, migrazioni, comportamento dei dati (solo presentazione e testi). TETTO: 60 minuti; a 120 FERMATI e riporta.
+>
+> LEGGI per intero: docs/design/verifica/esiti/2026-10-19-T1c/rilievi.md (P1-P7 e A1-A4, e la sezione sui cataloghi); le specifiche
+> servizi, menu-fissi, vini, distillati e bevande (sezioni «Testi» e «Layout»); i PNG di riferimento in docs/design/schermate/
+> (servizi/390-modulo-chiaro.png, menu-fissi/390-chiaro.png, menu-fissi/390-categorie-chiaro.png, menu-fissi/390-modulo-chiaro.png,
+> distillati/390-modulo-chiaro.png e così via).
+>
+> FAI
+> 1. P1 (titolo dei fogli): in TUTTI i fogli di modifica di Vini, Distillati, Bevande, Servizi, Menù fissi e Categorie (cerca con grep
+>    `SheetTitle` e il testo «Modifica ») il titolo è «Modifica vino», «Modifica distillato», «Modifica bevanda», «Modifica servizio»,
+>    «Modifica menù fisso», «Modifica categoria» e il NOME va come sottotitolo grigio sotto il titolo, come in Piatti. Mai il nome
+>    tra parentesi nel titolo.
+> 2. P2 (piè dei fogli): in TUTTI gli stessi fogli i pulsanti sono «Salva» e «Annulla» affiancati, «Salva» a sinistra, agganciati al
+>    fondo (stesso schema di Piatti e dei filtri: SheetFooter flex-row gap-2). Mai uno per riga.
+> 3. P3 (titoli di sezione del modulo del menù fisso): «Dati», «Categoria e visibilità», «Piatti», «Servizi», «Disponibilità» sopra i
+>    rispettivi gruppi, come nel riferimento menu-fissi/390-modulo-chiaro.png e nella specifica §6.
+> 4. P4 (schede del menù fisso): le schede stanno sotto la descrizione, sono testo con una sottolineatura sotto quella attiva
+>    (senza riquadro), poi la frase di conteggio, poi il pulsante «Nuovo menù fisso» / «Nuova categoria» a tutta larghezza su
+>    telefono (a 1280 px sulla stessa riga della frase, a destra), DENTRO la scheda. Resta Link di next/link, role e aria-current.
+> 5. P5 (scheda Categorie): sotto l'interruttore, sul telefono, l'etichetta «Attiva» (MENU_FISSI_CATEGORY_TOGGLE_LABEL esiste già).
+> 6. P6: correggi pluralizeIt(count, 'giorno speciale', 'giorni speciali') in lib/menu/formatCascadeDeleteDescription.ts e aggiungi
+>    un test per 1 e per 3 giorni («Verrà tolto anche da 1 giorno speciale: …», «… da 3 giorni speciali: …»).
+> 7. P7 (foglio della categoria): nella riga «Disabilitata» il testo a sinistra e l'interruttore a destra, come in Servizi.
+> Nessun useEffect con setState sincrono; ogni Select mantiene `items`; nessun comportamento cambia.
+>
+> TRE CRITERI DI ACCETTAZIONE (riporta i numeri): (a) ogni P corretto nel codice, con file e riga prima e dopo; per P1 e P2 l'ELENCO di
+> tutti i fogli corretti (devono essere sei); (b) `pnpm typecheck` (radice ed e2e) e `pnpm lint` sull'INTERO repo a 0 errori, `pnpm
+> ui:check`, e test unitari di lib/ verdi, compreso quello nuovo di P6 (node --import ./scripts/node-test-resolve.mjs
+> --experimental-strip-types --test); (c) nessun file fuori perimetro (git diff --name-only).
+> NON lanciare nessun giro di ui:verify né di e2e. NON fare git: commit e push li fa l'utente.
+> RISPOSTA FINALE: tabella P1-P7 con file/riga prima e dopo, elenco dei sei fogli di P1 e P2, esiti dei tre criteri, rilievi A.
+> ```
+>
+> **Cosa fai tu**: incolla il prompt in una chat nuova di Cursor; quando ha risposto, incollami il resoconto (controllo io `tsc`, ESLint, test e diff); poi `git add -A && git commit -m "fix(app): F4 — P1-P7 del confronto visivo di Servizi e Menù fissi, fogli dei cataloghi" && git push`.
+
 **Chi**: la chat di design (io).
 **Cosa fai tu**: dopo che l'agente di verifica ha finito e tu hai pushato il suo rapporto, incollami qui il suo resoconto finale. Io leggo il rapporto, assegno i rilievi **P** (bloccano) e **A** (non bloccano), li scrivo in `docs/design/verifica/esiti/<cartella>/rilievi.md` e ti consegno lo zip con il file e il nome della `<CARTELLA>`. Se non ci sono P, il passo successivo parte subito.
+
+> **Il modello generico qui sotto (con i segnaposto) NON si usa per questo giro: vale il prompt compilato qui sopra.**
 
 **Passo F4 (solo se ci sono P)**
 
@@ -1725,6 +1775,8 @@ REGOLE
 **Cosa fai tu**: scrivimi «passo 22»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
 
 ### Passo 23 — VC5: l'agente implementa i controlli di Giorni speciali e Messaggio globale
+
+> **Decisione (2026-10-20)**: **ELIMINATO**. I controlli di Giorni speciali e Messaggio globale (passo 22) restano nei file JSON; si implementano dentro V6 (passo 28) con il motore disponibile, non in un passo a parte sul vecchio lanciatore. Durante I5 e I6 Composer usa l'L1 come ha sempre fatto.
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -1873,6 +1925,8 @@ VERIFICHE: quelle del punto 2. Risposta finale: la tabella completa delle checkl
 3. Scrivimi «deploy fatto» con l'hash del commit e incollami l'esito dello smoke.
 
 ### Passo 28 — V6: l'agente esegue L2 completo (tutte le schermate, WebKit, online senza credenziali)
+
+> **V6, indicazioni (2026-10-20)**: oltre alla suite di fase, l'agente (non Mirko a mano) **riprova i tre stati simulati** di ogni schermata (caricamento, errore di caricamento, errore dell'azione) con **un dev server alla volta** (quattro avvii in tutto), il **bulk da 101 record** dei cataloghi e i **flussi di Menù fissi non provati a runtime** (elenco in 2.2: `colonna-elenco`, `porzione-traduzione`, `servizi-piatti`, `elimina-*`, `persistenza`, `ordine-liste`, `nomi-accessibili`), e **scrive dentro V6 i flussi di Giorni speciali e Messaggio globale** (ex T2d). Per i flussi già provati vale la regola: un esito L2 resta valido finché non cambia un file del raggio largo (policy-test §4). Il passo si spezza in giri per schermata, ciascuno con i suoi tre criteri.
 
 **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (ha già le sue regole; **non** il Blocco comune).
 
@@ -2128,6 +2182,8 @@ Non fare git. Rispondi in italiano con la tabella OK / FALLITO / NON PROVATO del
 
 ### Passo T1a — Controlli comuni, console e screenshot: home, navigazione e Piatti
 
+> **Decisione (2026-10-20)**: **ELIMINATO**. Piatti ha L2 e confronto visivo chiusi (V2 quater); home e navigazione hanno L1 OK; dopo di allora nessun file del raggio largo è cambiato (policy-test §4). Non eseguire.
+
 **Quando**: dopo T1b. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
 
 ```text
@@ -2169,6 +2225,8 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 
 ### Passo T1b — Controlli comuni, console e screenshot: Vini, Distillati e Bevande
 
+> **Decisione (2026-10-20)**: **ASSORBITO in T1e, Parte B**. Vini, Distillati e Bevande non hanno mai avuto un confronto con le demo (i loro screenshot del 18 ottobre sono precedenti a F3 e F-SEL e quelli dei fogli sono stati scattati a metà animazione). Non eseguire questa scheda.
+
 **Quando**: dopo T1c. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
 
 ```text
@@ -2209,6 +2267,8 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 **Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1b — controlli comuni e screenshot di Vini, Distillati e Bevande`, push, «push fatto». 
 
 ### Passo T1c — Controlli comuni, console e screenshot: Servizi e Menù fissi
+
+> **Decisione (2026-10-20)**: **CHIUSO**: la struttura è in repo; gli screenshot di Servizi e Menù fissi li produce T1e (Parte A). Non rieseguire.
 
 > **Esito (2026-10-19)**: 🔶 **non accettato**, struttura in repo (`0bb6847`). Controllato io: `pnpm typecheck` completo a 0 errori in un checkout pulito, ESLint a 0 errori, nessuna chiamata vietata in `e2e/`, nessun file fuori da `e2e/` e `docs/` salvo `package.json` (script `e2e:t1c`). Misure dell'agente: 62 OK, **0 FALLITO**, 8 ERRORE-STRUMENTO, 14 screenshot su 45, circa 11,4 minuti senza completare il giro (criterio: meno di 10 minuti, 45 screenshot, zero ERRORE-STRUMENTO). **Cause** (tutte dello strumento, nessun difetto dell'app): (1) **nomi dei record uguali tra i worker**, contro la regola R5 («`verify-ui-<giro>-w<worker>-<nome>`»): record duplicati e «strict mode violation» su Modifica ed Elimina; (2) gli stati «caricamento» ed «errore-caricamento» richiedono un `next dev` (le simulazioni sono spente con `NODE_ENV=production` per progetto) che si avvia dentro il test e supera i 60 secondi; (3) circa 1442 NON PROVATO sono combinazioni di profilo e tema che il test salta invece di non generare; (4) la suite di fumo impiega circa 2 minuti di tempo reale (criterio R8: meno di 60 secondi) perché setup e teardown lanciano `pnpm payload run`. Si chiude con T1d.
 
@@ -2252,6 +2312,10 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 **Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1c — controlli comuni e screenshot di Servizi e Menu fissi`, push, «push fatto». Poi faccio io il confronto visivo (C10) degli screenshot.
 
 ### Passo T1d — Chiusura di T1c (già «T1c bis»): fixture isolate, simulazioni dedicate, setup in-process
+
+> **Decisione (2026-10-20)**: **CHIUSO**: il resto passa a T1e (screenshot) e a V6 (simulazioni). Non rieseguire.
+
+> **Esito finale di T1d (2026-10-20)**: 🔶 **chiuso al tetto** (`cf754c5`, circa 90 minuti dall'inizio); il resto passa a **T1e**. Controllato io: `pnpm typecheck` completo a 0 errori, ESLint senza errori, nessuna chiamata vietata, nessun file fuori da `e2e/` e `docs/`. **Meglio**: fumo in **8,75 secondi** (criterio: 60), fixture per worker, nessun test saltato senza motivo, `assertPrepared` per le preparazioni; checkpoint di Servizi: **162 OK, 0 ERRORE-STRUMENTO**, 1 FALLITO. **Non accettato**: giro completo non fatto (nessun doppio giro sotto 10 minuti, screenshot non prodotti: nessun PNG nel commit, giri di Menù fissi non eseguiti). **Il FALLITO** (`@sim/ servizi/errore-caricamento`, timeout su «Impossibile caricare») non è un difetto dell'app: la pagina Servizi mostra l'errore quando `shouldSimulateMenuLoadError()` è vero, e il titolo corrisponde (`Impossibile caricare i servizi`); il problema è che la variabile non arriva al server di prova. **Deviazione che non accetto**: per avere più dev server insieme l'agente ha usato `git worktree add --detach` (`e2e/lib/sim-worktree.ts`): copie del repository senza `.env` (ignorato da git), probabile causa dell'errore, con registrazioni di worktree da ripulire; il Seguito 1 chiedeva un solo dev server per gruppo, in sequenza. T1e lo rifà in modo semplice.
 
 > **Esito del primo giro (2026-10-20)**: 🔶 **non accettato** (`05619f5`). Controllato io: `pnpm typecheck` completo a 0 errori in un checkout pulito, ESLint senza errori, nessuna chiamata vietata in `e2e/`, nessun file fuori da `e2e/`, `docs/` e `package.json`. **Fatto**: fixture per worker con `nome()` (R5), setup e teardown in-process, `time pnpm e2e:smoke` in **10 secondi** (criterio: 60), test solo per le combinazioni previste. **Misure**: giro completo 392 s, 409 OK, 73 «falliti», **28 screenshot su 45**; checkpoint di Servizi 159 s, 141 OK, 1 FALLITO, 1 ERRORE-STRUMENTO. **Il FALLITO di Servizi non è un difetto dell'app**: i pulsanti della conferma misurano 274×42 e 274/288 e 42/44 valgono entrambi 0,95, la scala dell'animazione di apertura (`zoom-in` al 95 %); la misura avviene prima della fine dell'animazione (è già successo nel vecchio lanciatore, risolto allora con una misura «stabile»); `fixtures/touch.ts` non aspetta le animazioni. **Scoperta dell'agente**: Next.js consente un solo `next dev` per repository, quindi tre server paralleli per le simulazioni non si possono avere.
 >
@@ -2335,7 +2399,72 @@ o controllo dubbio). Non fare git. Se superi 120 minuti, FERMATI e riporta.
 
 **Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e la ricerca delle chiamate vietate. Commit `test(e2e): T1d — fixture per worker, simulazioni dedicate, setup in-process; screenshot di Servizi e Menù fissi`, push (con gli screenshot: `git add e2e docs`), «push fatto». Poi faccio io il confronto visivo (C10).
 
+
+### Passo T1e — Screenshot per il confronto visivo: Servizi, Menù fissi e cataloghi
+
+**Perché (2026-10-20)**: il confronto visivo sui 28 screenshot di Servizi e Menù fissi ha trovato sette difetti veri dell'app; Vini, Distillati e Bevande non hanno **mai** avuto un confronto con le demo, e quelli del 18 ottobre non servono (precedenti a F3 e F-SEL; i fogli sono stati scattati a metà animazione). Questo passo produce gli screenshot che mancano per **tutte e cinque le schermate**, dopo F4. **Tre criteri**, non sette; tempi e perfezione dello strumento sono obiettivi. Simulazioni (caricamento, errore di caricamento, errore dell'azione): NON PROVATO, le riprova V6. **Quando**: dopo F4 (passo 21), **con F4 già pushato** e Composer fermo. **Chi**: agente di verifica; **non gira insieme a F4**. **Stima**: 90 minuti; **tetto**: 120.
+
+**Prima, in un terminale** (pulizia dei worktree e dei server rimasti da T1d):
+```
+cd /Users/mirko/Documents/GitHub/vma_vd-backend-backoffice; pkill -f "next dev"; for w in $(git worktree list --porcelain | awk '/^worktree /{print $2}' | grep sim-isolates); do git worktree remove --force "$w"; done; git worktree prune; git worktree list; lsof -nP -iTCP:3100,3200,3201,3202,3203 -sTCP:LISTEN | tail -n +2; rm -f .next/e2e.lock
+```
+Se resta un listener sulla 3100, `kill` del suo PID. Poi **incolla in Cursor**, in una chat nuova, **solo il prompt qui sotto**:
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1e. Obiettivo UNICO: salvare gli screenshot degli stati con
+riferimento di Servizi, Menù fissi, Vini, Distillati e Bevande, perché la chat di design li confronti con le demo. Modifichi SOLO
+e2e/** (e package.json solo per gli script e2e) e i rapporti sotto docs/design/verifica/esiti/. NON tocchi scripts/ui-verify (il vecchio
+lanciatore è congelato), né app/, components/, lib/, collections/. Esegui i comandi FUORI dalla sandbox di Cursor (tutte le
+autorizzazioni). Per i giri lunghi usa il background (`nohup … > .next/e2e-run.out 2>&1 &`) e segui .next/e2e-progress.log.
+
+Leggi per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md; docs/design/verifica/esiti/
+2026-10-19-T1c/rapporto.md e rilievi.md; docs/design/verifica/controlli-6.6.json (campi `stati` e `immagini.stati_con_riferimento` delle
+schermate servizi, menu-fissi, vini, distillati e bevande).
+SITUAZIONE (verificata dalla chat di design): la suite di Servizi dà 162 OK, 0 ERRORE-STRUMENTO; ci sono 28 screenshot di Servizi e
+Menù fissi; per gli stati di un foglio lo screenshot mostra l'inizio del modulo invece della sezione; per i cataloghi non esiste
+ancora nessun test in e2e/ (la preparazione degli stati è nel vecchio lanciatore: scripts/ui-verify/lib/run-catalog.mjs,
+catalog-config.mjs, catalog-ui-helpers.mjs: leggili come riferimento di COSA fare e riscrivi i test in e2e/, NON importarli).
+F4 è appena stato applicato: i fogli ora hanno titolo con sottotitolo e piè «Salva | Annulla» affiancati; aggiorna le asserzioni
+che cercavano «Modifica servizio (nome)» e simili.
+
+PARTE A (Servizi e Menù fissi, 45 minuti):
+1. Rimuovi l'approccio con `git worktree` (e2e/lib/sim-worktree.ts, e2e/lib/sim-dev-servers.ts, il testIgnore su .sim-isolates e ogni
+   riferimento); `git worktree list` deve mostrare solo il principale. Togli dalla suite gli stati simulati («caricamento»,
+   «errore-caricamento», «errore-azione») e i controlli di console in sviluppo: NON PROVATO, motivo «le riprova V6 con un dev server
+   alla volta». Nessun dev server in questo passo.
+2. Per OGNI stato con file di riferimento (immagini.stati_con_riferimento) salva uno screenshot per OGNI combinazione elencata, con il
+   nome <schermata>-<stato>-<profilo>-<tema>.png in docs/design/verifica/esiti/2026-10-19-T1c/img/ (sovrascrivi i vecchi). Per gli stati
+   di un FOGLIO (modulo-piatti, modulo-servizi, scegli-piatti, visibilita-categoria, visibilita-avviso, modulo-inglese-aperto, modulo-fondo)
+   fai scorrere il foglio fino alla sezione dello stato (scrollIntoView) e aspetta le animazioni (document.getAnimations()) PRIMA dello
+   screenshot. Ogni preparazione ha un'asserzione di conferma; se uno stato non si può preparare, NON PROVATO con il motivo. «vuoto»,
+   «categorie-vuoto» e «nuovo-senza-categorie» sono NON PROVATO (database popolato).
+PARTE B (Vini, Distillati e Bevande, 45 minuti, solo se la parte A è chiusa entro 60 minuti totali; altrimenti FERMATI):
+3. Per ognuna delle tre schermate, un test per ogni stato con file di riferimento, con la stessa regola degli screenshot di sopra
+   (nome, cartella <data>-T1c/img, foglio scorso alla sezione, animazioni finite). Stati NON PROVATI con il motivo: «caricamento»,
+   «errore-caricamento», «errore-azione» (le riprova V6), «vuoto» (database popolato), «piu-di-100-…» (serve il bulk da 101, lo fa V6).
+   Le fixture sono isolate per worker (nome verify-ui-<giro>-w<n>-…) e cancellate dalla fixture. Gli stati con una preparazione
+   difficile (cascata dell'origine, errori di anno e di geografia) sono preparati dall'interfaccia con un'asserzione di conferma; se non
+   riesce entro 10 minuti per stato, NON PROVATO con il motivo e si passa oltre.
+4. Gli errori dello strumento sono ERRORE-STRUMENTO e non bloccano la consegna degli screenshot: elencali nel rapporto con la causa.
+   Il global-setup chiude i server `next` rimasti sulle porte 3100 e 3200-3203 prima di partire; il global-teardown chiude l'intero
+   albero dei processi del server di produzione.
+
+TRE CRITERI DI ACCETTAZIONE (riporta i numeri): (a) screenshot salvati per tutti gli stati con riferimento che non sono NON PROVATI, per
+OGNI schermata, con il conteggio atteso (dal JSON) e quello salvato, e i fogli scorsi fino alla sezione; (b) i controlli già OK
+(162 OK di Servizi) restano OK in un giro completo e nessun FALLITO nuovo dell'app; (c) ambiente pulito a fine giro: `ps` e `lsof`
+(porte 3100-3203) senza server, nessun worktree, zero record verify-ui- (pnpm payload run e2e/scripts/count-verify-ui.ts).
+In più `pnpm typecheck` e `pnpm lint` sull'INTERO repo. Scrivi il rapporto in docs/design/verifica/esiti/2026-10-19-T1c/rapporto.md
+(per ogni stato: salvato / NON PROVATO con il motivo / ERRORE-STRUMENTO con la causa; per ogni controllo OK / FALLITO con misurato e
+atteso, mai «—»). NON fare git: commit e push li fa l'utente. Se superi 120 minuti totali, FERMATI e riporta.
+RISPOSTA FINALE: tabella per schermata (stati attesi / salvati / NON PROVATI / ERRORE-STRUMENTO), esito dei tre criteri, elenco degli
+screenshot mancanti con il motivo.
+```
+
+**Cosa fai tu**: incolla il prompt in una chat nuova di Cursor (solo dopo il push di F4); quando ha finito incollami il resoconto, poi `git add -A && git commit -m "test(e2e): T1e — screenshot di Servizi, Menù fissi e cataloghi per il confronto visivo" && git push`. Il confronto visivo lo faccio io.
+
 ### Passo T2a — Flussi per schermata: Servizi e Menù fissi
+
+> **Decisione (2026-10-20)**: **ELIMINATO**: già provati in 20d (22 flussi OK) e nei giri di V4 ter; F4 tocca solo la presentazione; i flussi non provati di Menù fissi (vedi 2.2) li prova V6. Non eseguire.
 
 **Quando**: dopo T1c. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti.
 
@@ -2377,6 +2506,8 @@ risultati e, per ogni FALLITO, la tua classificazione (difetto dell'app o contro
 
 ### Passo T2b — Flussi per schermata: Vini, Distillati e Bevande
 
+> **Decisione (2026-10-20)**: **ELIMINATO**: già provati in V3 e V3 bis (flussi veri dei cataloghi OK); il resto a V6. Non eseguire.
+
 **Quando**: dopo T1c e T2a. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti.
 
 ```text
@@ -2416,6 +2547,8 @@ risultati e, per ogni FALLITO, la tua classificazione (difetto dell'app o contro
 **Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T2b — flussi di Vini, Distillati e Bevande`, push, «push fatto».
 
 ### Passo T2c — Flussi per schermata: Piatti e home
+
+> **Decisione (2026-10-20)**: **ELIMINATO**: già provati in V2 quater. Non eseguire.
 
 **Quando**: dopo T1c e T2a. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 90 minuti.
 
@@ -2457,8 +2590,12 @@ risultati e, per ogni FALLITO, la tua classificazione (difetto dell'app o contro
 
 ### Passo T3 — Confronto visivo (C10) di tutti gli stati
 
+> **Decisione (2026-10-20)**: **si chiude con T1e**: la chat di design confronta gli screenshot nuovi (Servizi, Menù fissi e cataloghi, a 390 e 1280 px, chiaro e scuro dove ci sono i riferimenti); i P residui non bloccanti diventano rilievi A annotati come debito.
+
 **Quando**: dopo T1c (Servizi e Menù fissi) e poi dopo T1a e T1b per le altre schermate. **Chi**: la chat di design (io). **Cosa**: confronto degli screenshot di `docs/design/verifica/esiti/<data>-e2e/img/` con i PNG di `docs/design/schermate/`, a 390 e 1280 px, in chiaro e scuro; ne esce un file `rilievi.md` con i P e gli A, e se ci sono P un prompt di correzione per Composer. **Alternativa da decidere** (non ora): automatizzare il confronto con un modello e una scheda di controllo fissa (struttura, testi, ordine, icone, aree di tocco); richiede una chiave API. **Per te**: committa gli screenshot (`git add docs/design/verifica/esiti`) e scrivimi «push fatto».
 
 ### Passo T4 — Pensionamento del vecchio lanciatore
+
+> **Decisione (2026-10-20)**: **RINVIATO a dopo V6**, non ora.
 
 **Quando**: dopo T2c e quando `pnpm e2e` eguaglia i controlli del vecchio lanciatore. **Incolla in Cursor**, in una chat nuova, un prompt che chiede: `pnpm ui:verify` come alias di `pnpm e2e`; rimozione di `scripts/ui-verify` tranne ciò che serve (`provision-user.ts`, `watch.sh` se ancora utile); aggiornamento di `README.md` e `policy-test.md` di docs/design/verifica e delle regole 02; prova che `pnpm e2e` passa; `pnpm typecheck` e `pnpm lint` sull'INTERO repo; nessuna modifica a `app/`, `components/`, `lib/`, `collections/`. **Stima**: 60 minuti; lo scrivo quando serve.
