@@ -70,7 +70,9 @@ const simProjects = isControlliSuite
 export default defineConfig({
   testDir: '.',
   testMatch: isControlliSuite ? ['controlli/**/*.spec.ts'] : ['smoke/**/*.spec.ts'],
-  testIgnore: isControlliSuite ? [] : ['**/strumento.spec.ts'],
+  testIgnore: isControlliSuite
+    ? ['**/.sim-isolates/**']
+    : ['**/strumento.spec.ts', '**/.sim-isolates/**'],
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: 0,

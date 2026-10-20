@@ -1,14 +1,18 @@
 import { type ChildProcess, spawn } from 'node:child_process'
-import { readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
 
 import { chromium } from '@playwright/test'
 
 import { loginAppOnBase } from './login-dev'
 import { E2E_RUN_META, REPO_ROOT } from './paths'
+import { devRootForPort } from './sim-worktree'
 import { waitForUrl } from './wait-url'
 
-/** Next.js consente un solo `next dev` per directory: una istanza attiva, porte distinte per stato. */
+const execAsync = promisify(exec)
+
 export const SIM_PORTS = {
   caricamento: 3200,
   erroreCaricamento: 3201,
@@ -17,27 +21,12 @@ export const SIM_PORTS = {
 } as const
 
 const START_TIMEOUT_MS = 180_000
+const NEXT_BIN = join(REPO_ROOT, 'node_modules/next/dist/bin/next')
 
-type SimMeta = {
-  simServerPid?: number | null
-  simServerPort?: number | null
-}
+type SimMeta = { simServerPids?: number[] }
 
-let activeChild: ChildProcess | null = null
-let activeState: string | null = null
-
-function startDev(port: number, extraEnv: Record<string, string>): ChildProcess {
-  try {
-    unlinkSync(join(REPO_ROOT, '.next/dev/lock'))
-  } catch {
-    /* nessun lock */
-  }
-  return spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
-    cwd: REPO_ROOT,
-    env: { ...process.env, ...extraEnv, NODE_ENV: 'development', PAYLOAD_DISABLE_PUSH: '1' },
-    stdio: 'ignore',
-  })
-}
+const children: ChildProcess[] = []
+let starting: Promise<void> | null = null
 
 function envForState(statoId: string): Record<string, string> {
   if (statoId === 'caricamento') return { APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS: '3000' }
@@ -54,20 +43,31 @@ function portForState(statoId: string): number {
 }
 
 function mergeSimMeta(patch: SimMeta): void {
-  const raw = JSON.parse(readFileSync(E2E_RUN_META, 'utf8')) as Record<string, unknown>
-  writeFileSync(E2E_RUN_META, JSON.stringify({ ...raw, ...patch }), 'utf8')
+  try {
+    const raw = JSON.parse(readFileSync(E2E_RUN_META, 'utf8')) as Record<string, unknown>
+    writeFileSync(E2E_RUN_META, JSON.stringify({ ...raw, ...patch }), 'utf8')
+  } catch {
+    /* setup incompleto */
+  }
 }
 
-function killActive(): void {
-  if (activeChild?.pid) {
+async function freeSimPorts(): Promise<void> {
+  for (const port of Object.values(SIM_PORTS)) {
     try {
-      process.kill(activeChild.pid, 'SIGTERM')
+      await execAsync(`lsof -ti :${port} | xargs kill -TERM 2>/dev/null || true`, { shell: '/bin/bash' })
     } catch {
-      /* già terminato */
+      /* nessun listener */
     }
   }
-  activeChild = null
-  activeState = null
+  await new Promise((r) => setTimeout(r, 500))
+}
+
+function startDev(cwd: string, port: number, extraEnv: Record<string, string>): ChildProcess {
+  return spawn(process.execPath, [NEXT_BIN, 'dev', '--port', String(port), '--webpack'], {
+    cwd,
+    env: { ...process.env, ...extraEnv, NODE_ENV: 'development', PAYLOAD_DISABLE_PUSH: '1' },
+    stdio: 'ignore',
+  })
 }
 
 async function warmupDevServer(base: string): Promise<void> {
@@ -81,43 +81,71 @@ async function warmupDevServer(base: string): Promise<void> {
   const page = await browser.newPage()
   await loginAppOnBase(page, base)
   for (const path of ['/app/menu/services', '/app/menu/fixed', '/app/menu/fixed/categories']) {
-    await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 60_000 })
+    await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 90_000 })
   }
   await browser.close()
 }
 
-/** Avvia (o riusa) il server dev per lo stato simulato; kill del precedente se necessario. */
-export async function ensureSimServerForState(statoId: string, options: { warm?: boolean } = {}): Promise<string> {
-  const port = portForState(statoId)
+async function startOne(port: number, extraEnv: Record<string, string>, warm: boolean): Promise<void> {
+  const cwd = await devRootForPort(port)
+  const child = startDev(cwd, port, extraEnv)
+  children.push(child)
   const base = `http://localhost:${port}`
-  if (activeState === statoId && activeChild?.pid != null) {
-    return base
+  await waitForUrl(`${base}/app/login`, START_TIMEOUT_MS)
+  if (warm) await warmupDevServer(base)
+}
+
+async function startSimDevServersInner(): Promise<void> {
+  if (children.length > 0) return
+  await freeSimPorts()
+
+  const specs = [
+    { port: SIM_PORTS.caricamento, env: envForState('caricamento'), warm: true },
+    { port: SIM_PORTS.erroreCaricamento, env: envForState('errore-caricamento'), warm: false },
+    { port: SIM_PORTS.erroreAzione, env: envForState('errore-azione'), warm: false },
+    { port: SIM_PORTS.consoleDev, env: {}, warm: true },
+  ]
+
+  for (const { port, env, warm } of specs) {
+    await startOne(port, env, warm)
   }
-  killActive()
-  activeChild = startDev(port, envForState(statoId))
-  activeState = statoId
-  await waitForUrl(base, START_TIMEOUT_MS)
-  mergeSimMeta({ simServerPid: activeChild.pid ?? null, simServerPort: port })
-  if (options.warm !== false) {
-    await warmupDevServer(base)
+
+  mergeSimMeta({ simServerPids: children.map((c) => c.pid).filter((p): p is number => p != null) })
+}
+
+export async function startSimDevServers(): Promise<void> {
+  if (children.length > 0) return
+  if (!starting) {
+    starting = startSimDevServersInner().finally(() => {
+      starting = null
+    })
   }
-  return base
+  await starting
 }
 
 export function simBaseUrlForState(statoId: string): string {
   return `http://localhost:${portForState(statoId)}`
 }
 
-/** Primo stato simulato avviato in global-setup (compilazione fuori dai test). */
-export async function startSimDevServers(): Promise<void> {
-  await ensureSimServerForState('caricamento')
+export function consoleDevBaseUrl(): string {
+  return `http://localhost:${SIM_PORTS.consoleDev}`
 }
 
 export function stopSimDevServers(): void {
-  killActive()
-  mergeSimMeta({ simServerPid: null, simServerPort: null })
+  for (const child of children) {
+    if (child.pid) {
+      try {
+        process.kill(child.pid, 'SIGTERM')
+      } catch {
+        /* già terminato */
+      }
+    }
+  }
+  children.length = 0
+  mergeSimMeta({ simServerPids: [] })
 }
 
 export async function ensureConsoleDevServer(): Promise<string> {
-  return ensureSimServerForState('console', { warm: true })
+  await startSimDevServers()
+  return consoleDevBaseUrl()
 }

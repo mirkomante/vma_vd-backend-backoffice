@@ -22,8 +22,9 @@ import { MENU_LIST_SCREENS, type MenuListScreenId } from '../lib/menu-list/confi
 import { assertStateVisible, prepareMenuListState } from '../lib/menu-list/prepare-state'
 import { matrixStates, screenshotPlan } from '../lib/menu-list/states'
 import { E2E_ESITI_DIR } from '../lib/paths'
+import { assertPrepared } from '../lib/prepare-assert'
 import { parseProjectName } from '../lib/project-meta'
-import { ensureSimServerForState } from '../lib/sim-dev-servers'
+import { simBaseUrlForState, startSimDevServers } from '../lib/sim-dev-servers'
 import { applyThemeCookie, htmlDarkForTema } from '../lib/theme'
 import { applyProfileViewport } from '../lib/viewports'
 
@@ -43,7 +44,7 @@ async function withSimBase(
   tema: 'chiaro' | 'scuro',
   fn: () => Promise<void>,
 ): Promise<void> {
-  const base = await ensureSimServerForState(statoId, { warm: false })
+  const base = simBaseUrlForState(statoId)
   await applyProfileViewport(page, profilo)
   await loginAppOnBase(page, base)
   await applyThemeCookie(page, base, tema)
@@ -51,6 +52,10 @@ async function withSimBase(
 }
 
 test.describe.configure({ mode: 'serial' })
+
+test.beforeAll(async () => {
+  await startSimDevServers()
+})
 
 for (const screenId of SCREEN_IDS) {
   const config = MENU_LIST_SCREENS[screenId]
@@ -63,7 +68,7 @@ for (const screenId of SCREEN_IDS) {
             const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker, {
               skipDb: statoId === 'errore-azione',
             })
-            if (!prep.ok) test.skip(true, prep.reason)
+            assertPrepared(prep)
             await assertStateVisible(page, config, statoId)
             const r = await checkScrollOrizzontale(page)
             expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
@@ -78,7 +83,7 @@ for (const screenId of SCREEN_IDS) {
             const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker, {
               skipDb: statoId === 'errore-azione',
             })
-            if (!prep.ok) test.skip(true, prep.reason)
+            assertPrepared(prep)
             await assertStateVisible(page, config, statoId)
             const bad = await touch.measure()
             expect(bad, `misurato: ${bad.join('; ') || 'nessun elemento'}; atteso: nessun elemento sotto 44 px`).toEqual([])
@@ -93,7 +98,7 @@ for (const screenId of SCREEN_IDS) {
             const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker, {
               skipDb: statoId === 'errore-azione',
             })
-            if (!prep.ok) test.skip(true, prep.reason)
+            assertPrepared(prep)
             await assertStateVisible(page, config, statoId)
             const r = await checkAltezzaMouse(page)
             if (!r.ok && r.avviso) testInfo.annotations.push({ type: 'AVVISO', description: r.misurato })
@@ -109,8 +114,13 @@ for (const screenId of SCREEN_IDS) {
             const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker, {
               skipDb: statoId === 'errore-azione',
             })
-            if (!prep.ok) test.skip(true, prep.reason)
+            assertPrepared(prep)
             await assertStateVisible(page, config, statoId)
+            if (statoId === 'caricamento' || statoId === 'errore-caricamento') {
+              await applyThemeCookie(page, simBaseUrlForState(statoId), tema)
+              await page.reload({ waitUntil: 'domcontentloaded' })
+              await assertStateVisible(page, config, statoId)
+            }
             const r = await checkTemaClasse(page, htmlDarkForTema(tema))
             expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
           })
@@ -125,7 +135,7 @@ for (const screenId of SCREEN_IDS) {
             const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker, {
               skipDb: statoId === 'errore-azione',
             })
-            if (!prep.ok) test.skip(true, prep.reason)
+            assertPrepared(prep)
             await assertStateVisible(page, config, statoId)
             const r = await checkNoLampo(page)
             expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
@@ -146,7 +156,7 @@ for (const screenId of SCREEN_IDS) {
         const prep = await prepareMenuListState(page, config, shot.statoId, payload, payloadWorker, {
           skipDb: shot.statoId === 'errore-azione',
         })
-        if (!prep.ok) test.skip(true, prep.reason)
+        assertPrepared(prep)
         await assertStateVisible(page, config, shot.statoId)
         mkdirSync(join(E2E_ESITI_DIR, 'img'), { recursive: true })
         await page.screenshot({

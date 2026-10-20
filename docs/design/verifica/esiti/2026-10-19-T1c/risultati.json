@@ -1,18 +1,60 @@
 {
-  "commit": "148497e7f2dd",
+  "commit": "140c15253f16",
   "launcher": "e2e/T1c-playwright",
   "browser": "chromium (Playwright)",
   "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
-  "durataSecondi": 185,
+  "durataSecondi": 131,
   "riepilogo": {
     "OK": 0,
     "FALLITO": 0,
     "AVVISO": 0,
     "NON PROVATO": 0,
-    "ERRORE-STRUMENTO": 0
+    "ERRORE-STRUMENTO": 2
   },
-  "esiti": [],
-  "erroriStrumento": [],
+  "esiti": [
+    {
+      "id": "@sim/ C1 telefono-390-chiaro",
+      "schermata": "@sim/ servizi/errore-caricamento",
+      "profiloTema": "simulazioni",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: ENOENT: no such file or directory, open '/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/e2e/.sim-isolates/3201/.next/e2e-run.json'",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0.1
+    },
+    {
+      "id": "@sim/ C1 telefono-390-chiaro",
+      "schermata": "@sim/ servizi/errore-caricamento",
+      "profiloTema": "simulazioni",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "tempo",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "timedOut",
+      "seconds": 0
+    }
+  ],
+  "erroriStrumento": [
+    {
+      "id": "@sim/ C1 telefono-390-chiaro",
+      "schermata": "@sim/ servizi/errore-caricamento",
+      "profiloTema": "simulazioni",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: ENOENT: no such file or directory, open '/Users/mirko/Documents/GitHub/vma_vd-backend-backoffice/e2e/.sim-isolates/3201/.next/e2e-run.json'",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0.1
+    },
+    {
+      "id": "@sim/ C1 telefono-390-chiaro",
+      "schermata": "@sim/ servizi/errore-caricamento",
+      "profiloTema": "simulazioni",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "tempo",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "timedOut",
+      "seconds": 0
+    }
+  ],
   "anomalie": [],
   "exitCode": "failed"
 }

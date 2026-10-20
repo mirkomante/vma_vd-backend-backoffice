@@ -25,8 +25,9 @@ import { MENU_LIST_SCREENS, type MenuListScreenId } from '../lib/menu-list/confi
 import { assertStateVisible, prepareMenuListState } from '../lib/menu-list/prepare-state'
 import { matrixStates, nonProvatoReason, screenshotPlan } from '../lib/menu-list/states'
 import { E2E_ESITI_DIR } from '../lib/paths'
-import { ensureConsoleDevServer } from '../lib/sim-dev-servers'
+import { assertPrepared } from '../lib/prepare-assert'
 import { parseProjectName } from '../lib/project-meta'
+import { ensureConsoleDevServer } from '../lib/sim-dev-servers'
 import { applyThemeCookie, htmlDarkForTema } from '../lib/theme'
 
 const SCREEN_IDS: MenuListScreenId[] = ['servizi', 'menu-fissi']
@@ -40,108 +41,85 @@ for (const screenId of SCREEN_IDS) {
   const stateIds = prodStates(screenId)
 
   for (const statoId of stateIds) {
-    test.describe(`${screenId}/${statoId}`, () => {
     const np = nonProvatoReason(screenId, statoId)
+    if (np) continue
 
-    for (const project of C1_PROJECTS) {
-      test(`${screenId} C1 ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
-        testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
-        if (np) {
-          test.skip(true, np)
-          return
-        }
-        const { tema } = parseProjectName(project)
-        if (baseURL) await applyThemeCookie(page, baseURL, tema)
-        const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
-        if (!prep.ok) test.skip(true, prep.reason)
-        await assertStateVisible(page, config, statoId)
-        const r = await checkScrollOrizzontale(page)
-        expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
-      })
-    }
-
-    for (const project of C2_PROJECTS) {
-      test(`${screenId} C2 ${projectTag(project)}`, async ({ page, baseURL, touch, payload, payloadWorker }, testInfo) => {
-        testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
-        if (np) {
-          test.skip(true, np)
-          return
-        }
-        const { tema } = parseProjectName(project)
-        if (baseURL) await applyThemeCookie(page, baseURL, tema)
-        const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
-        if (!prep.ok) test.skip(true, prep.reason)
-        await assertStateVisible(page, config, statoId)
-        const bad = await touch.measure()
-        expect(bad, `misurato: ${bad.join('; ') || 'nessun elemento'}; atteso: nessun elemento sotto 44 px`).toEqual([])
-      })
-    }
-
-    for (const project of C2_MOUSE_PROJECTS) {
-      test(`${screenId} C2-mouse ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
-        testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
-        if (np) {
-          test.skip(true, np)
-          return
-        }
-        const { tema } = parseProjectName(project)
-        if (baseURL) await applyThemeCookie(page, baseURL, tema)
-        const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
-        if (!prep.ok) test.skip(true, prep.reason)
-        await assertStateVisible(page, config, statoId)
-        const r = await checkAltezzaMouse(page)
-        if (!r.ok && r.avviso) testInfo.annotations.push({ type: 'AVVISO', description: r.misurato })
-        expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
-      })
-    }
-
-    for (const project of MATRIX_PROJECTS) {
-      test(`${screenId} C3 ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
-        testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
-        if (np) {
-          test.skip(true, np)
-          return
-        }
-        const { tema } = parseProjectName(project)
-        if (baseURL) await applyThemeCookie(page, baseURL, tema)
-        const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
-        if (!prep.ok) test.skip(true, prep.reason)
-        await assertStateVisible(page, config, statoId)
-        const r = await checkTemaClasse(page, htmlDarkForTema(tema))
-        expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
-      })
-    }
-
-    for (const project of C3_NO_LAMPO_PROJECTS) {
-      test(`${screenId} C3-no-lampo ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
-        testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
-        if (np) {
-          test.skip(true, np)
-          return
-        }
-        if (baseURL) await installNoLampoObserver(page)
-        const { tema } = parseProjectName(project)
-        if (baseURL) await applyThemeCookie(page, baseURL, tema)
-        const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
-        if (!prep.ok) test.skip(true, prep.reason)
-        await assertStateVisible(page, config, statoId)
-        const r = await checkNoLampo(page)
-        expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
-      })
-    }
-
-    if (statoId === 'elenco') {
-      for (const project of C3_CAMBIO_SISTEMA_PROJECTS) {
-        test(`${screenId} C3-cambio-sistema ${projectTag(project)}`, async ({ page, baseURL }) => {
-          if (np) {
-            test.skip(true, np)
-            return
-          }
-          const r = await checkTemaCambioSistema(page, baseURL!)
+    test.describe(`${screenId}/${statoId}`, () => {
+      for (const project of C1_PROJECTS) {
+        test(`${screenId} C1 ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
+          testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
+          const { tema } = parseProjectName(project)
+          if (baseURL) await applyThemeCookie(page, baseURL, tema)
+          const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
+          assertPrepared(prep)
+          await assertStateVisible(page, config, statoId)
+          const r = await checkScrollOrizzontale(page)
           expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
         })
       }
-    }
+
+      for (const project of C2_PROJECTS) {
+        test(`${screenId} C2 ${projectTag(project)}`, async ({ page, baseURL, touch, payload, payloadWorker }, testInfo) => {
+          testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
+          const { tema } = parseProjectName(project)
+          if (baseURL) await applyThemeCookie(page, baseURL, tema)
+          const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
+          assertPrepared(prep)
+          await assertStateVisible(page, config, statoId)
+          const bad = await touch.measure()
+          expect(bad, `misurato: ${bad.join('; ') || 'nessun elemento'}; atteso: nessun elemento sotto 44 px`).toEqual([])
+        })
+      }
+
+      for (const project of C2_MOUSE_PROJECTS) {
+        test(`${screenId} C2-mouse ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
+          testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
+          const { tema } = parseProjectName(project)
+          if (baseURL) await applyThemeCookie(page, baseURL, tema)
+          const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
+          assertPrepared(prep)
+          await assertStateVisible(page, config, statoId)
+          const r = await checkAltezzaMouse(page)
+          if (!r.ok && r.avviso) testInfo.annotations.push({ type: 'AVVISO', description: r.misurato })
+          expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
+        })
+      }
+
+      for (const project of MATRIX_PROJECTS) {
+        test(`${screenId} C3 ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
+          testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
+          const { tema } = parseProjectName(project)
+          if (baseURL) await applyThemeCookie(page, baseURL, tema)
+          const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
+          assertPrepared(prep)
+          await assertStateVisible(page, config, statoId)
+          const r = await checkTemaClasse(page, htmlDarkForTema(tema))
+          expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
+        })
+      }
+
+      for (const project of C3_NO_LAMPO_PROJECTS) {
+        test(`${screenId} C3-no-lampo ${projectTag(project)}`, async ({ page, baseURL, payload, payloadWorker }, testInfo) => {
+          testInfo.annotations.push({ type: 'schermata', description: `${screenId}/${statoId}` })
+          if (baseURL) await installNoLampoObserver(page)
+          const { tema } = parseProjectName(project)
+          if (baseURL) await applyThemeCookie(page, baseURL, tema)
+          const prep = await prepareMenuListState(page, config, statoId, payload, payloadWorker)
+          assertPrepared(prep)
+          await assertStateVisible(page, config, statoId)
+          const r = await checkNoLampo(page)
+          expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
+        })
+      }
+
+      if (statoId === 'elenco') {
+        for (const project of C3_CAMBIO_SISTEMA_PROJECTS) {
+          test(`${screenId} C3-cambio-sistema ${projectTag(project)}`, async ({ page, baseURL }) => {
+            const r = await checkTemaCambioSistema(page, baseURL!)
+            expect(r.ok, `misurato: ${r.misurato}; atteso: ${r.atteso}`).toBe(true)
+          })
+        }
+      }
     })
   }
 
@@ -155,7 +133,9 @@ for (const screenId of SCREEN_IDS) {
     })
   }
 
-  const shots = screenshotPlan(screenId).filter((s) => !SIM_MATRIX_STATES.has(s.statoId))
+  const shots = screenshotPlan(screenId).filter(
+    (s) => !SIM_MATRIX_STATES.has(s.statoId) && !nonProvatoReason(screenId, s.statoId),
+  )
   for (const shot of shots) {
     const project = `${shot.profilo}-${shot.tema}`
     test(`screenshot ${screenId}-${shot.statoId} ${projectTag(project)}`, async ({
@@ -164,14 +144,9 @@ for (const screenId of SCREEN_IDS) {
       payload,
       payloadWorker,
     }) => {
-      const np = nonProvatoReason(screenId, shot.statoId)
-      if (np) {
-        test.skip(true, np)
-        return
-      }
       if (baseURL) await applyThemeCookie(page, baseURL, shot.tema)
       const prep = await prepareMenuListState(page, config, shot.statoId, payload, payloadWorker)
-      if (!prep.ok) test.skip(true, prep.reason)
+      assertPrepared(prep)
       await assertStateVisible(page, config, shot.statoId)
       mkdirSync(join(E2E_ESITI_DIR, 'img'), { recursive: true })
       await page.screenshot({
