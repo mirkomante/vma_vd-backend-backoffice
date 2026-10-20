@@ -1,7 +1,7 @@
 {
  "versione": 1,
  "fase": "6.6",
- "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande,servizi,menu-fissi,giorni-speciali,messaggio-globale}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù si aggiungono alla chiusura (D7): per ora vale online-senza-credenziali di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
+ "nota": "Controlli del backoffice «Menù» (6.6), leggibili dalla macchina, ricavati dalle specifiche in docs/design/schermate/{integrazione,piatti,vini,distillati,bevande,servizi,menu-fissi,giorni-speciali,messaggio-globale}/spec.md e dai controlli comuni C1-C10 di docs/design/modello-specifica-schermata.md. Si lancia con --controlli controlli-6.6.json (il lanciatore, senza l'opzione, prende l'ultimo file in ordine alfabetico, che non è questo). L'agente di verifica NON modifica questo file né le tolleranze: se un controllo sembra sbagliato lo segnala come 'controllo dubbio'. I controlli con 'rinviato_a': '6.5' hanno 'stato_prova' NON PROVABILE e quindi esito NON PROVATO con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano quelli di 02-ui-verifica-agente.mdc: non esiste un esito RINVIATO). I controlli online del Menù (rotte protette senza sessione) sono nel blocco «online-senza-credenziali» di questo file (D7, passo 25) e li implementa ed esegue V6; valgono anche on1-on6 di controlli-8.2.json. I controlli che scrivono dati lavorano SOLO sul database di sviluppo, con voci di prova «verify-ui-…» che si cancellano in try/finally.",
  "fonti": [
   "docs/design/schermate/integrazione/spec.md",
   "docs/design/schermate/piatti/spec.md",
@@ -300,7 +300,8 @@
    "errore_server": "server di SVILUPPO separato (porta 3200, mai in production) con APP_MENU_DEV_SIMULATE_SAVE_ERROR=1 e puntato al database di sviluppo",
    "errore_caricamento": "idem con APP_MENU_DEV_SIMULATE_LOAD_ERROR=1",
    "caricamento_lento": "idem con APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS=2500",
-   "nota": "Le variabili vivono in lib/app/menu/devSimulate.ts (chat I1 della 6.6), come lib/app/hours/devSimulate.ts, e non agiscono con NODE_ENV production. Valgono per tutte le schermate del Menù."
+   "ritardo_pubblicazione": "idem con MENU_AVAILABILITY_IN_MEMORY=1 (file di disponibilità in memoria, senza bucket) e APP_MENU_DEV_SIMULATE_PUBLISH_DELAY_MS=8000; solo per Messaggio globale: il ritardo agisce in lettura dopo un salvataggio, quindi serve un primo salvataggio che renda leggibile il file; con MENU_AVAILABILITY_MIRROR_FILE=<file temporaneo> il file si legge anche da fuori",
+   "nota": "Le variabili vivono in lib/app/menu/devSimulate.ts (chat I1 della 6.6), come lib/app/hours/devSimulate.ts, e non agiscono con NODE_ENV production. Valgono per tutte le schermate del Menù, tranne ritardo_pubblicazione (solo Messaggio globale)."
   },
   "bandiera_ricompila": "spenta in tutta la 6.6 (esecuzione-6.6 §1 punto 1): la accende la 6.5. Dei controlli sul pulsante vale RICOMPILA-ASSENTE; quelli sul pulsante presente sono NON PROVATI, rinviati alla 6.5"
  },
@@ -6282,6 +6283,22 @@
    }
   }
  ],
+ "online-senza-credenziali": [
+  {
+   "id": "on-menu-1",
+   "tipo": "flusso",
+   "passi": [
+    "per ciascuna delle nove rotte del Menù (/app/menu, /app/menu/wines, /app/menu/spirits, /app/menu/drinks, /app/menu/services, /app/menu/fixed, /app/menu/fixed/categories, /app/menu/special-days, /app/menu/message): GET <BASE_URL><rotta> senza cookie, senza seguire il reindirizzamento"
+   ],
+   "atteso": [
+    "nessuna risposta 404 né 5xx: la rotta esiste nella revisione in linea e la guardia risponde prima di leggere qualunque dato (in particolare /app/menu/special-days e /app/menu/message, nate nel passo 24, e quest'ultima legge anche il file dal bucket)",
+    "la destinazione è /app/login, relativa o con l'origine di BASE_URL, MAI 0.0.0.0 o localhost"
+   ],
+   "livello": 2,
+   "nota": "Solo richieste HTTP: nessuna credenziale, nessun utente di prova, nessuna scrittura. Non prova il contenuto delle pagine (è L3, livello_3).",
+   "fonte": "docs/design/verifica/controlli-8.2.json (on2); .cursor/rules/ui/02-ui-verifica-agente.mdc (mai produzione); esecuzione-6.6 passo 25"
+  }
+ ],
  "livello_3": [
   "Home «Oggi» su iPhone: la riga «{N} piatti terminati» e il tocco sulla scheda «Menù»",
   "Pannello di navigazione con le voci accese: voci raggiungibili con il pollice, blocchi «Area App» e utente fissi",
@@ -6291,6 +6308,12 @@
   "Distillati e Bevande su iPhone: i menu a tendina di Invecchiamento, Grado e Capacità con «Non indicato», il paese facoltativo delle bevande",
   "Elenchi con tabella: a 768 px e oltre la tabella a colonne fisse, a telefono le schede con l'interruttore «Disponibile» comodo da toccare",
   "Menù fissi su iPhone: la vista «Scegli piatti» (scorrimento, caselle, ricerca con la tastiera), le frecce «Sposta su/giù» e «Togli», il tasto indietro del browser tra le schede «Menù fissi» e «Categorie»",
-  "Servizi su iPhone: interruttore «Disponibile» e finestra di eliminazione con l'elenco dei menù fissi (testo leggibile, pulsanti raggiungibili)"
+  "Servizi su iPhone: interruttore «Disponibile» e finestra di eliminazione con l'elenco dei menù fissi (testo leggibile, pulsanti raggiungibili)",
+  "Giorni speciali su iPhone: il campo «Data» apre il selettore nativo di iOS; la data scelta compare nel campo e il giorno si salva e si rilegge con la stessa data; i controlli nativi seguono il tema scuro",
+  "Giorni speciali su iPhone: elenco in schede con «Prossimi» e «Passati»; interruttore «Attivo», matita e cestino comodi da toccare e distinti tra loro (nessun tocco sbagliato); foglio dal basso scorso fino alle caselle dei menù fissi per categoria, con la tastiera aperta sul messaggio e «Salva» e «Annulla» sempre visibili; finestra di eliminazione con data e ambito leggibili e pulsanti raggiungibili",
+  "Messaggio globale su iPhone: la tastiera sull'area di testo di tre righe (con Invio e con l'incolla non resta nessun ritorno a capo); i tre pulsanti a tutta larghezza comodi da toccare; dopo «Salva modifiche» il riquadro con «Menù pubblico aggiornato alle {ora}»; finestra «Togliere il messaggio?» leggibile, con «Indietro» e «Togli» raggiungibili",
+  "Giorni speciali su Cloud Run (la chat di design, col browser di Mirko): con giorni di prova (uno nel 2099 e uno di oggi disattivato, solo su menù fissi di prova «verify-ui-…», creati ed eliminati dalla chat di design) la sessione reale salva e rilegge lo stesso giorno di calendario; il giorno di oggi sta in «Prossimi» con l'etichetta «Oggi» anche con il fuso del server di Cloud Run; dopo l'eliminazione compare la riga delete (area app, special-days) nel registro attività",
+  "Messaggio globale su Cloud Run (la chat di design, col browser di Mirko): lettura di disponibilita.json lato server con le credenziali del servizio: dopo «Salva modifiche» con un testo «verify-ui-…» il riquadro mostra il testo con «Menù pubblico aggiornato alle {ora}» in Europe/Rome, «In pubblicazione…» compare solo finché il file non ha il testo, e dopo «Togli il messaggio» il riquadro dice «Nessun messaggio.»; se compare «Messaggio salvato: «…»» senza ora il servizio non legge il bucket (permessi in lettura) ed è il difetto da riportare. Il testo di prova finisce nel file letto dal menù pubblico: con il consenso di Mirko, il messaggio reale (se c'è) si annota prima e si ripristina subito",
+  "Giorni speciali e Messaggio globale, ruoli su Cloud Run (la chat di design, col browser di Mirko): manager, admin e super-admin eliminano un giorno speciale di prova e salvano e tolgono il messaggio; un utente senza ruolo no"
  ]
 }

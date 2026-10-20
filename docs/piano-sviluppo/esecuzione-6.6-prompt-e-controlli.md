@@ -2234,6 +2234,8 @@ la DURATA DEL PASSO in minuti, quanti ERRORE-STRUMENTO, il comando dei due giri,
 
 ### Passo 25 — D7: controlli di chiusura (L2 completo e L3)
 
+> **Esito (2026-10-20)**: pacchetto consegnato; lo stato ✅ con l'hash si segna dopo il «push fatto» e il controllo del repo. **L2**: verificata la §9 di Giorni speciali (16 punti) e di Messaggio globale (14): già coperte da controlli esistenti, nessun controllo L2 nuovo per le due schermate. Aggiunti in `controlli-6.6.json`: la simulazione `ritardo_pubblicazione` (citata da `messaggio-globale-pubblicazione` senza essere definita) e il blocco `online-senza-credenziali` con `on-menu-1` (livello 2): le nove rotte del Menù senza sessione, nessun 404 né 5xx, reindirizzamento a `/app/login` senza 0.0.0.0 o localhost; lo implementa ed esegue V6. **L3**: sei voci nuove in `livello_3` (tre su iPhone, tre su Cloud Run). Sono il dettaglio delle voci 6, 7 e 8 del giro su iPhone (§6, passo 30, parte M3) e della parte D9 (registro `delete`, lettura di `disponibilita.json` con l'ora, ruoli); l'elenco di Mirko in §6 e nel passo 30 non cambia. Nessun id né livello dei controlli di schermata cambia (R14 invariata, 244 id in `e2e:wire`). **Non toccati**: scheda 28, A1–A12, debiti e eccezioni firmate. **Non verificato**: nessun controllo nuovo è stato eseguito.
+
 **Chi**: la chat di design (io). **Niente da incollare in Cursor.**
 **Cosa fai tu**: scrivimi «passo 25»; ti consegno un pacchetto (zip) e il messaggio di commit; tu applichi lo zip, fai commit e push e scrivi «push fatto».
 
