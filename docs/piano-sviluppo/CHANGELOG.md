@@ -10,6 +10,18 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Fixed
+
+- **F-TOCCO (passo 21b) — P8 area di tocco schede Menù fissi e A8 filtro Stato cataloghi** — Schede «Menù fissi» / «Categorie»: estensione hit area con `pointer-coarse:after` (insets come `switch.tsx`), senza altezza visibile extra; rimosso `overflow-x-auto` dal `tablist` (due etichette brevi, niente scroll orizzontale necessario a 320–390 px — l’overflow tagliava il pseudo-elemento e rischiava scroll verticale). Filtro «Stato» con `items` in Vini, Distillati e Bevande; Distillati e Bevande: `items` anche su Tipologia e Paese. Helper `catalogStatusFilterItems` in `lib/menu/catalog/disabledStatusFilter.ts`.
+
+### Componenti
+
+- **Menù fissi (`fixed-menus-shell`)** — `ui-check-allow`: deviazione D6: area di tocco delle schede con `pointer-coarse` fuori da `components/ui` (P8). Il registro D6 in design non è aggiornato in questo passo.
+
+### Tests
+
+- **F-TOCCO (passo 21b)** — L0: `pnpm typecheck` (radice + e2e) 0 errori; `pnpm lint` 0 errori (104 warning preesistenti); `pnpm ui:check` ok (1 eccezione `ui-check-allow` P8); unitari `lib/**/*.test.ts` **103/103** (nuovo `disabledStatusFilter.test.ts`). L1 Menù fissi: `pnpm e2e:t1c --grep 'menu-fissi/(elenco|categorie).*C[123].*telefono-390'` — **16 passed**, 0 falliti; C2 su `elenco` e `categorie` telefono-390 chiaro e scuro **OK** (nessun elemento sotto 44 px); C1 e C3 stessi stati/profili **OK**. L1 Vini: `pnpm ui:verify locale-prod --livello 1 --schermata vini --controlli controlli-6.6.json --profili telefono-390 --temi chiaro` — **ERRORE-STRUMENTO** (secondo avvio `menu-payload` daemon exit 1 su porta 31997 dopo `prod-server`, prima del primo controllo; non rilanciato).
+
 ### Changed
 
 - **Coda del passo 20: 21b (F-TOCCO) e 21c (V-MF) prima del 22** (2026-10-20; solo documenti): due correzioni alla chiusura del passo 20, verificate nel repo. (1) A6 è un rilievo **P8**, non A (policy-test §5: un FALLITO è P; 4 FALLITO C2 dopo F4: le schede di Menù fissi sono testo con `px-1 pb-2`, circa 30 px); A8 (filtro Stato con il valore grezzo «all») è confermato in tutti e tre i cataloghi (Select senza `items`; Piatti lo ha). (2) Il prompt di F4 vietava i giri di verifica contro policy-test §2 e §5; F4 ha cambiato circa 300 righe di `fixed-menu-form-sheet.tsx` e il funzionale di Menù fissi è non provato dopo F4. Nuova regola: **L1 a fine di ogni passo che tocca una schermata non si vieta mai nei prompt** (anche nel Blocco comune, 5c). Passo 21b: Composer corregge P8 e A8 con Parte A e «procedi», L0 e L1 obbligatori. Passo 21c: l'agente di verifica prova nove controlli di flusso di Menù fissi con il vecchio lanciatore e `--solo` (i flussi esistono solo lì; T2a è eliminato) più C2 delle schede con l'e2e, un solo giro di 30 minuti, esiti in cartelle diverse. **Non verificato**: l'esito di 21b e 21c.

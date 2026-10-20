@@ -34,6 +34,8 @@ import {
   type SpiritListRow,
 } from '@/lib/app/spirits/types'
 import type { CatalogTypeGroup } from '@/lib/menu/catalog/groupByType'
+import { catalogStatusFilterItems } from '@/lib/menu/catalog/disabledStatusFilter'
+import { buildSelectItems, optionsFromTaxonomy } from '@/lib/menu/catalog/selectItems'
 import {
   DISTILLATI_DELETE_CONFIRM_TITLE,
   DISTILLATI_FILTERS_ALL_COUNTRIES,
@@ -86,6 +88,29 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
   const [deleteActionError, setDeleteActionError] = useState(false)
 
   const typeOrder = context.spiritTypes
+
+  const filterTypeItems = useMemo(
+    () => ({
+      __all__: DISTILLATI_FILTERS_ALL_TYPES,
+      ...Object.fromEntries(context.spiritTypes.map((t) => [t.id, t.name])),
+    }),
+    [context.spiritTypes],
+  )
+
+  const countryFilterItems = useMemo(
+    () => buildSelectItems(optionsFromTaxonomy(context.countries), draftQuery.countryId),
+    [context.countries, draftQuery.countryId],
+  )
+
+  const filterStatusItems = useMemo(
+    () =>
+      catalogStatusFilterItems({
+        all: DISTILLATI_FILTER_STATE_ALL,
+        enabled: DISTILLATI_FILTER_STATE_ENABLED,
+        disabled: DISTILLATI_FILTER_STATE_DISABLED,
+      }),
+    [],
+  )
 
   const activeFilterCount = useMemo(() => {
     let n = 0
@@ -316,6 +341,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
           <Field>
             <FieldLabel>{DISTILLATI_FORM_TYPE}</FieldLabel>
             <Select
+              items={filterTypeItems}
               value={draftQuery.typeId || undefined}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({ ...q, typeId: !v || v === '__all__' ? '' : v }))
@@ -335,6 +361,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
           <Field>
             <FieldLabel>{DISTILLATI_FORM_COUNTRY}</FieldLabel>
             <Select
+              items={countryFilterItems}
               value={draftQuery.countryId || undefined}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({
@@ -357,6 +384,7 @@ export function SpiritsCatalogPage({ context }: SpiritsCatalogPageProps) {
           <Field>
             <FieldLabel>Stato</FieldLabel>
             <Select
+              items={filterStatusItems}
               value={draftQuery.status}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({

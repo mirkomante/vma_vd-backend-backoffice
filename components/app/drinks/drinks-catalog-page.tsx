@@ -34,6 +34,8 @@ import {
   type DrinkListRow,
 } from '@/lib/app/drinks/types'
 import type { CatalogTypeGroup } from '@/lib/menu/catalog/groupByType'
+import { catalogStatusFilterItems } from '@/lib/menu/catalog/disabledStatusFilter'
+import { buildSelectItems, optionsFromTaxonomy } from '@/lib/menu/catalog/selectItems'
 import {
   BEVANDE_DELETE_CONFIRM_TITLE,
   BEVANDE_FILTERS_ALL_COUNTRIES,
@@ -86,6 +88,29 @@ export function DrinksCatalogPage({ context }: DrinksCatalogPageProps) {
   const [deleteActionError, setDeleteActionError] = useState(false)
 
   const typeOrder = context.drinkTypes
+
+  const filterTypeItems = useMemo(
+    () => ({
+      __all__: BEVANDE_FILTERS_ALL_TYPES,
+      ...Object.fromEntries(context.drinkTypes.map((t) => [t.id, t.name])),
+    }),
+    [context.drinkTypes],
+  )
+
+  const countryFilterItems = useMemo(
+    () => buildSelectItems(optionsFromTaxonomy(context.countries), draftQuery.countryId),
+    [context.countries, draftQuery.countryId],
+  )
+
+  const filterStatusItems = useMemo(
+    () =>
+      catalogStatusFilterItems({
+        all: BEVANDE_FILTER_STATE_ALL,
+        enabled: BEVANDE_FILTER_STATE_ENABLED,
+        disabled: BEVANDE_FILTER_STATE_DISABLED,
+      }),
+    [],
+  )
 
   const activeFilterCount = useMemo(() => {
     let n = 0
@@ -316,6 +341,7 @@ export function DrinksCatalogPage({ context }: DrinksCatalogPageProps) {
           <Field>
             <FieldLabel>{BEVANDE_FORM_TYPE}</FieldLabel>
             <Select
+              items={filterTypeItems}
               value={draftQuery.typeId || undefined}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({ ...q, typeId: !v || v === '__all__' ? '' : v }))
@@ -335,6 +361,7 @@ export function DrinksCatalogPage({ context }: DrinksCatalogPageProps) {
           <Field>
             <FieldLabel>{BEVANDE_FORM_COUNTRY}</FieldLabel>
             <Select
+              items={countryFilterItems}
               value={draftQuery.countryId || undefined}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({
@@ -357,6 +384,7 @@ export function DrinksCatalogPage({ context }: DrinksCatalogPageProps) {
           <Field>
             <FieldLabel>Stato</FieldLabel>
             <Select
+              items={filterStatusItems}
               value={draftQuery.status}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({

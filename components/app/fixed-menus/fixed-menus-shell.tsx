@@ -12,6 +12,9 @@ import {
   MENU_FISSI_TAB_MENUS,
 } from '@/lib/menu/fixed-menus/copy'
 
+// ui-check-allow: deviazione D6: area di tocco delle schede con pointer-coarse fuori da components/ui
+const fixedMenuTabLinkBaseClass = 'relative shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-muted-foreground pointer-coarse:after:absolute pointer-coarse:after:-inset-x-3 pointer-coarse:after:-inset-y-3.5 pointer-coarse:after:content-[""]'
+
 type FixedMenusShellProps = {
   activeTab: 'menus' | 'categories'
   children: ReactNode
@@ -22,20 +25,13 @@ export function FixedMenusShell({ activeTab, children }: FixedMenusShellProps) {
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-4">
       <MenuPageHeader title={MENU_FISSI_PAGE_TITLE} description={MENU_FISSI_PAGE_DESCRIPTION} />
 
-      <div
-        className="flex gap-4 overflow-x-auto border-b border-border"
-        role="tablist"
-        aria-label={MENU_FISSI_PAGE_TITLE}
-      >
+      <div className="flex gap-4 border-b border-border" role="tablist" aria-label={MENU_FISSI_PAGE_TITLE}>
         <Link
           href="/app/menu/fixed"
           role="tab"
           aria-selected={activeTab === 'menus'}
           aria-current={activeTab === 'menus' ? 'page' : undefined}
-          className={cn(
-            'shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-muted-foreground',
-            activeTab === 'menus' && 'border-primary text-foreground',
-          )}
+          className={cn(fixedMenuTabLinkBaseClass, activeTab === 'menus' && 'border-primary text-foreground')}
         >
           {MENU_FISSI_TAB_MENUS}
         </Link>
@@ -45,7 +41,7 @@ export function FixedMenusShell({ activeTab, children }: FixedMenusShellProps) {
           aria-selected={activeTab === 'categories'}
           aria-current={activeTab === 'categories' ? 'page' : undefined}
           className={cn(
-            'shrink-0 border-b-2 border-transparent px-1 pb-2 text-sm font-medium text-muted-foreground',
+            fixedMenuTabLinkBaseClass,
             activeTab === 'categories' && 'border-primary text-foreground',
           )}
         >

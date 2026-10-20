@@ -35,6 +35,7 @@ import {
   type WineListRow,
 } from '@/lib/app/wines/types'
 import type { CatalogTypeGroup } from '@/lib/menu/catalog/groupByType'
+import { catalogStatusFilterItems } from '@/lib/menu/catalog/disabledStatusFilter'
 import { buildSelectItems, optionsFromTaxonomy } from '@/lib/menu/catalog/selectItems'
 import { clearWineFilterOriginLevel } from '@/lib/menu/wines/wineOriginCascade'
 import {
@@ -123,6 +124,16 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
   const countryFilterItems = useMemo(
     () => buildSelectItems(optionsFromTaxonomy(context.countries), draftQuery.countryId),
     [context.countries, draftQuery.countryId],
+  )
+
+  const filterStatusItems = useMemo(
+    () =>
+      catalogStatusFilterItems({
+        all: VINI_FILTER_STATE_ALL,
+        enabled: VINI_FILTER_STATE_ENABLED,
+        disabled: VINI_FILTER_STATE_DISABLED,
+      }),
+    [],
   )
 
   const activeFilterCount = useMemo(() => {
@@ -484,6 +495,7 @@ export function WinesCatalogPage({ context }: WinesCatalogPageProps) {
           <Field>
             <FieldLabel>Stato</FieldLabel>
             <Select
+              items={filterStatusItems}
               value={draftQuery.status}
               onValueChange={(v) =>
                 setDraftQuery((q) => ({
