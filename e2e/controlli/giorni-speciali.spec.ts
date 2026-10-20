@@ -18,10 +18,18 @@ import {
   setSpecialDayScope,
   specialDayDeleteButton,
   specialDayEditButton,
+  specialDayListActiveSwitch,
   toggleFixedMenu,
 } from '../lib/special-days/ui-helpers'
 import { FIXED_MENUS_SLUG, SPECIAL_DAYS_SLUG } from '@/lib/menu/constants'
 import type { SeedSlug } from '../lib/menu-list/ensure-fixtures'
+import {
+  SPECIAL_DAYS_BADGE_DISABLED,
+  SPECIAL_DAYS_TOAST_DISABLED,
+  SPECIAL_DAYS_TOAST_ENABLED,
+  specialDayEditAriaLabel,
+} from '@/lib/menu/specialDays/copy'
+import { formatSpecialDayListDate } from '@/lib/menu/specialDays/formatSpecialDayListDate'
 import { SPECIAL_DAY_OVERLAP_MESSAGE } from '@/lib/menu/validateSpecialDayOverlap'
 
 const PROFILE = projectTag('telefono-390-chiaro')
@@ -152,10 +160,23 @@ test.describe('Giorni speciali', () => {
     const disId = disListed.docs[0]?.id
     if (disId != null) payload.registerCreated(SPECIAL_DAYS_SLUG, disId)
 
-    await specialDayEditButton(page, conflictDate).first().click()
+    const listDate = formatSpecialDayListDate(conflictDate)
+    const activeRow = page
+      .locator('[data-slot=card]')
+      .filter({ hasText: listDate })
+      .filter({ hasNotText: SPECIAL_DAYS_BADGE_DISABLED })
+    await activeRow.getByRole('button', { name: specialDayEditAriaLabel(conflictDate), exact: true }).click()
     await clickSpecialDaySave(page)
     await expect(page.getByRole('status').filter({ hasText: 'Giorno speciale salvato' })).toBeVisible()
     await expect(page.getByText(SPECIAL_DAY_OVERLAP_MESSAGE)).toHaveCount(0)
+
+    const activeAfter = await readSpecialDayAsManager(payloadWorker, managerEmail, sovId)
+    expect(activeAfter.disabled, 'giorno attivo resta abilitato').toBe(false)
+    if (disId != null) {
+      const disAfter = await readSpecialDayAsManager(payloadWorker, managerEmail, disId)
+      expect(disAfter.disabled, 'giorno disattivato invariato').toBe(true)
+      expect(disAfter.messageIt).toBe('verify-ui-sov-dis')
+    }
   })
 
   // control:giorni-speciali-elimina-registro-permessi
@@ -168,7 +189,7 @@ test.describe('Giorni speciali', () => {
     const managerEmail = payload.managerEmail
     const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
     const registerMenu = (id: number | string) => payload.registerCreated(FIXED_MENUS_SLUG, id)
-    const { menuA, menuAId } = await ensureTwoVerifyFixedMenus(
+    const { menuAId } = await ensureTwoVerifyFixedMenus(
       payloadWorker,
       managerEmail,
       nome,
@@ -203,6 +224,44 @@ test.describe('Giorni speciali', () => {
     const log = await findSpecialDayDeleteLog(payloadWorker, managerEmail, docId, dateDel, 'lunch')
     expect(log.found, 'riga registro delete').toBe(true)
     expect(log.detail, 'dettaglio registro').toBe(log.expectedDetail)
+  })
+
+  // control:giorni-speciali-attivazione
+  test(`giorni-speciali-attivazione ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    const registerMenu = (id: number | string) => payload.registerCreated(FIXED_MENUS_SLUG, id)
+    const { menuAId } = await ensureTwoVerifyFixedMenus(
+      payloadWorker,
+      managerEmail,
+      nome,
+      register,
+      registerMenu,
+    )
+    const dateAtt = '2099-04-04'
+    const attId = await createSpecialDayAsManager(payloadWorker, managerEmail, {
+      date: dateAtt,
+      scope: 'dinner',
+      fixedMenuIds: [menuAId],
+      messageIt: 'verify-ui-att',
+    })
+    payload.registerCreated(SPECIAL_DAYS_SLUG, attId)
+
+    await gotoSpecialDays(page)
+    const listDate = formatSpecialDayListDate(dateAtt)
+    const row = page.locator('[data-slot=card]').filter({ hasText: listDate })
+    await specialDayListActiveSwitch(page, dateAtt, 'dinner').click()
+    await expect(page.getByRole('status').filter({ hasText: SPECIAL_DAYS_TOAST_DISABLED })).toBeVisible()
+    await expect(row).toHaveClass(/opacity-50/)
+    await expect(row.getByText(SPECIAL_DAYS_BADGE_DISABLED)).toBeVisible()
+    const off = await readSpecialDayAsManager(payloadWorker, managerEmail, attId)
+    expect(off.disabled).toBe(true)
+
+    await specialDayListActiveSwitch(page, dateAtt, 'dinner').click()
+    await expect(page.getByRole('status').filter({ hasText: SPECIAL_DAYS_TOAST_ENABLED })).toBeVisible()
+    const on = await readSpecialDayAsManager(payloadWorker, managerEmail, attId)
+    expect(on.disabled).toBe(false)
   })
 
   // control:giorni-speciali-console

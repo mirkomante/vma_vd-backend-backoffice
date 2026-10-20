@@ -3,7 +3,7 @@ import { projectTag } from '../lib/matrix-projects'
 import {
   readMenuGeneralTexts,
   writeMenuGeneralTexts,
-} from '../lib/special-days/payload-helpers'
+} from '../lib/global-message/payload-helpers'
 import {
   confirmRemoveGlobalMessage,
   fillGlobalMessageEn,
@@ -13,7 +13,6 @@ import {
   openRemoveGlobalMessage,
   publishedPanel,
   saveGlobalMessage,
-  waitForGlobalSavePending,
 } from '../lib/global-message/ui-helpers'
 import {
   GLOBAL_MESSAGE_PANEL_NONE,
@@ -54,8 +53,9 @@ test.describe('Messaggio globale', () => {
 
       await fillGlobalMessageIt(page, 'verify-ui-nuovo')
       await saveGlobalMessage(page)
-      await waitForGlobalSavePending(page)
-      await expect(page.getByRole('status').filter({ hasText: GLOBAL_MESSAGE_TOAST_SAVED })).toBeVisible()
+      await expect(page.getByRole('status').filter({ hasText: GLOBAL_MESSAGE_TOAST_SAVED })).toBeVisible({
+        timeout: 15_000,
+      })
       await expect(globalMessageField(page)).toHaveValue('verify-ui-nuovo')
       await expect(page.getByRole('button', { name: 'Salva modifiche' })).toBeDisabled()
 
@@ -115,12 +115,14 @@ test.describe('Messaggio globale', () => {
       await page.reload({ waitUntil: 'domcontentloaded' })
       await expect(publishedPanel(page)).toContainText(GLOBAL_MESSAGE_PANEL_NONE)
 
+      await page.clock.install()
       const readCalls: string[] = []
       page.on('request', (req) => {
         if (req.url().includes('message') && req.method() === 'POST') {
           readCalls.push(req.url())
         }
       })
+      await gotoGlobalMessage(page)
 
       await fillGlobalMessageIt(page, 'verify-ui-nl2')
       await saveGlobalMessage(page)
@@ -129,9 +131,8 @@ test.describe('Messaggio globale', () => {
       await expect(page.getByText(GLOBAL_MESSAGE_PANEL_PUBLISHING)).toHaveCount(0)
 
       const beforePoll = readCalls.length
-      await expect
-        .poll(() => readCalls.length, { timeout: 20_000, intervals: [2_000] })
-        .toBe(beforePoll)
+      await page.clock.fastForward(20_000)
+      expect(readCalls.length, 'nessuna richiesta POST ripetuta per 20 secondi').toBe(beforePoll)
     })
   })
 

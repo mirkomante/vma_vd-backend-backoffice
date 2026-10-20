@@ -1,0 +1,219 @@
+{
+  "commit": "be7012edbcc0",
+  "launcher": "e2e/T1c-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
+  "durataSecondi": 14,
+  "riepilogo": {
+    "OK": 11,
+    "FALLITO": 1,
+    "AVVISO": 0,
+    "NON PROVATO": 8,
+    "ERRORE-STRUMENTO": 0
+  },
+  "esiti": [
+    {
+      "id": "giorni-speciali-attivazione [telefono-390-chiaro]",
+      "schermata": "Giorni speciali",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "giorni-speciali-console [telefono-390-chiaro]",
+      "schermata": "Giorni speciali",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "giorni-speciali-elimina-registro-permessi [telefono-390-chiaro]",
+      "schermata": "Giorni speciali",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.3
+    },
+    {
+      "id": "giorni-speciali-persistenza [telefono-390-chiaro]",
+      "schermata": "Giorni speciali",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.4
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "FALLITO",
+      "misurato": "Error: POSSIBILE DIFETTO DELL'APP: pulsante Elimina verify-ui-fb677945-w3-menu-libero non trovato nell'elenco menù fissi",
+      "atteso": "asserzione soddisfatta",
+      "evidenza": "failed",
+      "seconds": 0.4
+    },
+    {
+      "id": "giorni-speciali-sovrapposizione [telefono-390-chiaro]",
+      "schermata": "Giorni speciali",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.7
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "menu-fissi-console [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "menu-fissi-testi [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "menu-fissi-modulo-validazione [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "menu-fissi-disponibilita [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale-salvataggio [telefono-390-chiaro]",
+      "schermata": "Messaggio globale",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "menu-fissi-persistenza [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.3
+    },
+    {
+      "id": "menu-fissi-elimina-usato [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.5
+    },
+    {
+      "id": "messaggio-globale-togli [telefono-390-chiaro]",
+      "schermata": "Messaggio globale",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1
+    },
+    {
+      "id": "messaggio-globale-file-non-leggibile [telefono-390-chiaro]",
+      "schermata": "Messaggio globale",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "messaggio-globale-file-riceve-messaggio [telefono-390-chiaro]",
+      "schermata": "Messaggio globale",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale-pubblicazione [telefono-390-chiaro]",
+      "schermata": "Messaggio globale",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale-permessi [telefono-390-chiaro]",
+      "schermata": "Messaggio globale",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.7
+    }
+  ],
+  "erroriStrumento": [],
+  "anomalie": [],
+  "exitCode": "failed"
+}

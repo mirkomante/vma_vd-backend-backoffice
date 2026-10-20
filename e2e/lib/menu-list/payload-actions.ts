@@ -9,7 +9,7 @@ import type { Payload } from 'payload'
 
 import type { User } from '@/payload-types'
 
-async function managerUser(payload: Payload, email: string): Promise<User> {
+export async function managerUser(payload: Payload, email: string): Promise<User> {
   const res = await payload.find({
     collection: 'users',
     where: { email: { equals: email } },

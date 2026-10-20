@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test'
 
-import { SPECIAL_DAYS_FORM_SCOPE } from '@/lib/menu/specialDays/copy'
+import { SPECIAL_DAYS_FORM_SCOPE, specialDayActiveAriaLabel } from '@/lib/menu/specialDays/copy'
 import { SPECIAL_DAY_SCOPE_OPTIONS } from '@/lib/menu/validateSpecialDayOverlap'
 import type { SpecialDayScope } from '@/lib/menu/validateSpecialDayOverlap'
 import { formatSpecialDayListDate } from '@/lib/menu/specialDays/formatSpecialDayListDate'
@@ -60,8 +60,8 @@ export async function clickSpecialDaySave(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Salva', exact: true }).click()
 }
 
-export async function expectSpecialDaySaveDisabled(page: Page): Promise<void> {
-  await page.getByRole('button', { name: 'Salva', exact: true }).waitFor({ state: 'visible' })
+export function specialDayListActiveSwitch(page: Page, dateIso: string, scope: SpecialDayScope) {
+  return page.getByRole('switch', { name: specialDayActiveAriaLabel(dateIso, scope), exact: true })
 }
 
 export function specialDayDeleteButton(page: Page, dateIso: string) {

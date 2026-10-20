@@ -1,27 +1,12 @@
 import { ACTIVITY_LOG_SLUG } from '@/lib/activityLog/constants'
 import { formatMenuContentDeleteDetail } from '@/lib/menu/menuContentDeleteLog'
-import { MENU_GENERAL_SLUG, SPECIAL_DAYS_SLUG } from '@/lib/menu/constants'
+import { SPECIAL_DAYS_SLUG } from '@/lib/menu/constants'
 import { relationshipId } from '@/lib/menu/relationshipId'
 import type { SpecialDayScope } from '@/lib/menu/validateSpecialDayOverlap'
 import type { Payload } from 'payload'
 
-import type { User } from '@/payload-types'
-
-import { createFixedMenuFixtureLocal } from '../menu-list/payload-actions'
+import { createFixedMenuFixtureLocal, managerUser } from '../menu-list/payload-actions'
 import { ensureWorkerMenuSeeds, type SeedSlug } from '../menu-list/ensure-fixtures'
-
-export async function managerUser(payload: Payload, email: string): Promise<User> {
-  const res = await payload.find({
-    collection: 'users',
-    where: { email: { equals: email } },
-    limit: 1,
-    depth: 0,
-    overrideAccess: true,
-  })
-  const user = res.docs[0] as User | undefined
-  if (!user) throw new Error('utente manager di prova non trovato')
-  return user
-}
 
 export async function ensureTwoVerifyFixedMenus(
   payload: Payload,
@@ -164,62 +149,4 @@ export async function findSpecialDayDeleteLog(
   })
   const row = logs.docs[0] as { detail?: string } | undefined
   return { found: Boolean(row), detail: row?.detail ?? null, expectedDetail }
-}
-
-/** Solo per ripristino del Global in test messaggio globale (overrideAccess manager). */
-export async function readMenuGeneralTexts(
-  payload: Payload,
-  managerEmail: string,
-): Promise<{ messageIt: string; messageEn: string }> {
-  const user = await managerUser(payload, managerEmail)
-  const itDoc = await payload.findGlobal({
-    slug: MENU_GENERAL_SLUG,
-    depth: 0,
-    locale: 'it',
-    overrideAccess: false,
-    user,
-  })
-  let messageEn = ''
-  try {
-    const enDoc = await payload.findGlobal({
-      slug: MENU_GENERAL_SLUG,
-      depth: 0,
-      locale: 'en',
-      fallbackLocale: false,
-      overrideAccess: false,
-      user,
-    })
-    messageEn = (enDoc as { globalMessage?: string }).globalMessage ?? ''
-  } catch {
-    messageEn = ''
-  }
-  return {
-    messageIt: (itDoc as { globalMessage?: string }).globalMessage ?? '',
-    messageEn,
-  }
-}
-
-export async function writeMenuGeneralTexts(
-  payload: Payload,
-  managerEmail: string,
-  values: { messageIt: string; messageEn: string },
-): Promise<void> {
-  const user = await managerUser(payload, managerEmail)
-  await payload.updateGlobal({
-    slug: MENU_GENERAL_SLUG,
-    depth: 0,
-    locale: 'it',
-    overrideAccess: false,
-    user,
-    data: { globalMessage: values.messageIt },
-  })
-  await payload.updateGlobal({
-    slug: MENU_GENERAL_SLUG,
-    depth: 0,
-    locale: 'en',
-    fallbackLocale: false,
-    overrideAccess: false,
-    user,
-    data: { globalMessage: values.messageEn },
-  })
 }
