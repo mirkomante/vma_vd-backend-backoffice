@@ -98,7 +98,7 @@ Sigle: **R** revisione di regola; **I** implementazione (Composer); **VC** l'age
 | 31 | 🔲 | Blocco comune + prompt del passo 31 | I7 | Tu e Composer | **Import di produzione 6.8**: report a secco in produzione, backup su richiesta, `--apply`, controlli REST | verifica dei conteggi | conteggi coincidenti: **6.6 chiusa** (✅) |
 | 32 | 🔲 | — | — | — | Dopo la 6.6: 6.9 (scaffold del frontend), poi 6.5 (accende «Ricompila» e ne prova il pulsante) | vedi sezione 9 | — |
 
-**Ultimo aggiornamento**: 2026-10-19 (commit `76578ea`). **Prossimo passo: T1c** (Servizi e Menù fissi: controlli comuni, console e screenshot con `pnpm e2e`), poi il confronto visivo (C10) a cura della chat di design, T2a, T1b, T2b, T1a, T2c. T0 è accettato.
+**Ultimo aggiornamento**: 2026-10-19 (commit `0bb6847`). **Prossimo passo: T1c bis** (chiude T1c: fixture isolate per worker, simulazioni con server di sviluppo dedicati, setup in-process, giro completo sotto 10 minuti), poi il confronto visivo (C10) di Servizi e Menù fissi, T2a, T1b, T2b, T1a, T2c.
 
 **Regole dei controlli** (`policy-test.md` §5): un **FALLITO di L1 blocca la chiusura del passaggio**: si corregge e si rilanciano solo i controlli falliti, al massimo due giri, al terzo si ferma e si chiama la chat di design. Un **FALLITO di L2 è un rilievo P** e blocca la chat successiva. Un **AVVISO** non blocca e si registra come rilievo A. Un **NON PROVATO** non blocca ma va nei debiti con scritto in quale livello verrà provato. **S** (smoke) dopo ogni deploy. **Un controllo non implementato** nel lanciatore quando finisce una chat I rende L1 non eseguibile da chi implementa: lo dichiara e lo passa all'agente di verifica; mai una prova manuale chiesta a te al suo posto. Una modifica solo a documenti attiva solo L0; una solo al backend L0 più gli script `verify-*.ts`, non L1 (per questo le chat dei passi 4 e 5 non hanno L1).
 
@@ -1777,6 +1777,63 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 
 **Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1a — controlli comuni e screenshot di home, navigazione e Piatti`, push, «push fatto». 
 
+
+### Passo T1c bis — Chiusura di T1c: fixture isolate, simulazioni dedicate, setup in-process
+
+**Quando**: ora. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Prima, in un terminale**: `pnpm payload run scripts/ui-verify/menu-payload.ts -- delete-prefix verify-ui-` (pulisce i record rimasti dal giro incompleto). **Stima**: 60 minuti, con un checkpoint dopo 30 (solo Servizi); **tetto**: 120 minuti.
+
+```text
+Sei l'agente di verifica dell'Area App (app) del progetto VMA VD. Istanza: T1c bis. Chiudi T1c: oggi la suite di Servizi e Menù
+fissi dà 62 OK, 0 FALLITO, 8 ERRORE-STRUMENTO, 14 screenshot su 45 e non finisce in 10 minuti. Modifichi SOLO e2e/** (e package.json
+solo per gli script e2e) e i rapporti sotto docs/design/verifica/esiti/. NON tocchi il vecchio lanciatore scripts/ui-verify, né
+app/, components/, lib/, collections/. Esegui i comandi FUORI dalla sandbox di Cursor (tutte le autorizzazioni).
+
+Leggi per intero: .cursor/rules/ui/02-ui-verifica-agente.mdc; docs/design/verifica/percorso-test-v2.md (regole R1-R10);
+docs/design/verifica/esiti/2026-10-19-T1c/rapporto.md; docs/design/verifica/controlli-6.6.json (schermate servizi e menu-fissi).
+
+Cause già trovate (dalla chat di design, verificale):
+- NOMI UGUALI TRA I WORKER: violano la regola R5. I record di prova devono chiamarsi verify-ui-<giro>-w<worker>-<nome>.
+- SIMULAZIONI: gli stati «caricamento», «errore-caricamento» e «errore-azione» richiedono un server di SVILUPPO, perché
+  APP_MENU_DEV_SIMULATE_* sono spente di proposito con NODE_ENV=production (lib/app/menu/devSimulate.ts: NON cambiarlo).
+  Il next dev si avvia dentro il test e supera i 60 secondi.
+- NON PROVATO a migliaia: i test saltano le combinazioni di profilo e tema invece di non generarle.
+- Fumo di circa 2 minuti: setup e teardown lanciano `pnpm payload run` (processi separati) invece della Local API in-process.
+
+FAI, in quest'ordine
+1. FIXTURE ISOLATE (R5). Il nome di ogni record di prova contiene il giro e l'indice del worker (la fixture espone un metodo
+   `nome('servizio')` che restituisce verify-ui-<giro>-w<n>-servizio). Ogni test crea i propri record con la fixture payload
+   (Local API in-process, scope di worker) e li cancella in afterEach anche dopo un errore. I selettori usano il nome ESATTO
+   (aria-label «Modifica {nome}», «Elimina {nome}»), senza `.first()` né blocchi di serializzazione (togli fixture-lock se non serve
+   più). Le categorie seed condivise verify-ui-pranzo e verify-ui-sempre diventano anch'esse per giro e per worker.
+2. SIMULAZIONI. Un progetto `simulazioni` seriale (un solo worker) con TRE server di sviluppo, avviati IN PARALLELO nel
+   global-setup di quel progetto, FUORI dal tempo dei test, con un tempo massimo di avvio di 180 secondi e un riscaldamento
+   (una visita a /app/menu/services, /app/menu/fixed e /app/menu/fixed/categories con il login) così il primo test non paga la
+   compilazione: porta 3200 con APP_MENU_DEV_SIMULATE_LOAD_DELAY_MS=3000 (stato «caricamento»), 3201 con
+   APP_MENU_DEV_SIMULATE_LOAD_ERROR=1 («errore-caricamento»), 3202 con APP_MENU_DEV_SIMULATE_SAVE_ERROR=1 («errore-azione»).
+   Solo spawn asincrono (mai spawnSync), attesa asincrona dell'URL con tempo massimo, chiusura in teardown e con SIGINT/SIGTERM,
+   porte controllate a fine giro. I server di sviluppo si avviano SOLO quando gira questo progetto.
+3. COMBINAZIONI. Genera i test SOLO per le combinazioni di profilo e tema previste dal JSON per quello stato (campo `profili` e
+   `temi`, e `immagini.stati_con_riferimento` per gli screenshot): niente test saltati e niente NON PROVATO per combinazioni non
+   applicabili. Gli stati con database popolato («vuoto», «nuovo-senza-categorie») sono UN solo NON PROVATO con il motivo.
+4. SETUP IN-PROCESS. Sostituisci in global-setup e global-teardown ogni `pnpm payload run` con la Local API nello stesso processo
+   (il caricatore tsx è già attivo; protezione assertDevDatabaseFromEnv; push dello schema disattivato). La suite di fumo deve
+   finire in meno di 60 secondi di TEMPO REALE (setup e teardown compresi): misuralo con `time pnpm e2e:smoke` e riportalo.
+5. CHECKPOINT dopo circa 30 minuti: esegui SOLO la parte di Servizi (`--grep` o il progetto) e riporta in una tabella: test
+   eseguiti, OK, FALLITO, ERRORE-STRUMENTO, screenshot (atteso 17), tempo. Se ci sono ERRORE-STRUMENTO, correggili prima di
+   passare a Menù fissi (atteso 28 screenshot).
+ACCETTAZIONE (riporta i numeri): (1) `pnpm e2e:t1c` completo in meno di 10 minuti con 4 worker, DUE VOLTE di seguito con lo stesso
+esito (prova dell'isolamento e della pulizia); (2) screenshot 45 su 45 (17 servizi e 28 menu-fissi, salvo gli stati
+NON PROVATI per il database popolato, con il motivo); (3) ZERO ERRORE-STRUMENTO; (4) `time pnpm e2e:smoke` sotto 60 secondi
+reali; (5) pnpm typecheck e pnpm lint sull'INTERO repo; (6) `ps` e `lsof` finali puliti (porte 3100, 3200, 3201, 3202) e zero
+record verify-ui- (pnpm payload run e2e/scripts/count-verify-ui.ts); (7) nessun file fuori da e2e/, package.json e docs/design/
+verifica/esiti/.
+Aggiorna docs/design/verifica/esiti/2026-10-19-T1c/rapporto.md con le misure e, per OGNI controllo, OK / FALLITO / AVVISO /
+NON PROVATO / ERRORE-STRUMENTO con valore misurato e atteso (mai «—»). Se ci sono FALLITO, la tua classificazione (difetto dell'app
+o controllo dubbio). Non fare git. Se superi 120 minuti, FERMATI e riporta.
+```
+
+**Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e la ricerca delle chiamate vietate. Commit `test(e2e): T1c bis — fixture per worker, simulazioni dedicate, setup in-process; screenshot di Servizi e Menù fissi`, push (con gli screenshot: `git add e2e docs`), «push fatto». Poi faccio io il confronto visivo (C10).
+
 ### Passo T1b — Controlli comuni, console e screenshot: Vini, Distillati e Bevande
 
 **Quando**: dopo T1c. **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti.
@@ -1819,6 +1876,8 @@ scripts/ui-verify. Rispondi in italiano con la tabella dei risultati.
 **Quando Cursor ha finito**: incollami il resoconto; eseguo io `tsc`, ESLint e i test. Commit `test(e2e): T1b — controlli comuni e screenshot di Vini, Distillati e Bevande`, push, «push fatto». 
 
 ### Passo T1c — Controlli comuni, console e screenshot: Servizi e Menù fissi
+
+> **Esito (2026-10-19)**: 🔶 **non accettato**, struttura in repo (`0bb6847`). Controllato io: `pnpm typecheck` completo a 0 errori in un checkout pulito, ESLint a 0 errori, nessuna chiamata vietata in `e2e/`, nessun file fuori da `e2e/` e `docs/` salvo `package.json` (script `e2e:t1c`). Misure dell'agente: 62 OK, **0 FALLITO**, 8 ERRORE-STRUMENTO, 14 screenshot su 45, circa 11,4 minuti senza completare il giro (criterio: meno di 10 minuti, 45 screenshot, zero ERRORE-STRUMENTO). **Cause** (tutte dello strumento, nessun difetto dell'app): (1) **nomi dei record uguali tra i worker**, contro la regola R5 («`verify-ui-<giro>-w<worker>-<nome>`»): record duplicati e «strict mode violation» su Modifica ed Elimina; (2) gli stati «caricamento» ed «errore-caricamento» richiedono un `next dev` (le simulazioni sono spente con `NODE_ENV=production` per progetto) che si avvia dentro il test e supera i 60 secondi; (3) circa 1442 NON PROVATO sono combinazioni di profilo e tema che il test salta invece di non generare; (4) la suite di fumo impiega circa 2 minuti di tempo reale (criterio R8: meno di 60 secondi) perché setup e teardown lanciano `pnpm payload run`. Si chiude con T1c bis.
 
 **Quando**: dopo T0 (è la prima schermata da verificare). **Incolla in Cursor**, in una chat nuova: **solo il prompt qui sotto** (non il Blocco comune). **Stima**: 60 minuti. **Chiude V4** (passo 20).
 
