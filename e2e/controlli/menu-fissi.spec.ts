@@ -482,7 +482,7 @@ test.describe('Menù fissi', () => {
     ).toBe(1)
     await expect(enPortions.first()).toHaveAttribute('placeholder', portionIt)
 
-    const enRead = await readFixedMenuLocale(payloadWorker, managerEmail, menuId, 'en', false)
+    const enRead = await readFixedMenuLocale(payloadWorker, managerEmail, menuId, 'en')
     expect(enRead.name).toBe(nameIt)
     expect(enRead.description).toBe(descIt)
     expect(enRead.portions.filter(Boolean)).toEqual([portionIt])
