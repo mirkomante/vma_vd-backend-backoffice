@@ -16,6 +16,21 @@ import {
 const PROFILE = projectTag('notebook-1280-chiaro')
 const viniConfig = CATALOG_SCREENS.vini
 
+const collator = new Intl.Collator('it', { sensitivity: 'base' })
+
+async function wineNamesOnPage(page: import('@playwright/test').Page): Promise<string[]> {
+  return page.locator('main table tbody tr').evaluateAll((rows) =>
+    rows
+      .map((row) => {
+        const edit = row.querySelector('[aria-label^="Modifica "]')?.getAttribute('aria-label')
+        if (edit?.startsWith('Modifica ')) return edit.slice('Modifica '.length)
+        const cellLabel = row.querySelector('td [aria-label]')?.getAttribute('aria-label') ?? ''
+        return cellLabel.split(',')[0]?.trim() ?? ''
+      })
+      .filter(Boolean),
+  )
+}
+
 // control:vini-ordine-100
 test.describe('Vini', () => {
   test(`vini-ordine-100 ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
@@ -30,19 +45,28 @@ test.describe('Vini', () => {
         const id = await createWineAsManager(payloadWorker, managerEmail, name)
         payload.registerCreated(WINES_SLUG, id)
       }
-      expect(await countWines(payloadWorker)).toBe(Math.max(101, initialTotal))
+      const total = await countWines(payloadWorker)
+      expect(total).toBe(Math.max(101, initialTotal))
 
       await page.goto(viniConfig.path, { waitUntil: 'domcontentloaded' })
       await page.getByRole('heading', { level: 1, name: viniConfig.h1 }).waitFor({ timeout: 20_000 })
-      const total = await countWines(payloadWorker)
       await expect(
         page.getByText(`${VINI_LIST_PARTIAL_TITLE_PREFIX}${total}`),
       ).toBeVisible()
       await expect(page.getByText(VINI_LIST_PARTIAL_DESCRIPTION)).toBeVisible()
+      const rowCount = await page.locator('main table tbody tr').count()
+      expect(rowCount).toBe(100)
       const showMore = page.getByRole('button', { name: VINI_SHOW_MORE })
       await expect(showMore).toBeVisible()
+
+      const namesBefore = await wineNamesOnPage(page)
+      const sortedBefore = [...namesBefore].sort((a, b) => collator.compare(a, b))
+      expect(namesBefore).toEqual(sortedBefore)
+
       await showMore.click()
       await expect(page.getByText(VINI_LIST_PARTIAL_DESCRIPTION)).toHaveCount(0)
+      const rowCountAfter = await page.locator('main table tbody tr').count()
+      expect(rowCountAfter).toBe(total)
     } finally {
       for (const name of bulkNames) {
         await deleteWineByName(payloadWorker, name)

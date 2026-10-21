@@ -5,7 +5,6 @@
     "__default__": "T0 scheletro: test controlli in T1/T2",
     "messaggio-globale-permessi": "coperto da verify:menu-6_1 (test Playwright saltato con stessa nota)",
     "menu-fissi-console": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
-    "menu-fissi-testi": "NON PROVATO «tetto»: 28d (UI = design)",
     "giorni-speciali-console": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
     "messaggio-globale-console": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
     "messaggio-globale-file-riceve-messaggio": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",

@@ -39,7 +39,15 @@ import {
   MENU_FISSI_FORM_PORTIONS_EN_LEGEND,
   MENU_FISSI_FORM_PRICE,
   MENU_FISSI_FORM_SAVE,
+  MENU_FISSI_COLUMN_AVAILABLE,
+  MENU_FISSI_COLUMN_NAME,
+  MENU_FISSI_COLUMN_PRICE,
+  MENU_FISSI_COLUMN_VISIBILITY,
   MENU_FISSI_NEW_BUTTON,
+  MENU_FISSI_PAGE_DESCRIPTION,
+  MENU_FISSI_PAGE_TITLE,
+  MENU_FISSI_TAB_CATEGORIES,
+  MENU_FISSI_TAB_MENUS,
   MENU_FISSI_PICKER_DONE,
   MENU_FISSI_TOAST_DELETED,
   MENU_FISSI_TOAST_DISABLED,
@@ -255,11 +263,17 @@ test.describe('Menù fissi', () => {
   })
 
   // control:menu-fissi-testi
-  test.skip(`menu-fissi-testi ${PROFILE}`, () => {
-    test.info().annotations.push({
-      type: 'skip',
-      description: 'NON PROVATO «tetto»: 28d (UI = design)',
-    })
+  test(`menu-fissi-testi ${PROFILE}`, async ({ page }) => {
+    await gotoFixedMenus(page)
+    await expect(page.getByRole('heading', { level: 1, name: MENU_FISSI_PAGE_TITLE })).toBeVisible()
+    await expect(page.getByText(MENU_FISSI_PAGE_DESCRIPTION)).toBeVisible()
+    await expect(page.getByRole('tab', { name: MENU_FISSI_TAB_MENUS })).toBeVisible()
+    await expect(page.getByRole('tab', { name: MENU_FISSI_TAB_CATEGORIES })).toBeVisible()
+    await expect(page.getByRole('button', { name: MENU_FISSI_NEW_BUTTON })).toBeVisible()
+    await expect(page.getByRole('columnheader', { name: MENU_FISSI_COLUMN_NAME })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: MENU_FISSI_COLUMN_VISIBILITY })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: MENU_FISSI_COLUMN_PRICE })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: MENU_FISSI_COLUMN_AVAILABLE })).toHaveCount(0)
   })
 
   // control:menu-fissi-modulo-validazione
@@ -281,6 +295,8 @@ test.describe('Menù fissi', () => {
     const price = page.locator('#fixed-menu-field-price')
     for (const value of ['18', '18,5', '18,50', '18.50']) {
       await price.fill(value)
+      await page.getByRole('button', { name: MENU_FISSI_FORM_SAVE }).click()
+      await expect(page.getByText(MENU_FISSI_ERROR_CATEGORY)).toBeVisible()
       await expect(page.getByText(MENU_FISSI_ERROR_PRICE)).toHaveCount(0)
     }
     for (const bad of ['abc', '18,555']) {
@@ -355,6 +371,20 @@ test.describe('Menù fissi', () => {
     await page.getByRole('switch', { name: `Disponibile: ${menuName}` }).click()
     await expect(page.getByRole('status').filter({ hasText: MENU_FISSI_TOAST_ENABLED })).toBeVisible()
 
+    const countMenusInCategory = async () => {
+      const res = await payloadWorker.find({
+        collection: FIXED_MENUS_SLUG,
+        where: { category: { equals: catId } },
+        limit: 200,
+        depth: 0,
+        overrideAccess: false,
+        user,
+      })
+      return res
+    }
+    const beforeCat = await countMenusInCategory()
+    expect(beforeCat.totalDocs).toBeGreaterThanOrEqual(1)
+
     await gotoMenuList(page, mfConfig, mfConfig.categoriesPath)
     await page.getByRole('switch', { name: `Attiva: ${catName}` }).click()
     const categoryStatus = page
@@ -362,10 +392,21 @@ test.describe('Menù fissi', () => {
       .filter({ hasText: MENU_FISSI_CATEGORY_TOAST_DISABLED })
     await expect(categoryStatus).toBeVisible()
     await expect(categoryStatus).not.toContainText(MENU_FISSI_TOAST_PUBLIC_MINUTES)
+
+    const disabledSnap = await countMenusInCategory()
+    expect(disabledSnap.totalDocs).toBe(beforeCat.totalDocs)
+    for (const doc of disabledSnap.docs) {
+      const cat = (doc as { category?: number | { id: number } }).category
+      const linked = typeof cat === 'object' && cat && 'id' in cat ? cat.id : cat
+      expect(linked).toBe(catId)
+    }
+
     await page.getByRole('switch', { name: `Attiva: ${catName}` }).click()
     await expect(
       page.getByRole('status').filter({ hasText: MENU_FISSI_CATEGORY_TOAST_ENABLED }),
     ).toBeVisible()
+    const enabledSnap = await countMenusInCategory()
+    expect(enabledSnap.totalDocs).toBe(beforeCat.totalDocs)
   })
 
   // control:menu-fissi-porzione-traduzione
@@ -373,33 +414,76 @@ test.describe('Menù fissi', () => {
     const nome = payload.nome.bind(payload)
     const managerEmail = payload.managerEmail
     const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
-    const menuName = nome('menu-porz')
+    const dish1 = nome('p1')
+    const dish2 = nome('p2')
     const portionIt = '2 pezzi verify'
+    const nameIt = nome('nome-it')
+    const descIt = nome('desc-it')
     await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
-    const ids = await createFixedMenuFixtureLocal(payloadWorker, managerEmail, {
-      dishName: nome('p1'),
-      categoryName: nome('cat'),
-      menuNames: [menuName],
+    const user = await managerUser(payloadWorker, managerEmail)
+    const dish1Id = (
+      await payloadWorker.find({
+        collection: DISHES_SLUG,
+        where: { name: { equals: dish1 } },
+        limit: 1,
+        overrideAccess: true,
+      })
+    ).docs[0]?.id
+    const dish2Doc = await payloadWorker.create({
+      collection: DISHES_SLUG,
+      data: {
+        name: dish2,
+        description: 'verify-ui',
+        price: 8,
+        category: payload.defaultDishCategoryId,
+      },
+      overrideAccess: false,
+      user,
     })
-    const menuId = ids[0]
+    register(DISHES_SLUG, dish2Doc.id)
+    if (dish1Id == null) throw new Error('piatto seed mancante')
+    const cat = await payloadWorker.find({
+      collection: FIXED_MENU_CATEGORIES_SLUG,
+      where: { name: { equals: nome('cat') } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const categoryId = cat.docs[0]?.id
+    if (categoryId == null) throw new Error('categoria seed mancante')
+    const menuDoc = await payloadWorker.create({
+      collection: FIXED_MENUS_SLUG,
+      data: {
+        name: nameIt,
+        description: descIt,
+        price: 25,
+        category: categoryId,
+        visibility: 'always',
+        dishes: [{ dish: dish1Id, portion: portionIt }, { dish: dish2Doc.id }],
+      },
+      overrideAccess: false,
+      user,
+    })
+    const menuId = menuDoc.id
     payload.registerCreated(FIXED_MENUS_SLUG, menuId)
 
     await gotoFixedMenus(page)
-    await clickRowAction(page, menuName, 'edit')
+    await clickRowAction(page, nameIt, 'edit')
     const sheet = page.locator('[data-slot=sheet-content]')
-    await sheet.getByLabel(MENU_FISSI_FORM_PORTION).first().fill(portionIt)
-    await page.getByRole('button', { name: MENU_FISSI_FORM_SAVE }).click()
-    await expect(page.getByRole('status').filter({ hasText: MENU_FISSI_TOAST_SAVED })).toBeVisible()
-
-    await clickRowAction(page, menuName, 'edit')
     await sheet.getByRole('button', { name: /Traduzione inglese/i }).click()
     await expect(sheet.getByText(MENU_FISSI_FORM_PORTIONS_EN_LEGEND)).toBeVisible()
-    await expect(sheet.getByLabel(MENU_FISSI_FORM_PORTION).first()).toHaveCount(1)
+    const enPortions = sheet
+      .locator('[data-slot=collapsible-content]')
+      .last()
+      .getByLabel(MENU_FISSI_FORM_PORTION)
+    await expect(enPortions).toHaveCount(1)
+    await expect(enPortions).toHaveAttribute('placeholder', portionIt)
 
+    const enRead = await readFixedMenuLocale(payloadWorker, managerEmail, menuId, 'en', false)
+    expect(enRead.name).toBe(nameIt)
+    expect(enRead.description).toBe(descIt)
+    expect(enRead.portions.filter(Boolean)).toEqual([portionIt])
     const itRead = await readFixedMenuAsManager(payloadWorker, managerEmail, menuId)
     expect(itRead.portions[0]).toBe(portionIt)
-    const enRead = await readFixedMenuLocale(payloadWorker, managerEmail, menuId, 'en')
-    expect(enRead.portions[0]).toBe(portionIt)
   })
 
   // control:menu-fissi-servizi-piatti
@@ -549,4 +633,46 @@ test.describe('Menù fissi', () => {
     const sliceUi = uiMenus.filter((n) => [menuA, menuB, menuZ].includes(n))
     expect(sliceUi).toEqual(expectedMenus)
   })
+
+  const COLONNA_PROFILES = [
+    'telefono-390-chiaro',
+    'notebook-1280-chiaro',
+    'soglia-767-chiaro',
+    'soglia-768-chiaro',
+  ] as const
+
+  for (const prof of COLONNA_PROFILES) {
+    // control:menu-fissi-colonna-elenco
+    test(`menu-fissi-colonna-elenco ${projectTag(prof)}`, async ({ page }) => {
+      await gotoFixedMenus(page)
+      await expect(page.locator('main table, main [data-slot=card]').first()).toBeVisible({
+        timeout: 20_000,
+      })
+      const m = await page.evaluate(() => {
+        const tableVisible = Boolean(document.querySelector('main table')?.getBoundingClientRect().width)
+        const card = document.querySelector('main [data-slot=card] p.truncate.font-medium')
+        const col = document.querySelector('main .mx-auto')
+        return {
+          tableVisible,
+          colW: col ? Math.round(col.getBoundingClientRect().width) : 0,
+          nameW: card ? Math.round(card.getBoundingClientRect().width) : 0,
+        }
+      })
+      const isTableProfile = prof === 'notebook-1280-chiaro' || prof === 'soglia-768-chiaro'
+      const isCardProfile = prof === 'telefono-390-chiaro' || prof === 'soglia-767-chiaro'
+      if (isCardProfile) {
+        expect(m.tableVisible, 'layout schede su mobile/soglia-767').toBe(false)
+      }
+      if (isTableProfile) {
+        expect(m.tableVisible, 'layout tabella su desktop/soglia-768').toBe(true)
+      }
+      if (prof === 'notebook-1280-chiaro') {
+        expect(m.colW, 'larghezza colonna notebook ~976 px').toBeGreaterThanOrEqual(974)
+        expect(m.colW).toBeLessThanOrEqual(978)
+      }
+      if (prof === 'telefono-390-chiaro') {
+        expect(m.nameW, 'nome scheda minimo 100 px (modello piatti-colonna-elenco)').toBeGreaterThanOrEqual(100)
+      }
+    })
+  }
 })

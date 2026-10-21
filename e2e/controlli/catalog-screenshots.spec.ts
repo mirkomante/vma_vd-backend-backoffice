@@ -4,7 +4,12 @@ import { join } from 'node:path'
 import { test } from '../fixtures'
 import { CATALOG_SCREENS, type CatalogScreenId } from '../lib/catalog/config'
 import { assertCatalogStateVisible, prepareCatalogState } from '../lib/catalog/prepare-state'
-import { nonProvatoReason, screenshotFileName, screenshotPlan } from '../lib/catalog/states'
+import {
+  nonProvatoReason,
+  screenshotFileName,
+  screenshotPlan,
+  screenshotStatesForRun,
+} from '../lib/catalog/states'
 import { E2E_ESITI_DIR } from '../lib/paths'
 import { assertPrepared } from '../lib/prepare-assert'
 import { projectTag } from '../lib/matrix-projects'
@@ -36,7 +41,12 @@ for (const screenId of SCREEN_IDS) {
     })
   }
 
-  const shots = screenshotPlan(screenId).filter((s) => !nonProvatoReason(screenId, s.statoId))
+  const allowed = screenshotStatesForRun(screenId)
+  const shots = screenshotPlan(screenId).filter((s) => {
+    if (nonProvatoReason(screenId, s.statoId)) return false
+    if (allowed && !allowed.has(s.statoId)) return false
+    return true
+  })
   for (const shot of shots) {
     const project = `${shot.profilo}-${shot.tema}`
     test(`screenshot ${screenId}-${shot.shotKey} ${projectTag(project)}`, async ({ page, baseURL, payload }) => {

@@ -5,6 +5,7 @@ import type { CatalogScreenId } from './config'
 
 type ScreenJson = {
   id: string
+  stati_c1_c2?: string[]
   immagini?: { stati_con_riferimento?: Record<string, string[]> }
 }
 
@@ -19,10 +20,28 @@ function screenJson(id: CatalogScreenId): ScreenJson {
   return s
 }
 
+export function matrixStates(screenId: CatalogScreenId): string[] {
+  const s = screenJson(screenId)
+  return [...(s.stati_c1_c2 ?? [])]
+}
+
 export function nonProvatoReason(screenId: CatalogScreenId, statoId: string): string | null {
   if (SIM_STATES.has(statoId)) return 'le riprova V6 con un dev server alla volta'
   if (statoId === 'vuoto') return 'database popolato'
   if (statoId.startsWith('piu-di-100')) return 'serve il bulk da 101, lo fa V6'
+  return null
+}
+
+/** Stati da includere negli screenshot V6d (esclusi bulk e simulati). */
+export function screenshotStatesForRun(screenId: CatalogScreenId): Set<string> | null {
+  const base = new Set(['elenco', 'filtri', 'filtri-attivi'])
+  if (screenId === 'vini') {
+    base.add('origine-senza-regioni')
+    base.add('errore-geografia')
+    base.add('errore-anno')
+    return base
+  }
+  if (screenId === 'distillati' || screenId === 'bevande') return base
   return null
 }
 

@@ -1,0 +1,49 @@
+{
+  "commit": "81a3579efa87",
+  "launcher": "e2e/T1c-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
+  "durataSecondi": 25,
+  "riepilogo": {
+    "OK": 0,
+    "FALLITO": 3,
+    "AVVISO": 0,
+    "NON PROVATO": 0,
+    "ERRORE-STRUMENTO": 0
+  },
+  "esiti": [
+    {
+      "id": "vini-ordine-100 [notebook-1280-chiaro]",
+      "schermata": "Vini",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "FALLITO",
+      "misurato": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m",
+      "atteso": "asserzione soddisfatta",
+      "evidenza": "failed",
+      "seconds": 0.7
+    },
+    {
+      "id": "piatti-ordine-100 [notebook-1280-chiaro]",
+      "schermata": "Piatti",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "FALLITO",
+      "misurato": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m",
+      "atteso": "asserzione soddisfatta",
+      "evidenza": "failed",
+      "seconds": 1.2
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "FALLITO",
+      "misurato": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveCount\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed",
+      "atteso": "asserzione soddisfatta",
+      "evidenza": "failed",
+      "seconds": 15.7
+    }
+  ],
+  "erroriStrumento": [],
+  "anomalie": [],
+  "exitCode": "failed"
+}
