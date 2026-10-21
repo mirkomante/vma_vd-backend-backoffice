@@ -5,6 +5,7 @@ import {
   createDishAsManager,
   deleteDishByName,
 } from '../lib/dishes/payload-helpers'
+import { assertGroupedNamesSorted, type NameGroup } from '../lib/list-order-assert'
 import { DISHES_SLUG } from '@/lib/menu/constants'
 import {
   PIATTI_LIST_PARTIAL_DESCRIPTION,
@@ -15,23 +16,30 @@ import {
 const PROFILE = projectTag('notebook-1280-chiaro')
 const DISHES_PATH = '/app/menu'
 
-const collator = new Intl.Collator('it', { sensitivity: 'base' })
-
-async function dishNamesOnPage(page: import('@playwright/test').Page): Promise<string[]> {
-  return page.locator('main table tbody tr').evaluateAll((rows) =>
-    rows
-      .map((row) => {
-        const edit = row.querySelector('[aria-label^="Modifica "]')?.getAttribute('aria-label')
-        if (edit?.startsWith('Modifica ')) return edit.slice('Modifica '.length)
-        const cellLabel = row.querySelector('td [aria-label]')?.getAttribute('aria-label') ?? ''
-        return cellLabel.split(',')[0]?.trim() ?? ''
-      })
-      .filter(Boolean),
+async function dishGroupsOnPage(page: import('@playwright/test').Page): Promise<NameGroup[]> {
+  return page.locator('main .flex.flex-col.gap-6 > section').evaluateAll((sections) =>
+    sections.map((section) => {
+      const groupLabel =
+        section.querySelector('h2 .font-semibold')?.textContent?.trim() ??
+        section.querySelector('h2')?.textContent?.trim() ??
+        ''
+      const names = Array.from(section.querySelectorAll('tbody tr'))
+        .map((row) => {
+          const edit = row.querySelector('[aria-label^="Modifica "]')?.getAttribute('aria-label')
+          if (edit?.startsWith('Modifica ')) return edit.slice('Modifica '.length)
+          const cellLabel = row.querySelector('td [aria-label]')?.getAttribute('aria-label') ?? ''
+          return cellLabel.split(',')[0]?.trim() ?? ''
+        })
+        .filter(Boolean)
+      return { groupLabel, names }
+    }),
   )
 }
 
 // control:piatti-ordine-100
 test.describe('Piatti', () => {
+  test.describe.configure({ mode: 'serial' })
+
   test(`piatti-ordine-100 ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
     const managerEmail = payload.managerEmail
     const categoryId = payload.defaultDishCategoryId
@@ -51,20 +59,31 @@ test.describe('Piatti', () => {
       await page.goto(DISHES_PATH, { waitUntil: 'domcontentloaded' })
       await page.getByRole('heading', { level: 1, name: PIATTI_PAGE_TITLE }).waitFor({ timeout: 20_000 })
       await expect(
-        page.getByText(`${PIATTI_LIST_PARTIAL_TITLE_PREFIX}${total}`),
+        page.locator('[role=status]').filter({
+          hasText: `${PIATTI_LIST_PARTIAL_TITLE_PREFIX}${total}`,
+        }),
+        `avviso elenco parziale: atteso «${PIATTI_LIST_PARTIAL_TITLE_PREFIX}${total}»`,
       ).toBeVisible()
       await expect(page.getByText(PIATTI_LIST_PARTIAL_DESCRIPTION)).toBeVisible()
       const rowCount = await page.locator('main table tbody tr').count()
-      expect(rowCount).toBe(100)
+      expect(rowCount, `righe tabella misurate ${rowCount}, atteso 100`).toBe(100)
 
-      const names = await dishNamesOnPage(page)
-      const sorted = [...names].sort((a, b) => collator.compare(a, b))
-      expect(names).toEqual(sorted)
+      const groups = await dishGroupsOnPage(page)
+      assertGroupedNamesSorted(groups)
     } finally {
       for (const name of bulkNames) {
         await deleteDishByName(payloadWorker, name)
       }
-      expect(await countDishes(payloadWorker)).toBe(initialTotal)
+      for (const name of bulkNames) {
+        const left = await payloadWorker.find({
+          collection: DISHES_SLUG,
+          where: { name: { equals: name } },
+          limit: 1,
+          depth: 0,
+          overrideAccess: true,
+        })
+        expect(left.docs.length, `fixture bulk «${name}» ancora presente dopo cleanup`).toBe(0)
+      }
     }
   })
 })

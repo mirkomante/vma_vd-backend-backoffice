@@ -471,12 +471,16 @@ test.describe('Menù fissi', () => {
     const sheet = page.locator('[data-slot=sheet-content]')
     await sheet.getByRole('button', { name: /Traduzione inglese/i }).click()
     await expect(sheet.getByText(MENU_FISSI_FORM_PORTIONS_EN_LEGEND)).toBeVisible()
-    const enPortions = sheet
-      .locator('[data-slot=collapsible-content]')
-      .last()
-      .getByLabel(MENU_FISSI_FORM_PORTION)
-    await expect(enPortions).toHaveCount(1)
-    await expect(enPortions).toHaveAttribute('placeholder', portionIt)
+    const enCollapsible = sheet.locator('[data-slot=collapsible-content]').last()
+    const porzioneItInSheet = await sheet.getByLabel(MENU_FISSI_FORM_PORTION, { exact: true }).count()
+    const enPortions = enCollapsible.locator('input[id^="fixed-menu-portion-en-"]')
+    const porzioneEnCount = await enPortions.count()
+    const enPlaceholder = porzioneEnCount > 0 ? await enPortions.first().getAttribute('placeholder') : null
+    expect(
+      porzioneEnCount,
+      `sezione traduzione inglese: campi porzione misurati ${porzioneEnCount}, atteso 1; campi «${MENU_FISSI_FORM_PORTION}» nel resto del foglio misurati ${porzioneItInSheet}, atteso 2; segnaposto primo campo EN misurato «${enPlaceholder ?? '(nessuno)'}», atteso «${portionIt}»`,
+    ).toBe(1)
+    await expect(enPortions.first()).toHaveAttribute('placeholder', portionIt)
 
     const enRead = await readFixedMenuLocale(payloadWorker, managerEmail, menuId, 'en', false)
     expect(enRead.name).toBe(nameIt)
@@ -643,8 +647,24 @@ test.describe('Menù fissi', () => {
 
   for (const prof of COLONNA_PROFILES) {
     // control:menu-fissi-colonna-elenco
-    test(`menu-fissi-colonna-elenco ${projectTag(prof)}`, async ({ page }) => {
+    test(`menu-fissi-colonna-elenco ${projectTag(prof)}`, async ({ page, payload, payloadWorker }) => {
+      const nome = payload.nome.bind(payload)
+      const managerEmail = payload.managerEmail
+      const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+      const menuName = nome('menu-colonna')
+      await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
+      const ids = await createFixedMenuFixtureLocal(payloadWorker, managerEmail, {
+        dishName: nome('p1'),
+        categoryName: nome('cat'),
+        menuNames: [menuName],
+      })
+      payload.registerCreated(FIXED_MENUS_SLUG, ids[0])
+
       await gotoFixedMenus(page)
+      await page.getByRole('heading', { level: 1, name: MENU_FISSI_PAGE_TITLE }).waitFor({ timeout: 20_000 })
+      await expect(page.getByRole('button', { name: `Modifica ${menuName}`, exact: true })).toBeVisible({
+        timeout: 20_000,
+      })
       await expect(page.locator('main table, main [data-slot=card]').first()).toBeVisible({
         timeout: 20_000,
       })
