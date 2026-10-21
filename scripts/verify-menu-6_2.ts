@@ -1791,10 +1791,34 @@ async function main(): Promise<void> {
         `/api/${DISHES_SLUG}/${fixtureIds.dishId}?locale=en&fallback-locale=none&depth=0`,
         'GET',
       )
+      const expectedEnDesc = `EN desc ${fenTag}`
       const enNoneBody = (await enNone.json()) as { description?: string | null }
-      if (enNoneBody.description != null && enNoneBody.description !== '') {
-        throw new Error('REST fallback-locale=none: description doveva essere vuota')
+      if (enNoneBody.description !== expectedEnDesc) {
+        throw new Error(
+          `REST fallback-locale=none: attesa description «${expectedEnDesc}», ottenuto «${String(enNoneBody.description)}»`,
+        )
       }
+      const noEnDish = await payload.create({
+        collection: DISHES_SLUG,
+        overrideAccess: true,
+        depth: 0,
+        locale: 'it',
+        data: {
+          name: `Piatto no-en ${TEST_RUN_ID}`,
+          description: 'solo IT',
+          price: 1,
+          category: asNumericId(fixtureIds.dishCategoryId),
+        },
+      })
+      const noEnNone = await restFetchAnon(
+        `/api/${DISHES_SLUG}/${noEnDish.id}?locale=en&fallback-locale=none&depth=0`,
+        'GET',
+      )
+      const noEnBody = (await noEnNone.json()) as { description?: string | null }
+      if (noEnBody.description != null) {
+        throw new Error('REST fallback-locale=none su piatto senza EN: description doveva essere null')
+      }
+      await payload.delete({ collection: DISHES_SLUG, id: noEnDish.id, overrideAccess: true, depth: 0 })
       console.log('OK: REST locale en e fallback-locale=none')
     }
   } finally {

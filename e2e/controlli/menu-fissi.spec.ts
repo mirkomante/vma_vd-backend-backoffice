@@ -1,38 +1,62 @@
 import { test, expect } from '../fixtures'
+import { assertNoForbiddenEnglishInUi } from '../lib/checks'
 import { projectTag } from '../lib/matrix-projects'
 import { ensureWorkerMenuSeeds, type SeedSlug } from '../lib/menu-list/ensure-fixtures'
 import {
   createFixedMenuFixtureLocal,
   createSpecialDayForMenuLocal,
+  managerUser,
 } from '../lib/menu-list/payload-actions'
 import {
   findFixedMenuDeleteLog,
   findFixedMenuIdByName,
   readFixedMenuAsManager,
+  readFixedMenuLocale,
+  sortedFixedMenuCategoryNames,
+  sortedFixedMenuNames,
   specialDayContainsMenu,
 } from '../lib/menu-fissi/payload-helpers'
 import { MENU_LIST_SCREENS } from '../lib/menu-list/config'
 import { clickRowAction, gotoMenuList, selectComboboxOption } from '../lib/menu-list/ui-helpers'
 import { createSpecialDayAsManager } from '../lib/special-days/payload-helpers'
-import { FIXED_MENUS_SLUG, SPECIAL_DAYS_SLUG } from '@/lib/menu/constants'
 import {
+  DISHES_SLUG,
+  FIXED_MENU_CATEGORIES_SLUG,
+  FIXED_MENUS_SLUG,
+  SPECIAL_DAYS_SLUG,
+} from '@/lib/menu/constants'
+import { PIATTI_STATUS_DISABLED, PIATTI_STATUS_SOLD_OUT } from '@/lib/menu/dishes/copy'
+import { compareItalianNames } from '@/lib/menu/display/sortByItalianName'
+import {
+  MENU_FISSI_BADGE_DISABLED,
+  MENU_FISSI_CATEGORY_TOAST_DISABLED,
+  MENU_FISSI_CATEGORY_TOAST_ENABLED,
   MENU_FISSI_FORM_CATEGORY,
   MENU_FISSI_FORM_DISHES_ADD,
+  MENU_FISSI_FORM_DISHES_ADD_OR_EDIT,
   MENU_FISSI_FORM_NAME,
   MENU_FISSI_FORM_PORTION,
+  MENU_FISSI_FORM_PORTIONS_EN_LEGEND,
   MENU_FISSI_FORM_PRICE,
   MENU_FISSI_FORM_SAVE,
   MENU_FISSI_NEW_BUTTON,
   MENU_FISSI_PICKER_DONE,
   MENU_FISSI_TOAST_DELETED,
+  MENU_FISSI_TOAST_DISABLED,
+  MENU_FISSI_TOAST_ENABLED,
+  MENU_FISSI_TOAST_PUBLIC_MINUTES,
   MENU_FISSI_TOAST_SAVED,
   MENU_FISSI_DELETE_BACK,
   MENU_FISSI_DELETE_CONFIRM,
+  MENU_FISSI_ERROR_CATEGORY,
+  MENU_FISSI_ERROR_DISHES,
+  MENU_FISSI_ERROR_PRICE,
+  MENU_FISSI_ERROR_REQUIRED,
 } from '@/lib/menu/fixed-menus/copy'
 import { CASCADE_DELETE_IRREVERSIBLE } from '@/lib/menu/formatCascadeDeleteDescription'
 
 const PROFILE = projectTag('telefono-390-chiaro')
-const ENGLISH_BANNED = ['Close', 'Edit', 'Delete', 'Remove', 'Save', 'Cancel', 'Add', 'Toggle', 'Move']
+const PROFILE_NB = projectTag('notebook-1280-chiaro')
 const mfConfig = MENU_LIST_SCREENS['menu-fissi']
 
 async function gotoFixedMenus(page: import('@playwright/test').Page) {
@@ -51,45 +75,42 @@ async function clickFixedMenuDelete(page: import('@playwright/test').Page, menuN
 
 test.describe('Menù fissi', () => {
   // control:menu-fissi-elimina-senza-uso
-  // NON PROVATO: il risultato del 24d non è valido (count() senza attesa mentre l'elenco si carica: difetto del test, non provato difetto dell'app).
-  // Decisione di Mirko (2026-10-20): nessuna rimisura prima di V6; eccezione scritta verso V6 (policy §6).
-  test.fixme(`menu-fissi-elimina-senza-uso ${PROFILE}`, async ({ page, payload, payloadWorker }, testInfo) => {
-      const nome = payload.nome.bind(payload)
-      const managerEmail = payload.managerEmail
-      const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
-      const menuName = nome('menu-libero')
-      await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
-      const ids = await createFixedMenuFixtureLocal(payloadWorker, managerEmail, {
-        dishName: nome('p1'),
-        categoryName: nome('cat'),
-        menuNames: [menuName],
-      })
-      payload.registerCreated(FIXED_MENUS_SLUG, ids[0])
+  test(`menu-fissi-elimina-senza-uso ${PROFILE}`, async ({ page, payload, payloadWorker }, testInfo) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    const menuName = nome('menu-libero')
+    await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
+    const ids = await createFixedMenuFixtureLocal(payloadWorker, managerEmail, {
+      dishName: nome('p1'),
+      categoryName: nome('cat'),
+      menuNames: [menuName],
+    })
+    payload.registerCreated(FIXED_MENUS_SLUG, ids[0])
 
-      await gotoFixedMenus(page)
-      await page.reload({ waitUntil: 'domcontentloaded' })
-      await page.getByRole('heading', { level: 1, name: mfConfig.h1 }).waitFor()
-      const deleteBtn = page.locator('main').getByRole('button', { name: `Elimina ${menuName}`, exact: true })
-      const count = await deleteBtn.count()
-      if (count === 0) {
-        await testInfo.attach('screenshot-elenco', {
-          body: await page.screenshot({ fullPage: true }),
-          contentType: 'image/png',
-        })
-        await testInfo.attach('dom-elenco', {
-          body: await page.locator('main').innerHTML(),
-          contentType: 'text/html',
-        })
-      }
-      expect(
-        count,
+    await gotoFixedMenus(page)
+    const deleteBtn = page.locator('main').getByRole('button', { name: `Elimina ${menuName}`, exact: true })
+    try {
+      await expect(deleteBtn).toBeVisible({ timeout: 20_000 })
+    } catch {
+      await testInfo.attach('screenshot-elenco', {
+        body: await page.screenshot({ fullPage: true }),
+        contentType: 'image/png',
+      })
+      await testInfo.attach('dom-elenco', {
+        body: await page.locator('main').innerHTML(),
+        contentType: 'text/html',
+      })
+      throw new Error(
         `POSSIBILE DIFETTO DELL'APP: pulsante Elimina ${menuName} non trovato nell'elenco menù fissi`,
-      ).toBeGreaterThan(0)
-      await deleteBtn.click()
-      const dlg = await fixedMenuDeleteDialog(page).innerText()
-      expect(dlg).toContain(menuName)
-      expect(dlg).toContain(CASCADE_DELETE_IRREVERSIBLE)
-      expect(dlg).not.toMatch(/giorn[oi] speciali/i)
+      )
+    }
+    await deleteBtn.click()
+    const dlg = fixedMenuDeleteDialog(page)
+    await expect(dlg).toBeVisible()
+    await expect(dlg).toContainText(menuName)
+    await expect(dlg).toContainText(CASCADE_DELETE_IRREVERSIBLE)
+    await expect(dlg).not.toContainText(/giorn[oi] speciali/i)
   })
 
   // control:menu-fissi-persistenza
@@ -214,21 +235,22 @@ test.describe('Menù fissi', () => {
   })
 
   // control:menu-fissi-nomi-accessibili
-  // NON PROVATO: il risultato del 24d non è valido (legge innerText, senza gli aria-label, prima che l'elenco sia caricato).
-  // Decisione di Mirko (2026-10-20): nessuna rimisura prima di V6; eccezione scritta verso V6 (policy §6).
-  test.fixme(`menu-fissi-nomi-accessibili ${PROFILE}`, async ({ page }) => {
+  test(`menu-fissi-nomi-accessibili ${PROFILE}`, async ({ page }) => {
     await gotoFixedMenus(page)
-    const body = await page.locator('main').innerText()
-    const hits = ENGLISH_BANNED.filter((w) => body.includes(w))
-    expect(hits, `stringhe inglesi vietate: ${hits.join(', ')}`).toEqual([])
+    await expect(page.locator('main').getByRole('button', { name: /^Modifica / }).first()).toBeVisible()
+    await assertNoForbiddenEnglishInUi(page)
+    await openNewFixedMenu(page)
+    await assertNoForbiddenEnglishInUi(page, {
+      extraScopes: [page.locator('[data-slot=sheet-content]')],
+    })
+    await page.keyboard.press('Escape')
   })
 
   // control:menu-fissi-console
   test.skip(`menu-fissi-console ${PROFILE}`, () => {
     test.info().annotations.push({
       type: 'skip',
-      description:
-        'NON PROVATO: richiede server di sviluppo (porta 3200) per la console senza errori; locale-prod non copre questo controllo. Scadenza V6.',
+      description: 'NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)',
     })
   })
 
@@ -236,23 +258,295 @@ test.describe('Menù fissi', () => {
   test.skip(`menu-fissi-testi ${PROFILE}`, () => {
     test.info().annotations.push({
       type: 'skip',
-      description: 'NON PROVATO «tetto»: limite di righe del passo 24d; eccezione scritta verso V6 (firmata da Mirko, 2026-10-20).',
+      description: 'NON PROVATO «tetto»: 28d (UI = design)',
     })
   })
 
   // control:menu-fissi-modulo-validazione
-  test.skip(`menu-fissi-modulo-validazione ${PROFILE}`, () => {
-    test.info().annotations.push({
-      type: 'skip',
-      description: 'NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28.',
+  test(`menu-fissi-modulo-validazione ${PROFILE}`, async ({ page }) => {
+    const posts: string[] = []
+    page.on('request', (req) => {
+      if (req.method() === 'POST') posts.push(req.url())
     })
+    await gotoFixedMenus(page)
+    await openNewFixedMenu(page)
+    const before = posts.length
+    await page.getByRole('button', { name: MENU_FISSI_FORM_SAVE }).click()
+    await expect(page.getByText(MENU_FISSI_ERROR_REQUIRED)).toHaveCount(2)
+    await expect(page.getByText(MENU_FISSI_ERROR_CATEGORY)).toBeVisible()
+    await expect(page.getByText(MENU_FISSI_ERROR_DISHES)).toBeVisible()
+    expect(posts.length, 'nessuna richiesta POST con modulo vuoto').toBe(before)
+    await expect(page.locator('#fixed-menu-field-name')).toBeFocused()
+
+    const price = page.locator('#fixed-menu-field-price')
+    for (const value of ['18', '18,5', '18,50', '18.50']) {
+      await price.fill(value)
+      await expect(page.getByText(MENU_FISSI_ERROR_PRICE)).toHaveCount(0)
+    }
+    for (const bad of ['abc', '18,555']) {
+      await price.fill(bad)
+      await page.getByRole('button', { name: MENU_FISSI_FORM_SAVE }).click()
+      await expect(page.getByText(MENU_FISSI_ERROR_PRICE)).toBeVisible()
+    }
   })
 
   // control:menu-fissi-disponibilita
-  test.skip(`menu-fissi-disponibilita ${PROFILE}`, () => {
-    test.info().annotations.push({
-      type: 'skip',
-      description: 'NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28.',
+  test(`menu-fissi-disponibilita ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    const catName = nome('cat-disp')
+    const menuName = nome('menu-disp')
+    await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
+    const user = await managerUser(payloadWorker, managerEmail)
+    let catId = (
+      await payloadWorker.find({
+        collection: FIXED_MENU_CATEGORIES_SLUG,
+        where: { name: { equals: catName } },
+        limit: 1,
+        overrideAccess: true,
+      })
+    ).docs[0]?.id
+    if (catId == null) {
+      const created = await payloadWorker.create({
+        collection: FIXED_MENU_CATEGORIES_SLUG,
+        data: { name: catName, visibility: 'always' },
+        overrideAccess: false,
+        user,
+      })
+      catId = created.id
+      register(FIXED_MENU_CATEGORIES_SLUG, catId)
+    }
+    const dishId = (
+      await payloadWorker.find({
+        collection: DISHES_SLUG,
+        where: { name: { equals: nome('p1') } },
+        limit: 1,
+        overrideAccess: true,
+      })
+    ).docs[0]?.id
+    if (dishId == null) throw new Error('piatto seed mancante')
+    const menuDoc = await payloadWorker.create({
+      collection: FIXED_MENUS_SLUG,
+      data: {
+        name: menuName,
+        description: 'verify-ui',
+        price: 20,
+        category: catId,
+        visibility: 'always',
+        dishes: [{ dish: dishId }],
+      },
+      overrideAccess: false,
+      user,
     })
+    payload.registerCreated(FIXED_MENUS_SLUG, menuDoc.id)
+
+    await gotoFixedMenus(page)
+    await page.getByRole('switch', { name: `Disponibile: ${menuName}` }).click()
+    await expect(page.getByRole('status').filter({ hasText: MENU_FISSI_TOAST_DISABLED })).toBeVisible()
+    await expect(page.getByText(MENU_FISSI_TOAST_PUBLIC_MINUTES)).toBeVisible()
+    await expect(
+      page
+        .locator('main')
+        .filter({ hasText: menuName })
+        .locator('[data-slot=badge]')
+        .filter({ hasText: MENU_FISSI_BADGE_DISABLED }),
+    ).toBeVisible()
+    await page.getByRole('switch', { name: `Disponibile: ${menuName}` }).click()
+    await expect(page.getByRole('status').filter({ hasText: MENU_FISSI_TOAST_ENABLED })).toBeVisible()
+
+    await gotoMenuList(page, mfConfig, mfConfig.categoriesPath)
+    await page.getByRole('switch', { name: `Attiva: ${catName}` }).click()
+    const categoryStatus = page
+      .getByRole('status')
+      .filter({ hasText: MENU_FISSI_CATEGORY_TOAST_DISABLED })
+    await expect(categoryStatus).toBeVisible()
+    await expect(categoryStatus).not.toContainText(MENU_FISSI_TOAST_PUBLIC_MINUTES)
+    await page.getByRole('switch', { name: `Attiva: ${catName}` }).click()
+    await expect(
+      page.getByRole('status').filter({ hasText: MENU_FISSI_CATEGORY_TOAST_ENABLED }),
+    ).toBeVisible()
+  })
+
+  // control:menu-fissi-porzione-traduzione
+  test(`menu-fissi-porzione-traduzione ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    const menuName = nome('menu-porz')
+    const portionIt = '2 pezzi verify'
+    await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
+    const ids = await createFixedMenuFixtureLocal(payloadWorker, managerEmail, {
+      dishName: nome('p1'),
+      categoryName: nome('cat'),
+      menuNames: [menuName],
+    })
+    const menuId = ids[0]
+    payload.registerCreated(FIXED_MENUS_SLUG, menuId)
+
+    await gotoFixedMenus(page)
+    await clickRowAction(page, menuName, 'edit')
+    const sheet = page.locator('[data-slot=sheet-content]')
+    await sheet.getByLabel(MENU_FISSI_FORM_PORTION).first().fill(portionIt)
+    await page.getByRole('button', { name: MENU_FISSI_FORM_SAVE }).click()
+    await expect(page.getByRole('status').filter({ hasText: MENU_FISSI_TOAST_SAVED })).toBeVisible()
+
+    await clickRowAction(page, menuName, 'edit')
+    await sheet.getByRole('button', { name: /Traduzione inglese/i }).click()
+    await expect(sheet.getByText(MENU_FISSI_FORM_PORTIONS_EN_LEGEND)).toBeVisible()
+    await expect(sheet.getByLabel(MENU_FISSI_FORM_PORTION).first()).toHaveCount(1)
+
+    const itRead = await readFixedMenuAsManager(payloadWorker, managerEmail, menuId)
+    expect(itRead.portions[0]).toBe(portionIt)
+    const enRead = await readFixedMenuLocale(payloadWorker, managerEmail, menuId, 'en')
+    expect(enRead.portions[0]).toBe(portionIt)
+  })
+
+  // control:menu-fissi-servizi-piatti
+  test(`menu-fissi-servizi-piatti ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    const menuName = nome('menu-serv')
+    const svcA = nome('servizio-a')
+    const svcB = nome('servizio-b')
+    await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
+    const user = await managerUser(payloadWorker, managerEmail)
+    const dishCategoryId = payload.defaultDishCategoryId
+    const dishDis = await payloadWorker.create({
+      collection: DISHES_SLUG,
+      data: {
+        name: nome('p-dis'),
+        description: 'verify-ui',
+        price: 9,
+        category: dishCategoryId,
+        disabled: true,
+      },
+      overrideAccess: false,
+      user,
+    })
+    register(DISHES_SLUG, dishDis.id)
+    const dishOut = await payloadWorker.create({
+      collection: DISHES_SLUG,
+      data: {
+        name: nome('p-out'),
+        description: 'verify-ui',
+        price: 9,
+        category: dishCategoryId,
+        soldOut: true,
+      },
+      overrideAccess: false,
+      user,
+    })
+    register(DISHES_SLUG, dishOut.id)
+    const ids = await createFixedMenuFixtureLocal(payloadWorker, managerEmail, {
+      dishName: nome('p1'),
+      categoryName: nome('cat'),
+      menuNames: [menuName],
+    })
+    payload.registerCreated(FIXED_MENUS_SLUG, ids[0])
+
+    await gotoFixedMenus(page)
+    await clickRowAction(page, menuName, 'edit')
+    const sheet = page.locator('[data-slot=sheet-content]')
+    for (const svc of [svcA, svcB]) {
+      const box = sheet.locator('[data-slot=field]').filter({ hasText: svc }).getByRole('checkbox')
+      if ((await box.getAttribute('aria-checked')) !== 'true') await box.click()
+    }
+    await page.getByRole('button', { name: MENU_FISSI_FORM_SAVE }).click()
+    await expect(page.getByRole('status').filter({ hasText: MENU_FISSI_TOAST_SAVED })).toBeVisible()
+
+    const read = await readFixedMenuAsManager(payloadWorker, managerEmail, ids[0])
+    expect(read.serviceNames.sort()).toEqual([svcA, svcB].sort())
+
+    await clickRowAction(page, menuName, 'edit')
+    await sheet.getByRole('button', { name: new RegExp(MENU_FISSI_FORM_DISHES_ADD_OR_EDIT) }).click()
+    await expect(
+      sheet.locator('[data-slot=field]').filter({ hasText: nome('p-dis') }).getByText(PIATTI_STATUS_DISABLED),
+    ).toBeVisible()
+    await expect(
+      sheet.locator('[data-slot=field]').filter({ hasText: nome('p-out') }).getByText(PIATTI_STATUS_SOLD_OUT),
+    ).toBeVisible()
+    await sheet.locator('[data-slot=field]').filter({ hasText: nome('p-dis') }).getByRole('checkbox').click()
+    await sheet.getByRole('button', { name: MENU_FISSI_PICKER_DONE }).click()
+    await expect(sheet.getByText(nome('p-dis'))).toBeVisible()
+  })
+
+  // control:menu-fissi-ordine-liste
+  test(`menu-fissi-ordine-liste ${PROFILE_NB}`, async ({ page, payload, payloadWorker }) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    await ensureWorkerMenuSeeds(payloadWorker, managerEmail, nome, register)
+    const user = await managerUser(payloadWorker, managerEmail)
+    const dishId = (
+      await payloadWorker.find({
+        collection: DISHES_SLUG,
+        where: { name: { equals: nome('p1') } },
+        limit: 1,
+        overrideAccess: true,
+      })
+    ).docs[0]?.id
+    if (dishId == null) throw new Error('piatto seed mancante')
+
+    const catZ = nome('sort-zorro')
+    const catA = nome('sort-àgnello')
+    const catB = nome('sort-beta')
+    const menuZ = nome('menu-sort-z')
+    const menuA = nome('menu-sort-a')
+    const menuB = nome('menu-sort-b')
+    const expectedCats = [catA, catB, catZ].sort(compareItalianNames)
+    const expectedMenus = [menuA, menuB, menuZ].sort(compareItalianNames)
+
+    for (const [catName, menuName] of [
+      [catZ, menuZ],
+      [catA, menuA],
+      [catB, menuB],
+    ] as const) {
+      const cat = await payloadWorker.create({
+        collection: FIXED_MENU_CATEGORIES_SLUG,
+        data: { name: catName, visibility: 'always' },
+        overrideAccess: false,
+        user,
+      })
+      register(FIXED_MENU_CATEGORIES_SLUG, cat.id)
+      const menu = await payloadWorker.create({
+        collection: FIXED_MENUS_SLUG,
+        data: {
+          name: menuName,
+          description: 'verify-ui',
+          price: 15,
+          category: cat.id,
+          visibility: 'always',
+          dishes: [{ dish: dishId }],
+        },
+        overrideAccess: false,
+        user,
+      })
+      payload.registerCreated(FIXED_MENUS_SLUG, menu.id)
+    }
+
+    const apiCats = await sortedFixedMenuCategoryNames(payloadWorker, managerEmail)
+    for (const name of [catA, catB, catZ]) {
+      expect(apiCats).toContain(name)
+    }
+    const sliceCats = apiCats.filter((n) => [catA, catB, catZ].includes(n))
+    expect(sliceCats).toEqual(expectedCats)
+
+    const apiMenus = await sortedFixedMenuNames(payloadWorker, managerEmail)
+    const sliceMenus = apiMenus.filter((n) => [menuA, menuB, menuZ].includes(n))
+    expect(sliceMenus).toEqual(expectedMenus)
+
+    await gotoFixedMenus(page)
+    const editButtons = page.locator('main').getByRole('button', { name: /^Modifica / })
+    await expect(editButtons.first()).toBeVisible()
+    const uiMenus: string[] = []
+    const n = await editButtons.count()
+    for (let i = 0; i < n; i++) {
+      const label = await editButtons.nth(i).getAttribute('aria-label')
+      if (label?.startsWith('Modifica ')) uiMenus.push(label.slice('Modifica '.length))
+    }
+    const sliceUi = uiMenus.filter((n) => [menuA, menuB, menuZ].includes(n))
+    expect(sliceUi).toEqual(expectedMenus)
   })
 })

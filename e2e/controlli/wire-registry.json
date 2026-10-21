@@ -4,12 +4,12 @@
   "nonProvati": {
     "__default__": "T0 scheletro: test controlli in T1/T2",
     "messaggio-globale-permessi": "coperto da verify:menu-6_1 (test Playwright saltato con stessa nota)",
-    "menu-fissi-console": "NON PROVATO: richiede server di sviluppo (porta 3200); scadenza V6 passo 28",
-    "menu-fissi-testi": "NON PROVATO «tetto»: limite di righe del passo 24d; eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
-    "menu-fissi-modulo-validazione": "NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28",
-    "menu-fissi-disponibilita": "NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28",
-    "menu-fissi-elimina-senza-uso": "NON PROVATO: risultato del 24d non valido (difetto del test); nessuna rimisura prima di V6 (decisione di Mirko, 2026-10-20); eccezione scritta verso V6",
-    "menu-fissi-nomi-accessibili": "NON PROVATO: risultato del 24d non valido (difetto del test); nessuna rimisura prima di V6 (decisione di Mirko, 2026-10-20); eccezione scritta verso V6"
+    "menu-fissi-console": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
+    "menu-fissi-testi": "NON PROVATO «tetto»: 28d (UI = design)",
+    "giorni-speciali-console": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
+    "messaggio-globale-console": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
+    "messaggio-globale-file-riceve-messaggio": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)",
+    "messaggio-globale-pubblicazione": "NON PROVATO: eccezione firmata da Mirko 2026-10-21, policy §6 (riduzione di V6)"
   },
   "tests": []
 }

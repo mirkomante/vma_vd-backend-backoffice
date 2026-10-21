@@ -13,45 +13,6 @@ const FORBIDDEN_EN_UI = [
   'Toggle',
 ] as const
 
-export type ConsoleMonitor = {
-  errors: string[]
-  warnings: string[]
-  failedResponses: string[]
-}
-
-/** Ascolta console, pageerror e risposte 4xx/5xx: va attaccato prima del primo goto. */
-export function attachConsoleMonitor(page: Page): ConsoleMonitor {
-  const bag: ConsoleMonitor = { errors: [], warnings: [], failedResponses: [] }
-  page.on('console', (msg) => {
-    const text = msg.text()
-    const loc = msg.location()
-    const where = loc.url ? `${loc.url}:${loc.lineNumber ?? 0}` : 'console'
-    if (msg.type() === 'error') bag.errors.push(`${where}: ${text}`)
-    if (msg.type() === 'warning') bag.warnings.push(`${where}: ${text}`)
-  })
-  page.on('pageerror', (e) => bag.errors.push(`pageerror: ${String(e)}`))
-  page.on('response', (res) => {
-    if (res.status() >= 400 && !res.url().includes('favicon')) {
-      bag.failedResponses.push(`${res.status()} ${res.url()}`)
-    }
-  })
-  return bag
-}
-
-export function consoleMonitorSummary(bag: ConsoleMonitor): string {
-  return [
-    ...bag.errors.map((e) => `error: ${e}`),
-    ...bag.warnings.map((w) => `warning: ${w}`),
-    ...bag.failedResponses.map((r) => `http: ${r}`),
-  ].join(' | ')
-}
-
-export async function assertConsoleMonitorClean(bag: ConsoleMonitor): Promise<void> {
-  expect(bag.errors, 'error console/pageerror').toEqual([])
-  expect(bag.warnings, 'warning console').toEqual([])
-  expect(bag.failedResponses, 'risposte 4xx/5xx').toEqual([])
-}
-
 async function collectAriaLabelsInScope(scope: import('@playwright/test').Locator): Promise<string[]> {
   return scope.evaluate((root) => {
     const labels: string[] = []
