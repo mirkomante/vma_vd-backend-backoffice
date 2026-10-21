@@ -1,0 +1,430 @@
+{
+  "commit": "69fafbc18885",
+  "launcher": "e2e/T1c-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
+  "durataSecondi": 27,
+  "riepilogo": {
+    "OK": 19,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 8,
+    "ERRORE-STRUMENTO": 7
+  },
+  "esiti": [
+    {
+      "id": "screenshot giorni-speciali-attivazione [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato attivazione non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0.2
+    },
+    {
+      "id": "screenshot giorni-speciali-elenco [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "screenshot giorni-speciali-modulo-menu [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "screenshot giorni-speciali-modulo [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "screenshot giorni-speciali-nuovo [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "screenshot giorni-speciali-nuovo-errori [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.6
+    },
+    {
+      "id": "screenshot giorni-speciali-sovrapposizione [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "screenshot giorni-speciali-eliminato [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato eliminato non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot giorni-speciali-elimina [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.6
+    },
+    {
+      "id": "screenshot messaggio-globale-modificato [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "screenshot messaggio-globale-elenco [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "screenshot messaggio-globale-salvato [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato salvato non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot messaggio-globale-file-non-leggibile [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "screenshot messaggio-globale-nessun-messaggio [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "screenshot messaggio-globale-togli [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "screenshot messaggio-globale-tolto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato tolto non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0
+    },
+    {
+      "id": "giorni-speciali NON PROVATO screenshot vuoto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "database popolato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "giorni-speciali NON PROVATO screenshot caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "giorni-speciali NON PROVATO screenshot errore-caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "giorni-speciali NON PROVATO screenshot errore-azione [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale NON PROVATO screenshot caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale NON PROVATO screenshot errore-caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale NON PROVATO screenshot errore-azione [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "messaggio-globale NON PROVATO screenshot pubblicazione [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot giorni-speciali-elenco [telefono-390-scuro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "screenshot messaggio-globale-elenco [telefono-390-scuro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "screenshot giorni-speciali-data-passata [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "screenshot giorni-speciali-elenco [notebook-1280-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "screenshot messaggio-globale-elenco [notebook-1280-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "screenshot messaggio-globale-inglese-aperto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "screenshot giorni-speciali-modulo-inglese-aperto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "screenshot giorni-speciali-modulo [notebook-1280-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.7
+    },
+    {
+      "id": "screenshot giorni-speciali-elenco [notebook-1280-scuro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "screenshot messaggio-globale-elenco [notebook-1280-scuro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    }
+  ],
+  "erroriStrumento": [
+    {
+      "id": "screenshot giorni-speciali-attivazione [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato attivazione non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0.2
+    },
+    {
+      "id": "screenshot giorni-speciali-eliminato [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato eliminato non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot messaggio-globale-salvato [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato salvato non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot messaggio-globale-tolto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "Error: stato tolto non preparato",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot giorni-speciali-data-passata [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "screenshot messaggio-globale-inglese-aperto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "screenshot giorni-speciali-modulo-inglese-aperto [telefono-390-chiaro]",
+      "schermata": "controlli/special-global-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    }
+  ],
+  "anomalie": [],
+  "exitCode": "failed"
+}

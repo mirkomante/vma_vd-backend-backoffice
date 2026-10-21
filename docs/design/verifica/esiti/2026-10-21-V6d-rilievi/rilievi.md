@@ -27,3 +27,17 @@ Chat di design. Fonti: matrice C1/C2/C3 (`esiti/2026-10-21-V6d-r2/`), screenshot
 ## Non provato (eccezione firmata, policy §6)
 
 Sei stati che la matrice non riesce a preparare, 20 prove ciascuno: Vini (`origine-senza-regioni`, `errore-geografia`, `errore-anno`), Giorni speciali (`modulo-inglese-aperto`, `data-passata`), Messaggio globale (`inglese-aperto`); più circa 30 `ERRORE-STRUMENTO` sporadici dello stesso tipo. Gli stati di errore e di caricamento (28e) non si fanno, per decisione di Mirko del 2026-10-21; si riaprono se i test umani rilevano problemi.
+
+## Esito del passo 29 (F6), 2026-10-21
+
+Commit `41b9092` (base `69fafbc`). Verificato dalla chat di design nel codice, con `typecheck`, ESLint a zero warning sui cinque file di codice, `ui:check`, `e2e:wire` e i 130 test di `lib/`, e negli screenshot di Giorni speciali (`v6f-screenshots`, confrontati con i mockup).
+
+| Id | Esito | Evidenza |
+|---|---|---|
+| P1 | **Era una misura sbagliata, non un difetto dell'app** | Lo zoom di apertura della finestra riduceva la scala al 95 % mentre C2 misurava: 44×0,95 ≈ 42 e 288×0,95 ≈ 274 (al T1e, a animazione conclusa, i pulsanti erano 288×44). La chat di design aveva classificato P1 come difetto: errore di classificazione. Corretto togliendo lo zoom da `components/ui/alert-dialog.tsx` e portando i pulsanti a `size="lg"` (deviazione D6 annotata in `installazione-componenti-ui.md`). C2 ripetuto: 163 OK, 0 FALLITO |
+| P2 | Corretto | Piè di foglio `flex-row gap-2`, «Salva» a sinistra e «Annulla» a destra, come il mockup (screenshot `modulo` 390) |
+| P3 | Corretto | Messaggio troncato con i puntini nella colonna Data, senza sovrapposizione (screenshot `elenco` 1280) |
+| P4 | Corretto | Interruttore con etichetta, matita e cestino su una sola riga (screenshot `elenco` 390) |
+| P5 | Corretto | «di domenica 12 luglio 2099» e sottotitolo «mercoledì 8 luglio 2099» (screenshot `elimina` e `modulo` 390); nell'elenco resta maiuscolo |
+
+**Scostamenti dal passo**: righe di codice dell'app toccate 107 contro il limite duro di 80 (l'agente se n'è accorto e ha proseguito); screenshot e giri (a), (b), (c) in `esiti/2026-10-21-F6a`, `-F6b`, `-F6c`. Giro (a): 29 OK, 2 skipped, 0 FALLITO; giro (b): 163 OK, 0 FALLITO, 25 ERRORE-STRUMENTO invariati (stati non preparabili); giro (c): 19 OK, 7 ERRORE-STRUMENTO, 8 NON PROVATO (stati non preparabili o fuori piano). I sette A restano aperti e non bloccano.

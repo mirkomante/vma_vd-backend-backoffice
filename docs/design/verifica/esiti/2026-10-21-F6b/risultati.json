@@ -1,0 +1,2150 @@
+{
+  "commit": "69fafbc18885",
+  "launcher": "e2e/T1c-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
+  "durataSecondi": 195,
+  "riepilogo": {
+    "OK": 163,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 0,
+    "ERRORE-STRUMENTO": 25
+  },
+  "esiti": [
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.2
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.6
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.4
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.3
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.8
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.6
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.5
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.1
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.4
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "distillati C2 [telefono-390-chiaro]",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.4
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.3
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.1
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/elenco",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/modulo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/modulo-menu",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/nuovo",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/nuovo-errori",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/sovrapposizione",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/elimina",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/elenco",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/modificato",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "bevande C2 [telefono-390-chiaro]",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/file-non-leggibile",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/nessun-messaggio",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/togli",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/elenco",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.6
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/filtri",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.4
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.3
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/nuovo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/modulo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.6
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/elimina",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.9
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.7
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/elenco",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.6
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/filtri",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.1
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/elimina",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/modulo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.2
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.6
+    },
+    {
+      "id": "distillati C2 [telefono-390-scuro]",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/elenco",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/filtri",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.1
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/modulo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.9
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/elenco",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/modulo-menu",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/modulo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/nuovo",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/nuovo-errori",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/sovrapposizione",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/elimina",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "bevande C2 [telefono-390-scuro]",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.6
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/elimina",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/modificato",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "ValidationError: Il seguente campo non è valido: _locale, _parent_id",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/elenco",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/file-non-leggibile",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/nessun-messaggio",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/togli",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/elenco",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.7
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/filtri",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.1
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.4
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/nuovo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/modulo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/elimina",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.7
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/elenco",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.6
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/filtri",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/modulo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.8
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.4
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/filtri",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/elimina",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.4
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-chiaro]",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/modulo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/elenco",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/modulo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/modulo-menu",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/elenco",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/nuovo",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/nuovo-errori",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/sovrapposizione",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/elimina",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.1
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-chiaro]",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/elenco",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/elimina",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/modificato",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/file-non-leggibile",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/nessun-messaggio",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/togli",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/elenco",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.7
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/filtri",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/filtri-attivi",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.1
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/filtri-origine",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/nuovo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/nuovo-errori",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/modulo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/modulo-origine",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/elimina",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/nessun-risultato",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.7
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/elenco",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.6
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/filtri",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/filtri-attivi",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.3
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/nuovo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/nuovo-errori",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/modulo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.4
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/elimina",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.6
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "distillati C2-mouse [notebook-1280-scuro]",
+      "schermata": "distillati/nessun-risultato",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.6
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/elenco",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/filtri",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/nuovo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/nuovo-errori",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/filtri-attivi",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.3
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/modulo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/elenco",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/modulo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/modulo-menu",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/nuovo",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/nuovo-errori",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/sovrapposizione",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/elimina",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.2
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/elimina",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.3
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/elenco",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/modificato",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "bevande C2-mouse [notebook-1280-scuro]",
+      "schermata": "bevande/nessun-risultato",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.9
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/file-non-leggibile",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/nessun-messaggio",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.1
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/togli",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.3
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    }
+  ],
+  "erroriStrumento": [
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "vini C2 [telefono-390-chiaro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.4
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-chiaro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-chiaro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "vini C2 [telefono-390-scuro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.2
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/modificato",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "ValidationError: Il seguente campo non è valido: _locale, _parent_id",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 0.1
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "giorni-speciali C2 [telefono-390-scuro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "messaggio-globale C2 [telefono-390-scuro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.3
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-chiaro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.8
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-chiaro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.3
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-chiaro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/origine-senza-regioni",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/errore-anno",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.5
+    },
+    {
+      "id": "vini C2-mouse [notebook-1280-scuro]",
+      "schermata": "vini/errore-geografia",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.6
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/modulo-inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.6
+    },
+    {
+      "id": "giorni-speciali C2-mouse [notebook-1280-scuro]",
+      "schermata": "giorni-speciali/data-passata",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.3
+    },
+    {
+      "id": "messaggio-globale C2-mouse [notebook-1280-scuro]",
+      "schermata": "messaggio-globale/inglese-aperto",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.2
+    }
+  ],
+  "anomalie": [],
+  "exitCode": "failed"
+}

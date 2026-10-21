@@ -47,6 +47,7 @@ Regola: **ogni elemento interattivo ha un'area di tocco di almeno 44 px sui disp
 | `switch.tsx` | Area di tocco da 54 × 44 px | `after:-inset-x-3 after:-inset-y-2` | `after:-inset-x-3 after:-inset-y-2 pointer-coarse:after:-inset-y-3.5` |
 | `sheet.tsx` | Il foglio scorre e non supera il 90 % dello schermo (dal basso); **il footer resta agganciato in fondo** | `bg-popover text-popover-foreground fixed z-50 flex flex-col gap-4` (SheetContent) | `… flex flex-col gap-4 overflow-y-auto data-[side=bottom]:max-h-[90svh]` |
 | | | `"gap-2 p-4 mt-auto flex flex-col"` (SheetFooter) | `"gap-2 p-4 mt-auto flex flex-col sticky bottom-0 border-t bg-popover"` |
+| `alert-dialog.tsx` | Pulsanti della finestra di conferma alti 44 px su touch, **anche durante l'apertura** (aggiunta del 2026-10-21, F6: lo zoom di apertura riduceva la scala al 95 %, 44 → 42 px, e C2 misura subito dopo l'apertura) | `zoom-in-95` · `zoom-out-95` (AlertDialogContent) · `size = "default"` (AlertDialogAction e AlertDialogCancel) | togliere le due classi di zoom (resta la dissolvenza) · `size = "lg"` come predefinito di AlertDialogAction e AlertDialogCancel, passando `size` al `Button` |
 
 **Testi in italiano (T1)**: i componenti hanno testi di default in inglese per lo screen reader. Applicarli subito dopo l'installazione, insieme alle deviazioni D6; `pnpm ui:check` segnala quelli rimasti.
 
