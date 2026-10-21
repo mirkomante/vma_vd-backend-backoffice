@@ -26,7 +26,7 @@ I budget sono un **contratto**: chi li supera si ferma e semplifica, non allunga
 | **L1v** | Subito dopo L1, per le schermate nuove o cambiate nel layout | Confronto visivo con la demo (sezione 3.1) | Agente di verifica, chat pulita | 10 min per schermata |
 | **L2** | Solo ai trigger della sezione 4 | Tutti i controlli, tutti i profili e i temi | Agente di verifica, chat pulita | 15 min |
 | **L3** | Fine fase e prima del primo uso reale | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko | 1 ora |
-| **S** | Dopo ogni deploy | `pnpm ui:verify online`: solo richieste HTTP | Chiunque | 1 min |
+| **S** | Dopo ogni deploy | `BASE_URL=<indirizzo senza /app> pnpm online:smoke`: solo richieste HTTP | Chiunque | 1 min |
 
 **L1 non si vieta mai nei prompt di implementazione** (è successo con F4: la regressione di P8 è nata così).
 
@@ -152,7 +152,7 @@ Se, nonostante questo, un controllo non è implementato quando l'implementazione
 
 **Stato del motore, misurato il 2026-10-20**
 - **Playwright** (`e2e/`, `pnpm e2e`) implementa oggi: la matrice `C1`, `C2`, `C2-mouse`, `C3`, `C3-no-lampo` e `C3-cambio-sistema` per Servizi e Menù fissi, gli screenshot dei cataloghi, la suite di fumo. **Non implementa nessun controllo di flusso** (persistenza, cancellazione, validazione, permessi) **né la console**, e il suo registro `e2e/controlli/wire-registry.json` ha `tests: []`: `pnpm e2e:wire` passa solo perché ogni id è NON PROVATO per default. Il cablaggio oggi non prova nulla.
-- Il **vecchio lanciatore** (`scripts/ui-verify`, congelato) è l'unico posto dove i flussi esistono.
+- Il **vecchio lanciatore** (`scripts/ui-verify`) era l'unico posto dove questi flussi esistevano; è stato cancellato il 2026-10-21 (28f).
 
 **Regole**
 - **Controlli nuovi: solo in Playwright**, con un commento `// control:<id>` nel test e il titolo che termina con `[profilo-tema]`. Il lanciatore non riceve controlli nuovi.
@@ -161,7 +161,7 @@ Se, nonostante questo, un controllo non è implementato quando l'implementazione
 - **Esiti**: ogni giro in una **cartella sua** (`E2E_ESITI=<data>-<nome>`); `risultati.json` non si sovrascrive mai. Attenzione: senza `E2E_ESITI` il motore scrive in `esiti/2026-10-19-T0/`, cioè sopra un esito esistente: ogni comando di L1 lo imposta, e R13 segnala la violazione.
 - **Due tentativi**: se lo strumento fallisce due volte per cause diverse, si rivede il disegno prima del terzo prompt. Un passo, un obiettivo: sviluppo dello strumento e giri lunghi non stanno nella stessa chat. Una sola chat modifica `e2e/` alla volta (R9 del percorso v2).
 - **Nessun nuovo passo di test prima di V6**, salvo un difetto trovato da Mirko usando l'app (decisione di Mirko, 2026-10-20). Il 24c e il 24d sono gli ultimi passi di verifica prima di V6; le riparazioni dei test si fanno dentro V6.
-- **Il vecchio lanciatore `scripts/ui-verify` si cancella a V6** (decisione di Mirko, 2026-10-20): la cartella, gli script `ui:verify` di `package.json` e i riferimenti nelle regole e nei documenti. Da lì i controlli esistono solo in Playwright e quelli che esistevano solo nel lanciatore restano NON PROVATI o si riscrivono dentro V6. Fino ad allora è congelato (R9).
+- **Il vecchio lanciatore `scripts/ui-verify` è stato cancellato il 2026-10-21** (passo 28f, commit `44dda70`; decisione di Mirko del 2026-10-20): la cartella, lo script `ui:verify` di `package.json` e i riferimenti nelle regole e nei documenti. Da lì i controlli esistono solo in Playwright; i controlli che esistevano solo nel lanciatore restano NON PROVATI. Le due azioni di servizio usate dagli e2e (`create-catalog-items`, `delete-prefix`) sono in `e2e/scripts/menu-fixtures.ts`; la pulizia manuale è `pnpm payload run e2e/scripts/menu-fixtures.ts -- delete-prefix verify-ui-`.
 
 **Messa in opera**
 1. ~~Prima esecuzione corretta~~ Fatto (2026-10-11).

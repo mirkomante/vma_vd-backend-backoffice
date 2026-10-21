@@ -18,20 +18,20 @@ Regola **solo di questo progetto**. Fonte completa: `docs/design/verifica/policy
 | **L1v** | Dopo L1, per schermate nuove o cambiate nel layout | Confronto con i PNG di `docs/design/schermate/<schermata>/` | Agente di verifica, chat pulita (non tu) |
 | **L2** | Solo ai trigger della tabella sotto | Verifica estesa | **Non tu**: dillo a Mirko e fermati |
 | **L3** | Fine fase e prima del primo uso reale | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko |
-| **S** | Dopo ogni deploy | `pnpm ui:verify online` | Mirko o chiunque |
+| **S** | Dopo ogni deploy | `BASE_URL=<indirizzo senza /app> pnpm online:smoke` (solo richieste HTTP, senza credenziali; sette controlli) | Mirko o chiunque |
 
 ## Cosa fai a fine di ogni passo che tocca la UI
 
 1. L0 senza errori (`ui:check` compreso: se R11–R14 segnalano qualcosa lo correggi, non lo aggiri).
 2. **L1 sulla schermata toccata. Non si salta mai e nessun prompt lo vieta.** Il comando dipende da dove sono implementati i controlli del nucleo:
    - **in Playwright** (se la schermata ha test con `// control:<id>`): `E2E_SUITE=controlli E2E_ESITI=<AAAA-MM-GG>-L1-<schermata> pnpm e2e e2e/controlli/<schermata>.spec.ts` (si passa il **file** della spec: un `--grep` sul nome includerebbe anche altre spec, per esempio la matrice `servizi-menu-fissi-matrix.spec.ts` per `menu-fissi`, 511 test; il `--grep` si usa solo per restringere dentro lo stesso file; comando confermato nel 24c e nel 24d);
-   - **solo nel lanciatore congelato**: `pnpm ui:verify locale-prod --livello 1 --schermata <id> --controlli docs/design/verifica/controlli-<fase>.json`, un giro, dopo la pulizia di porte e lock del piano (§2.1). Se si blocca o fallisce per lo strumento: riportalo come **ERRORE-STRUMENTO** e **non rilanciarlo**. Il lanciatore **si cancella a V6**: da allora L1 si fa solo in Playwright; e **non si scrivono nuovi passi di test prima di V6**, salvo un difetto trovato da Mirko usando l'app.
+   - **un controllo del nucleo che non esiste nel motore**: L1 non è eseguibile per quel controllo (punto 6). Il vecchio lanciatore `ui:verify` è stato **cancellato il 2026-10-21** (passo 28f): non si usa e non si ripristina. **Nuovi test si scrivono solo su richiesta di Mirko**, per esempio dopo un difetto trovato usando l'app.
    - **`E2E_ESITI` è obbligatorio e diverso a ogni giro**: senza, il motore scrive sopra `esiti/2026-10-19-T0/`.
-3. **Subito dopo L1, esegui `git checkout -- docs/design/verifica/esiti`** se il lanciatore ha scritto lì: non deve restare nessuna modifica in `docs/design/` (R13 di `ui:check` la segnala).
+3. **Subito dopo L1, esegui `git checkout -- docs/design/verifica/esiti`** se un giro ha scritto lì: non deve restare nessuna modifica in `docs/design/` (R13 di `ui:check` la segnala).
 4. Esito di L1 nel CHANGELOG, voce `Tests`: livello eseguito, commit, percorso del rapporto, **ogni FALLITO, ogni ERRORE-STRUMENTO e ogni NON PROVATO**.
 5. Un **FALLITO** di un controllo del nucleo **blocca** la chiusura del passo. Correggi e rilancia **solo i falliti**; massimo **due giri**, al terzo fermati e chiedi alla chat di design. Un AVVISO non blocca.
 6. Se un controllo del nucleo **non è implementato** nel motore (o dà ERRORE-STRUMENTO): L1 **non è eseguibile per quel controllo**. Scrivilo nel CHANGELOG («L1 da eseguire dall'agente di verifica») e nella risposta, e **segna il passo 🔶 «implementato, non verificato»**, non ✅. Il debito si salda **entro i due passi successivi**, non in V6. **Mai una prova manuale** al posto del controllo e mai chiesta all'umano.
-7. Se un controllo ti sembra sbagliato, **non toccarlo**: scrivilo come «controllo dubbio». Il lanciatore (`scripts/ui-verify/**`) e i file `controlli-*.json` non si modificano da una chat di implementazione.
+7. Se un controllo ti sembra sbagliato, **non toccarlo**: scrivilo come «controllo dubbio». I file `controlli-*.json` non si modificano da una chat di implementazione.
 
 ## Trigger del livello 2: quando fermarti e dirlo
 
@@ -56,4 +56,4 @@ Una modifica solo a documenti non attiva nulla oltre L0. Una modifica solo al ba
 - Mai credenziali di produzione, mai `scripts/prod-db.sh` per i test, mai utenti di prova su Cloud SQL.
 - Mai `force: true` nei clic dei test e mai cambiare soglie o attesi per far passare un controllo.
 - Mai `git push`, salvo che il prompt del passo lo conceda **esplicitamente per quel solo passo** (e allora: un solo push, mai `--force`, e solo se L0 è a 0 errori e L1 non ha FALLITO).
-- Mai riscrivere un file di esito già versionato; mai modificare `scripts/ui-verify/**`.
+- Mai riscrivere un file di esito già versionato.

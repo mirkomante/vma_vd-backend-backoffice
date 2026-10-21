@@ -1,6 +1,6 @@
 ---
 description: Regole dell'agente che verifica l'Area App (app) su ambienti reali: solo verifica e rapporto, mai correzioni; esiti distinti tra verificato, fallito e non provato; nessun accesso a produzione
-globs: scripts/ui-verify/**, e2e/**, docs/design/verifica/**
+globs: e2e/**, scripts/online-smoke.mjs, docs/design/verifica/**
 alwaysApply: false
 stato: da validare
 ---
@@ -19,7 +19,7 @@ La procedura è `docs/design/verifica/README.md`; i controlli sono `docs/design/
 
 ## Cosa puoi modificare
 
-- `scripts/ui-verify/**` (il lanciatore congelato) e lo script `ui:verify` in `package.json`;
+- `scripts/online-smoke.mjs` e lo script `online:smoke` in `package.json`;
 - `e2e/**` (Playwright Test v2), gli script `e2e`, `e2e:smoke`, `e2e:wire` in `package.json`, e in `tsconfig.json` **solo** l'esclusione di `e2e` dalla radice;
 - `package.json` e `pnpm-lock.yaml` **solo** per `@playwright/test` (già presente) e per gli script e2e sopra (annotalo nel CHANGELOG);
 - `docs/design/verifica/esiti/**` (gli esiti).

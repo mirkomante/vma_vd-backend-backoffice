@@ -1,5 +1,7 @@
 # Prompt per la chat pulita dell'agente di verifica
 
+> **Storico (2026-10-21)**: questo prompt costruì il lanciatore `scripts/ui-verify`, **cancellato il 2026-10-21** (passo 28f). Non si riusa.
+
 Apri una **chat nuova** di Cursor con Composer come agente e incolla il testo qui sotto. Non riusare la chat di implementazione: l'agente deve verificare senza avere scritto il codice.
 
 ```

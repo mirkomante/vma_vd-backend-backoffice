@@ -2,6 +2,8 @@
 
 Scritto il 2026-10-19, dopo V4 ter. Sostituisce, da qui in avanti, i passi di verifica costruiti sul lanciatore `scripts/ui-verify` (`ui:verify`), che è **congelato da subito** (regola R9).
 
+> **Aggiornamento 2026-10-21 (passo 28f)**: il lanciatore `scripts/ui-verify` e lo script `ui:verify` sono stati **cancellati**. I rimandi che seguono sono storici. L1 e L2 si eseguono solo con `pnpm e2e`; lo smoke online con `pnpm online:smoke`.
+
 ## 0. In una frase
 
 La verifica resta **completa** (conformità alle demo e funzionamento) e i **178 controlli dei file JSON restano la fonte di verità**; cambia il motore che li esegue: non più uno script fatto in casa, ma **Playwright Test** (già nelle dipendenze del progetto), con tempi massimi imposti da fuori, dati di prova che si ripuliscono da soli e un rapporto che non confonde mai un errore dello strumento con un difetto dell'app.

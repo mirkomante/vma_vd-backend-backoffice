@@ -32,7 +32,7 @@ Diverso dalla validazione di codice: qui si tratta di avviare davvero l'applicaz
 
 ## Estensione per la UI dell'Area App `(app)`
 
-Per le schermate e i componenti dell'Area App il test a runtime **non richiede l'umano**: lo sostituiscono i livelli L1 e L2 di `ui/03-ui-test-policy.mdc` (lanciatore `pnpm ui:verify`). L'umano interviene solo per la prova su dispositivo reale e per le decisioni. Per tutto il resto di questa regola non cambia nulla.
+Per le schermate e i componenti dell'Area App il test a runtime **non richiede l'umano**: lo sostituiscono i livelli L1 e L2 di `ui/03-ui-test-policy.mdc` (test Playwright `pnpm e2e` e smoke `pnpm online:smoke`). L'umano interviene solo per la prova su dispositivo reale e per le decisioni. Per tutto il resto di questa regola non cambia nulla.
 
 ## Perché la distinzione conta
 

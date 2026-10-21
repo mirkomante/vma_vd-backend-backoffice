@@ -27,8 +27,8 @@ Sostituisce gli screenshot fatti a mano: un agente (una chat pulita di Cursor co
 
 ## 3. Prerequisiti (li prepara l'agente, una volta)
 
-- **Playwright**: `@playwright/test` come devDependency (modifica `package.json` e `pnpm-lock.yaml`: è l'unica modifica fuori da `scripts/ui-verify/` e da `docs/design/verifica/esiti/`; si annota nel CHANGELOG) e i browser: `pnpm exec playwright install chromium webkit`.
-- **Lanciatore**: `scripts/ui-verify/run.mjs` (Node ESM, nello stile di `scripts/ui-check.mjs`) e lo script `ui:verify` in `package.json`. Legge `controlli-8.2.json`. Deve passare `pnpm lint` e `pnpm typecheck`.
+- **Playwright**: `@playwright/test` come devDependency e i browser: `pnpm exec playwright install chromium webkit`. Il motore è in `e2e/` (`pnpm e2e`).
+- **Smoke online**: `scripts/online-smoke.mjs` (Node, solo richieste HTTP) e lo script `online:smoke` in `package.json`. Il vecchio lanciatore `scripts/ui-verify` è stato **cancellato il 2026-10-21** (passo 28f): i rimandi storici a `ui:verify` in questo documento e negli esiti vecchi non sono più eseguibili.
 - **Utente di prova**: `verify-ui-<timestamp>@test.local`, `adminRole: none`, `appRole: manager`, `loginMethod: local`, email verificata, password generata a caso e **mai scritta in chat, nei file o nel rapporto**. La procedura è quella di `docs/piano-sviluppo/fase-8-shell-app.md` (8.3, controllo positivo con `curl`). Si elimina **sempre** alla fine, anche se i controlli falliscono (`try/finally`).
 - **Mai**: `scripts/prod-db.sh`, credenziali di produzione, utenti di prova su Cloud SQL, il dominio di Cloud Run con una sessione.
 
@@ -135,15 +135,12 @@ Non li fa l'agente di verifica (niente credenziali di produzione). Li fa la chat
 ## 11. Come si lancia
 
 ```
-pnpm ui:verify locale-prod --livello 1 --schermata orari --controlli controlli-8.5.json
-pnpm ui:verify locale-prod --livello 2
-pnpm ui:verify locale-dev                   # console, e WebKit essenziale
-pnpm ui:verify online                       # smoke, senza credenziali
+PLAYWRIGHT_BROWSERS_PATH=$HOME/Library/Caches/ms-playwright E2E_SUITE=controlli E2E_ESITI=<AAAA-MM-GG>-<nome> pnpm e2e e2e/controlli/<schermata>.spec.ts
+PLAYWRIGHT_BROWSERS_PATH=$HOME/Library/Caches/ms-playwright pnpm e2e:smoke          # smoke locale (T0)
+BASE_URL=<indirizzo senza /app> pnpm online:smoke                                   # smoke online, senza credenziali
 ```
 
-- `--livello 1|2`: perimetro dalla sezione `livelli` del JSON; un controllo gira se il suo `livello` è minore o uguale a quello richiesto.
-- `--schermata <id>[,<id>]`: solo quelle schermate (id del JSON).
-- `--profili` e `--temi`: restringono il perimetro del livello (di norma non servono).
-- `--controlli <file>`: il file dei controlli (predefinito: l'ultimo `controlli-*.json`).
-- Durante l'esecuzione una riga di avanzamento per stato e un tempo massimo per ambiente: un lanciatore fermo si riconosce dopo pochi minuti.
-- I flag sono un lavoro del lanciatore (policy, sezione 9, passo 3): finché mancano vale la clausola di transizione di `ui/03-ui-test-policy.mdc`.
+- Si passano sempre i **file** della spec: un `--grep` sul solo nome includerebbe anche altre spec (per esempio le matrici). Il `--grep` si usa solo per restringere dentro lo stesso file.
+- `E2E_ESITI` è diverso a ogni giro; le cartelle degli esiti contengono solo `rapporto.md` e `risultati.json` (gli screenshot restano fuori dal repository).
+- Il server di sviluppo, quando serve, si avvia a mano su una porta fuori dai progetti di test (3300), in un terminale persistente.
+
