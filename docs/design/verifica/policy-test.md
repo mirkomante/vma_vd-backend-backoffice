@@ -25,7 +25,7 @@ I budget sono un **contratto**: chi li supera si ferma e semplifica, non allunga
 | **L1** | Fine di **ogni** passo che tocca una schermata | Il **nucleo** della schermata (sezione 3) a 390 e 1280, tema chiaro | Agente di implementazione | 3 min |
 | **L1v** | Subito dopo L1, per le schermate nuove o cambiate nel layout | Confronto visivo con la demo (sezione 3.1) | Agente di verifica, chat pulita | 10 min per schermata |
 | **L2** | Solo ai trigger della sezione 4 | Tutti i controlli, tutti i profili e i temi | Agente di verifica, chat pulita | 15 min |
-| **L3** | Fine fase e prima del primo uso reale | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko | 1 ora |
+| **L3** | Fine fase e prima del primo uso reale, **con i dati nel sistema** (dopo l'import: passo 31b, decisione di Mirko del 2026-10-21) | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko | 1 ora |
 | **S** | Dopo ogni deploy | `BASE_URL=<indirizzo senza /app> pnpm online:smoke`: solo richieste HTTP | Chiunque | 1 min |
 
 **L1 non si vieta mai nei prompt di implementazione** (è successo con F4: la regressione di P8 è nata così).

@@ -23,6 +23,7 @@ Chat di design. Fonti: matrice C1/C2/C3 (`esiti/2026-10-21-V6d-r2/`), screenshot
 | A5 | Giorni speciali, modulo | Il titolo di gruppo dei menù fissi è in grassetto nero; nel mockup è grigio e piccolo |
 | A6 | Cataloghi, screenshot | I campi a tendina del foglio «Filtri» sono alti 32 px nello screenshot (mockup 44): lo screenshot non usa il profilo a tocco; la matrice C2, che lo usa, li misura conformi |
 | A7 | Messaggio globale, screenshot | Mancano il messaggio «Messaggio salvato» e la riga «Menù pubblico aggiornato alle…»: lo stato è preparato senza passare dal salvataggio e il file non è leggibile in locale (copre il passo 30) |
+| A8 | Giorni speciali, stato vuoto (visto in produzione il 2026-10-21, a 1512 px) | Mostra «Nessun giorno speciale.» con il pulsante, come la specifica; rispetto al mockup mobile `390-vuoto-chiaro.png` il testo è centrato e il pulsante è pieno, mentre nel mockup il testo è a sinistra e il pulsante è outline. Il riquadro viene dal componente condiviso `MenuListEmptyState` (`menu-list-states.tsx`, `border-dashed`, `text-center`), usato anche da Servizi e Menù fissi |
 
 ## Non provato (eccezione firmata, policy §6)
 

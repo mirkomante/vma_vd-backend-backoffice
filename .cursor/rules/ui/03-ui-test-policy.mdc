@@ -17,7 +17,7 @@ Regola **solo di questo progetto**. Fonte completa: `docs/design/verifica/policy
 | **L1** | Fine di **ogni** passo che tocca una schermata o un componente di `(app)` | Il **nucleo** della schermata: al massimo otto controlli con `livello: 1` in `docs/design/verifica/controlli-<fase>.json`, a 390 e 1280 px, tema chiaro, più i comuni `C1`, `C2`, `C3`, `CONSOLE`, `AMBIENTE`, `NO-OVERRIDE` | **Tu**, da solo: non serve l'umano |
 | **L1v** | Dopo L1, per schermate nuove o cambiate nel layout | Confronto con i PNG di `docs/design/schermate/<schermata>/` | Agente di verifica, chat pulita (non tu) |
 | **L2** | Solo ai trigger della tabella sotto | Verifica estesa | **Non tu**: dillo a Mirko e fermati |
-| **L3** | Fine fase e prima del primo uso reale | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko |
+| **L3** | Fine fase e prima del primo uso reale, **con i dati nel sistema** (dopo l'import: passo 31b) | Sessione reale su Cloud Run, iPhone vero | Chat di design e Mirko |
 | **S** | Dopo ogni deploy | `BASE_URL=<indirizzo senza /app> pnpm online:smoke` (solo richieste HTTP, senza credenziali; sette controlli) | Mirko o chiunque |
 
 ## Cosa fai a fine di ogni passo che tocca la UI
