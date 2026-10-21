@@ -296,27 +296,33 @@ export function SpecialDayFormSheet({
           </FieldGroup>
         </div>
 
-        <SheetFooter className="border-t border-border px-4 py-4">
-          <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-end">
-            <Button type="button" variant="outline" size="lg" disabled={saving} onClick={() => onOpenChange(false)}>
-              {SPECIAL_DAYS_FORM_CANCEL}
-            </Button>
-            <Button
-              type="button"
-              size="lg"
-              disabled={saving || Boolean(liveOverlapMessage)}
-              onClick={() => onSubmit(values)}
-            >
-              {saving ? (
-                <>
-                  <Spinner className="size-4" aria-hidden />
-                  {SPECIAL_DAYS_FORM_SAVE_PENDING}
-                </>
-              ) : (
-                SPECIAL_DAYS_FORM_SAVE
-              )}
-            </Button>
-          </div>
+        <SheetFooter className="flex-row gap-2 border-t border-border px-4 py-4">
+          <Button
+            type="button"
+            size="lg"
+            className="flex-1"
+            disabled={saving || Boolean(liveOverlapMessage)}
+            onClick={() => onSubmit(values)}
+          >
+            {saving ? (
+              <>
+                <Spinner className="size-4" aria-hidden />
+                {SPECIAL_DAYS_FORM_SAVE_PENDING}
+              </>
+            ) : (
+              SPECIAL_DAYS_FORM_SAVE
+            )}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="lg"
+            className="flex-1"
+            disabled={saving}
+            onClick={() => onOpenChange(false)}
+          >
+            {SPECIAL_DAYS_FORM_CANCEL}
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>

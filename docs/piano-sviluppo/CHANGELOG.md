@@ -10,7 +10,13 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Fixed
+
+- **F6 (passo 29, chat Composer)** — Correzione dei cinque P di `docs/design/verifica/esiti/2026-10-21-V6d-rilievi/rilievi.md`: (P1) `AlertDialog` senza animazione `zoom-in-95` che riduceva l’altezza misurata dei pulsanti «Indietro»/«Elimina»/«Togli» a ~42 px durante l’apertura; pulsanti di conferma con `AlertDialogAction`/`size lg` in `MenuDeleteDialog`. (P2) piè del foglio Giorni speciali allineato agli altri moduli (`flex-row`, Salva a sinistra). (P3) troncamento «Messaggio: …» in tabella. (P4) azioni di riga su una sola riga nelle schede telefono. (P5) giorno della settimana in minuscolo in titolo elimina e sottotitolo modulo (`formatSpecialDayDateLong`), maiuscolo in elenco invariato.
+
 ### Tests
+
+- **F6 (passo 29, 2026-10-21)** — L0: `typecheck`, `lint`, `ui:check`, 130 test unitari `lib/` OK. (a) `E2E_ESITI=2026-10-21-F6a`: 29 passed, 2 skipped (incluso `menu-fissi-porzione-traduzione`). (b) `E2E_ESITI=2026-10-21-F6b` giro 2: 163 OK, 0 FALLITO, 25 ERRORE-STRUMENTO (stati non preparabili invariati); i nove C2 su elimina/togli a 390 px OK. (c) `E2E_ESITI=2026-10-21-F6c`: 19 OK, 0 FALLITO, 7 ERRORE-STRUMENTO, 8 NON PROVATO; zip screenshot `~/Desktop/v6f-screenshots.zip` (~2,3 MB).
 
 - **V6d (28d, ripresa 2026-10-21)** — Commit `0dd2736`, DB `vma_vd_dev`. Baseline conteggi 44/90/38/13/0/0. Giro 1: `E2E_ESITI=2026-10-21-V6d-r1` (+ `r1b` dopo fix test); regola 4 «può fallire» provata (prezzo `18,555` → FALLITO; righe vini 99 vs 100). Test corretti: ordine raggruppato vini/piatti (`e2e/lib/list-order-assert.ts`), porzione EN (`input[id^=fixed-menu-portion-en-]`), elenco parziale piatti (`role=status`), seed `menu-fissi-colonna-elenco`. Otto target: OK modulo-validazione, disponibilita, testi, vini-ordine-100, piatti-ordine-100 (isolato); FALLITO `menu-fissi-porzione-traduzione` (locale `en` nome vuoto, atteso nome IT); colonna OK telefono-390 dopo fix seed. Giro 2 matrici `2026-10-21-V6d-r2` (15,4 min): 791 OK, 9 FALLITO, 19 NON PROVATO, **150 ERRORE-STRUMENTO** (preparazione stati vini/geografia e giorni/messaggio; oltre soglia 3/schermata). Giro 3 screenshot `2026-10-21-V6d-r3` (58 s): 37 PNG prodotti, 10 stati non preparati; zip `~/Desktop/v6d-screenshots.zip` 13 MB. Motore **4046**/4100, spec **1976**/2000. `typecheck` radice OK; e2e TS su spread `NodeList` corretto con `Array.from`.
 

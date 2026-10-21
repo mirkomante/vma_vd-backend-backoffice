@@ -1,6 +1,8 @@
 import { pluralizeIt } from '@/lib/menu/display/pluralizeIt'
 import { SPECIAL_DAY_SCOPE_OPTIONS, type SpecialDayScope } from '@/lib/menu/validateSpecialDayOverlap'
 
+import { formatSpecialDayDateLong } from '@/lib/menu/display/formatSpecialDayDateLong'
+
 import { formatSpecialDayListDate } from './formatSpecialDayListDate'
 
 export const SPECIAL_DAYS_PAGE_TITLE = 'Giorni speciali'
@@ -60,7 +62,7 @@ export const SPECIAL_DAYS_TOAST_ADDED = 'Giorno speciale aggiunto'
 export const SPECIAL_DAYS_TOAST_SAVED = 'Giorno speciale salvato'
 
 export function specialDayDeleteTitle(date: string): string {
-  return `Eliminare il giorno speciale di ${formatSpecialDayListDate(date)}?`
+  return `Eliminare il giorno speciale di ${formatSpecialDayDateLong(date)}?`
 }
 
 export function specialDayDeleteDescription(scope: SpecialDayScope): string {
@@ -78,7 +80,7 @@ export function specialDayFormEditTitle(): string {
   return `Modifica giorno speciale`
 }
 export function specialDayFormEditSubtitle(date: string): string {
-  return formatSpecialDayListDate(date)
+  return formatSpecialDayDateLong(date)
 }
 
 export const SPECIAL_DAYS_FORM_INFO =

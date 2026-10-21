@@ -136,15 +136,15 @@ function SpecialDayGroup({
           <TableBody>
             {rows.map((row) => (
               <TableRow key={row.id} className={row.disabled ? 'opacity-50' : undefined}>
-                <TableCell>
-                  <div className="flex flex-col gap-1">
+                <TableCell className="min-w-0">
+                  <div className="flex min-w-0 flex-col gap-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span>{formatListDate(row.date)}</span>
                       {row.isToday ? <Badge variant="outline">{SPECIAL_DAYS_LABEL_TODAY}</Badge> : null}
                       {row.disabled ? <Badge variant="outline">{SPECIAL_DAYS_BADGE_DISABLED}</Badge> : null}
                     </div>
                     {row.messageIt ? (
-                      <span className="text-sm text-muted-foreground">
+                      <span className="truncate text-sm text-muted-foreground">
                         {specialDayMessageRowPrefix(row.messageIt)}
                       </span>
                     ) : null}
@@ -189,22 +189,22 @@ function SpecialDayGroup({
                     {specialDayRowSubtitle(row.scope, row.menuNames)}
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-col items-center gap-1">
-                  <Switch
-                    checked={!row.disabled}
-                    disabled={pendingRowId === row.id}
-                    onCheckedChange={(checked) => onToggle(row, checked)}
-                    aria-label={specialDayActiveAriaLabel(row.date, row.scope)}
-                  />
-                  <span className="text-xs text-muted-foreground">{SPECIAL_DAYS_ROW_ACTIVE_LABEL}</span>
-                  <div className="flex items-center">
-                    <Button type="button" variant="ghost" size="icon" onClick={() => onEdit(row)} aria-label={specialDayEditAriaLabel(row.date)}>
-                      <Pencil className="size-4" aria-hidden />
-                    </Button>
-                    <Button type="button" variant="ghost" size="icon" onClick={() => onDelete(row)} aria-label={specialDayDeleteAriaLabel(row.date)}>
-                      <Trash2 className="size-4" aria-hidden />
-                    </Button>
+                <div className="flex shrink-0 items-center gap-0">
+                  <div className="flex flex-col items-center">
+                    <Switch
+                      checked={!row.disabled}
+                      disabled={pendingRowId === row.id}
+                      onCheckedChange={(checked) => onToggle(row, checked)}
+                      aria-label={specialDayActiveAriaLabel(row.date, row.scope)}
+                    />
+                    <span className="text-xs text-muted-foreground">{SPECIAL_DAYS_ROW_ACTIVE_LABEL}</span>
                   </div>
+                  <Button type="button" variant="ghost" size="icon" onClick={() => onEdit(row)} aria-label={specialDayEditAriaLabel(row.date)}>
+                    <Pencil className="size-4" aria-hidden />
+                  </Button>
+                  <Button type="button" variant="ghost" size="icon" onClick={() => onDelete(row)} aria-label={specialDayDeleteAriaLabel(row.date)}>
+                    <Trash2 className="size-4" aria-hidden />
+                  </Button>
                 </div>
               </CardContent>
             </Card>

@@ -2,9 +2,9 @@
 
 import type { ReactNode } from 'react'
 
-import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
+  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -50,7 +50,7 @@ export function MenuDeleteDialog({
           {hideCancel ? null : (
             <AlertDialogCancel disabled={pending}>{cancelLabel}</AlertDialogCancel>
           )}
-          <Button
+          <AlertDialogAction
             type="button"
             variant={destructive ? 'destructive' : 'default'}
             disabled={pending}
@@ -58,7 +58,7 @@ export function MenuDeleteDialog({
           >
             {pending ? <Spinner className="size-4" aria-hidden /> : null}
             {confirmLabel}
-          </Button>
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
