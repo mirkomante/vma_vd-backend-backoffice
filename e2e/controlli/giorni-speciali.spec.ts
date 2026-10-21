@@ -31,6 +31,22 @@ import {
 } from '@/lib/menu/specialDays/copy'
 import { formatSpecialDayListDate } from '@/lib/menu/specialDays/formatSpecialDayListDate'
 import { SPECIAL_DAY_OVERLAP_MESSAGE } from '@/lib/menu/validateSpecialDayOverlap'
+import {
+  SPECIAL_DAYS_COL_ACTIONS_SR,
+  SPECIAL_DAYS_COL_ACTIVE,
+  SPECIAL_DAYS_COL_DATE,
+  SPECIAL_DAYS_COL_MENUS,
+  SPECIAL_DAYS_COL_SCOPE,
+  SPECIAL_DAYS_ERROR_DATE,
+  SPECIAL_DAYS_ERROR_MENUS,
+  SPECIAL_DAYS_GROUP_PAST,
+  SPECIAL_DAYS_EMPTY,
+  SPECIAL_DAYS_GROUP_UPCOMING,
+  SPECIAL_DAYS_NEW_BUTTON,
+  SPECIAL_DAYS_PAGE_DESCRIPTION,
+  SPECIAL_DAYS_PAGE_TITLE,
+} from '@/lib/menu/specialDays/copy'
+import { assertNoForbiddenEnglishInUi } from '../lib/checks'
 
 const PROFILE = projectTag('telefono-390-chiaro')
 
@@ -264,12 +280,106 @@ test.describe('Giorni speciali', () => {
     expect(on.disabled).toBe(false)
   })
 
-  // control:giorni-speciali-console
-  test.skip(`giorni-speciali-console ${PROFILE}`, () => {
-    test.info().annotations.push({
-      type: 'skip',
-      description:
-        'NON PROVATO: richiede server di sviluppo (porta 3200) per la console senza errori; locale-prod non copre questo controllo. Scadenza V6.',
+  // control:giorni-speciali-testi
+  test(`giorni-speciali-testi ${PROFILE}`, async ({ page }) => {
+    await gotoSpecialDays(page)
+    await expect(page.getByRole('heading', { level: 1, name: SPECIAL_DAYS_PAGE_TITLE })).toBeVisible()
+    await expect(page.getByText(SPECIAL_DAYS_PAGE_DESCRIPTION)).toBeVisible()
+    await expect(page.getByRole('button', { name: SPECIAL_DAYS_NEW_BUTTON })).toBeVisible()
+
+    await expect(
+      page.locator('[data-slot=card]').first().or(page.getByText(SPECIAL_DAYS_EMPTY)),
+    ).toBeVisible({ timeout: 20_000 })
+
+    const upcoming = page.locator('section').filter({
+      has: page.getByRole('heading', { name: SPECIAL_DAYS_GROUP_UPCOMING }),
     })
+    const past = page.locator('section').filter({
+      has: page.getByRole('heading', { name: SPECIAL_DAYS_GROUP_PAST }),
+    })
+    if (await page.getByRole('heading', { name: SPECIAL_DAYS_GROUP_UPCOMING }).isVisible()) {
+      const rows = upcoming.locator('[data-slot=card]')
+      await expect(rows.first()).toBeVisible()
+      await expect(upcoming.getByText(/\d+ giorn/)).toBeVisible()
+    }
+    if (await page.getByRole('heading', { name: SPECIAL_DAYS_GROUP_PAST }).isVisible()) {
+      await expect(past.locator('[data-slot=card]').first()).toBeVisible()
+      await expect(past.getByText(/\d+ giorn/)).toBeVisible()
+    }
+
+    await expect(page.getByRole('columnheader', { name: SPECIAL_DAYS_COL_DATE })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: SPECIAL_DAYS_COL_SCOPE })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: SPECIAL_DAYS_COL_MENUS })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: SPECIAL_DAYS_COL_ACTIVE })).toHaveCount(0)
+    await expect(page.getByRole('columnheader', { name: SPECIAL_DAYS_COL_ACTIONS_SR })).toHaveCount(0)
+  })
+
+  // control:giorni-speciali-nomi-accessibili
+  test(`giorni-speciali-nomi-accessibili ${PROFILE}`, async ({ page, payload, payloadWorker }) => {
+    const nome = payload.nome.bind(payload)
+    const managerEmail = payload.managerEmail
+    const register = (c: SeedSlug, id: number | string) => payload.registerCreated(c, id)
+    const registerMenu = (id: number | string) => payload.registerCreated(FIXED_MENUS_SLUG, id)
+    const { menuAId } = await ensureTwoVerifyFixedMenus(
+      payloadWorker,
+      managerEmail,
+      nome,
+      register,
+      registerMenu,
+    )
+    const dateDel = '2099-01-15'
+    const delId = await createSpecialDayAsManager(payloadWorker, managerEmail, {
+      date: dateDel,
+      scope: 'dinner',
+      fixedMenuIds: [menuAId],
+      messageIt: 'verify-ui-nomi',
+    })
+    payload.registerCreated(SPECIAL_DAYS_SLUG, delId)
+
+    await gotoSpecialDays(page)
+    await expect(page.locator('[data-slot=card]').first()).toBeVisible()
+    await assertNoForbiddenEnglishInUi(page)
+    await openNewSpecialDay(page)
+    await assertNoForbiddenEnglishInUi(page, {
+      extraScopes: [page.locator('[data-slot="sheet-content"]')],
+    })
+    await page.keyboard.press('Escape')
+    await specialDayDeleteButton(page, dateDel).click()
+    const dialog = page.getByRole('alertdialog')
+    await expect(dialog).toBeVisible()
+    await assertNoForbiddenEnglishInUi(page, { extraScopes: [dialog] })
+    await page.getByRole('button', { name: 'Indietro' }).click()
+  })
+
+  // control:giorni-speciali-modulo-validazione
+  test(`giorni-speciali-modulo-validazione ${PROFILE}`, async ({ page }) => {
+    const posts: string[] = []
+    page.on('request', (req) => {
+      if (req.method() === 'POST') posts.push(req.url())
+    })
+
+    await gotoSpecialDays(page)
+    await openNewSpecialDay(page)
+    const beforePosts = posts.length
+    await clickSpecialDaySave(page)
+    await expect(page.getByText(SPECIAL_DAYS_ERROR_DATE)).toBeVisible()
+    await expect(page.getByText(SPECIAL_DAYS_ERROR_MENUS)).toBeVisible()
+    expect(posts.length, 'nessuna richiesta POST con modulo vuoto').toBe(beforePosts)
+    await expect(page.locator('#special-day-field-date')).toBeFocused()
+    await expect(page.locator('#special-day-field-date')).toBeInViewport()
+
+    await setSpecialDayDate(page, '2099-09-09')
+    const beforeSecond = posts.length
+    await clickSpecialDaySave(page)
+    await expect(page.getByText(SPECIAL_DAYS_ERROR_MENUS)).toBeVisible()
+    await expect(page.getByText(SPECIAL_DAYS_ERROR_DATE)).toHaveCount(0)
+    expect(posts.length, 'nessuna richiesta POST senza menù').toBe(beforeSecond)
+    const firstMenuCheckbox = page
+      .locator('[data-slot="field"]')
+      .filter({ has: page.getByRole('checkbox') })
+      .getByRole('checkbox')
+      .first()
+    await expect(firstMenuCheckbox).toBeFocused()
+    await expect(firstMenuCheckbox).toBeInViewport()
   })
 })

@@ -3,12 +3,7 @@
   "nota": "T0: ogni controllo è NON PROVATO finché non esiste un test con commento control:<id> o una voce dedicata qui.",
   "nonProvati": {
     "__default__": "T0 scheletro: test controlli in T1/T2",
-    "giorni-speciali-testi": "NON PROVATO «tetto»: il limite di righe del 24c si è esaurito sui controlli ad alto costo, non implementato. Eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
-    "giorni-speciali-nomi-accessibili": "NON PROVATO «tetto»: il limite di righe del 24c si è esaurito sui controlli ad alto costo, non implementato. Eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
-    "giorni-speciali-modulo-validazione": "NON PROVATO «tetto»: il limite di righe del 24c si è esaurito sui controlli ad alto costo, non implementato. Eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
-    "messaggio-globale-testi": "NON PROVATO «tetto»: il limite di righe del 24c si è esaurito sui controlli ad alto costo, non implementato. Eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
-    "messaggio-globale-nomi-accessibili": "NON PROVATO «tetto»: il limite di righe del 24c si è esaurito sui controlli ad alto costo, non implementato. Eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
-    "messaggio-globale-console": "NON PROVATO «tetto»: il limite di righe del 24c si è esaurito sui controlli ad alto costo, non implementato. Eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
+    "messaggio-globale-permessi": "coperto da verify:menu-6_1 (test Playwright saltato con stessa nota)",
     "menu-fissi-console": "NON PROVATO: richiede server di sviluppo (porta 3200); scadenza V6 passo 28",
     "menu-fissi-testi": "NON PROVATO «tetto»: limite di righe del passo 24d; eccezione scritta verso V6 (firmata da Mirko, 2026-10-20)",
     "menu-fissi-modulo-validazione": "NON PROVATO «tetto»: limite di righe del passo 24d; previsto V6 passo 28",

@@ -2,10 +2,13 @@ import { type ChildProcess, spawn } from 'node:child_process'
 import { unlinkSync } from 'node:fs'
 import { join } from 'node:path'
 
+import { freePorts } from './kill-ports'
 import { REPO_ROOT } from './paths'
 import { waitForUrl } from './wait-url'
 
 export const SIM_PORT = 3200
+
+const DEV_READY_MS = 240_000
 
 function startDev(port: number, extraEnv: Record<string, string>): ChildProcess {
   try {
@@ -13,25 +16,49 @@ function startDev(port: number, extraEnv: Record<string, string>): ChildProcess 
   } catch {
     /* nessun lock */
   }
-  return spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
+  const child = spawn('pnpm', ['exec', 'next', 'dev', '--port', String(port)], {
     cwd: REPO_ROOT,
-    env: { ...process.env, ...extraEnv, PAYLOAD_DISABLE_PUSH: '1' },
+    env: { ...process.env, ...extraEnv, NODE_ENV: 'development' },
     stdio: ['ignore', 'pipe', 'pipe'],
   })
+  child.stderr?.on('data', (chunk) => {
+    const t = String(chunk)
+    if (t.includes('Error') || t.includes('Ready')) {
+      process.stderr.write(`[e2e-dev:${port}] ${t.slice(0, 160)}\n`)
+    }
+  })
+  child.stdout?.on('data', () => {
+    /* evita backpressure su pipe */
+  })
+  return child
+}
+
+export async function startMenuDevServer(
+  env: Record<string, string> = {},
+): Promise<{ baseUrl: string; stop: () => Promise<void> }> {
+  await freePorts([SIM_PORT])
+  const child = startDev(SIM_PORT, env)
+  const baseUrl = `http://localhost:${SIM_PORT}`
+  await waitForUrl(`${baseUrl}/app/login`, DEV_READY_MS)
+  return {
+    baseUrl,
+    stop: async () => {
+      child.kill('SIGTERM')
+      await new Promise((r) => setTimeout(r, 800))
+      await freePorts([SIM_PORT])
+    },
+  }
 }
 
 export async function withMenuDevServer<T>(
   env: Record<string, string>,
   fn: (baseUrl: string) => Promise<T>,
 ): Promise<T> {
-  const child = startDev(SIM_PORT, env)
-  const baseUrl = `http://localhost:${SIM_PORT}`
+  const server = await startMenuDevServer(env)
   try {
-    await waitForUrl(baseUrl, 120_000)
-    return await fn(baseUrl)
+    return await fn(server.baseUrl)
   } finally {
-    child.kill('SIGTERM')
-    await new Promise((r) => setTimeout(r, 800))
+    await server.stop()
   }
 }
 

@@ -1,0 +1,74 @@
+{
+  "commit": "bfe2006df6f6",
+  "launcher": "e2e/V6b-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "28b nuclei GS + MG (10 id)",
+  "durataSecondi": 252,
+  "riepilogo": {
+    "OK": 6,
+    "FALLITO": 0,
+    "AVVISO": 0,
+    "NON PROVATO": 3,
+    "ERRORE-STRUMENTO": 1
+  },
+  "esiti": [
+    {
+      "id": "giorni-speciali-testi",
+      "esito": "OK",
+      "seconds": 1,
+      "evidenza": "giro ufficiale telefono-390-chiaro"
+    },
+    {
+      "id": "giorni-speciali-nomi-accessibili",
+      "esito": "OK",
+      "seconds": 0.8,
+      "evidenza": "giro ufficiale"
+    },
+    {
+      "id": "giorni-speciali-modulo-validazione",
+      "esito": "OK",
+      "seconds": 1,
+      "evidenza": "giro ufficiale; regola4 provata con stringa errata"
+    },
+    {
+      "id": "giorni-speciali-console",
+      "esito": "ERRORE-STRUMENTO",
+      "seconds": 241.3,
+      "evidenza": "Server non raggiungibile http://localhost:3200/app/login"
+    },
+    {
+      "id": "messaggio-globale-testi",
+      "esito": "OK",
+      "seconds": 1,
+      "evidenza": "misura post-fix (giro ufficiale fallito per seed mancante)"
+    },
+    {
+      "id": "messaggio-globale-nomi-accessibili",
+      "esito": "OK",
+      "seconds": 0.5,
+      "evidenza": "misura post-fix con seed"
+    },
+    {
+      "id": "messaggio-globale-console",
+      "esito": "NON PROVATO",
+      "evidenza": "serial dev-server: bloccato da ERRORE-STRUMENTO su giorni-speciali-console"
+    },
+    {
+      "id": "messaggio-globale-file-riceve-messaggio",
+      "esito": "NON PROVATO",
+      "evidenza": "serial dev-server: server :3200 non avviato"
+    },
+    {
+      "id": "messaggio-globale-pubblicazione",
+      "esito": "NON PROVATO",
+      "evidenza": "serial dev-server: server :3200 non avviato"
+    },
+    {
+      "id": "messaggio-globale-permessi",
+      "esito": "OK",
+      "evidenza": "verify:menu-6_1 (update menu-general / negata 403 noRole)"
+    }
+  ],
+  "erroriStrumento": ["giorni-speciali-console"],
+  "exitCode": "failed"
+}
