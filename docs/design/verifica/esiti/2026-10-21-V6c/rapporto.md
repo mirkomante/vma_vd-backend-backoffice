@@ -48,3 +48,10 @@ Cancellati: `e2e/controlli/dev-server.spec.ts` (228 righe), `e2e/lib/dev-menu-se
 ## Chiusura
 
 `typecheck`, `ui:check`, `e2e:wire`, ESLint file toccati: OK. `count-verify-ui`: 0. Porte 3000–3203, 3300, 3002, 31997 libere.
+
+## Controllo della chat di design (dopo il commit `096e732`)
+
+- **Verificato**: limiti (motore 3.276 su 3.302, spec 1.545 su 1.550), nessun PNG, `typecheck`, ESLint a zero warning sui file toccati, `ui:check`, `e2e:wire`. L'asserzione di `verify:menu-6_2` è corretta e non ammorbidita (valore esatto `EN desc <tag>`, più il caso senza traduzione che dà `null`); il piatto di prova senza inglese si elimina dopo l'asserzione e non in `finally`.
+- **Quattro asserzioni più deboli dell'atteso** (OK dell'agente da leggere come parziale; da completare nel 28d): (1) `menu-fissi-modulo-validazione`: le quattro forme valide del prezzo non sono provate (dopo `fill` si controlla subito l'assenza di un errore che non c'era mai stato); (2) `vini-ordine-100`: nessun conteggio delle righe (100, poi 101) né ordine per nome; (3) `menu-fissi-porzione-traduzione`: `.first()` più `toHaveCount(1)` è sempre vero, quindi «un campo SOLO per il piatto con la porzione» e il segnaposto non sono provati; (4) `menu-fissi-disponibilita`: non si verifica che i menù della categoria disabilitata restino collegati.
+- **Piatti** ha un percorso di lista diverso (`dishes-page.tsx`, `limit: 100` in `dishes-actions.ts`): il test dei vini non lo copre. `piatti-ordine-100` entra nel 28d.
+- **Prova «può fallire»** dell'agente: solo il conteggio degli errori obbligatori e il pulsante «Mostra altri vini»; non tocca i punti deboli sopra.
