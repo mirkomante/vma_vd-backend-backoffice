@@ -1,0 +1,590 @@
+{
+  "commit": "19f3b0c15f48",
+  "launcher": "e2e/T1c-playwright",
+  "browser": "chromium (Playwright)",
+  "controlli": "controlli-6.6.json (T1c servizi, menu-fissi)",
+  "durataSecondi": 65,
+  "riepilogo": {
+    "OK": 33,
+    "FALLITO": 1,
+    "AVVISO": 0,
+    "NON PROVATO": 17,
+    "ERRORE-STRUMENTO": 3
+  },
+  "esiti": [
+    {
+      "id": "vini NON PROVATO vuoto [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "database popolato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "vini NON PROVATO errore-azione [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "vini NON PROVATO caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "vini NON PROVATO errore-caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "vini NON PROVATO piu-di-100-vini [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "serve il bulk da 101, lo fa V6",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "vini NON PROVATO piu-di-100-bevande [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "serve il bulk da 101, lo fa V6",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot vini-filtri [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.8
+    },
+    {
+      "id": "screenshot vini-elenco [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.8
+    },
+    {
+      "id": "screenshot vini-filtri-attivi [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 5
+    },
+    {
+      "id": "distillati NON PROVATO caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "distillati NON PROVATO errore-caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "distillati NON PROVATO errore-azione [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "distillati NON PROVATO vuoto [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "database popolato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "distillati NON PROVATO piu-di-100-distillati [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "serve il bulk da 101, lo fa V6",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot distillati-elenco [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3
+    },
+    {
+      "id": "screenshot distillati-filtri [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "screenshot distillati-filtri-attivi [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.3
+    },
+    {
+      "id": "bevande NON PROVATO caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "bevande NON PROVATO errore-caricamento [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "bevande NON PROVATO errore-azione [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "le riprova V6 con un dev server alla volta",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "bevande NON PROVATO vuoto [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "database popolato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "bevande NON PROVATO piu-di-100-bevande [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "serve il bulk da 101, lo fa V6",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "screenshot vini-origine-senza-regioni [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.7
+    },
+    {
+      "id": "screenshot bevande-elenco [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 2.8
+    },
+    {
+      "id": "screenshot bevande-filtri [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "menu-fissi-elimina-senza-uso [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "screenshot vini-errore-anno [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "menu-fissi-persistenza [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.2
+    },
+    {
+      "id": "menu-fissi-elimina-cascade-registro-permessi [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "screenshot bevande-filtri-attivi [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.6
+    },
+    {
+      "id": "menu-fissi-console [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "NON PROVATO",
+      "misurato": "saltato",
+      "atteso": "motivo nel skip",
+      "evidenza": "skipped",
+      "seconds": 0
+    },
+    {
+      "id": "menu-fissi-testi [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.2
+    },
+    {
+      "id": "menu-fissi-modulo-validazione [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "menu-fissi-disponibilita [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.8
+    },
+    {
+      "id": "menu-fissi-porzione-traduzione [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "screenshot vini-errore-geografia [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.9
+    },
+    {
+      "id": "menu-fissi-elimina-usato [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 1.1
+    },
+    {
+      "id": "menu-fissi-servizi-piatti [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.9
+    },
+    {
+      "id": "menu-fissi-colonna-elenco [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "screenshot vini-elenco [telefono-390-scuro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4.3
+    },
+    {
+      "id": "screenshot distillati-elenco [telefono-390-scuro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 4
+    },
+    {
+      "id": "screenshot bevande-elenco [telefono-390-scuro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.5
+    },
+    {
+      "id": "menu-fissi-nomi-accessibili [telefono-390-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "FALLITO",
+      "misurato": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m()\u001b[22m failed",
+      "atteso": "asserzione soddisfatta",
+      "evidenza": "failed",
+      "seconds": 15.2
+    },
+    {
+      "id": "screenshot vini-elenco [notebook-1280-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "screenshot distillati-elenco [notebook-1280-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "menu-fissi-colonna-elenco [notebook-1280-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    },
+    {
+      "id": "vini-ordine-100 [notebook-1280-chiaro]",
+      "schermata": "Vini",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.6
+    },
+    {
+      "id": "screenshot bevande-elenco [notebook-1280-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.9
+    },
+    {
+      "id": "menu-fissi-ordine-liste [notebook-1280-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "notebook-1280-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "menu-fissi-colonna-elenco [soglia-767-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "soglia-767-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.5
+    },
+    {
+      "id": "screenshot vini-elenco [notebook-1280-scuro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.8
+    },
+    {
+      "id": "screenshot distillati-elenco [notebook-1280-scuro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.7
+    },
+    {
+      "id": "screenshot bevande-elenco [notebook-1280-scuro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "notebook-1280-scuro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 3.6
+    },
+    {
+      "id": "menu-fissi-colonna-elenco [soglia-768-chiaro]",
+      "schermata": "Menù fissi",
+      "profiloTema": "soglia-768-chiaro",
+      "esito": "OK",
+      "misurato": "conforme",
+      "atteso": "come da JSON",
+      "evidenza": "passed",
+      "seconds": 0.4
+    }
+  ],
+  "erroriStrumento": [
+    {
+      "id": "screenshot vini-origine-senza-regioni [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.7
+    },
+    {
+      "id": "screenshot vini-errore-anno [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 12000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 12.4
+    },
+    {
+      "id": "screenshot vini-errore-geografia [telefono-390-chiaro]",
+      "schermata": "controlli/catalog-screenshots.spec.ts",
+      "profiloTema": "telefono-390-chiaro",
+      "esito": "ERRORE-STRUMENTO",
+      "misurato": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.",
+      "atteso": "nessuna eccezione fuori asserzione",
+      "evidenza": "failed",
+      "seconds": 18.9
+    }
+  ],
+  "anomalie": [],
+  "exitCode": "failed"
+}

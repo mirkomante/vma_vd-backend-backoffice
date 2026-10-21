@@ -13,7 +13,6 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit && tsc --noEmit -p e2e/tsconfig.json",
     "ui:check": "node scripts/ui-check.mjs",
-    "ui:verify": "node scripts/ui-verify/run.mjs",
     "e2e": "node e2e/scripts/playwright-cli.mjs",
     "e2e:smoke": "node e2e/scripts/playwright-cli.mjs smoke --project=telefono-390-chiaro",
     "e2e:t1c": "cross-env E2E_SUITE=controlli E2E_ESITI=2026-10-19-T1c node e2e/scripts/playwright-cli.mjs --workers=4",

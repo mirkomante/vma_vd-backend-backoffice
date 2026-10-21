@@ -19,7 +19,7 @@ function screenJson(id: MenuListScreenId): ScreenJson {
   return s
 }
 
-/** Stati della matrice C1–C3 (come il lanciatore ui:verify). */
+/** Stati della matrice C1–C3 (allineati al perimetro e2e controlli). */
 export function matrixStates(screenId: MenuListScreenId): string[] {
   const s = screenJson(screenId)
   return [...(s.stati_c1_c2 ?? [])]

@@ -11,7 +11,7 @@ function managerEmail(): string {
 
 export async function menuPayload(action: string, ...args: string[]): Promise<Record<string, unknown>> {
   const email = managerEmail()
-  const stdout = await payloadRun(['scripts/ui-verify/menu-payload.ts', '--', action, email, ...args])
+  const stdout = await payloadRun(['e2e/scripts/menu-fixtures.ts', '--', action, email, ...args])
   return parsePayloadStdout(stdout)
 }
 
