@@ -49,3 +49,14 @@ Commit `41b9092` (base `69fafbc`). Verificato dalla chat di design nel codice, c
 |---|---|---|---|
 | **P6** | Messaggio globale, dopo «Togli il messaggio» | La riga «Menù pubblico aggiornato alle…» non compare finché non si ricarica la pagina (visto con admin e con manager); il mockup `390-tolto-chiaro.png` la mostra subito, e dopo il salvataggio la riga compare in pochi secondi. Il file è corretto: dopo il ricaricamento dice «aggiornato alle 14:59» e «15:10» | `handleClear` in `components/app/global-message/global-message-page.tsx` azzera `published` (`setPublished(null)`) e la rilettura (`setPublishWatchActive(false)`), mentre il salvataggio rilegge il file |
 | A9 | `/admin/unauthorized` (pagina predefinita di Payload) | Il pulsante della pagina «Non autorizzato, questo utente non ha accesso al pannello di amministrazione.» è in inglese («Log out»); non è codice dell'App |  |
+
+## Esito del passo F6b (2026-10-26)
+
+Commit `77b47f7` (base `e1559d4`; Composer, 22 righe di codice dell'app su un limite di 40). Verificato dalla chat di design su copia pulita: `typecheck`, ESLint a zero warning sui due file, `ui:check`, `e2e:wire`, 130 test di `lib/`; screenshot `v6g-screenshots` confrontati con i mockup.
+
+| Id | Esito | Evidenza |
+|---|---|---|
+| P6 | **Corretto nel codice; da provare in produzione** | `handleClear` rilegge il file come `handleSave` (`readPublishedGlobalMessageAction`, poi `setPublished`, `setPublishWatchActive(true)`; in caso di errore `setPublishedReadable(false)`), invece di azzerare lo stato. In locale non è provabile (nessun bucket): la prova è in produzione dopo il deploy |
+| A2 | **Corretto** | `data-invalid` sul `<Field>` di Data (`Boolean(fieldErrors.dateInput)`) e su quello di Ambito (`Boolean(fieldErrors.scope \|\| overlapMessage)`), come in `hours-form.tsx`. Negli screenshot `nuovo-errori` l'etichetta «Data» è rossa insieme al bordo e al messaggio; in `sovrapposizione` lo è «Ambito». Come il mockup |
+
+**Osservazione, non è uno scostamento**: nello screenshot `sovrapposizione` il pulsante «Salva» è grigio (disabilitato); il mockup lo mostra attivo, ma la specifica (§6 «Sovrapposizione») dice che l'errore «blocca il salvataggio», quindi il comportamento è quello previsto.
