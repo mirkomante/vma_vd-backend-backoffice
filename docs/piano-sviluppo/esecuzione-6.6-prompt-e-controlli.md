@@ -2705,15 +2705,16 @@ In più: **prima di dare il «vai» a ogni comando che tocca la produzione, inco
 
 *Dati*: l'import di produzione eseguito il 2026-10-22 (piatti, vini, distillati, bevande, servizi e categorie presenti). **I menù fissi non si importano (ADR-108) e vanno ricomposti a mano: prima del giro serve almeno un menù fisso attivo reale, composto da Mirko**, su cui puntare un giorno speciale. `disponibilita.json` presente nel bucket (riscritto dal job alle 14:10). Nessun utente di prova su Cloud SQL (regola del progetto): **gli account sono reali**, già esistenti, e li usa il loro titolare.
 
-*Account*: servono **tre accessi**, ciascuno con il suo titolare presente al computer al momento del test (io non scrivo mai password: accede lui, una sessione alla volta, con «Esci» tra una e l'altra).
+*Account* (corretto il 2026-10-22: la produzione ha solo due utenti, un **admin** e un **super-admin**; un utente senza ruoli **non esiste e non si può creare**: l'Admin rifiuta la creazione con «Assegnare almeno un ruolo (Admin Role o App Role): un utente senza ruoli non può accedere.», `beforeValidate` di `collections/Users.ts`). Il titolare di ciascun account è presente al computer e accede lui, una sessione alla volta, con «Esci» tra una e l'altra: io non scrivo mai password.
 
-| # | Ruolo da provare | Come deve essere in Users | Chi lo usa | Che cosa permette di provare |
+| # | Ruolo | Stato in produzione | Chi lo usa | Che cosa permette di provare |
 |---|---|---|---|---|
-| A | **Admin o super-admin** | `adminRole` = `admin` o `super-admin`, `active` ✓, `loginMethod` qualunque (SSO Google o credenziali locali) | Mirko | Accesso all'App come «Admin»; accesso a `/admin`; riga `delete` nel registro attività; salvare ed eliminare |
-| B | **Manager dell'App** | `appRole` = `manager`, `adminRole` = `none`, `active` ✓, `loginMethod` = `local` o `sso-and-local` (login su `/app/login`) | il titolare dell'account (per esempio il manager del ristorante) | Accede all'App come «Manager»; salvare ed eliminare; **non** entra in `/admin` |
-| C | **Utente senza ruolo** | `adminRole` = `none`, `appRole` = `none`, già esistente (per esempio un utente nato da un primo accesso SSO) | il suo titolare, oppure Mirko | Rifiuto: il login fallisce con il messaggio generico di accesso negato; nessuna scrittura possibile |
+| A1 | **Admin** | **esiste** (`adminRole` = `admin`, `active` ✓) | Mirko | Accesso all'App come «Admin»; accesso a `/admin`; riga `delete` nel registro attività; salvare ed eliminare |
+| A2 | **Super-admin** | **esiste** (`adminRole` = `super-admin`, `active` ✓) | Mirko | Lo stesso con il ruolo super-admin (salvare, eliminare, `/admin`) |
+| B | **Manager dell'App** | **da creare per davvero, solo se c'è la persona** (per esempio il manager del ristorante): Admin → Users, `appRole` = `manager`, `adminRole` = `none`, `loginMethod` = `local` o `sso-and-local`, `active` ✓ (procedura: `docs/operativo/creazione-utente-app-locale.md`). Non è un utente di prova: è l'accesso che userà | il titolare | Accede come «Manager»; salva ed elimina; **non** entra in `/admin` |
+| C | Utente senza ruolo | **non esiste e non si può creare** | — | **NON PROVATO in produzione, per costruzione**: lo copre `verify:menu-6_1` sul database di sviluppo (righe `noRole … negata (403)`). Se esiste B, come prova sostitutiva si può **disattivare B** (`active` ✗) e verificare che l'accesso sia rifiutato con il messaggio generico, poi riattivarlo |
 
-Se A, B e C non esistono tutti: si provano quelli che ci sono, gli altri restano NON PROVATI (li copre `verify:menu-6_1` sul database di sviluppo). **Per ogni account Mirko mi scrive prima**: email, ruolo, metodo di login e chi lo usa (mai la password).
+Senza B restano NON PROVATI il ruolo manager e il rifiuto (li copre `verify:menu-6_1`). **Per ogni account Mirko mi scrive prima** email, ruolo, metodo di login e chi lo usa (mai la password).
 
 *Ambiente*: Chrome con l'estensione Claude collegata e l'indirizzo pubblico (senza `/app`). Se l'estensione non vede la scheda in cui sei entrato, apro una mia scheda nello stesso profilo, che condivide la sessione. Il gruppo di schede può sparire a metà: lo riapro.
 
@@ -2721,10 +2722,10 @@ Se A, B e C non esistono tutti: si provano quelli che ci sono, gli altri restano
 
 *Regole di sicurezza* (valgono per me): non scrivo mai credenziali; ogni scrittura (creare, salvare) la annuncio e aspetto il «vai»; **le eliminazioni di voci di prova le clicchi tu** (io preparo e controllo); il Messaggio globale è uno solo: se contiene un messaggio reale lo annoto prima e lo ripristino subito dopo; i giorni speciali di prova puntano a un menù fisso **reale** e si eliminano a fine prova senza toccare il menù.
 
-1. Con l'account A: «Esci» con clic vero (torna al login); nuovo accesso; l'Admin raggiungibile.
+1. Con l'account A1 (admin): «Esci» con clic vero (torna al login); nuovo accesso; l'Admin raggiungibile.
 2. **Messaggio globale**: salvo un testo «verify-ui-…»: il riquadro mostra «Menù pubblico aggiornato alle {ora}» in Europe/Rome, «In pubblicazione…» solo finché il file non ha il testo; dopo «Togli il messaggio» il riquadro dice «Nessun messaggio.». Se compare «Messaggio salvato: «…»» senza ora il servizio non scrive o non legge il bucket (permessi): è il difetto da riportare. (La **lettura** è provata dal 2026-10-21 e il file è stato riscritto dal servizio il 2026-10-22 alle 14:10, dopo l'import; la scrittura sul bucket era già provata il 2026-10-13. Qui si prova il salvataggio dalla pagina.)
 3. **Giorni speciali**: due giorni di prova su un menù fisso reale (uno nel 2099 e uno di oggi, disattivato): «Prossimi» e «Oggi» corretti con il fuso del server, la data letta è quella scelta; dopo l'eliminazione (clic tuo) compare la riga `delete` (area app, `special-days`) nel registro attività in `/admin`.
-4. **Ruoli**: con B salvo ed elimino come A; con C il rifiuto; B non entra in `/admin`.
+4. **Ruoli**: con A2 (super-admin) ripeto salvataggio ed eliminazione; con B, se esiste, lo stesso, e `/admin` rifiutato; poi B disattivato e rifiutato. C non si prova (vedi tabella).
 5. **Pulizia**: nessuna voce «verify-ui-» rimasta (Giorni speciali, Messaggio globale), messaggio reale ripristinato, nessuna modifica ai menù reali.
 
 **Parte M3 — il giro su iPhone, lo fai tu** (con i dati, circa 15 minuti, Safari, in chiaro e in scuro). Scrivimi per ogni punto «ok» oppure cosa non va, con uno screenshot se serve. È l'unica prova manuale del piano. **Proposta della chat di design, in attesa della tua conferma**: ridurre ai punti 2–7 (il punto 1 è coperto da V1 e il punto 8 da C2 e dallo screenshot dopo F6).
