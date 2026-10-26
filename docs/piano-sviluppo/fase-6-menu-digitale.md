@@ -214,7 +214,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 
 ## 6.8 — Import dei dati elementari dal vecchio backend
 
-**Stato**: 🔶 in corso (sviluppo verificato 2026-10-12; produzione dopo la 6.6 e prima della 6.9)
+**Stato**: ✅ (sviluppo verificato 2026-10-12; **produzione eseguita il 2026-10-22**: snapshot del giorno, report a secco senza errori, `--apply` con 6 categorie di piatti, 5 tipologie di vino, 7 di distillato, 3 di bevanda, 3 servizi, 44 piatti (3 nascosti), 90 vini (13 nascosti), 38 distillati (6 nascosti), 13 bevande)
 
 **Dipende da**: 6.2 (`arco-39`). Si esegue subito dopo, in sviluppo; la produzione si esegue dopo la 6.6 e prima della 6.9 (sezione «Esecuzione in produzione»).
 
@@ -262,7 +262,7 @@ Il contratto non impone altri campi. Il valore predefinito di `visibility` e la 
 - [x] Report a secco: conteggi per entità, duplicati di chiave naturale, valori non abbinati, tabella allergeni 14 righe, capacità e `prezzoCalice`. Nessun errore sullo snapshot del 2026-10-12 (`~/vtn-export-2026-10-12`, fuori repo).
 - [x] Prova in sviluppo su `vma_vd_dev` (`pnpm import:menu`); secondo `--apply` con 0 creati; hash SHA-256 del contenuto (`depth=2`) invariato tra due letture consecutive (`scripts/verify-menu-6_8-import-idempotency.ts`). **Riferimento aggiornato (2026-10-17, STRADA 1 / A59)**: dopo `wipe-menu-import-dev` + primo `--apply` sullo snapshot 2026-10-12, `COMBINED_SHA256=18cf7298ce1a0daf5d17e7b8739b9dd19e067630cbbbdf198b1e8b3195b5f5e5` (distillati con `abv` «30%»/«45%» e `aging` 14/15/16/21 anni normalizzati); secondo `--apply` invariato. Differisce da `60861b1eabb65ff5424a98af9462ffae58f90298fea6e665213f4ef60c9eebd5` (primo import 6.8 senza regole 6.6) e da `793f4746ae7d0a4c634191cef90b31ea7755407b0de33d4913ea5805950a5a5e` (baseline storica post-verify, non wipe fresco).
 - [ ] Normalizzazione di anno e grado dei vini e di grado e invecchiamento dei distillati e di grado delle bevande, e report a secco esteso alle forme distinte; regole fissate sui dati reali (decisione del 2026-10-14).
-- [ ] Esecuzione in produzione da locale con uno snapshot del giorno, alla chiusura della 6.6 e prima della 6.9; backup su richiesta di Cloud SQL eseguito prima dell'`--apply`; conteggi coincidenti.
+- [x] Esecuzione in produzione da locale con uno snapshot del giorno, alla chiusura della 6.6 e prima della 6.9; conteggi coincidenti (**2026-10-22**, 14:08 report a secco e 14:10 `--apply`, destinazione `127.0.0.1:5433/vma-vd-backoffice` via proxy: creati 6 categorie di piatti, 5 tipologie di vino, 7 di distillato, 3 di bevanda, 3 servizi, 44 piatti (3 nascosti), 90 vini (13 nascosti), 38 distillati (6 nascosti), 13 bevande; i 9 conteggi coincidono con lo snapshot di riferimento del 2026-10-04 e con la baseline di sviluppo). **Backup su richiesta NON eseguito**: decisione di Mirko («DB di produzione con solo i due utenti, nessun dato significativo; backup automatici con ripristino a un istante preciso, 7 giorni»). Avviso atteso: scrittura di `disponibilita.json` saltata dall'import locale (nessun bucket nel terminale); il job `menu-availability-reset` (`*/5`) l'ha riscritto alle 14:10 (letto nel pannello del Messaggio globale).
 - [x] Rivalutazione esplicita dell'alta affidabilità di Cloud SQL (`ADR-110` §3, `arco-27`): **decisione del 2026-10-12, nessuna HA per il go-live del menù**; da rivalutare **dopo la conclusione dello sviluppo e dopo il primo mese di utilizzo reale** (decisione del 2026-10-13, `po-12`). Annotata in `docs/operativo/cloud-sql-produzione.md` e in note di chiarimento ad `ADR-110`. La rivalutazione per la Fase 5 (`arco-26`) segue lo stesso criterio.
 - [x] Lettura pubblica REST dev `locale=it` (`depth=2`): campione piatto/bevanda/distillato/vino; piatto nascosto `disabled: true`; `locale=en` con ripiego vs `fallback-locale=none` su piatto importato.
 - [x] CHANGELOG (esiti dev); elenco revisione manuale per l'umano nel CHANGELOG.
@@ -386,7 +386,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.6 — Backoffice «Menù» nell'App
 
-**Stato**: 🔶 in corso (I1–I5 consegnate; passo 26 bis I6: verify 6_2 FALLITO (causa non determinata) e 6_4 FALLITO (precondizione dimostrata dal log); 6_3 OK; final-proofs NON PROVATO (ambiente); L1 lanciatore non rieseguito; e2e nucleo 10+10; ✅ dopo import prod 6.8)
+**Stato**: ✅ costruita, verificata (V6 chiusa il 2026-10-21; verify 6_2 con asserzione corretta, 6_4 e final-proofs di sviluppo OK) e **importata in produzione il 2026-10-22**. Resta il giro L3 con i dati (passo 31b: D9b e M3) prima del primo uso reale e la revisione a mano dei contenuti
 
 **Dipende da**: Fase 8 (8.2 shell e navigazione, 8.3 guardia di accesso; `arco-30`), 6.2 (`arco-15`) e 6.4 (i cambi di stato riscrivono il file).
 
@@ -437,7 +437,8 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 - [ ] Un menu fisso composto con `portion`, ordine e `visibility`; i due menu con «2 Nem» (revisione di 6.8) usano il piatto base; le due categorie create nella scheda «Categorie».
 - [ ] Menu a tendina di Paesi e regioni filtrati nella query; cascata del vino; filtro per origine.
 - [ ] Formati dei vini (`year`, `volume`, `abv`), dei distillati (`abv`, `aging`) e delle bevande (`volume`, `abv`): `validate` (REST e Admin comprese) e prova che un valore non canonico già salvato non impedisca di disabilitare la voce.
-- [ ] A chiusura: esecuzione dell'import di produzione di 6.8 (con backup su richiesta) e inizio della revisione a mano; vedi 6.8, «Esecuzione in produzione».
+- [x] A chiusura: esecuzione dell'import di produzione di 6.8 (senza backup su richiesta, vedi 6.8): fatta il 2026-10-22.
+- [ ] Inizio della revisione a mano (da fare a cura del ristorante): i menù fissi da ricomporre (l'import non li importa, ADR-108), le descrizioni dei vini «Chablis cuvée Hélène» e «Cremant De Loire Blanc», il refuso «Specialità vegeteriane» e i 9 piatti senza allergeni dichiarati nello snapshot.
 - [x] CHANGELOG (voce riepilogo I6 sottofase 6.6 in `[Unreleased]`).
 
 ---
