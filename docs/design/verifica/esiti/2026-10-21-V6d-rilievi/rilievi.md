@@ -42,3 +42,10 @@ Commit `41b9092` (base `69fafbc`). Verificato dalla chat di design nel codice, c
 | P5 | Corretto | «di domenica 12 luglio 2099» e sottotitolo «mercoledì 8 luglio 2099» (screenshot `elimina` e `modulo` 390); nell'elenco resta maiuscolo |
 
 **Scostamenti dal passo**: righe di codice dell'app toccate 107 contro il limite duro di 80 (l'agente se n'è accorto e ha proseguito); screenshot e giri (a), (b), (c) in `esiti/2026-10-21-F6a`, `-F6b`, `-F6c`. Giro (a): 29 OK, 2 skipped, 0 FALLITO; giro (b): 163 OK, 0 FALLITO, 25 ERRORE-STRUMENTO invariati (stati non preparabili); giro (c): 19 OK, 7 ERRORE-STRUMENTO, 8 NON PROVATO (stati non preparabili o fuori piano). I sette A restano aperti e non bloccano.
+
+## Rilievi di D9b, sessione reale su Cloud Run (2026-10-26)
+
+| Id | Schermata | Osservazione | Dove |
+|---|---|---|---|
+| **P6** | Messaggio globale, dopo «Togli il messaggio» | La riga «Menù pubblico aggiornato alle…» non compare finché non si ricarica la pagina (visto con admin e con manager); il mockup `390-tolto-chiaro.png` la mostra subito, e dopo il salvataggio la riga compare in pochi secondi. Il file è corretto: dopo il ricaricamento dice «aggiornato alle 14:59» e «15:10» | `handleClear` in `components/app/global-message/global-message-page.tsx` azzera `published` (`setPublished(null)`) e la rilettura (`setPublishWatchActive(false)`), mentre il salvataggio rilegge il file |
+| A9 | `/admin/unauthorized` (pagina predefinita di Payload) | Il pulsante della pagina «Non autorizzato, questo utente non ha accesso al pannello di amministrazione.» è in inglese («Log out»); non è codice dell'App |  |

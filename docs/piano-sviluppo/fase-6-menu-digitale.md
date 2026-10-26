@@ -386,7 +386,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.6 — Backoffice «Menù» nell'App
 
-**Stato**: ✅ costruita, verificata (V6 chiusa il 2026-10-21; verify 6_2 con asserzione corretta, 6_4 e final-proofs di sviluppo OK) e **importata in produzione il 2026-10-22**. Resta il giro L3 con i dati (passo 31b: D9b e M3) prima del primo uso reale e la revisione a mano dei contenuti
+**Stato**: ✅ costruita, verificata (V6 chiusa il 2026-10-21; verify 6_2 con asserzione corretta, 6_4 e final-proofs di sviluppo OK) e **importata in produzione il 2026-10-22**. D9b ✅ (sessione reale su Cloud Run, 2026-10-26). Resta M3 (giro su iPhone, passo 31b) prima del primo uso reale e la revisione a mano dei contenuti
 
 **Dipende da**: Fase 8 (8.2 shell e navigazione, 8.3 guardia di accesso; `arco-30`), 6.2 (`arco-15`) e 6.4 (i cambi di stato riscrivono il file).
 
