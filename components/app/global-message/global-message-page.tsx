@@ -216,11 +216,21 @@ export function GlobalMessagePage({ initialData }: GlobalMessagePageProps) {
     setRemoveOpen(false)
     setSavedValues(result.values)
     setValues(result.values)
-    setPublishWatchActive(false)
-    setPublished(null)
-    setPublishedReadable(initialData.publishedReadable)
     setNotice({ kind: 'removed' })
-  }, [initialData.publishedReadable])
+    void readPublishedGlobalMessageAction().then((read) => {
+      queueMicrotask(() => {
+        if (!read.ok) {
+          setPublishedReadable(false)
+          setPublishWatchActive(false)
+          return
+        }
+        setPublishedReadable(true)
+        setPublished(read.summary)
+        watchStartedAtRef.current = Date.now()
+        setPublishWatchActive(true)
+      })
+    })
+  }, [])
 
   useEffect(() => {
     setSaveBar(

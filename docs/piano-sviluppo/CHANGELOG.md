@@ -12,6 +12,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ### Fixed
 
+- **F6b (chat Composer, 2026-10-26)** — (P6) Dopo «Togli il messaggio», il pannello «Sul menù pubblico» non mostrava subito «Menù pubblico aggiornato alle…» perché `handleClear` azzerava `published` e disattivava il watch invece di rileggere `disponibilita.json` come dopo il salvataggio; ora `handleClear` chiama `readPublishedGlobalMessageAction()` con la stessa logica di `handleSave`. (A2) Nel modulo Giorni speciali, le etichette «Data» e «Ambito» restavano nere in errore: aggiunto `data-invalid` sui `Field` corrispondenti (come in Orari), allineato a `aria-invalid`.
+
+### Tests
+
+- **F6b (2026-10-26)** — L0: `typecheck`, `lint`, `ui:check`, 130 test unitari `lib/` OK. (a) `E2E_ESITI=2026-10-26-F6ba`: 12 OK, 0 FALLITO, 1 NON PROVATO (`messaggio-globale-permessi`), 0 ERRORE-STRUMENTO. (b) `E2E_ESITI=2026-10-26-F6bb`: 19 OK, 0 FALLITO, 8 NON PROVATO, 7 ERRORE-STRUMENTO (stati non preparabili invariati); zip `~/Desktop/v6g-screenshots.zip` (~2,3 MB). P6 non provato in locale (file disponibilità non leggibile senza bucket GCS).
+
+### Fixed
+
 - **F6 (passo 29, chat Composer)** — Correzione dei cinque P di `docs/design/verifica/esiti/2026-10-21-V6d-rilievi/rilievi.md`: (P1) `AlertDialog` senza animazione `zoom-in-95` che riduceva l’altezza misurata dei pulsanti «Indietro»/«Elimina»/«Togli» a ~42 px durante l’apertura; pulsanti di conferma con `AlertDialogAction`/`size lg` in `MenuDeleteDialog`. (P2) piè del foglio Giorni speciali allineato agli altri moduli (`flex-row`, Salva a sinistra). (P3) troncamento «Messaggio: …» in tabella. (P4) azioni di riga su una sola riga nelle schede telefono. (P5) giorno della settimana in minuscolo in titolo elimina e sottotitolo modulo (`formatSpecialDayDateLong`), maiuscolo in elenco invariato.
 
 ### Tests

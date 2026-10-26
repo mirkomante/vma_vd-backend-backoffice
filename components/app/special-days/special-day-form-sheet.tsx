@@ -164,7 +164,7 @@ export function SpecialDayFormSheet({
           <FieldGroup>
             <FieldSet>
               <FieldLegend>{SPECIAL_DAYS_FORM_SECTION_WHEN}</FieldLegend>
-              <Field>
+              <Field data-invalid={Boolean(fieldErrors.dateInput)}>
                 <FieldLabel htmlFor={SPECIAL_DAY_FIELD_DOM_IDS.dateInput}>{SPECIAL_DAYS_FORM_DATE}</FieldLabel>
                 <Input
                   id={SPECIAL_DAY_FIELD_DOM_IDS.dateInput}
@@ -179,7 +179,7 @@ export function SpecialDayFormSheet({
                 ) : null}
               </Field>
 
-              <Field>
+              <Field data-invalid={Boolean(fieldErrors.scope || overlapMessage)}>
                 <FieldLabel htmlFor={SPECIAL_DAY_FIELD_DOM_IDS.scope}>{SPECIAL_DAYS_FORM_SCOPE}</FieldLabel>
                 <Select
                   items={scopeItems}
