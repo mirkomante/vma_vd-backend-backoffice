@@ -443,7 +443,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.9 — Scaffold del frontend del menù (banco di prova dei punti di contatto)
 
-**Stato**: ✅ (2026-11-16; accettata a T2 da Mirko; riscontro di coerenza del pianificatore dopo il push)
+**Stato**: ✅ (2026-11-16; accettata a T2 da Mirko; riscontro di coerenza del pianificatore eseguito il 2026-11-16 sul commit 0f6eb01: fonti madri coerenti con la revisione d1caa29f6b9aee13b1b8e524764360cab42547da, la release a5ce424c417a4228 e l'artefatto 7fc75c8e9fac248b66d813238f5c3810bf1634b383d29c2d71985cdd5459fb29)
 
 **Repository e progetto Firebase**: GitHub **`mirkomante/vma-vd-menu`**, ramo `main`. Progetto GCP/Firebase distinto **`vma-vd-menu`** (nome «VMA VD Menu», numero `377564584342`, piano Spark, fatturazione disabilitata). URL Hosting: `https://vma-vd-menu.web.app` e `https://vma-vd-menu.firebaseapp.com` (radice → 302 su `/it/`; diagnostiche `/it/test/` e `/en/test/`). Revisione tecnica accettata nel repo menù: `d1caa29f6b9aee13b1b8e524764360cab42547da` (tag di riferimento evidenze `m-02-t2` = `b132d82a6c608583a41355c45020eb5e61e05ce5`). Release Hosting finale `a5ce424c417a4228` (release Firebase `1794856979179000`, `2026-11-16T19:22:59.179Z`). Artefatto: build UTC `2026-11-16T19:15:59.436Z`, Next build ID `lkMgCqCBEXpfBoZAnwqvu`, 36 file, SHA-256 aggregato `7fc75c8e9fac248b66d813238f5c3810bf1634b383d29c2d71985cdd5459fb29`; fotografia CMS in build: 44 piatti IT e 44 EN (3 disabilitati inclusi). Evidenze strutturate nel repo menù al tag `m-02-t2`.
 
@@ -454,7 +454,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 **Riferimenti**: `ADR-112` §§1, 3, 5 e 6 (con la nota del 2026-10-12), `ADR-105` (nota del 2026-10-12), 6.0, 6.4, 6.5.
 
 **Scelte fissate (2026-10-12)**:
-- **Repository nuovo, da zero** (non dal prototipo `vtn-menu-ristorante-next`), fuori da questo repository; nome da definire all'inizio della sottofase. GitHub resta solo hosting dei sorgenti.
+- **Repository nuovo, da zero** (non dal prototipo `vtn-menu-ristorante-next`), fuori da questo repository; nome: `mirkomante/vma-vd-menu`. GitHub resta solo hosting dei sorgenti.
 - **Next.js con export statico** (`output: 'export'`) su **Firebase Hosting**; ultime versioni stabili di Node (LTS) e di pnpm, **verificate all'esecuzione** e fissate in `package.json` (`engines`, `packageManager`) e nell'immagine dello step di build.
 - **Italiano e inglese come pagine statiche distinte** (`/it/…`, `/en/…`) fin dall'inizio, anche se la prima release avrà contenuti solo in italiano. L'integrazione i18n di Next non si applica all'export statico (da verificare sulla guida della versione scelta): si usa un segmento `[locale]` con `generateStaticParams`. La radice reindirizza a `/it/` con una regola di `firebase.json`. Le pagine `/en/` non si collegano finché mancano i contenuti inglesi.
 - **Variabili d'ambiente** invariate (`ADR-112` §6): `MENU_CMS_URL` (letta a build-time) e `NEXT_PUBLIC_MENU_AVAILABILITY_URL` (incorporata nel JavaScript alla build: cambiarla richiede un rebuild).

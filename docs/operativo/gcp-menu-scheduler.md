@@ -97,7 +97,7 @@ gcloud run services get-iam-policy vma-vd-backend-backoffice-git --region=europe
 Eseguito da Mirko sul bucket esistente in progetto `vma-vd` (proprietario bucket: `vma-vd`, non `vma-vd-menu`). File CORS nel repo menù al tag `m-02-t2`: `docs/evidenze/M-02/cors-target.json`.
 
 ```sh
-gcloud config set account mirko@vietnamonamour.com
+gcloud config set account <account-gcloud-di-Mirko>
 gcloud config set project vma-vd
 gcloud storage buckets update gs://vma-vd-menu-availability --cors-file=docs/evidenze/M-02/cors-target.json
 ```
