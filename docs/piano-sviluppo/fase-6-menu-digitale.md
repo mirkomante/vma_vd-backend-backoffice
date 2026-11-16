@@ -51,7 +51,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 
 ## 6.0 — Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM
 
-**Stato**: ✅ chiusa (2026-10-13 in produzione: sovrascrittura runtime SA verificata in 6.4; **CORS** rimandato a 6.9). Dettaglio: `docs/operativo/gcp-menu-scheduler.md`.
+**Stato**: ✅ chiusa (2026-10-13 in produzione: sovrascrittura runtime SA verificata in 6.4; **CORS** sul bucket impostato il 2026-11-16 in 6.9). Dettaglio: `docs/operativo/gcp-menu-scheduler.md`.
 
 **Dipende da**: nessuna sottofase di codice. Recupera il debito di Fase 3 (`arco-17`, `arco-25`) **senza riaprirla**. Lavoro dell'**umano** su GCP; Composer scrive solo la documentazione operativa.
 
@@ -70,13 +70,11 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 | Secret della disponibilità | `scheduler-secret-availability` (Secret Manager) | Variabile d'ambiente `SCHEDULER_SECRET_AVAILABILITY`. Secret Accessor al runtime SA **per singolo secret**, come gli altri |
 | Secret dell'anonimizzazione | `scheduler-secret-anonymization` (Secret Manager) | Variabile d'ambiente `SCHEDULER_SECRET_ANONYMIZATION`. Usato da 5.3; un secret per scopo, così la compromissione di uno non apre l'altro |
 
-**Progetto Firebase del menù**: non esiste ancora (né quello dei due siti) e il nome verrà più avanti. Il suo ID entra nel CORS del bucket: la creazione è **manuale**, nella console di Firebase, con Hosting attivo, e avviene in 6.9 (scaffold del frontend), salvo che esista già.
-- Se il progetto esiste già alla 6.0: imposta il CORS come sotto.
-- Se non esiste: il bucket nasce **senza CORS** e il CORS si imposta alla creazione del progetto (in 6.9), **comunque prima della prova di lettura del file dal browser in 6.9**.
+**Progetto Firebase del menù**: creato in **6.9** (2026-11-16): progetto GCP/Firebase distinto **`vma-vd-menu`** (nome «VMA VD Menu»), Hosting su `https://vma-vd-menu.web.app` e `https://vma-vd-menu.firebaseapp.com`; il CORS del bucket è stato impostato nella stessa sottofase (origini del progetto). Il progetto Firebase dei due siti CMS non esiste ancora.
 
 **CORS del bucket** (con `gcloud storage buckets update gs://BUCKET --cors-file=cors.json`): origini `https://<id-progetto>.web.app` e `https://<id-progetto>.firebaseapp.com`, metodi `GET` e `HEAD`; `http://localhost:3000` solo se serve allo sviluppo del frontend. Il dominio definitivo si aggiunge al passaggio in produzione.
 
-**Verifiche tecniche** (esiti in `docs/operativo/gcp-menu-scheduler.md`: blocco dell'accesso pubblico non imposto, OK; `Cache-Control` a 60 secondi, OK; sovrascrittura del runtime SA **OK** in produzione 2026-10-13; CORS rimandato a 6.9): che l'organizzazione non imponga il blocco dell'accesso pubblico ai bucket; che un oggetto caricato con `Cache-Control: public, max-age=60` sia servito con quell'intestazione (il default di un oggetto pubblico è di un'ora); che la richiesta con `Origin` ottenga le intestazioni CORS.
+**Verifiche tecniche** (esiti in `docs/operativo/gcp-menu-scheduler.md`: blocco dell'accesso pubblico non imposto, OK; `Cache-Control` a 60 secondi, OK; sovrascrittura del runtime SA **OK** in produzione 2026-10-13; CORS **OK** 2026-11-16 con origini del progetto `vma-vd-menu`): che l'organizzazione non imponga il blocco dell'accesso pubblico ai bucket; che un oggetto caricato con `Cache-Control: public, max-age=60` sia servito con quell'intestazione (il default di un oggetto pubblico è di un'ora); che la richiesta con `Origin` ottenga le intestazioni CORS.
 
 **Documentazione**: nuovo `docs/operativo/gcp-menu-scheduler.md` (nomi, ruoli assegnati, comandi usati, esito delle verifiche). **Nessun segreto nel file.**
 
@@ -85,7 +83,7 @@ Aggiornare lo stato di ogni sottofase qui sotto e in `00-piano-generale.md` non 
 - [x] Bucket creato, a lettura pubblica; `objectAdmin` del runtime SA assegnato sul solo bucket (binding verificato con `get-iam-policy`).
 - [x] Sovrascrittura di un oggetto da parte del runtime SA provata in produzione (2026-10-13, 6.4): quattro sovrascritture osservate nella cronologia del bucket con il solo `roles/storage.objectAdmin` sul bucket.
 - [x] Due secret creati in Secret Manager (uno per scopo) e accessibili al runtime SA per singolo secret; **valore non scritto in nessun file del repo**.
-- [x] Oggetto di prova: servito con cache a 60 secondi; CORS rimandato a 6.9 (progetto Firebase non ancora creato), comando pronto in `docs/operativo/gcp-menu-scheduler.md`.
+- [x] Oggetto di prova: servito con cache a 60 secondi; CORS impostato in 6.9 (2026-11-16, origini `vma-vd-menu`), comandi ed esito in `docs/operativo/gcp-menu-scheduler.md`.
 - [x] `docs/operativo/gcp-menu-scheduler.md` scritto; `piano.yaml` e `00-piano-generale.md` aggiornati.
 
 ---
@@ -445,9 +443,11 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.9 — Scaffold del frontend del menù (banco di prova dei punti di contatto)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ (2026-11-16; accettata a T2 da Mirko; riscontro di coerenza del pianificatore dopo il push)
 
-**Dipende da**: 6.0 (bucket e CORS, `arco-53`), 6.2 (contratto e nomi congelati, `arco-51`) e 6.4 (file di disponibilità, `arco-52`). Non dipende dalla 6.6. Lavoro in parte dell'**umano** (progetto Firebase, accesso della CLI) e in parte di Composer, in un **repository nuovo**, non in questo.
+**Repository e progetto Firebase**: GitHub **`mirkomante/vma-vd-menu`**, ramo `main`. Progetto GCP/Firebase distinto **`vma-vd-menu`** (nome «VMA VD Menu», numero `377564584342`, piano Spark, fatturazione disabilitata). URL Hosting: `https://vma-vd-menu.web.app` e `https://vma-vd-menu.firebaseapp.com` (radice → 302 su `/it/`; diagnostiche `/it/test/` e `/en/test/`). Revisione tecnica accettata nel repo menù: `d1caa29f6b9aee13b1b8e524764360cab42547da` (tag di riferimento evidenze `m-02-t2` = `b132d82a6c608583a41355c45020eb5e61e05ce5`). Release Hosting finale `a5ce424c417a4228` (release Firebase `1794856979179000`, `2026-11-16T19:22:59.179Z`). Artefatto: build UTC `2026-11-16T19:15:59.436Z`, Next build ID `lkMgCqCBEXpfBoZAnwqvu`, 36 file, SHA-256 aggregato `7fc75c8e9fac248b66d813238f5c3810bf1634b383d29c2d71985cdd5459fb29`; fotografia CMS in build: 44 piatti IT e 44 EN (3 disabilitati inclusi). Evidenze strutturate nel repo menù al tag `m-02-t2`.
+
+**Dipende da**: 6.0 (bucket e CORS, `arco-53`), 6.2 (contratto e nomi congelati, `arco-51`) e 6.4 (file di disponibilità, `arco-52`). Non dipende dalla 6.6. Lavoro in parte dell'**umano** (progetto Firebase, accesso della CLI, CORS sul bucket `vma-vd`) e in parte nel **repository separato**, non in questo.
 
 **Obiettivo**: un'applicazione Next/React minima, con le stesse caratteristiche tecniche del frontend finale, pubblicata sul Firebase nuovo, con una sola pagina di prova che mostra con messaggi «OK» o «KO» se i punti di contatto con questo CMS funzionano. È la base del frontend vero (6.7, fuori perimetro) e il banco su cui la 6.5 prova il rebuild.
 
@@ -484,16 +484,26 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 **Verifiche tecniche**: build locale riuscita con `out/` che contiene `/it/` e `/en/`; reindirizzamento della radice a `/it/`; `firebase deploy` da locale riuscito; i quattro controlli OK sul sito pubblicato; un KO provocato apposta (URL del file sbagliato, o CORS senza l'origine) per verificare che si veda; build che fallisce con un URL del CMS sbagliato, e sito precedente intatto.
 
+**Scostamenti e limiti conservati** (non bloccano la chiusura documentale di 6.9; la 6.5 resta distinta):
+1. **Node 26.11.1** nel repo menù, non l'ultima patch LTS osservata a T1 (26.13.1): non aggiornare per chiudere i documenti.
+2. **CORS** applicato con due `responseHeader` (`Cache-Control`, `Content-Type`), diverso dal «comando pronto» in `gcp-menu-scheduler.md` (un solo header).
+3. Diagnostica tecnica in **italiano anche su `/en/test/`**; contenuti EN possibilmente con ripiego italiano; testo pagina con riferimento storico a M-01/M-02.
+4. Deploy manuale riuscito **non** è collaudo dei due trigger Cloud Build né dell'IAM incrociato: `cloudbuild.yaml` predisposto e revisionato, **nessuna esecuzione Cloud Build**; AC-08 non verificato.
+5. Nessun dominio definitivo, nessun design del menù; ogni deploy resta manuale finché la 6.5 non è autorizzata.
+6. Frontend coordinato col Metodo v3 (repo menù: metodo 0.2.4, base Next/React 0.2.2); attività VMA_VD residue col metodo precedente.
+
+**Versioni fissate nel repo menù**: Node 26.11.1, pnpm 12.21.0, Next 16.4.3, React 19.3.1, Corepack 0.34.6 in Cloud Build; immagine Firebase CLI 15.20.0 al digest `us-docker.pkg.dev/firebase-cli/us/firebase@sha256:753a34741da8ab98d3844912e1316868e7b9276e6850308f8c9dfe51b0245f37`.
+
 **Checklist di chiusura sottofase**:
-- [ ] Repository creato; nome e ID del progetto Firebase riportati qui, in `ADR-105` (nota) e in `piano.yaml`.
-- [ ] Versioni di Node e di pnpm verificate e fissate.
-- [ ] Build statica con `/it/` e `/en/`; reindirizzamento della radice.
-- [ ] `cloudbuild.yaml` scritto (non ancora eseguito da un trigger).
-- [ ] Deploy manuale riuscito sul Firebase del menù.
-- [ ] I quattro controlli OK sul sito pubblicato; KO verificato; build fallita con CMS irraggiungibile verificata.
-- [ ] CORS del bucket impostato con gli indirizzi `web.app` e `firebaseapp.com` del progetto.
-- [ ] README del nuovo repository con variabili e comandi; nessun segreto.
-- [ ] CHANGELOG di questo repository (chiusura della sottofase).
+- [x] Repository creato; nome e ID del progetto Firebase riportati qui, in `ADR-105` (nota) e in `piano.yaml`.
+- [x] Versioni di Node e di pnpm verificate e fissate (limite 1: Node 26.11.1).
+- [x] Build statica con `/it/` e `/en/`; reindirizzamento della radice.
+- [x] `cloudbuild.yaml` scritto (non ancora eseguito da un trigger; limite 4).
+- [x] Deploy manuale riuscito sul Firebase del menù (release `a5ce424c417a4228`; KO pubblico temporaneo `7d5085a8bfecf1e9` e ripristino dell'esatto artefatto buono).
+- [x] I quattro controlli OK sul sito pubblicato (IT/EN e entrambi i domini); KO verificato; build fallita con CMS irraggiungibile senza deploy e sito invariato; lint, tipi, 29 test unitari e build reale superati nel repo menù.
+- [x] CORS del bucket impostato il 2026-11-16 da Mirko con origini `web.app` e `firebaseapp.com` del progetto (limite 2).
+- [x] README del nuovo repository con variabili e comandi; nessun segreto.
+- [x] CHANGELOG di questo repository (chiusura della sottofase).
 
 ---
 
@@ -583,6 +593,6 @@ Un nome per variabile, nessun alias.
 - **`sigla` di `Nazione`** non si porta (non è nel modello di `ADR-108`). Se serve al frontend, si aggiunge prima del congelamento.
 - **Allergeni sui vini** (solfiti): non previsti; `ADR-108` li cita solo per i piatti e per le birre. Non si decide qui.
 - **Non verificati**: contenuto dello snapshot; permessi minimi esatti su GCS e Firebase (verifica nelle prove di 6.0 e 6.5); regione del trigger Cloud Build; listino di Cloud Scheduler; comportamento di `admin.hidden` per ruolo a runtime.
-- **Nome del repository del menù e ID del progetto Firebase**: si fissano all'inizio di 6.9 (`po-07`: progetto GCP nuovo o `vma-vd`).
+- **Nome del repository del menù e ID del progetto Firebase**: risolti in 6.9 (2026-11-16): `mirkomante/vma-vd-menu`, progetto `vma-vd-menu` (progetto GCP distinto da `vma-vd`, `po-07`).
 - **Dati per la pagina di prova (6.9)**: risolto dalla sequenza di 6.8 (2026-10-12): l'import di produzione precede la 6.9. Se la 6.9 si anticipa prima della 6.6, serve almeno un piatto creato a mano.
-- **Routing per lingua senza l'i18n di Next (6.9)**: l'integrazione i18n di Next non si applica all'export statico; da verificare sulla guida della versione scelta. Non verificato.
+- **Routing per lingua senza l'i18n di Next (6.9)**: nel repo menù le lingue sono segmenti statici `/it/` e `/en/` (README e route diagnostiche; non si usa l'integrazione i18n di Next sull'export statico), coerente con la scelta del 2026-10-12.

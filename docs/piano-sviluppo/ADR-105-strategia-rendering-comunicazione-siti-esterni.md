@@ -67,7 +67,7 @@ Non modifica la decisione. Precisa come si proteggono gli endpoint chiamati da C
 Non modifica il meccanismo di rebuild; sostituisce il riferimento al repository nel punto 1 del «Meccanismo di rebuild verificato»:
 
 - Il trigger Cloud Build **non si collega al prototipo** `vtn-menu-ristorante-next`, ma al repository del **progetto menù**, cioè del nuovo frontend del menù digitale. Il nome del repository verrà definito più avanti e si scrive nel file di fase.
-- Il trigger sta nel progetto GCP del CMS (`VMA-VD`). Il deploy (`firebase deploy --project PROJECT_ID --only hosting`) va sul **progetto Firebase del menù**, nuovo e non ancora creato (non esiste ancora nemmeno quello dei due siti). Il menù attuale resta in produzione sul suo Firebase fino al passaggio al nuovo.
+- Il trigger sta nel progetto GCP del CMS (`VMA-VD`). Il deploy (`firebase deploy --project PROJECT_ID --only hosting`) va sul **progetto Firebase del menù** (creato in fase-6.9, 2026-11-16: `vma-vd-menu`; non esiste ancora quello dei due siti CMS). Il menù attuale resta in produzione sul suo Firebase fino al passaggio al nuovo.
 - I permessi del service account della build sul progetto Firebase si scrivono per il caso in cui sia un progetto diverso da `VMA-VD` (permessi incrociati); valgono anche se i due progetti coincidessero.
 
 ## Nota di chiarimento (2026-10-04, un secret per scopo)
@@ -81,3 +81,12 @@ Non modifica la decisione del pulsante manuale. Precisa tre cose:
 - **Due trigger, un solo `cloudbuild.yaml`.** Sul repository del progetto menù ci sono due trigger Cloud Build che eseguono la stessa configurazione (installazione, `next build` con export statico, `firebase deploy`): uno **manuale**, avviato dal pulsante con `triggers.run`, per i cambi di contenuto; uno **al push su `main`**, per i cambi di codice del frontend, con l'integrazione nativa Cloud Build↔GitHub. L'indicazione «manuale (non da push)» del punto 1 del meccanismo valeva per il pulsante e resta vera per i contenuti: nessuna modifica del CMS avvia una build in automatico (nessun hook `afterChange`).
 - **Perché Cloud Build.** Per Firebase Hosting l'integrazione ufficiale con GitHub passa da una GitHub Action (documentazione ufficiale, consultata il 2026-10-12), esclusa dal progetto. Firebase App Hosting, che si collega a git da solo, è un servizio con server (Cloud Run) per il rendering lato server: a un sito statico non serve e non si usa.
 - **Il repository del menù non è più «da definire più avanti».** Nasce in sottofase 6.9 come scaffold di prova, da zero, con le stesse caratteristiche del frontend finale (Next con export statico su Firebase Hosting, pagine statiche per lingua `/it/` e `/en/`); il suo nome si scrive nel file di fase alla creazione. Le pagine reali del menù restano fuori perimetro (6.7).
+
+## Nota di chiarimento (2026-11-16, repository e progetto Firebase del menù)
+
+Non modifica la decisione sul pulsante manuale né il meccanismo Cloud Build. Registra l'esito di **fase-6.9** (M-02, traguardo T2):
+
+- **Repository**: `mirkomante/vma-vd-menu` (ramo `main`). Revisione tecnica accettata: `d1caa29f6b9aee13b1b8e524764360cab42547da`; evidenze strutturate al tag `m-02-t2` nel repo menù.
+- **Progetto Firebase/GCP distinto** da `vma-vd`: ID **`vma-vd-menu`** (nome «VMA VD Menu»). URL Hosting: `https://vma-vd-menu.web.app` e `https://vma-vd-menu.firebaseapp.com` (radice → `/it/`).
+- **`cloudbuild.yaml`** predisposto nel repository del menù e revisionato; **nessuna esecuzione** da trigger Cloud Build in 6.9 (deploy manuale riuscito; release Hosting `a5ce424c417a4228`).
+- I **due trigger** (manuale da pulsante CMS e al push su `main`) e l'**IAM incrociato** (build nel progetto `vma-vd`, deploy su `vma-vd-menu`) restano da implementare e collaudare in **fase-6.5**, con mandato proprio.

@@ -29,7 +29,7 @@
 | Fase 3 | Deploy: build container, ambiente cloud, database di produzione, auth in produzione, bootstrap | ✅ fatto (3.1–3.5) | `fase-3-deploy.md` (+ file di variante database, cloud, auth) |
 | Fase 4 | CMS siti esterni: localizzazione, pagine e Global dei due siti, plugin SEO/Redirects, lato CMS di preview e revalidation | 🔶 in corso (4.0 ✅; 4.1–4.4 parte CMS eseguibili; 4.5, 4.6 e parti lato siti rimandate) | `fase-4-cms-siti-esterni.md` |
 | Fase 5 | Sistema prenotazioni (vietnamonamour.com) | 🔲 da fare | `fase-5-sistema-prenotazioni.md` (da scrivere) |
-| Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔶 in corso (6.0 ✅, 6.1 ✅, 6.2 ✅, 6.3 ✅, **6.4 ✅** 2026-10-13) | `fase-6-menu-digitale.md` |
+| Fase 6 | Menù digitale: collection, API, backoffice (il frontend pubblico 6.7 è fuori perimetro, in un altro progetto) | 🔶 in corso (6.0–6.4, 6.6, 6.8, **6.9 ✅** 2026-11-16; resta **6.5**) | `fase-6-menu-digitale.md` |
 | Fase 7 | Global `impostazioni-sistema` (orari e chiusure come fonte unica, riferimenti tecnici) | ✅ fatto (7.0–7.4; smoke 7.4 prod 2026-10-06) | `fase-7-impostazioni-sistema.md` |
 | Fase 8 | Shell dell'Area App `(app)` + shadcn/ui, condivisa dalle tre sezioni del backoffice: menù, orari e prenotazioni | 🔶 in corso (8.1–8.5 ✅; 8.6 ⏸ su 6.6) | `fase-8-shell-app.md` |
 
@@ -100,7 +100,7 @@ Dettaglio completo in `fase-4-cms-siti-esterni.md`. Questo progetto contiene sol
 
 Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non indica l'ordine di esecuzione: **6.0 → 6.1 → 6.2 → 6.8 (prova in sviluppo) → 6.3 → 6.4 → 6.6 → 6.9 → 6.5**. Prerequisiti: Fase 3 chiusa, Fase 4.0, Fase 7 e Fase 8.1–8.5 completate. Il frontend pubblico (6.7) è fuori perimetro: vive in un altro progetto. La 6.9 (decisione del 2026-10-12) prepara solo lo scaffold di prova di quel frontend, in un repository separato.
 
-0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — ✅ (2026-10-13; sovrascrittura runtime SA verificata in 6.4; CORS in 6.9)
+0. Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM — ✅ (2026-10-13; sovrascrittura runtime SA verificata in 6.4; CORS impostato in 6.9, 2026-11-16)
 1. Tassonomie e Global «Generali» — ✅ (2026-10-12: migrate batch 9 + seed prod, smoke REST; debiti in fase-6 §6.1)
 2. Collection del menù e relazione menu fisso–piatto — ✅ (2026-10-12: migrate prod + smoke REST; debiti in fase-6 §6.2)
 3. Giorni Speciali — ✅ (2026-10-12)
@@ -108,8 +108,8 @@ Dettaglio completo in `fase-6-menu-digitale.md`. Il numero della sottofase non i
 5. Rebuild manuale del menù (Cloud Build) — 🔲 da fare
 6. Backoffice «Menù» nell'App — ✅ costruita e verificata (V6 chiusa il 2026-10-21); import di produzione 6.8 eseguito il 2026-10-22; L3 ✅ (2026-10-26: D9b su Cloud Run e M3 su iPhone); resta la revisione a mano dei contenuti
 7. Frontend pubblico del menù — ➖ fuori perimetro (confermato il 2026-10-03)
-8. Import dei dati elementari dal vecchio backend — 🔶 in corso (dev verificato)
-9. Scaffold del frontend del menù (banco di prova dei punti di contatto) — 🔲 da fare
+8. Import dei dati elementari dal vecchio backend — ✅ (sviluppo 2026-10-12, produzione 2026-10-22; dettaglio `fase-6-menu-digitale.md` §6.8)
+9. Scaffold del frontend del menù (banco di prova dei punti di contatto) — ✅ (2026-11-16; dettaglio `fase-6-menu-digitale.md` §6.9, repo `mirkomante/vma-vd-menu`, progetto `vma-vd-menu`)
 
 ## Fase 7 — Impostazioni di sistema, panoramica sottofasi
 
@@ -139,7 +139,7 @@ Dettaglio completo in `fase-8-shell-app.md`. Il numero della sottofase non indic
 
 ## Prossimi passi
 
-- **Prossimo passo**: **Fase 6** — **6.9** (frontend pubblico); L3 della 6.6 chiuso il 2026-10-26. **6.6** ✅ costruita e importata. **6.4** ✅ chiusa in produzione (2026-10-13). **6.3** ✅ (2026-10-12). **6.8** ✅ (produzione 2026-10-22, conteggi coincidenti). **6.0** ✅ (CORS in 6.9); 6.1 ✅, 6.2 ✅. Prerequisiti 8.1–8.5 soddisfatti. Nella Fase 8 resta solo **8.6** (verifica login locale App ed email), ⏸ bloccata fino a **6.6** (`fase-8-shell-app.md`). Debiti 6.4, 6.2, 6.3, shell (8.2) e Orari (8.5) in CHANGELOG e checklist di fase. Punto aperto: `po-11`. Fase 7 chiusa in produzione (2026-10-06). Fase 3 chiusa ✅ (2026-10-03, § 3.5).
+- **Prossimo passo**: **Fase 6** — **6.5** (rebuild manuale Cloud Build e collaudo trigger/IAM incrociato; mandato proprio, non autorizzato dal passaggio M-02). **6.9** ✅ registrata il 2026-11-16 (scaffold `mirkomante/vma-vd-menu`, progetto Firebase `vma-vd-menu`; evidenze al tag `m-02-t2` nel repo menù). **6.5** 🔲 non avviata. La Fase 6 **non** è conclusa. **6.6** ✅ costruita e importata (resta revisione a mano del ristorante). **6.8** ✅ (produzione 2026-10-22). **6.0** ✅ (CORS bucket 2026-11-16). L3 della 6.6 chiuso il 2026-10-26. Prerequisiti 8.1–8.5 soddisfatti. Nella Fase 8 resta solo **8.6** (verifica login locale App ed email), ⏸ bloccata fino a **6.6** (`fase-8-shell-app.md`). Debiti 6.4, 6.2, 6.3, shell (8.2) e Orari (8.5) in CHANGELOG e checklist di fase. Punto aperto: `po-11`. Fase 7 chiusa in produzione (2026-10-06). Fase 3 chiusa ✅ (2026-10-03, § 3.5).
 - **Regola di avvio delle sottofasi** (proposta dalla chat di verifica, condivisa dal pianificatore e **confermata dall'umano il 2026-10-04**): Cursor parte da una sottofase quando non restano rilievi B né P che riguardano quella sottofase o quelle che la precedono nell'ordine di esecuzione; i P su sottofasi successive si correggono prima di avviarle; i rilievi A si raccolgono nella tabella «Rinviati e aperti». **Stato condiviso**: `docs/audit/audit-verifica-3-2026-10-04.md` §7, aggiornato da `docs/audit/audit-verifica-4-2026-10-04.md` §5 (tabelle «Concordato» e «Rinviati e aperti»).
 - **Correzione di catalogo (2026-09-20)**: riaperte 2.2 e 2.8 a seguito di un bug di processo — `disableLocalStrategy` (2.4) blocca il login nativo per l'intera collection `users`, non solo per l'Admin, rendendo 2.7 (e 2.6) non implementabili come originariamente scritte nel template. Dettaglio completo nelle note di debito in `fase-2-login.md`, sottofasi 2.2 e 2.8.
 - Fase 2.4 / 2.5 chiuse: due istanze `payload-oauth2` (`google-admin`, `google-app`), callback con `jwtSign` Payload, `/admin/login` solo Google, `/app/login` con istanza App.

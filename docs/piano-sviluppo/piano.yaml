@@ -195,7 +195,7 @@ fasi:
       - id: fase-6.0
         nome: "Predisposizione GCP: Cloud Scheduler, bucket GCS e IAM (recupero del debito di fase-3)"
         stato: "fatto"
-        note: "Chiusa 2026-10-13. Risorse 2026-10-12 (gcp-menu-scheduler.md): API Scheduler, vma-vd-scheduler, bucket vma-vd-menu-availability, secret availability/anonymization. Verifiche: blocco accesso pubblico OK; Cache-Control 60 s OK; sovrascrittura runtime SA OK in fase-6.4 (quattro overwrite in cronologia bucket). CORS rimandato a fase-6.9. Job disponibilità e env/secret Cloud Run completati in fase-6.4."
+        note: "Chiusa 2026-10-13. Risorse 2026-10-12 (gcp-menu-scheduler.md): API Scheduler, vma-vd-scheduler, bucket vma-vd-menu-availability, secret availability/anonymization. Verifiche: blocco accesso pubblico OK; Cache-Control 60 s OK; sovrascrittura runtime SA OK in fase-6.4 (quattro overwrite in cronologia bucket). CORS impostato 2026-11-16 in fase-6.9 (progetto Hosting vma-vd-menu). Job disponibilità e env/secret Cloud Run completati in fase-6.4."
       - id: fase-6.1
         nome: "Tassonomie (Categoria piatto, Allergeni, Paese/Regione/Denominazione/Classificazione, Tipologia vino/bevanda/distillato) + Global Generali + permessi manager/admin"
         stato: "fatto"
@@ -218,35 +218,29 @@ fasi:
         note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end): si prova sul progetto Firebase nuovo che ospiterà il frontend del menù (decisione po-07, 2026-10-04), con lo scaffold di fase-6.9 (repository separato, pagina di prova con controlli OK/KO: ora della build, lettura del CMS a build-time, lettura di disponibilita.json dal browser); non dipende dal frontend vero. Qui si creano i due trigger Cloud Build (manuale e al push su main, un solo cloudbuild.yaml scritto in 6.9) e si prova la sequenza di sei passaggi. Il menù attuale resta in produzione, sul suo Firebase, finché il nuovo non è pronto, quindi nessuna prova lo tocca. Il trigger sta nel progetto GCP VMA-VD e si collega al repository del progetto menù (creato in fase-6.9, non il prototipo); il deploy va sul progetto Firebase del menù, che si crea in fase-6.9: i permessi del service account della build si scrivono per il caso incrociato (build in VMA-VD, deploy su un altro progetto). riepilogo-sessione-bucket-d.md §2"
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
-        stato: "da_fare"
-        note: "Dipende da fase-8 (shell (app) + shadcn/ui) e da fase-6.2. I form offrono la scelta della lingua per i campi localized (po-09). Dal 2026-10-14: formati canonici di anno, capacità e grado dei vini di grado e invecchiamento dei distillati e di capacità e grado delle bevande (validate nel server, ADR-108 note di pari data), filtro per origine e elenco con «Mostra altri vini»; navigazione a otto voci, cancellazione del manager su sette collection (emendamenti di ADR-113 e ADR-108, 6.6 Parte 0), categorie dei menù fissi nella scheda «Categorie» di «Menù fissi», design una schermata alla volta in docs/design/schermate/."
+        stato: "fatto"
+        note: "Chiusa operativamente 2026-10-26 (V6, L3/D9b/M3); costruita e verificata 2026-10-21; import produzione 6.8 il 2026-10-22. Resta aperta la revisione a mano dei contenuti a cura del ristorante (menù fissi, traduzioni, allergeni). fase-6-menu-digitale.md §6.6."
       - id: fase-6.7
         nome: "Frontend pubblico SSG + banner di stato unificato (isOpen/activeSlot/isHoliday)"
         stato: "fuori_perimetro"
         note: "Sviluppato in un altro progetto (app Firebase del menù): fuori dal perimetro di questo piano, confermato il 2026-10-03. Questo piano fornisce API di lettura e disponibilita.json secondo il contratto ADR-112 e, dal 2026-10-12, lo scaffold tecnico di prova (fase-6.9); le pagine reali, il design e il banner di stato restano fuori. riepilogo-sessione-requisiti-architettura-menu-digitale.md §2.8/§4.3"
       - id: fase-6.8
         nome: "Import dei dati elementari dal vecchio backend (script da snapshot JSON; menu fissi a mano)"
-        stato: "in_corso"
-        note: "Script pnpm import:menu (2026-10-12): report a secco e --apply verificati su vma_vd_dev con snapshot 2026-10-12; idempotenza su hash contenuto; prove negative (paese inesistente, DB non dev). Produzione resta aperta (una volta sola, alla chiusura di fase-6.6 e prima di fase-6.9, con backup su richiesta di Cloud SQL); rivalutazione ADR-110 §3 chiusa il 2026-10-12 (nessuna HA per il menù, da rivedere prima di fase-5.3). Non rilanciare import su DB già rivisto a mano. docs/operativo/export-menu-vtn-backend.md. Dal 2026-10-14: prima della produzione si aggiungono la normalizzazione di anno e grado dei vini di grado e invecchiamento dei distillati e di grado delle bevande, e il report a secco esteso alle forme distinte (ADR-108, nota del 2026-10-14)."
+        stato: "fatto"
+        note: "Dev verificato 2026-10-12; produzione eseguita 2026-10-22 (snapshot del giorno, report a secco senza errori, --apply, conteggi coincidenti; backup su richiesta non eseguito per decisione Mirko). Rivalutazione ADR-110 §3 chiusa 2026-10-12. Non rilanciare su DB rivisto a mano. Voce checklist normalizzazione anno/grado vini (e analoghi) resta aperta in fase-6 §6.8. docs/operativo/export-menu-vtn-backend.md."
       - id: fase-6.9
         nome: "Scaffold del frontend del menù (repository separato, banco di prova dei punti di contatto)"
-        stato: "da_fare"
+        stato: "fatto"
         note: >
-          Decisione del 2026-10-12. Repository nuovo, da zero (non il prototipo
-          vtn-menu-ristorante-next), fuori da questo repo: Next.js con export
-          statico su Firebase Hosting, ultime versioni stabili di Node e pnpm
-          verificate all'esecuzione, pagine statiche per lingua (/it/ e /en/)
-          fin dall'inizio, variabili MENU_CMS_URL e
-          NEXT_PUBLIC_MENU_AVAILABILITY_URL (ADR-112 §6). Pagina di prova con
-          controlli OK/KO (ora della build, lettura del CMS in it e in en,
-          lettura di disponibilita.json dal browser). Scrive il
-          cloudbuild.yaml e fa un deploy manuale da locale; i due trigger Cloud
-          Build li crea fase-6.5. Crea il progetto Firebase del menù (po-07) e
-          sblocca il CORS del bucket. Si esegue dopo fase-6.6 per scelta
-          d'ordine, non per dipendenza di codice. Sostituisce l'app Next
-          minimale usa e getta della parte B di fase-6.5. Le pagine reali del
-          menù restano in fase-6.7 (fuori perimetro). Nota di chiarimento ad
-          ADR-105 e ad ADR-112 (2026-10-12).
+          Chiusa documentale 2026-11-16 (M-02 T2 accettato da Mirko). Repo
+          mirkomante/vma-vd-menu, progetto Firebase/GCP distinto vma-vd-menu;
+          release Hosting a5ce424c417a4228; artefatto SHA-256 aggregato
+          7fc75c8e9fac248b66d813238f5c3810bf1634b383d29c2d71985cdd5459fb29;
+          revisione tecnica d1caa29f6b9aee13b1b8e524764360cab42547da; evidenze
+          tag m-02-t2. Deploy manuale OK; cloudbuild.yaml scritto non eseguito;
+          CORS bucket 2026-11-16. Trigger e IAM incrociato restano fase-6.5.
+          Limiti: Node 26.11.1; diagnostica IT su /en/test/; nessun dominio
+          definitivo. fase-6-menu-digitale.md §6.9.
 
   - id: fase-7
     nome: "Global 'impostazioni-sistema' (configurazione tecnica trasversale)"
@@ -1143,7 +1137,7 @@ punti_aperti:
     scadenza: "prima di fase-6.5"
     registrazione: "nota in fase-6-menu-digitale.md"
     stato: "chiuso"
-    riferimento: "Decisione del 2026-10-04: si prova tutto sul progetto Firebase nuovo che ospiterà il frontend del menù (nessun progetto di test separato: il menù attuale resta in produzione sul suo Firebase fino al passaggio). In fase di prova il frontend è un'app Next minimale che mostra messaggi di conferma; la Parte A di fase-6.5 usa uno step di prova senza deploy. Precisazioni del 2026-10-04: il progetto GCP del CMS è VMA-VD; su Firebase non esiste ancora alcun progetto (né per il menù né per i due siti) e il nome di quello del menù arriverà più avanti; il trigger di rebuild si collega al repository del progetto menù (nome da definire), non al prototipo vtn-menu-ristorante-next (nota di chiarimento ad ADR-105). Aggiornamento del 2026-10-12: l'app Next minimale di prova diventa lo scaffold del frontend (fase-6.9), repository separato creato da zero; la parte B di fase-6.5 si prova su di esso e il progetto Firebase si crea in fase-6.9. Se il Firebase del menù sia un progetto GCP nuovo o VMA-VD si fissa alla sua creazione: l'IAM del deploy si scrive per il caso incrociato (build in VMA-VD, deploy su un altro progetto), valido anche se coincidono."
+    riferimento: "Decisione del 2026-10-04: si prova tutto sul progetto Firebase nuovo che ospiterà il frontend del menù (nessun progetto di test separato: il menù attuale resta in produzione sul suo Firebase fino al passaggio). Aggiornamento 2026-11-16 (chiusura fase-6.9): progetto GCP/Firebase distinto vma-vd-menu (non VMA-VD); repository mirkomante/vma-vd-menu; scaffold pubblicato con deploy manuale; trigger Cloud Build e IAM incrociato (build in VMA-VD, deploy su vma-vd-menu) restano da collaudare in fase-6.5. Aggiornamento 2026-10-12: scaffold fase-6.9 sostituisce l'app Next minimale usa e getta. Nota ADR-105 (2026-11-16)."
   - id: po-08
     titolo: "Lingue d'interfaccia dell'Admin: solo italiano o italiano e inglese"
     scadenza: "prima di fase-4.0"

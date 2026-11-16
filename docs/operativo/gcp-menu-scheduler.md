@@ -10,7 +10,7 @@ Predispone le risorse usate da 6.4 (reset della disponibilità e `disponibilita.
 |--------|------|-----------|
 | API | `cloudscheduler.googleapis.com` | Abilitata il 2026-10-12. Già abilitate prima: `storage`, `secretmanager`, `iamcredentials` |
 | Service account dello Scheduler | `vma-vd-scheduler@vma-vd.iam.gserviceaccount.com` | Nessun ruolo a livello di progetto |
-| Bucket | `gs://vma-vd-menu-availability` | `EUROPE-WEST1`, accesso uniforme a livello di bucket, `public_access_prevention: inherited`, **nessun CORS** (rimandato a 6.9), cancellazione temporanea predefinita di 7 giorni (non modificata) |
+| Bucket | `gs://vma-vd-menu-availability` | `EUROPE-WEST1`, accesso uniforme a livello di bucket, `public_access_prevention: inherited`, **CORS** (2026-11-16: origini `https://vma-vd-menu.web.app` e `https://vma-vd-menu.firebaseapp.com`; `GET`/`HEAD`; `Cache-Control` e `Content-Type`; `maxAgeSeconds` 3600), cancellazione temporanea predefinita di 7 giorni (non modificata) |
 | Secret della disponibilità | `scheduler-secret-availability` | Replica automatica (come `DATABASE_URL`); versione 1. Variabile `SCHEDULER_SECRET_AVAILABILITY` (montaggio sul servizio in 6.4) |
 | Secret dell'anonimizzazione | `scheduler-secret-anonymization` | Replica automatica; versione 1. Variabile `SCHEDULER_SECRET_ANONYMIZATION` (montaggio sul servizio in 5.3) |
 
@@ -82,7 +82,7 @@ gcloud run services get-iam-policy vma-vd-backend-backoffice-git --region=europe
 | 1 | Il blocco dell'accesso pubblico non impedisce la lettura pubblica | **OK**. Policy effettiva `storage.publicAccessPrevention` sul progetto: `booleanPolicy: {}` (non imposta); bucket `inherited`; oggetto di prova letto con `curl` anonimo: `HTTP/2 200` |
 | 2 | Oggetto con `Cache-Control: public, max-age=60` servito con quell'intestazione | **OK**. `curl -I` anonimo: `cache-control: public, max-age=60`, `content-type: application/json`. Oggetto poi cancellato |
 | 3 | Sovrascrittura da parte del runtime SA (`objectAdmin`) | **OK** (2026-10-13, chiusura 6.4). Il runtime SA con il solo `roles/storage.objectAdmin` sul bucket ha sovrascritto un oggetto esistente **quattro volte** (14:20:27, 15:27:55, 15:28:58, 15:47:00 UTC), osservato nella cronologia del bucket. La prova del 2026-10-12 via impersonazione non era eseguibile (`PERMISSION_DENIED` su `getAccessToken`) |
-| 4 | Richiesta con `Origin` ottiene le intestazioni CORS | **Rimandata a 6.9** (il progetto Firebase del menù non esiste). Controprova: con `Origin: https://example.web.app` nessuna intestazione `Access-Control-*`, come atteso senza CORS |
+| 4 | Richiesta con `Origin` ottiene le intestazioni CORS | **OK** (2026-11-16, fase-6.9). CORS applicato da Mirko sul bucket in progetto `vma-vd`; origini solo Hosting `vma-vd-menu`; lettura browser reale di `disponibilita.json` verificata nel collaudo M-02. Evidenze: repo `mirkomante/vma-vd-menu`, tag `m-02-t2` (`docs/evidenze/M-02/cors-before.json`, `cors-after.json`, `cors-intervento.md`, `coordinator-verification.md`). Controprova storica 2026-10-12: con `Origin: https://example.web.app` nessuna intestazione `Access-Control-*` prima del CORS |
 
 **Osservazione utile a 6.4**: dopo la cancellazione dell'oggetto di prova, l'URL pubblico ha continuato a rispondere `200` con il vecchio contenuto per circa un minuto, poi `404`. È la cache pubblica di `max-age=60`: vale anche per le sovrascritture di `disponibilita.json` (il browser può vedere lo stato precedente fino a 60 secondi). Inoltre, con la cancellazione temporanea predefinita di 7 giorni, ogni sovrascrittura conserva la versione precedente per 7 giorni: costo trascurabile per un file di pochi KB, da rivalutare in 6.4 solo se la frequenza di scrittura fosse molto alta.
 
@@ -90,32 +90,37 @@ gcloud run services get-iam-policy vma-vd-backend-backoffice-git --region=europe
 
 | Cosa | Sottofase |
 |------|-----------|
-| CORS del bucket (indirizzi `web.app` e `firebaseapp.com` del progetto Firebase del menù) | 6.9, prima della prova di lettura dal browser |
 | Job di Cloud Scheduler (anonimizzazione) e montaggio di `SCHEDULER_SECRET_ANONYMIZATION` sul servizio | 5.3 |
 
-### Comando CORS pronto per 6.9
+### Comando CORS applicato in 6.9 (2026-11-16)
 
-Sostituire `ID_PROGETTO` con l'ID del progetto Firebase del menù; `http://localhost:3000` solo se serve allo sviluppo del frontend.
+Eseguito da Mirko sul bucket esistente in progetto `vma-vd` (proprietario bucket: `vma-vd`, non `vma-vd-menu`). File CORS nel repo menù al tag `m-02-t2`: `docs/evidenze/M-02/cors-target.json`.
 
-```bash
-cat > /tmp/cors-menu.json <<'EOF'
+```sh
+gcloud config set account mirko@vietnamonamour.com
+gcloud config set project vma-vd
+gcloud storage buckets update gs://vma-vd-menu-availability --cors-file=docs/evidenze/M-02/cors-target.json
+```
+
+(Comando operativo dalla radice del clone `vma-vd-menu`; percorso relativo al file CORS del repo menù.)
+
+Contenuto effettivo applicato:
+
+```json
 [
   {
-    "origin": ["https://ID_PROGETTO.web.app", "https://ID_PROGETTO.firebaseapp.com"],
+    "origin": [
+      "https://vma-vd-menu.web.app",
+      "https://vma-vd-menu.firebaseapp.com"
+    ],
     "method": ["GET", "HEAD"],
-    "responseHeader": ["Content-Type"],
+    "responseHeader": ["Cache-Control", "Content-Type"],
     "maxAgeSeconds": 3600
   }
 ]
-EOF
-gcloud storage buckets update gs://vma-vd-menu-availability --cors-file=/tmp/cors-menu.json
-gcloud storage buckets describe gs://vma-vd-menu-availability --format="value(cors_config)"
-
-# Verifica (con un oggetto presente nel bucket)
-curl -sI -H "Origin: https://ID_PROGETTO.web.app" \
-  https://storage.googleapis.com/vma-vd-menu-availability/disponibilita.json | grep -i access-control
-# atteso: access-control-allow-origin: https://ID_PROGETTO.web.app
 ```
+
+Ripristino configurazione precedente (vuota): `gcloud storage buckets update gs://vma-vd-menu-availability --clear-cors`. Dettaglio: `docs/evidenze/M-02/cors-intervento.md` nel repo menù.
 
 ## Job Cloud Scheduler — disponibilità (6.4)
 
