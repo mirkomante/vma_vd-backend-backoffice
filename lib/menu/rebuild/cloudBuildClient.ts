@@ -17,12 +17,16 @@ export type MetadataTokenResponse = {
 
 export type CloudBuildClientDeps = {
   fetchFn: typeof fetch
-  getAccessToken: () => Promise<string>
+  getAccessToken: (signal: AbortSignal) => Promise<string>
 }
 
-async function defaultGetAccessTokenFromMetadata(fetchFn: typeof fetch): Promise<string> {
+async function defaultGetAccessTokenFromMetadata(
+  fetchFn: typeof fetch,
+  signal: AbortSignal,
+): Promise<string> {
   const res = await fetchFn(CLOUDBUILD_METADATA_TOKEN_URL, {
     headers: { 'Metadata-Flavor': 'Google' },
+    signal,
   })
   if (!res.ok) {
     throw new Error(`Token metadata: HTTP ${res.status}`)
@@ -37,10 +41,16 @@ async function defaultGetAccessTokenFromMetadata(fetchFn: typeof fetch): Promise
 
 const defaultDeps: CloudBuildClientDeps = {
   fetchFn: fetch,
-  getAccessToken: () => defaultGetAccessTokenFromMetadata(fetch),
+  getAccessToken: (signal) => defaultGetAccessTokenFromMetadata(fetch, signal),
 }
 
 let deps: CloudBuildClientDeps = defaultDeps
+
+let testTimeoutMs: number | null = null
+
+export function setMenuRebuildClientTimeoutForTests(ms: number | null): void {
+  testTimeoutMs = ms
+}
 
 export function setCloudBuildClientDepsForTests(overrides: Partial<CloudBuildClientDeps> | null): void {
   if (!overrides) {
@@ -56,6 +66,7 @@ export function getCloudBuildClientDepsForTests(): CloudBuildClientDeps {
 
 /**
  * Avvia un trigger Cloud Build (POST …/{resourceName}:run).
+ * Un solo AbortSignal copre token metadata, richiesta e lettura del corpo; il timeout si annulla solo a lettura finita.
  */
 export async function runMenuRebuildCloudBuildTrigger(
   triggerResourceName: string,
@@ -66,20 +77,14 @@ export async function runMenuRebuildCloudBuildTrigger(
   }
 
   const url = `${CLOUDBUILD_API_BASE_URL}/${trimmed}:run`
+  const timeoutMs = testTimeoutMs ?? MENU_REBUILD_CLIENT_TIMEOUT_MS
   const abort = new AbortController()
-  const timer = setTimeout(() => abort.abort(), MENU_REBUILD_CLIENT_TIMEOUT_MS)
+  const timer = setTimeout(() => abort.abort(), timeoutMs)
 
-  let token: string
   try {
-    token = await deps.getAccessToken()
-  } catch (error) {
-    clearTimeout(timer)
-    throw error
-  }
+    const token = await deps.getAccessToken(abort.signal)
 
-  let res: Response
-  try {
-    res = await deps.fetchFn(url, {
+    const res = await deps.fetchFn(url, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -88,25 +93,22 @@ export async function runMenuRebuildCloudBuildTrigger(
       body: MENU_REBUILD_RUN_BODY_JSON,
       signal: abort.signal,
     })
-  } catch (error) {
-    clearTimeout(timer)
-    throw error
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '')
+      throw new Error(`Cloud Build run: HTTP ${res.status}${text ? ` — ${text.slice(0, 200)}` : ''}`)
+    }
+
+    let json: unknown
+    try {
+      json = await res.json()
+    } catch {
+      return { buildId: MENU_REBUILD_BUILD_ID_UNAVAILABLE }
+    }
+
+    const extracted = extractBuildIdFromOperation(json)
+    return { buildId: extracted ?? MENU_REBUILD_BUILD_ID_UNAVAILABLE }
   } finally {
     clearTimeout(timer)
   }
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '')
-    throw new Error(`Cloud Build run: HTTP ${res.status}${text ? ` — ${text.slice(0, 200)}` : ''}`)
-  }
-
-  let json: unknown
-  try {
-    json = await res.json()
-  } catch {
-    return { buildId: MENU_REBUILD_BUILD_ID_UNAVAILABLE }
-  }
-
-  const extracted = extractBuildIdFromOperation(json)
-  return { buildId: extracted ?? MENU_REBUILD_BUILD_ID_UNAVAILABLE }
 }

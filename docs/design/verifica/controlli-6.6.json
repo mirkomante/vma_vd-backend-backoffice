@@ -280,13 +280,12 @@
   {
    "id": "RICOMPILA-PRESENTE",
    "tipo": "presenza",
-   "rinviato_a": "6.5",
    "si_applica_a": "Piatti, Vini, Bevande, Distillati, Menù fissi, Servizi, Giorni speciali; assente in Messaggio globale e in home",
    "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, con la finestra di conferma e gli esiti di piatti/spec.md; avvisi con la frase sul pulsante",
    "fonte": "integrazione/spec.md §5",
    "livello": 2,
-   "stato_prova": "NON PROVABILE fino alla 6.5: la bandiera è spenta; esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
-   "nota": "Non si esegue nella 6.6. Non è un FALLITO: va nei debiti con scritto che si prova nella 6.5."
+   "stato_prova": "OK — giro 2026-11-16 passo 6.5 I2: e2e/controlli/ricompila-6_5.spec.ts (POST stubbed); sette intestazioni + categorie menù fissi + assenza home/messaggio; avvisi salvataggio/eliminazione solo su Piatti",
+   "nota": "Esiti in finestra: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A. Frase negli avvisi: provata su Piatti; altri cataloghi NON PROVATO (componente condiviso MenuOutcomeAlert, non eseguito per schermata)."
   }
  ],
  "dati_e_sicurezza": {
@@ -931,9 +930,8 @@
       "telefono-390": "«Nuovo piatto» largo quanto la colonna del contenuto (a 390 px: 358 px, cioè la larghezza della finestra meno 2 × 16 px di margine della shell; NON la larghezza dell'elemento main), alto almeno 44 px",
       "notebook-1280": "«Nuovo piatto» a destra del titolo, in riga"
      },
-     "rinviato": "la coppia con «Ricompila il menù pubblico» (sopra o a sinistra) è NON PROVATO, rinviato alla 6.5",
      "fonte": "piatti/spec.md §4, §9 punto 4",
-     "nota": "Il riferimento della larghezza è la colonna del contenuto, non l'elemento main (che include il margine). Corretto il 2026-10-17 dopo V2."
+     "nota": "Presenza coppia Ricompila + «Nuovo piatto» in intestazione: OK (2026-11-16, e2e ricompila-6_5.spec.ts, notebook-1280-chiaro). Misura L2 px: NON PROVATO in questo giro. Il riferimento della larghezza è la colonna del contenuto, non l'elemento main (che include il margine). Corretto il 2026-10-17 dopo V2."
     },
     {
      "id": "piatti-righe-azioni",
@@ -1384,11 +1382,11 @@
     {
      "id": "piatti-ricompila",
      "tipo": "presenza",
-     "rinviato_a": "6.5",
      "atteso": "pulsante «Ricompila il menù pubblico», conferma «Ricompilare il menù pubblico?», esiti «Ricompilazione avviata» e «Una ricompilazione è già in corso»; un utente senza ruolo non può invocarla",
      "fonte": "piatti/spec.md §5 (Ricompila), §9 punto 6",
      "livello": 2,
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+     "stato_prova": "OK — UI e2e ricompila-6_5.spec.ts (finestra, esiti stub 202/200/502, loading, avvisi); utente senza ruolo: pnpm verify:menu-6_5 caso (b) 403",
+     "nota": "Esiti mostrati: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), non il wording di piatti/spec.md §6 — debito A."
     },
     {
      "id": "piatti-disabilitato-ovunque",
@@ -1692,8 +1690,8 @@
       "telefono-390": "«Nuovo vino» a tutta larghezza della colonna, alto almeno 44 px",
       "notebook-1280": "«Nuovo vino» a destra del titolo, in riga"
      },
-     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
-     "fonte": "docs/design/schermate/vini/spec.md §4, §9 punto 7"
+     "fonte": "docs/design/schermate/vini/spec.md §4, §9 punto 7",
+     "nota": "Presenza coppia Ricompila + «Nuovo vino»: OK (2026-11-16, e2e ricompila-6_5.spec.ts). Misura L2 px: NON PROVATO."
     },
     {
      "id": "vini-righe-azioni",
@@ -2198,11 +2196,11 @@
     {
      "id": "vini-ricompila",
      "tipo": "presenza",
-     "rinviato_a": "6.5",
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/vini/spec.md §5 e §9 punto 7",
      "livello": 2,
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+     "stato_prova": "OK — presenza pulsante e dialogo (componente condiviso); esiti 202/200/502 e avvisi: NON PROVATO su questa schermata (provati su Piatti)",
+     "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
      "id": "vini-confronto-visivo",
@@ -2472,8 +2470,8 @@
       "telefono-390": "«Nuovo distillato» a tutta larghezza della colonna, alto almeno 44 px",
       "notebook-1280": "«Nuovo distillato» a destra del titolo, in riga"
      },
-     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
-     "fonte": "docs/design/schermate/distillati/spec.md §4, §9 punto 7"
+     "fonte": "docs/design/schermate/distillati/spec.md §4, §9 punto 7",
+     "nota": "Presenza coppia Ricompila + «Nuovo distillato»: OK (2026-11-16, e2e ricompila-6_5.spec.ts). Misura L2 px: NON PROVATO."
     },
     {
      "id": "distillati-righe-azioni",
@@ -2890,11 +2888,11 @@
     {
      "id": "distillati-ricompila",
      "tipo": "presenza",
-     "rinviato_a": "6.5",
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/distillati/spec.md §5 e §9 punto 7",
      "livello": 2,
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
      "id": "distillati-confronto-visivo",
@@ -3149,8 +3147,8 @@
       "telefono-390": "«Nuova bevanda» a tutta larghezza della colonna, alto almeno 44 px",
       "notebook-1280": "«Nuova bevanda» a destra del titolo, in riga"
      },
-     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
-     "fonte": "docs/design/schermate/bevande/spec.md §4, §9 punto 7"
+     "fonte": "docs/design/schermate/bevande/spec.md §4, §9 punto 7",
+     "nota": "Presenza coppia Ricompila + «Nuova bevanda»: OK (2026-11-16, e2e ricompila-6_5.spec.ts). Misura L2 px: NON PROVATO."
     },
     {
      "id": "bevande-righe-azioni",
@@ -3563,11 +3561,11 @@
     {
      "id": "bevande-ricompila",
      "tipo": "presenza",
-     "rinviato_a": "6.5",
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/bevande/spec.md §5 e §9 punto 7",
      "livello": 2,
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
      "id": "bevande-confronto-visivo",
@@ -3816,8 +3814,8 @@
       "telefono-390": "«Nuovo servizio» largo quanto la colonna del contenuto (358 px a 390 px), alto almeno 44 px",
       "notebook-1280": "«Nuovo servizio» a destra del titolo, in riga"
      },
-     "rinviato": "la coppia con «Ricompila il menù pubblico» è NON PROVATA, rinviata alla 6.5",
-     "fonte": "docs/design/schermate/servizi/spec.md §4"
+     "fonte": "docs/design/schermate/servizi/spec.md §4",
+     "nota": "Presenza coppia Ricompila + «Nuovo servizio»: OK (2026-11-16, e2e ricompila-6_5.spec.ts). Misura L2 px: NON PROVATO."
     },
     {
      "id": "servizi-righe-azioni",
@@ -4113,8 +4111,8 @@
      "livello": 2,
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/servizi/spec.md §5 e §9 punto 6",
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
-     "rinviato_a": "6.5"
+     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
      "id": "servizi-confronto-visivo",
@@ -4422,8 +4420,8 @@
       "telefono-390": "«Nuovo menù fisso» e «Nuova categoria» dentro la scheda, a tutta larghezza (358 px), alti almeno 44 px",
       "notebook-1280": "«Nuovo …» a destra nella scheda"
      },
-     "rinviato": "«Ricompila il menù pubblico» (a tutta larghezza su telefono, a destra del titolo a 1280 px) è NON PROVATO, rinviato alla 6.5",
-     "fonte": "docs/design/schermate/menu-fissi/spec.md §4"
+     "fonte": "docs/design/schermate/menu-fissi/spec.md §4",
+     "nota": "Presenza Ricompila in intestazione (anche scheda Categorie): OK (2026-11-16, e2e ricompila-6_5.spec.ts). Layout L2: NON PROVATO."
     },
     {
      "id": "menu-fissi-righe-azioni",
@@ -4913,8 +4911,8 @@
      "livello": 2,
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione di entrambe le schede (anche in «Categorie»), conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/menu-fissi/spec.md §5 e §9, integrazione §5",
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
-     "rinviato_a": "6.5"
+     "stato_prova": "OK — presenza pulsante (incl. /menu/fixed/categories); esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
      "id": "menu-fissi-confronto-visivo",
@@ -5201,8 +5199,8 @@
       "telefono-390": "«Nuovo giorno speciale» largo quanto la colonna del contenuto (358 px a 390 px), alto almeno 44 px, sotto il titolo e la descrizione",
       "notebook-1280": "«Nuovo giorno speciale» a destra del titolo, in riga"
      },
-     "rinviato": "la coppia con «Ricompila il menù pubblico» (in colonna su telefono con «Nuovo giorno speciale» per prima; in riga da 768 px con «Ricompila» a sinistra) è NON PROVATA, rinviata alla 6.5",
-     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4"
+     "fonte": "docs/design/schermate/giorni-speciali/spec.md §4",
+     "nota": "Presenza coppia Ricompila + «Nuovo giorno speciale»: OK (2026-11-16, e2e ricompila-6_5.spec.ts). Misura L2 px: NON PROVATO."
     },
     {
      "id": "giorni-speciali-righe-azioni",
@@ -5651,8 +5649,8 @@
      "livello": 2,
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti; gli avvisi di salvataggio, attivazione ed eliminazione con la frase «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».»",
      "fonte": "docs/design/schermate/giorni-speciali/spec.md §1, §5 e §9",
-     "stato_prova": "NON PROVABILE fino alla 6.5: esito NON PROVATO con l'evidenza «rinviato alla 6.5»",
-     "rinviato_a": "6.5"
+     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
      "id": "giorni-speciali-confronto-visivo",

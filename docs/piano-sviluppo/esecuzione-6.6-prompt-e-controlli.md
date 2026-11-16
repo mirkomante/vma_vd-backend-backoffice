@@ -51,7 +51,7 @@ Gli altri due posti restano come sono: il CHANGELOG (storia di ogni chat, scritt
 
 ### 1.4 Decisioni già confermate
 
-1. **«Ricompila il menù pubblico» nascosto** dietro una bandiera spenta durante tutta la 6.6: la 6.5 viene dopo la 6.6 e dopo la 6.9. I controlli sul pulsante sono NON PROVATI con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano OK, FALLITO, AVVISO, NON PROVATO). Assunzione ancora da confermare: gli avvisi di salvataggio e di eliminazione non nominano il pulsante e hanno solo il titolo (`integrazione/spec.md` §5).
+1. **«Ricompila il menù pubblico» nascosto** dietro una bandiera spenta durante tutta la 6.6: la 6.5 viene dopo la 6.6 e dopo la 6.9. I controlli sul pulsante sono NON PROVATI con l'evidenza «rinviato alla 6.5» (gli esiti ammessi restano OK, FALLITO, AVVISO, NON PROVATO). Assunzione ancora da confermare: gli avvisi di salvataggio e di eliminazione non nominano il pulsante e hanno solo il titolo (`integrazione/spec.md` §5). **Aggiornamento 2026-11-16 (passo 6.5 I2)**: `PUBLIC_MENU_REBUILD_UI_ENABLED=true` in codice; giro e2e `ricompila-6_5.spec.ts` (POST stubbed); controlli RICOMPILA-PRESENTE e `*-ricompila` aggiornati in `controlli-6.6.json`.
 2. **Un solo file dei controlli**, `controlli-6.6.json`, a cui aggiungo le schermate man mano; nei comandi si indica sempre `--controlli`, perché il lanciatore senza l'opzione prende l'ultimo file in ordine alfabetico.
 3. **Ordine dei controlli** (`policy-test.md` §6): prima i controlli (D), poi l'agente li implementa nel lanciatore (VC), poi la chat di implementazione (I) con L1, poi se c'è un trigger l'agente esegue L2 (V).
 4. **Riga di registro** (`area`, `detail`): la propone Composer nella Parte A del passo 4. **Import di produzione**: sessione a sé, passo 31.

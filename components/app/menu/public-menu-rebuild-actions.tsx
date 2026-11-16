@@ -63,6 +63,9 @@ export function PublicMenuRebuildActions() {
   }
 
   const handleOpenChange = (next: boolean) => {
+    if (phase === 'loading' && !next) {
+      return
+    }
     setOpen(next)
     if (!next) {
       setPhase('confirm')
@@ -95,36 +98,36 @@ export function PublicMenuRebuildActions() {
       </Button>
       <AlertDialog open={open} onOpenChange={handleOpenChange}>
         <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Ricompilare il menù pubblico?</AlertDialogTitle>
-          <AlertDialogDescription>
-            La pubblicazione richiede alcuni minuti. Serve per vedere piatti nuovi e modifiche ai
-            contenuti, ai servizi, agli orari, alle chiusure e ai giorni speciali. «Terminato» e
-            «disabilitato» valgono già.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        {showOutcome ? (
-          <Alert
-            variant={outcomeKind === 'error' ? 'destructive' : 'default'}
-            role={outcomeKind === 'error' ? 'alert' : 'status'}
-          >
-            <AlertDescription>{outcomeMessage}</AlertDescription>
-          </Alert>
-        ) : null}
-        <AlertDialogFooter>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ricompilare il menù pubblico?</AlertDialogTitle>
+            <AlertDialogDescription>
+              La pubblicazione richiede alcuni minuti. Serve per vedere piatti nuovi e modifiche ai
+              contenuti, ai servizi, agli orari, alle chiusure e ai giorni speciali. «Terminato» e
+              «disabilitato» valgono già.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
           {showOutcome ? (
-            <Button type="button" onClick={() => handleOpenChange(false)}>
-              Chiudi
-            </Button>
-          ) : (
-            <>
-              <AlertDialogCancel disabled={phase === 'loading'}>Indietro</AlertDialogCancel>
-              <Button type="button" disabled={phase === 'loading'} onClick={handleConfirm}>
-                {phase === 'loading' ? MENU_REBUILD_CONFIRM_LOADING_LABEL : 'Ricompila'}
+            <Alert
+              variant={outcomeKind === 'error' ? 'destructive' : 'default'}
+              role={outcomeKind === 'error' ? 'alert' : 'status'}
+            >
+              <AlertDescription>{outcomeMessage}</AlertDescription>
+            </Alert>
+          ) : null}
+          <AlertDialogFooter>
+            {showOutcome ? (
+              <Button type="button" onClick={() => handleOpenChange(false)}>
+                Chiudi
               </Button>
-            </>
-          )}
-        </AlertDialogFooter>
+            ) : (
+              <>
+                <AlertDialogCancel disabled={phase === 'loading'}>Indietro</AlertDialogCancel>
+                <Button type="button" disabled={phase === 'loading'} onClick={handleConfirm}>
+                  {phase === 'loading' ? MENU_REBUILD_CONFIRM_LOADING_LABEL : 'Ricompila'}
+                </Button>
+              </>
+            )}
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>

@@ -383,7 +383,6 @@ export function DishesPage({ context }: DishesPageProps) {
       <MenuPageHeader
         title={PIATTI_PAGE_TITLE}
         description={PIATTI_PAGE_DESCRIPTION}
-        showRebuild={false}
         primaryAction={
           <Button type="button" size="lg" className="w-full md:w-auto" onClick={openNewForm}>
             <Plus data-icon="inline-start" aria-hidden />

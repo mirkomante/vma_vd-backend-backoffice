@@ -68,7 +68,7 @@ Gli identificativi seguono l'ordine di esecuzione.
 | 2 | E1 | Mirko | Connessione GitHub ↔ Cloud Build, service account dedicato, IAM in `vma-vd` | 🔲 |
 | 3 | M1 | Cursor sul repo menù | Una riga nel `cloudbuild.yaml` (`options.logging`), mandato esplicito di Mirko | 🔲 |
 | 4 | E2 | Mirko | Trigger di prova, prova da riga di comando, variabile su Cloud Run | 🔲 |
-| 5 | I2 | Composer | Accende la bandiera, sblocca i controlli rinviati, un giro mirato | 🔲 |
+| 5 | I2 | Composer | Accende la bandiera, sblocca i controlli rinviati, un giro mirato | 🔶 fatto, da controllare |
 | 6 | V1 | Mirko | Collaudo Parte A dal vivo (pulsante → build di prova, registro, accessi) | 🔲 |
 | 7 | E3 | Mirko | Permessi sul progetto Firebase, due trigger veri, prova da riga di comando, cambio variabile | 🔲 |
 | 8 | V2 | Mirko | Collaudo Parte B: sequenza di sei passaggi con il Firebase del menù | 🔲 |

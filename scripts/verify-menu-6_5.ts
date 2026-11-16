@@ -126,7 +126,7 @@ async function main(): Promise<void> {
     fetchFn: async () => {
       throw new Error('verify-6_5: fetch Cloud Build non atteso')
     },
-    getAccessToken: async () => {
+    getAccessToken: async (_signal: AbortSignal) => {
       throw new Error('verify-6_5: token metadata non atteso')
     },
   })
