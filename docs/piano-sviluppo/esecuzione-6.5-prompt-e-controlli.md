@@ -64,7 +64,7 @@ Gli identificativi seguono l'ordine di esecuzione.
 
 | Passo | Sigla | Chi | Cosa | Stato |
 |---|---|---|---|---|
-| 1 | I1 | Composer | Endpoint di avvio, client Cloud Build, registro, debounce, testi, verifica meccanica (`verify:menu-6_5`). Bandiera spenta | 🔶 fatto, da controllare |
+| 1 | I1 | Composer | Endpoint di avvio, client Cloud Build, registro, debounce, testi, verifica meccanica (`verify:menu-6_5`). Bandiera spenta | ✅ b987c36 |
 | 2 | E1 | Mirko | Connessione GitHub ↔ Cloud Build, service account dedicato, IAM in `vma-vd` | 🔲 |
 | 3 | M1 | Cursor sul repo menù | Una riga nel `cloudbuild.yaml` (`options.logging`), mandato esplicito di Mirko | 🔲 |
 | 4 | E2 | Mirko | Trigger di prova, prova da riga di comando, variabile su Cloud Run | 🔲 |
@@ -75,7 +75,7 @@ Gli identificativi seguono l'ordine di esecuzione.
 | 9 | I3 | Composer | Documentazione operativa e chiusura documentale | 🔲 |
 | 10 | C1 | Pianificatore | Controllo da clone pulito e chiusura 6.5 | 🔲 |
 
-**Ultimo aggiornamento**: 2026-11-16, piano proposto, nessun passo avviato.
+**Ultimo aggiornamento**: 2026-11-16 (commit `b987c36`). Prossimi passi: 2 (E1, tuo, GCP) e 3 (M1, repo menù); poi 4, 5, 6, 7, 8, 9, 10. Rilievi A1, A2 e il JSX da correggere nel passo 5.
 
 ---
 
