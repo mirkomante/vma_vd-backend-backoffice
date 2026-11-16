@@ -1,6 +1,6 @@
 # Esecuzione della 6.5: ordine, prompt e controlli
 
-**Stato**: proposta del pianificatore, 2026-11-16, **da approvare da Mirko**. Non autorizza nulla da sola: ogni passo parte quando Mirko lo avvia. La 6.5 ha un mandato proprio (passaggio M-02, `fase-6-menu-digitale.md` §6.9): nessun trigger, IAM incrociato, esecuzione Cloud Build o pulsante CMS prima del «via» di Mirko al passo 1.
+**Stato**: approvato da Mirko il 2026-11-16. Non autorizza nulla da sola: ogni passo parte quando Mirko lo avvia. La 6.5 ha un mandato proprio (passaggio M-02, `fase-6-menu-digitale.md` §6.9): nessun trigger, IAM incrociato, esecuzione Cloud Build o pulsante CMS prima del «via» di Mirko al passo 1.
 
 La regola di lavoro resta quella di `00-come-eseguire-il-piano.md`. Rispetto alla 6.6 questo piano è **volutamente corto**: dieci passi, un solo giro di controlli meccanici e un solo collaudo dal vivo (preferenza di Mirko: test solo per la meccanica e per «UI = design», niente ripetizioni).
 
@@ -31,7 +31,7 @@ Letture fatte sulla documentazione Google Cloud (Cloud Build: riferimento REST d
 |---|---|---|
 | F1 | Con un **service account dedicato** per la build, i log devono andare su Cloud Logging o su un bucket creato da noi; il bucket predefinito non è ammesso. Il `cloudbuild.yaml` del repo menù (M-02) **non ha** `options.logging`. | Senza una riga in più (`options: logging: CLOUD_LOGGING_ONLY`) la build con il service account dedicato **fallisce**. Passo 3 (repo menù, mandato esplicito) e `roles/logging.logWriter` al service account (passo 2). |
 | F2 | I repository GitHub di **2ª generazione** richiedono una **regione** per il trigger; la 1ª generazione usa `global`. La regione del trigger deve coincidere con quella della connessione. | L'endpoint non deve conoscere la regione: la variabile di Cloud Run contiene il **nome completo della risorsa** del trigger (vale per entrambi i casi). Proposta: 2ª generazione in `europe-west1`. |
-| F3 | `triggers.run` accetta nel corpo la sorgente (ramo) e, solo lì, le sostituzioni. Un'indicazione trovata in rete (non ufficiale) dice che il ramo non accetta espressioni regolari. | L'endpoint passa `{"branchName":"main"}` esatto. La forma esatta della risposta (operazione a lunga durata e punto in cui sta l'id della build) si verifica in Parte A sulla pagina ufficiale. |
+| F3 | `triggers.run` per i trigger regionali (`projects.locations.triggers.run`) prende un corpo `RunBuildTriggerRequest` con il campo `source` (ramo o tag, senza espressioni regolari); il corpo `{"branchName":...}` vale solo per i trigger globali. | L'endpoint passa `{"source":{"branchName":"main"}}`; la forma si conferma alla prima chiamata reale (passo 4). La risposta è un'`Operation`; l'id build si legge in `metadata.build.id` (altrimenti «id non disponibile»). |
 | F4 | La guida «Deploy to Firebase» elenca per il service account di build: ruolo del Cloud Build Service Account, **Firebase Admin** e un ruolo sulle chiavi API (Admin in una versione della pagina, Viewer in un'altra). | Documentazione non univoca tra le versioni lette. Si parte dal **minimo** (`firebasehosting.admin` + `serviceusage.apiKeysViewer` sul progetto `vma-vd-menu`) e si sale solo se l'errore nomina un permesso mancante (passo 7). Si registra ciò che serve davvero. |
 | F5 | Un trigger può avere un service account proprio, usato per `triggers.run`, `builds.create` e `builds.cancel`. Il service account sta in `vma-vd` (lo stesso progetto del trigger): il vincolo di organizzazione sull'uso incrociato dei service account non entra in gioco. | Service account dedicato `vma-vd-menu-build@vma-vd.iam.gserviceaccount.com` in `vma-vd`; i **permessi** sul progetto Firebase `vma-vd-menu` sono il caso incrociato. |
 | F6 | **Non verificato** (si scopre nel passo 7): il deploy su Hosting di un progetto in piano **Spark**, senza fatturazione, lanciato da una build in un altro progetto. | Se fallisce, il messaggio dice perché; si ferma e si decide, non si aggira. |
@@ -64,7 +64,7 @@ Gli identificativi seguono l'ordine di esecuzione.
 
 | Passo | Sigla | Chi | Cosa | Stato |
 |---|---|---|---|---|
-| 1 | I1 | Composer | Endpoint di avvio, client Cloud Build, registro, debounce, testi, verifica meccanica (`verify:menu-6_5`). Bandiera spenta | 🔲 |
+| 1 | I1 | Composer | Endpoint di avvio, client Cloud Build, registro, debounce, testi, verifica meccanica (`verify:menu-6_5`). Bandiera spenta | 🔶 fatto, da controllare |
 | 2 | E1 | Mirko | Connessione GitHub ↔ Cloud Build, service account dedicato, IAM in `vma-vd` | 🔲 |
 | 3 | M1 | Cursor sul repo menù | Una riga nel `cloudbuild.yaml` (`options.logging`), mandato esplicito di Mirko | 🔲 |
 | 4 | E2 | Mirko | Trigger di prova, prova da riga di comando, variabile su Cloud Run | 🔲 |
@@ -145,7 +145,7 @@ COSA FARE (dopo la Parte A approvata)
    - constants: percorso endpoint «/menu/rebuild», finestra anti-doppio-avvio 120 s, ramo «main», nome della
      variabile MENU_REBUILD_TRIGGER_NAME.
    - cloudBuildClient: funzione che fa POST https://cloudbuild.googleapis.com/v1/<MENU_REBUILD_TRIGGER_NAME>:run con
-     corpo {"branchName":"main"} e intestazione Authorization con il token del service account di runtime, letto dal
+     corpo {"source":{"branchName":"main"}} e intestazione Authorization con il token del service account di runtime, letto dal
      server dei metadati (http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token,
      intestazione Metadata-Flavor: Google). Solo fetch, NESSUNA nuova dipendenza. Timeout 15 s. fetch e fonte del
      token INIETTABILI. Estrae l'id della build come dichiarato in Parte A; se la risposta è 2xx ma l'id non si

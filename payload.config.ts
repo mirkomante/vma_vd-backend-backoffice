@@ -14,6 +14,7 @@ import { MenuGeneral } from './globals/MenuGeneral'
 import { Settings } from './globals/Settings'
 import { SystemSettings } from './globals/SystemSettings'
 import { createMenuAvailabilitySchedulerEndpoint } from './lib/menu/availability/availabilitySchedulerEndpoint'
+import { createMenuRebuildEndpoint } from './lib/menu/rebuild/menuRebuildEndpoint'
 import { isGoogleOAuthConfigured } from './lib/auth/googleOAuth/env'
 import { patchUsersAuthStrategiesPlugin } from './lib/auth/jwt/patchUsersAuthStrategiesPlugin'
 import { googleOAuthAdminPlugin, googleOAuthAppPlugin } from './lib/auth/googleOAuth/plugins'
@@ -78,5 +79,5 @@ export default buildConfig({
       }
     : {}),
   sharp,
-  endpoints: [createMenuAvailabilitySchedulerEndpoint()],
+  endpoints: [createMenuAvailabilitySchedulerEndpoint(), createMenuRebuildEndpoint()],
 })

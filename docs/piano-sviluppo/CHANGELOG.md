@@ -10,6 +10,14 @@ Ogni voce sotto `[Unreleased]` va aggiunta prima di ogni commit (vedi `core/04-c
 
 ## [Unreleased]
 
+### Added
+
+- **6.5 I1 (chat Composer, avvio rebuild dal CMS)** — Endpoint POST `/api/menu/rebuild` con guardia sessione e `canAccessSection(user,'menu')`, debounce 120 s sull’ultima `systemAction` `rebuild-started:`, client Cloud Build (`fetch` + token metadata, corpo `{"source":{"branchName":"main"}}`, timeout 15 s, dipendenze iniettabili), registro `logSystemAction` senza utente; UI `PublicMenuRebuildActions` collegata alla POST same-origin (finestra aperta con esito e solo «Chiudi»; bandiera `PUBLIC_MENU_REBUILD_UI_ENABLED` resta `false`). `scripts/verify-menu-6_5.ts` + `pnpm verify:menu-6_5`; variabile `MENU_REBUILD_TRIGGER_NAME` in tabella fase-6 e `.env.example`. **Ufficiale (corpo triggers.run)** — il prompt I1 indicava `{"branchName":"main"}`; la REST regionale documenta `RunBuildTriggerRequest` con `source`. **Percepito (Parte A)** — correzione pianificatore: corpo primario `{"source":{"branchName":"main"}}`; conferma su GCP al passo 4. **Osservato** — implementato con corpo `source`; CHANGELOG e riga F3 in `esecuzione-6.5-prompt-e-controlli.md` aggiornati. **Ufficiale (testi esito)** — `piatti/spec.md` §6: «Ricompilazione avviata» / «già in corso». **Percepito** — esecuzione §3.8: testi «Pubblicazione avviata…». **Osservato** — usati i testi del prompt; **scostamento visivo/testuale** rispetto ai mockup di Piatti (esito nel dialogo con `Alert`), da allineare al passo I2. **Tests**: vedi sotto.
+
+### Tests
+
+- **6.5 I1 (2026-11-16)** — `pnpm typecheck` OK; `pnpm lint` 0 errori (avvisi preesistenti); `pnpm ui:check` OK; unitari `lib/**/*.test.ts` **137/137** (inclusi `lib/menu/rebuild/*.test.ts`); `pnpm migrate:create` — **nessun** schema change (nessun file nuovo); `pnpm verify:menu-6_5` su `vma_vd_dev` **OK** casi (a)–(h) con client Cloud Build finto e `now` iniettabile. Playwright/L1 Ricompila **NON PROVATO** (bandiera spenta, passo I2).
+
 ### Fixed
 
 - **F6b (chat Composer, 2026-10-26)** — (P6) Dopo «Togli il messaggio», il pannello «Sul menù pubblico» non mostrava subito «Menù pubblico aggiornato alle…» perché `handleClear` azzerava `published` e disattivava il watch invece di rileggere `disponibilita.json` come dopo il salvataggio; ora `handleClear` chiama `readPublishedGlobalMessageAction()` con la stessa logica di `handleSave`. (A2) Nel modulo Giorni speciali, le etichette «Data» e «Ambito» restavano nere in errore: aggiunto `data-invalid` sui `Field` corrispondenti (come in Orari), allineato a `aria-invalid`.
