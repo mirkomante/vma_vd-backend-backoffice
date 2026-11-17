@@ -1391,11 +1391,11 @@
     {
      "id": "piatti-disabilitato-ovunque",
      "tipo": "flusso",
-     "rinviato_a": "6.5",
+     "rinviato_a": "frontend del menù (altro progetto)",
      "atteso": "un piatto disabilitato non compare nel menù pubblico né alla carta né dentro un menu fisso (frontend di prova)",
      "fonte": "piatti/spec.md §9 punto 19",
      "livello": 2,
-     "stato_prova": "NON PROVABILE fino alla 6.5 e al frontend di prova della 6.9: esito NON PROVATO con l'evidenza «rinviato alla 6.5»"
+     "stato_prova": "NON PROVATO: non verificabile con lo scaffold di 6.9, che mostra solo la pagina di prova; da provare nel frontend vero. Lato dati: disponibilita.json riporta hidden per i piatti 14, 17 e 26 (2026-11-17), coerente con i 3 disabilitati della pagina di prova"
     },
     {
      "id": "piatti-confronto-visivo",

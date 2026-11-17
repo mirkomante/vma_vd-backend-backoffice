@@ -566,7 +566,7 @@ Pagine reali del menù, design, sezioni (`ADR-112` §2), banner di stato e tradu
 | `SCHEDULER_SECRET_AVAILABILITY` | Cloud Run (da Secret Manager, `scheduler-secret-availability`) | secret dell'endpoint di reset e riscrittura della disponibilità, chiamato da Cloud Scheduler | 6.0, usata in 6.4 |
 | `SCHEDULER_SECRET_ANONYMIZATION` | Cloud Run (da Secret Manager, `scheduler-secret-anonymization`) | secret dell'endpoint di anonimizzazione GDPR, chiamato da Cloud Scheduler | 6.0, usata in 5.3 |
 | `MENU_AVAILABILITY_GCS_BUCKET` | Cloud Run | nome del bucket di `disponibilita.json` (prod: `vma-vd-menu-availability`) | 6.4 |
-| `MENU_CMS_URL`, `NEXT_PUBLIC_MENU_AVAILABILITY_URL` | repository del menù (non questo repo): ambiente locale e variabili di sostituzione dei trigger Cloud Build | `ADR-112` §6; usate dallo scaffold di 6.9 e passate dai trigger di 6.5. URL pubblici, non segreti; la seconda è incorporata nel JavaScript alla build | 6.9, 6.5 |
+| `MENU_CMS_URL`, `NEXT_PUBLIC_MENU_AVAILABILITY_URL` | repository del menù (non questo repo): ambiente locale e valori predefiniti nel `cloudbuild.yaml` del repository del menù (scostamento 1 della 6.5; non duplicati sui trigger) | `ADR-112` §6; usate dallo scaffold di 6.9. URL pubblici, non segreti; la seconda è incorporata nel JavaScript alla build | 6.9, 6.5 |
 | `MENU_REBUILD_TRIGGER_NAME` | Cloud Run | Nome completo della risorsa del trigger Cloud Build manuale avviato dal pulsante (es. `projects/vma-vd/locations/europe-west1/triggers/menu-rebuild-manuale`) | 6.5 |
 
 Un nome per variabile, nessun alias.
