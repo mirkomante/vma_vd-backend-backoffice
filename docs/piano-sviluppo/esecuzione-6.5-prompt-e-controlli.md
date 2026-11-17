@@ -65,17 +65,17 @@ Gli identificativi seguono l'ordine di esecuzione.
 | Passo | Sigla | Chi | Cosa | Stato |
 |---|---|---|---|---|
 | 1 | I1 | Composer | Endpoint di avvio, client Cloud Build, registro, debounce, testi, verifica meccanica (`verify:menu-6_5`). Bandiera spenta | ✅ b987c36 |
-| 2 | E1 | Mirko | Connessione GitHub ↔ Cloud Build, service account dedicato, IAM in `vma-vd` | 🔲 |
-| 3 | M1 | Cursor sul repo menù | Una riga nel `cloudbuild.yaml` (`options.logging`), mandato esplicito di Mirko | 🔲 |
-| 4 | E2 | Mirko | Trigger di prova, prova da riga di comando, variabile su Cloud Run | 🔲 |
-| 5 | I2 | Composer | Accende la bandiera, sblocca i controlli rinviati, un giro mirato | 🔶 fatto, da controllare |
-| 6 | V1 | Mirko | Collaudo Parte A dal vivo (pulsante → build di prova, registro, accessi) | 🔲 |
-| 7 | E3 | Mirko | Permessi sul progetto Firebase, due trigger veri, prova da riga di comando, cambio variabile | 🔲 |
-| 8 | V2 | Mirko | Collaudo Parte B: sequenza di sei passaggi con il Firebase del menù | 🔲 |
-| 9 | I3 | Composer | Documentazione operativa e chiusura documentale | 🔲 |
+| 2 | E1 | Mirko | Connessione GitHub ↔ Cloud Build, service account dedicato, IAM in `vma-vd` | ✅ (E1) |
+| 3 | M1 | Cursor sul repo menù | Una riga nel `cloudbuild.yaml` (`options.logging`), mandato esplicito di Mirko | ✅ 17edc31 |
+| 4 | E2 | Mirko | Trigger di prova, prova da riga di comando, variabile su Cloud Run | ✅ (E2); build `bda454f6-1735-4adc-8bfd-0eb509756b2a` |
+| 5 | I2 | Composer | Accende la bandiera, sblocca i controlli rinviati, un giro mirato | ✅ 77a3eaf |
+| 6 | V1 | Mirko | Collaudo Parte A dal vivo (pulsante → build di prova, registro, accessi) | ✅ (V1); build `2884fee5-454c-461d-a038-326f12f422a6`, `1cb0b537-3104-4dcc-b313-4b76f77978e7` |
+| 7 | E3 | Mirko | Permessi sul progetto Firebase, due trigger veri, prova da riga di comando, cambio variabile | ✅ (E3); build `269521ec-90f5-4f6d-a785-727ec002fecc` |
+| 8 | V2 | Mirko | Collaudo Parte B: sequenza di sei passaggi con il Firebase del menù | ✅ ridotto 2026-11-17 (A pulsante `3adacb92-…`, B push `0ab3262e-…`) |
+| 9 | I3 | Composer | Documentazione operativa e chiusura documentale | 🔶 fatto, da controllare |
 | 10 | C1 | Pianificatore | Controllo da clone pulito e chiusura 6.5 | 🔲 |
 
-**Ultimo aggiornamento**: 2026-11-16 (commit `b987c36`). Prossimi passi: 2 (E1, tuo, GCP) e 3 (M1, repo menù); poi 4, 5, 6, 7, 8, 9, 10. Rilievi A1, A2 e il JSX da correggere nel passo 5.
+**Ultimo aggiornamento**: 2026-11-17 (passo 9 I3 documentale). Prossimo passo: **10 (C1)** controllo pianificatore da clone pulito.
 
 ---
 
@@ -424,6 +424,8 @@ gcloud run services update vma-vd-backend-backoffice-git --region=europe-west1 \
 Per ogni punto, se qualcosa non torna, **fermati e incollami cosa vedi** (schermata o output): non ripetere a caso.
 
 **Incolla qui** una riga per punto: OK o cosa hai visto, con l'id e l'ora della build dei punti 1, 3 e 6. **Esito**: i sei passaggi della sequenza (1-6) verificati e i due trigger creati = casella «Parte B» della checklist; il punto 7 riporta i dati allo stato iniziale; il punto 8 chiude il controllo rinviato.
+
+**Nota (2026-11-17)** — Scostamento dichiarato sul collaudo V2 (decisione Mirko, proporzionalità): la sequenza originale di sei passaggi in tabella è stata **ridotta a due controlli** eseguiti: **(A)** rebuild dal pulsante in produzione (build `3adacb92-fa8c-4997-9f41-56a23f5c2c2a`, trigger `c0f365e8-…`); **(B)** rebuild dal push su `main` del repo menù (commit `974b12d`, build `0ab3262e-e054-467a-9fb9-5d531ea69657`, trigger `33b71a43-…`). Restano **non rieseguiti** perché coperti da prove precedenti o da altre sottofasi: piatto temporaneo e rinomina (lettura CMS in build già provata con «44» piatti); «terminato» e messaggio globale senza ricompilare (6.4 e M-02); controllo file di disponibilità sul bucket. Il punto **8** (`piatti-disabilitato-ovunque`) resta **rinviato e non provato** e non va segnato OK.
 
 ---
 

@@ -90,3 +90,14 @@ Non modifica la decisione sul pulsante manuale né il meccanismo Cloud Build. Re
 - **Progetto Firebase/GCP distinto** da `vma-vd`: ID **`vma-vd-menu`** (nome «VMA VD Menu»). URL Hosting: `https://vma-vd-menu.web.app` e `https://vma-vd-menu.firebaseapp.com` (radice → `/it/`).
 - **`cloudbuild.yaml`** predisposto nel repository del menù e revisionato; **nessuna esecuzione** da trigger Cloud Build in 6.9 (deploy manuale riuscito; release Hosting `a5ce424c417a4228`).
 - I **due trigger** (manuale da pulsante CMS e al push su `main`) e l'**IAM incrociato** (build nel progetto `vma-vd`, deploy su `vma-vd-menu`) restano da implementare e collaudare in **fase-6.5**, con mandato proprio.
+
+## Nota di chiarimento (2026-11-17, esito della 6.5)
+
+Non modifica la decisione sul pulsante manuale, sul secondo trigger al push né sul meccanismo Cloud Build → Firebase Hosting. Registra ciò che è stato collaudato:
+
+- **Regione e connessione**: trigger e connessione GitHub di **2ª generazione** in `europe-west1`; repository collegato `projects/vma-vd/locations/europe-west1/connections/github-mirkomante/repositories/vma-vd-menu` (`mirkomante/vma-vd-menu`, `main`).
+- **Service account della build**: `vma-vd-menu-build@vma-vd.iam.gserviceaccount.com` su tutti i trigger; runtime `vma-vd-backoffice-run@…` con `roles/cloudbuild.builds.editor` sul progetto `vma-vd` e `roles/iam.serviceAccountUser` sul SA di build.
+- **Trigger effettivi** (progetto `vma-vd`): `menu-rebuild-manuale` (`c0f365e8-f395-4581-be2c-1e0d0a13e5ab`, avvio dal pulsante, `cloudbuild.yaml` del repo); `menu-rebuild-push-main` (`33b71a43-7e76-47a8-a4a0-6a1d08ac1116`, push su `main`, stesso file). Trigger di prova inline eliminato a fine sottofase.
+- **Variabile Cloud Run** `MENU_REBUILD_TRIGGER_NAME`: risorsa completa del trigger manuale (aggiornamento solo con `--update-env-vars`).
+- **Ruoli sul progetto `vma-vd-menu`**: `roles/firebasehosting.admin` e `roles/serviceusage.apiKeysViewer` al SA di build; sul progetto **`vma-vd`** (consumer della build) risultano necessarie anche le API `firebase.googleapis.com` e `firebasehosting.googleapis.com` per evitare `SERVICE_DISABLED` nel deploy incrociato (non esplicitato nel piano originale).
+- **Scostamenti rispetto al testo del piano** (dettaglio operativo in `docs/operativo/menu-rebuild-cloud-build.md`): (1) variabili di sostituzione come predefiniti nel `cloudbuild.yaml`, non sui trigger; (2) registro `rebuild-started:` come `systemAction` senza utente (`ADR-115`); (4) `options.logging: CLOUD_LOGGING_ONLY` nel repo menù (commit `17edc31`); (5) due API Firebase abilitate in `vma-vd`; (8) corpo REST regionale `triggers.run` con `{"source":{"branchName":"main"}}`, corretto in implementazione I1 rispetto al prompt iniziale del pianificatore.

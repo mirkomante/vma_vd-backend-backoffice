@@ -214,8 +214,17 @@ fasi:
         note: "Chiusa 2026-10-13 produzione. Ordine: commit, migrate 20261013_110424_activity_log_6_4 su Cloud SQL prod, push, Cloud Run update-env-vars+update-secrets (13 variabili), job menu-availability-reset */5 Europe/Rome. Prima scrittura job 13:23:22 UTC baseline; difetto REST globalMessage pre-fix riparato da job 16:20 locale; post-fix rev 00141 scrittura immediata e log menu-availability-sync. Debito 6.0 sovrascrittura OK. Debiti: soldOut reset su dati reali post-import 6.8; solo IT vuoto con EN presente non provato; race doppia scrittura; Admin activity-log labels EN; SEED_SUPERADMIN_* su Cloud Run da valutare. fase-6-menu-digitale.md §6.4."
       - id: fase-6.5
         nome: "Rebuild manuale del menù SSG via Cloud Build (pulsante backoffice)"
-        stato: "da_fare"
-        note: "Parte A (endpoint Payload, pulsante, IAM, trigger Cloud Build) eseguibile con uno step di prova che non fa deploy. Parte B (verifica end-to-end): si prova sul progetto Firebase nuovo che ospiterà il frontend del menù (decisione po-07, 2026-10-04), con lo scaffold di fase-6.9 (repository separato, pagina di prova con controlli OK/KO: ora della build, lettura del CMS a build-time, lettura di disponibilita.json dal browser); non dipende dal frontend vero. Qui si creano i due trigger Cloud Build (manuale e al push su main, un solo cloudbuild.yaml scritto in 6.9) e si prova la sequenza di sei passaggi. Il menù attuale resta in produzione, sul suo Firebase, finché il nuovo non è pronto, quindi nessuna prova lo tocca. Il trigger sta nel progetto GCP VMA-VD e si collega al repository del progetto menù (creato in fase-6.9, non il prototipo); il deploy va sul progetto Firebase del menù, che si crea in fase-6.9: i permessi del service account della build si scrivono per il caso incrociato (build in VMA-VD, deploy su un altro progetto). riepilogo-sessione-bucket-d.md §2"
+        stato: "fatto"
+        note: >
+          Chiusa 2026-11-17. Repository mirkomante/vma-vd-menu (connessione github-mirkomante,
+          europe-west1); trigger menu-rebuild-manuale (c0f365e8-…) e menu-rebuild-push-main
+          (33b71a43-…); SA vma-vd-menu-build@vma-vd.iam.gserviceaccount.com; variabile Cloud Run
+          MENU_REBUILD_TRIGGER_NAME sulla risorsa del trigger manuale (rev 00294-qjk).
+          IAM incrociato: build in vma-vd, deploy su vma-vd-menu (firebasehosting.admin +
+          serviceusage.apiKeysViewer; API firebase.googleapis.com e firebasehosting.googleapis.com
+          abilitate anche in vma-vd). Trigger prova eliminato 2026-11-17. Collaudo V2 ridotto
+          (pulsante + push). Operativa: docs/operativo/menu-rebuild-cloud-build.md.
+          fase-6-menu-digitale.md §6.5.
       - id: fase-6.6
         nome: "Backoffice (app) menù — shadcn/ui, mobile-first"
         stato: "fatto"

@@ -509,7 +509,7 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 
 ## 6.5 — Rebuild manuale del menù (Cloud Build)
 
-**Stato**: 🔲 da fare
+**Stato**: ✅ chiusa (2026-11-17). Operativa: `docs/operativo/menu-rebuild-cloud-build.md`.
 
 **Dipende da**: 6.4 (`arco-18`), 6.0, 6.6 (il pulsante sta nella sezione Menù) e 6.9 (repository e progetto Firebase su cui si prova la Parte B, `arco-54`).
 
@@ -540,13 +540,14 @@ Comandi import da locale: `fase-3-deploy.md` § 3.4 e `./scripts/prod-db.sh` con
 **Documentazione**: nuovo `docs/operativo/menu-rebuild-cloud-build.md` (trigger, service account, ruoli, regione del trigger, comandi). Nessun segreto.
 
 **Checklist di chiusura sottofase**:
-- [ ] Parte A: pulsante, endpoint e permessi; build di prova avviata dal CMS.
-- [ ] Parte B: deploy da trigger riuscito sul Firebase del menù con lo scaffold di 6.9; i sei passaggi della sequenza verificati; entrambi i trigger (manuale e al push) creati.
-- [ ] Un utente senza ruolo non può invocare l'endpoint.
-- [ ] Avvio del rebuild registrato in `activity-log` come `systemAction`, con l'id della build in `detail` (`ADR-115`).
-- [ ] `docs/operativo/menu-rebuild-cloud-build.md` scritto.
-- [ ] Nome del repository del progetto menù e ID del progetto Firebase riportati in `ADR-105` (nota) e in `piano.yaml` (se non già fatto in 6.9).
-- [ ] CHANGELOG.
+- [x] Parte A: pulsante, endpoint e permessi; build di prova avviata dal CMS (V1: build `2884fee5-…` e debounce; poi variabile sul trigger manuale). Scostamento (2): registro `systemAction` **senza utente** (`ADR-115`).
+- [x] Parte B: deploy da trigger riuscito sul Firebase del menù con lo scaffold di 6.9; **entrambi** i trigger (manuale `c0f365e8-…` e al push `33b71a43-…`) creati; prove `269521ec-…`, `3adacb92-…`, `0ab3262e-…`. Scostamenti: (1) variabili di sostituzione nel `cloudbuild.yaml`, non sui trigger; (4) `options.logging` nel repo menù (`17edc31`); (5) API `firebase.googleapis.com` e `firebasehosting.googleapis.com` abilitate in `vma-vd`; (6) collaudo V2 ridotto a due controlli (pulsante e push), non la sequenza originale di sei passaggi.
+- [ ] Parte B — sequenza originale di sei passaggi (punti 3–6 della scheda V2, file disponibilità «disabilitato ovunque»): **non rieseguiti** nella riduzione V2 del 2026-11-17; copertura indiretta (44 piatti in build, 6.4/M-02) o **rinviata** (`piatti-disabilitato-ovunque` **non provato**).
+- [x] Un utente senza ruolo non può invocare l'endpoint: coperto da `pnpm verify:menu-6_5` caso (b); POST senza sessione in produzione → 401.
+- [x] Avvio del rebuild registrato in `activity-log` come `systemAction`, con l'id della build in `detail` (`ADR-115`); es. `rebuild-started: 2884fee5-…` senza utente. Scostamento (3): conferma fine build (Pub/Sub) **fuori** dalla 6.5.
+- [x] `docs/operativo/menu-rebuild-cloud-build.md` scritto.
+- [x] Nome del repository del progetto menù e ID del progetto Firebase riportati in `ADR-105` (note 2026-11-16 e 2026-11-17) e in `piano.yaml` (6.9 / `po-07`). Scostamento (8): corpo `triggers.run` con `source` corretto in I1 (errore del pianificatore sul corpo regionale).
+- [x] CHANGELOG (passi I1, I2, I3 documentale).
 
 ---
 

@@ -284,7 +284,7 @@
    "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, con la finestra di conferma e gli esiti di piatti/spec.md; avvisi con la frase sul pulsante",
    "fonte": "integrazione/spec.md §5",
    "livello": 2,
-   "stato_prova": "OK — giro 2026-11-16 passo 6.5 I2: e2e/controlli/ricompila-6_5.spec.ts (POST stubbed); sette intestazioni + categorie menù fissi + assenza home/messaggio; avvisi salvataggio/eliminazione solo su Piatti",
+   "stato_prova": "PARZIALE — giro 2026-11-16 passo 6.5 I2: e2e/controlli/ricompila-6_5.spec.ts (POST stubbed); sette intestazioni + categorie menù fissi + assenza home/messaggio; avvisi salvataggio/eliminazione solo su Piatti",
    "nota": "Esiti in finestra: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A. Frase negli avvisi: provata su Piatti; altri cataloghi NON PROVATO (componente condiviso MenuOutcomeAlert, non eseguito per schermata)."
   }
  ],
@@ -2199,7 +2199,7 @@
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/vini/spec.md §5 e §9 punto 7",
      "livello": 2,
-     "stato_prova": "OK — presenza pulsante e dialogo (componente condiviso); esiti 202/200/502 e avvisi: NON PROVATO su questa schermata (provati su Piatti)",
+     "stato_prova": "PARZIALE — presenza pulsante e dialogo (componente condiviso); esiti 202/200/502 e avvisi: NON PROVATO su questa schermata (provati su Piatti)",
      "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
@@ -2891,7 +2891,7 @@
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/distillati/spec.md §5 e §9 punto 7",
      "livello": 2,
-     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "stato_prova": "PARZIALE — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
      "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
@@ -3564,7 +3564,7 @@
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/bevande/spec.md §5 e §9 punto 7",
      "livello": 2,
-     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "stato_prova": "PARZIALE — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
      "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
@@ -4111,7 +4111,7 @@
      "livello": 2,
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/servizi/spec.md §5 e §9 punto 6",
-     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "stato_prova": "PARZIALE — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
      "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
@@ -4911,7 +4911,7 @@
      "livello": 2,
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione di entrambe le schede (anche in «Categorie»), conferma e esiti come in Piatti",
      "fonte": "docs/design/schermate/menu-fissi/spec.md §5 e §9, integrazione §5",
-     "stato_prova": "OK — presenza pulsante (incl. /menu/fixed/categories); esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "stato_prova": "PARZIALE — presenza pulsante (incl. /menu/fixed/categories); esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
      "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
@@ -5649,7 +5649,7 @@
      "livello": 2,
      "atteso": "pulsante «Ricompila il menù pubblico» nell'intestazione, conferma e esiti come in Piatti; gli avvisi di salvataggio, attivazione ed eliminazione con la frase «Per vederlo sul menù pubblico serve «Ricompila il menù pubblico».»",
      "fonte": "docs/design/schermate/giorni-speciali/spec.md §1, §5 e §9",
-     "stato_prova": "OK — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
+     "stato_prova": "PARZIALE — presenza pulsante; esiti e avvisi NON PROVATO su questa schermata (provati su Piatti)",
      "nota": "Esiti UI: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), testi diversi da piatti/spec.md §6 — debito A."
     },
     {
