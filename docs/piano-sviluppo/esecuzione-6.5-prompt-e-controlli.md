@@ -75,7 +75,7 @@ Gli identificativi seguono l'ordine di esecuzione.
 | 9 | I3 | Composer | Documentazione operativa e chiusura documentale | 🔶 fatto, da controllare |
 | 10 | C1 | Pianificatore | Controllo da clone pulito e chiusura 6.5 | 🔲 |
 
-**Ultimo aggiornamento**: 2026-11-17 (passo 9 I3 documentale). Prossimo passo: **10 (C1)** controllo pianificatore da clone pulito.
+**Ultimo aggiornamento**: 2026-11-17 — tolti `secretmanager.admin` e `apiKeysViewer` dopo prova, build `37f0d4e8-4dbf-4b31-93d7-03e2f1b42bf4`.
 
 ---
 

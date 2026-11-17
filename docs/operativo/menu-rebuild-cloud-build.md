@@ -8,8 +8,8 @@ Il pulsante «Ricompila il menù pubblico» nell’App invoca POST same-origin s
 
 | Elemento | Valore |
 |----------|--------|
-| Repository GitHub | `mirkomante/vma-vd-menu`, ramo `main` |
-| Connessione | `github-mirkomante`, regione `europe-west1`, stato **COMPLETE** |
+| Repository GitHub | `mirkomante/vma-vd-menu`, ramo `main` — **privato** dal 2026-11-17 |
+| Connessione | `github-mirkomante`, regione `europe-west1`, stato **COMPLETE** — lettura del sorgente via connessione confermata (build `584ec4f5-5cd5-4af9-98fc-79b7c601c6b1`, 2026-11-17) |
 | Risorsa repository collegata | `projects/vma-vd/locations/europe-west1/connections/github-mirkomante/repositories/vma-vd-menu` |
 
 Il `cloudbuild.yaml` del repo menù include `options.logging: CLOUD_LOGGING_ONLY` (commit `17edc31`, mandato 2026-11-16): **obbligatorio** con service account dedicato sulla build. Le variabili di sostituzione (`_FIREBASE_PROJECT_ID`, URL CMS e disponibilità, immagine Firebase CLI) restano come **valori predefiniti nel file**, non sui trigger (scostamento rispetto al testo originale del piano).
@@ -43,14 +43,18 @@ Tutti usano il service account **`vma-vd-menu-build@vma-vd.iam.gserviceaccount.c
 
 | Ruolo | Motivo |
 |-------|--------|
-| `roles/secretmanager.admin` | Concesso per creare la connessione GitHub (ruolo ampio; **non verificato** se serva ancora; **non rimosso** — debito **A**) |
+| `roles/cloudbuild.serviceAgent` | Identità gestita del service agent Cloud Build |
+| `roles/developerconnect.tokenAccessor` | Accesso token per la connessione GitHub (2ª generazione) |
+
+`roles/secretmanager.admin` era stato concesso per creare la connessione GitHub ed è stato **rimosso il 2026-11-17** dopo prova (build `37f0d4e8-4dbf-4b31-93d7-03e2f1b42bf4` SUCCESS); policy IAM verificata assente dopo la build.
 
 ### Su `vma-vd-menu` — stesso `vma-vd-menu-build@…`
 
 | Ruolo | Motivo |
 |-------|--------|
 | `roles/firebasehosting.admin` | Deploy cross-progetto su Firebase Hosting |
-| `roles/serviceusage.apiKeysViewer` | Indicato dalla guida «Deploy to Firebase»; con questi due ruoli il deploy è riuscito; se `apiKeysViewer` sia strettamente necessario **non è verificato** |
+
+`roles/serviceusage.apiKeysViewer` era stato aggiunto seguendo la guida «Deploy to Firebase» ed è stato **rimosso il 2026-11-17** dopo prova (stessa build `37f0d4e8-…`); policy IAM verificata assente dopo la build.
 
 ### Requisito del caso incrociato (non previsto esplicitamente nel piano)
 
@@ -134,6 +138,8 @@ gcloud services list --enabled --project=vma-vd --filter="name:firebase"
 | Manuale da CLI (E3) | `269521ec-90f5-4f6d-a785-727ec002fecc` | SUCCESS | 2026-11-17 16:31:31; pagina `/it/test/` istante build 16:32:24Z, 44 piatti IT/EN |
 | Pulsante produzione | `3adacb92-fa8c-4997-9f41-56a23f5c2c2a` | SUCCESS | 2026-11-17 16:52:16; trigger `c0f365e8-…`; pagina 16:53:10Z |
 | Push `main` (commit `974b12d`) | `0ab3262e-e054-467a-9fb9-5d531ea69657` | SUCCESS | 2026-11-17 16:58:45; trigger `33b71a43-…` |
+| Repo già privato, ruoli ancora presenti | `584ec4f5-5cd5-4af9-98fc-79b7c601c6b1` | SUCCESS | 2026-11-17 20:25:33 UTC; trigger manuale; clone/build/deploy |
+| Dopo rimozione `secretmanager.admin` e `apiKeysViewer` | `37f0d4e8-4dbf-4b31-93d7-03e2f1b42bf4` | SUCCESS | 2026-11-17 20:34:21 UTC; trigger manuale `c0f365e8-…`; IAM assenti post-build |
 
 ## Come si torna indietro
 
@@ -145,16 +151,16 @@ gcloud services list --enabled --project=vma-vd --filter="name:firebase"
 | Elimina SA build | Solo se non più usato: `gcloud iam service-accounts delete vma-vd-menu-build@vma-vd.iam.gserviceaccount.com` dopo aver eliminato trigger e binding |
 | Revert codice App (I1/I2) | `git revert` nel repo backoffice e deploy; bandiera o endpoint |
 | Revert `cloudbuild.yaml` menù | `git revert` nel repo `vma-vd-menu` (commit `17edc31`) |
+| Clone/build falliscono per accesso sorgente GitHub | Ripristinare `roles/secretmanager.admin` sul service agent Cloud Build in `vma-vd`, rilanciare il trigger manuale o al push, registrare l’esito |
 
 Ripristino Hosting diagnostico: le release precedenti restano nella cronologia Firebase Hosting del progetto `vma-vd-menu` (non è il menù legacy in produzione).
 
 ## Limiti e debiti
 
 - Due avvii quasi simultanei da **utenti diversi** possono avviare **entrambe** le build (il debounce è sulla finestra temporale, non un lock distribuito).
-- Il token GitHub della connessione appartiene all’account che ha autorizzato la connessione: se revocato, il trigger al **push** smette di funzionare.
+- Il token GitHub della connessione appartiene all’account che ha autorizzato la connessione: se revocato, il trigger al **push** smette di funzionare. La prova del 2026-11-17 è **una sola build** dopo la rimozione dei ruoli ampi: **non copre** il rinnovo nel tempo del token della connessione GitHub; se il trigger manuale o quello al push falliscono per l’accesso al sorgente, rimettere `roles/secretmanager.admin` al service agent di Cloud Build, riprovare e registrarlo.
 - **Registro attività**: l’avvio è `systemAction` **senza utente** (`ADR-115`); non si sa chi ha premuto il pulsante.
 - **Esito finale della build** (Pub/Sub): fuori dalla 6.5; l’App comunica solo «avviata».
-- `roles/secretmanager.admin` sul service agent Cloud Build: debito **A**.
 - Collaudo V2 **ridotto** (2026-11-17): solo (A) pulsante e (B) push; `piatti-disabilitato-ovunque` **rinviato / non provato**.
 
 ## Riferimenti incrociati

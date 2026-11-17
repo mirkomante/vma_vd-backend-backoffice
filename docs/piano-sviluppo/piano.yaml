@@ -220,8 +220,9 @@ fasi:
           europe-west1); trigger menu-rebuild-manuale (c0f365e8-…) e menu-rebuild-push-main
           (33b71a43-…); SA vma-vd-menu-build@vma-vd.iam.gserviceaccount.com; variabile Cloud Run
           MENU_REBUILD_TRIGGER_NAME sulla risorsa del trigger manuale (rev 00294-qjk).
-          IAM incrociato: build in vma-vd, deploy su vma-vd-menu (firebasehosting.admin +
-          serviceusage.apiKeysViewer; API firebase.googleapis.com e firebasehosting.googleapis.com
+          IAM incrociato: build in vma-vd, deploy su vma-vd-menu (firebasehosting.admin;
+          serviceusage.apiKeysViewer tolto il 2026-11-17 dopo prova; API firebase.googleapis.com
+          e firebasehosting.googleapis.com
           abilitate anche in vma-vd). Trigger prova eliminato 2026-11-17. Collaudo V2 ridotto
           (pulsante + push). Operativa: docs/operativo/menu-rebuild-cloud-build.md.
           fase-6-menu-digitale.md §6.5.
