@@ -1382,11 +1382,11 @@
     {
      "id": "piatti-ricompila",
      "tipo": "presenza",
-     "atteso": "pulsante «Ricompila il menù pubblico», conferma «Ricompilare il menù pubblico?», esiti «Ricompilazione avviata» e «Una ricompilazione è già in corso»; un utente senza ruolo non può invocarla",
+     "atteso": "pulsante «Ricompila il menù pubblico», conferma «Ricompilare il menù pubblico?», esito nella finestra: «Pubblicazione avviata», «già avviata da poco» ed errore; un utente senza ruolo non può invocarla",
      "fonte": "piatti/spec.md §5 (Ricompila), §9 punto 6",
      "livello": 2,
      "stato_prova": "OK — UI e2e ricompila-6_5.spec.ts (finestra, esiti stub 202/200/502, loading, avvisi); utente senza ruolo: pnpm verify:menu-6_5 caso (b) 403",
-     "nota": "Esiti mostrati: lib/menu/rebuild/copy.ts (decisione 8 esecuzione-6.5 §3), non il wording di piatti/spec.md §6 — debito A."
+     "nota": "Testi allineati il 2026-11-18: la specifica adegua i testi a lib/menu/rebuild/copy.ts (decisione 8 del piano 6.5)."
     },
     {
      "id": "piatti-disabilitato-ovunque",
