@@ -17,7 +17,7 @@ export const ActivityLog: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'eventType',
-    defaultColumns: ['createdAt', 'user', 'eventType', 'area', 'method'],
+    defaultColumns: ['createdAt', 'user', 'eventType', 'area', 'method', 'detail'],
     description:
       'Eventi di autenticazione e, in futuro, azioni sui documenti. Scrittura solo da hook di sistema.',
     hidden: ({ user }) => hideFromAdminRoleManager(user),

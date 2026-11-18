@@ -205,8 +205,6 @@ test.describe('Ricompila 6.5 I2', () => {
     payloadWorker,
   }) => {
     const dishName = `verify-ui-rebuild-${payload.runId}`
-    const managerEmail = payload.managerEmail
-    const categoryId = payload.defaultDishCategoryId
     try {
       await page.goto('/app/menu', { waitUntil: 'domcontentloaded' })
       await page.getByRole('button', { name: PIATTI_NEW_BUTTON, exact: true }).click()
